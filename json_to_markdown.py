@@ -134,7 +134,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--infile', default='tasks.json', help='input JSON path')
     parser.add_argument('-o', '--out', default='tasks.md', help='output markdown path')
-    parser.add_argument('--factor', type=float, default=1.0, help='multiplier for child work minutes')
+    parser.add_argument('--factor', type=float, default=0.8, help='multiplier for child work minutes')
     args = parser.parse_args()
 
     in_path = Path(args.infile)
