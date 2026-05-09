@@ -27,7 +27,7 @@ def must_match(text: str, pattern: str, field: str, flags=0):
 
 
 def parse_task_input(text: str, year: int, task_id: str):
-    owner = must_match(text, r"請\s*([^\s]+(?:\s+[^\s]+)?)\s+翻譯", "owner").group(1).strip()
+    assigned_by = must_match(text, r"請\s*([^\s]+(?:\s+[^\s]+)?)\s+翻譯", "assignedBy").group(1).strip()
     name = must_match(text, r"翻譯\s*([^，,]+?)\s*\d+\s*個短版", "name").group(1).strip()
 
     must_match(text, r"(\d+)\s*個短版", "short count")
@@ -44,7 +44,7 @@ def parse_task_input(text: str, year: int, task_id: str):
     task = {
         "id": task_id,
         "name": name,
-        "owner": owner,
+        "assignedBy": assigned_by,
         "createdAt": created_at,
         "deadline": deadline,
         "workMinutes": work_minutes,
@@ -102,7 +102,7 @@ def parse_batch_tasks(text: str, year: int, owner_filter: str):
 
         task = {
             "name": name,
-            "owner": owner,
+            "assignedBy": owner,
             "workMinutes": work_minutes,
             "children": [],
             "sourceText": raw_line,
@@ -169,8 +169,10 @@ def normalize_task_shape(task):
     normalized = {
         "id": str(task.get("id", "")),
         "name": task.get("name", ""),
-        "owner": task.get("owner", ""),
     }
+    assigned_by = task.get("assignedBy")
+    if isinstance(assigned_by, str):
+        normalized["assignedBy"] = assigned_by
 
     if isinstance(task.get("createdAt"), str):
         normalized["createdAt"] = task["createdAt"]
