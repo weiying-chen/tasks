@@ -26,7 +26,7 @@ def must_match(text: str, pattern: str, field: str, flags=0):
     return m
 
 
-def parse_task_input(text: str, year: int, task_id: str):
+def parse_subs_input(text: str, year: int, task_id: str):
     assigned_by = must_match(text, r"請\s*([^\s]+(?:\s+[^\s]+)?)\s+翻譯", "assignedBy").group(1).strip()
     name = must_match(text, r"翻譯\s*([^，,]+?)\s*\d+\s*個短版", "name").group(1).strip()
 
@@ -67,7 +67,7 @@ def parse_hhmm_to_work_minutes(hhmm: str) -> int:
     return hours * 60 + minutes
 
 
-def parse_batch_tasks(text: str, year: int, owner_filter: str):
+def parse_news_input(text: str, year: int, owner_filter: str):
     tasks = []
     current_month = None
     current_day = None
@@ -201,7 +201,7 @@ def main():
     parser.add_argument("-i", "--infile", help="input text file path")
     parser.add_argument("-o", "--out", default="tasks.json", help="output JSON file path")
     parser.add_argument("--parent-id", help="insert new task under this parent task id")
-    parser.add_argument("--owner", default="Alex Chen", help="owner filter for batch text format")
+    parser.add_argument("--owner", default="Alex Chen", help="owner filter for news input format")
     args = parser.parse_args()
 
     out_path = Path(args.out)
@@ -220,14 +220,14 @@ def main():
 
     now_year = datetime.now(TZ_TAIPEI).year
     if "\n" in source_text and ":" in source_text and re.search(r"^\d{1,2}/\d{1,2}\s*$", source_text, re.M):
-        parsed_items = parse_batch_tasks(source_text, now_year, args.owner)
+        parsed_items = parse_news_input(source_text, now_year, args.owner)
         new_items = []
         for item in parsed_items:
             item["id"] = next_numeric_task_id(tasks + new_items)
             new_items.append(item)
     else:
         new_task_id = next_numeric_task_id(tasks)
-        out = parse_task_input(source_text, now_year, task_id=new_task_id)
+        out = parse_subs_input(source_text, now_year, task_id=new_task_id)
         new_items = [out]
 
     if args.parent_id:
