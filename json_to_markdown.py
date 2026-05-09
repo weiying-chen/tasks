@@ -39,6 +39,20 @@ def parse_base_deadline_local(task: dict) -> datetime | None:
     return None
 
 
+def sum_immediate_children_work_minutes(task: dict) -> int:
+    total = 0
+    children = task.get('children')
+    if not isinstance(children, list):
+        return 0
+    for child in children:
+        if not isinstance(child, dict):
+            continue
+        minutes = child.get('workMinutes')
+        if isinstance(minutes, int) and minutes > 0:
+            total += minutes
+    return total
+
+
 def normalize_tasks(data):
     if isinstance(data, dict):
         return [data]
@@ -47,7 +61,7 @@ def normalize_tasks(data):
     raise ValueError('JSON must be an object or array of objects')
 
 
-def render_task(lines: list[str], task: dict, level: int, parent_deadline_local: datetime | None, factor: float) -> None:
+def render_task(lines: list[str], task: dict, level: int, factor: float) -> None:
     name = task.get('name') or task.get('title') or '(Untitled)'
     owner = task.get('owner', '-')
     created_at = task.get('createdAt')
@@ -72,27 +86,27 @@ def render_task(lines: list[str], task: dict, level: int, parent_deadline_local:
     )
     lines.append(f"- Created: {created_display}")
     lines.append(f"- Deadline: {deadline_display}")
-    lines.append(f'- Work time: {fmt_work(work_minutes)}')
-    if level > 2 and parent_deadline_local and isinstance(work_minutes, int):
-        adjusted_minutes = int(round(work_minutes * factor))
-        extended = add_work_minutes(parent_deadline_local, adjusted_minutes)
+    base_deadline_local = parse_base_deadline_local(task)
+    child_minutes = sum_immediate_children_work_minutes(task)
+    if base_deadline_local and child_minutes > 0:
+        adjusted_minutes = int(round(child_minutes * factor))
+        extended = add_work_minutes(base_deadline_local, adjusted_minutes)
         lines.append(f"- Extended deadline: {extended.strftime('%Y-%m-%d %H:%M')}")
+    lines.append(f'- Work time: {fmt_work(work_minutes)}')
     lines.append('')
 
     children = task.get('children')
-    current_deadline_local = parse_base_deadline_local(task)
-    next_parent_deadline = current_deadline_local or parent_deadline_local
     if isinstance(children, list):
         for child in children:
             if isinstance(child, dict):
-                render_task(lines, child, level + 1, next_parent_deadline, factor)
+                render_task(lines, child, level + 1, factor)
 
 
 def render(tasks: list[dict], factor: float) -> str:
     lines: list[str] = ['# Tasks', '']
     for task in tasks:
         if isinstance(task, dict):
-            render_task(lines, task, 2, None, factor)
+            render_task(lines, task, 2, factor)
 
     return '\n'.join(lines).rstrip() + '\n'
 
