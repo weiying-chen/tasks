@@ -232,6 +232,8 @@ def main():
 
     if args.parent_id:
         for item in new_items:
+            item.pop("assignedBy", None)
+            item.pop("owner", None)
             inserted = insert_under_parent(tasks, args.parent_id, item)
             if not inserted:
                 raise ValueError(f"Parent id not found: {args.parent_id}")
