@@ -56,13 +56,15 @@ def parse_task_input(text: str, year: int, task_id: str):
     return task
 
 
-def parse_mmss_to_work_minutes(mmss: str) -> int:
-    m = re.match(r"^\s*(\d+):(\d{2})\s*$", mmss)
+def parse_hhmm_to_work_minutes(hhmm: str) -> int:
+    m = re.match(r"^\s*(\d+):(\d{2})\s*$", hhmm)
     if not m:
-        raise ValueError(f"Invalid duration: {mmss}")
-    mins = int(m.group(1))
-    secs = int(m.group(2))
-    return mins + (1 if secs >= 30 else 0)
+        raise ValueError(f"Invalid duration: {hhmm}")
+    hours = int(m.group(1))
+    minutes = int(m.group(2))
+    if minutes >= 60:
+        raise ValueError(f"Invalid minutes in duration: {hhmm}")
+    return hours * 60 + minutes
 
 
 def parse_batch_tasks(text: str, year: int, owner_filter: str):
@@ -91,7 +93,7 @@ def parse_batch_tasks(text: str, year: int, owner_filter: str):
         if owner != owner_filter:
             continue
 
-        work_minutes = parse_mmss_to_work_minutes(duration)
+        work_minutes = parse_hhmm_to_work_minutes(duration)
         created_at = None
         deadline = None
         if current_month is not None and current_day is not None:
@@ -104,7 +106,6 @@ def parse_batch_tasks(text: str, year: int, owner_filter: str):
             "name": name,
             "owner": owner,
             "workMinutes": work_minutes,
-            "contentSeconds": work_minutes * 60,
             "children": [],
             "sourceText": raw_line,
         }
