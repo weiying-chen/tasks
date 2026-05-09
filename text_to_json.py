@@ -105,6 +105,7 @@ def parse_news_input(text: str, year: int, owner_filter: str):
             "name": name,
             "assignedBy": owner,
             "workMinutes": work_minutes,
+            "contentSeconds": original_minutes * 60,
             "children": [],
             "sourceText": raw_line,
         }
