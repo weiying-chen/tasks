@@ -4,7 +4,7 @@ import json
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
-from work_time import add_work_minutes
+from work_time import add_work_minutes, next_work_start
 
 TZ_TAIPEI = timezone(timedelta(hours=8))
 
@@ -26,6 +26,23 @@ def fmt_work(minutes: int | None) -> str:
     return f'{m}m'
 
 
+def js_math_round(value: float) -> int:
+    # Match JavaScript Math.round for non-negative numbers.
+    return int((value + 0.5) // 1)
+
+
+def adjusted_assignment_minutes(raw_minutes: int, factor: float) -> int:
+    if raw_minutes <= 0:
+        return 0
+    return max(1, js_math_round(raw_minutes * factor))
+
+
+def round_minutes_to_step(raw_minutes: int, step: int = 10) -> int:
+    if raw_minutes <= 0:
+        return 0
+    return max(step, js_math_round(raw_minutes / step) * step)
+
+
 def parse_base_deadline_local(task: dict) -> datetime | None:
     deadline = task.get('deadline')
     if isinstance(deadline, str):
@@ -39,20 +56,7 @@ def parse_base_deadline_local(task: dict) -> datetime | None:
     return None
 
 
-def parse_base_created_local(task: dict) -> datetime | None:
-    created_at = task.get('createdAt')
-    if isinstance(created_at, str):
-        dt = datetime.fromisoformat(created_at.replace('Z', '+00:00'))
-        return dt.astimezone(TZ_TAIPEI)
-
-    created_date = task.get('createdDate')
-    if isinstance(created_date, str):
-        return datetime.fromisoformat(f"{created_date}T09:00:00+08:00")
-
-    return None
-
-
-def sum_immediate_children_work_minutes(task: dict) -> int:
+def sum_immediate_children_work_minutes(task: dict, factor: float) -> int:
     total = 0
     children = task.get('children')
     if not isinstance(children, list):
@@ -62,7 +66,7 @@ def sum_immediate_children_work_minutes(task: dict) -> int:
             continue
         minutes = child.get('workMinutes')
         if isinstance(minutes, int) and minutes > 0:
-            total += minutes
+            total += round_minutes_to_step(minutes)
     return total
 
 
@@ -81,6 +85,10 @@ def render_task(lines: list[str], task: dict, level: int, factor: float, now_loc
     created_date = task.get('createdDate')
     deadline_date = task.get('deadlineDate')
     work_minutes = task.get('workMinutes')
+    is_child = level > 2
+    child_rounded_minutes = (
+        round_minutes_to_step(work_minutes) if is_child and isinstance(work_minutes, int) else work_minutes
+    )
 
     heading_prefix = '#' * min(6, level)
     lines.append(f'{heading_prefix} {name}')
@@ -95,9 +103,9 @@ def render_task(lines: list[str], task: dict, level: int, factor: float, now_loc
         if isinstance(deadline, str) else '-'
     )
     # For date-only tasks, derive display times from work-time schedule.
-    if not isinstance(deadline, str) and isinstance(created_date, str) and isinstance(work_minutes, int):
-        derived_created = now_local
-        derived_deadline = add_work_minutes(derived_created, work_minutes)
+    if not isinstance(deadline, str) and isinstance(created_date, str) and isinstance(child_rounded_minutes, int):
+        derived_created = next_work_start(now_local)
+        derived_deadline = add_work_minutes(derived_created, child_rounded_minutes)
         created_display = derived_created.strftime('%Y-%m-%d %a %H:%M')
         deadline_display = derived_deadline.strftime('%Y-%m-%d %a %H:%M')
     elif not isinstance(deadline, str) and isinstance(deadline_date, str):
@@ -105,12 +113,11 @@ def render_task(lines: list[str], task: dict, level: int, factor: float, now_loc
     lines.append(f"- Created: {created_display}")
     lines.append(f"- Deadline: {deadline_display}")
     base_deadline_local = parse_base_deadline_local(task)
-    child_minutes = sum_immediate_children_work_minutes(task)
+    child_minutes = sum_immediate_children_work_minutes(task, factor)
     if base_deadline_local and child_minutes > 0:
-        adjusted_minutes = int(round(child_minutes * factor))
-        extended = add_work_minutes(base_deadline_local, adjusted_minutes)
+        extended = add_work_minutes(base_deadline_local, child_minutes)
         lines.append(f"- Extended deadline: {extended.strftime('%Y-%m-%d %a %H:%M')}")
-    lines.append(f'- Work time: {fmt_work(work_minutes)}')
+    lines.append(f'- Work time: {fmt_work(child_rounded_minutes)}')
     lines.append('')
 
     children = task.get('children')

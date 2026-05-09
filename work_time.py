@@ -36,6 +36,10 @@ def _next_work_start(now: datetime) -> datetime:
         cursor = day + timedelta(days=1)
 
 
+def next_work_start(now: datetime) -> datetime:
+    return _next_work_start(now)
+
+
 def add_work_minutes(start: datetime, minutes: int) -> datetime:
     if minutes <= 0:
         return start
@@ -73,4 +77,3 @@ def add_work_minutes(start: datetime, minutes: int) -> datetime:
             cursor = _next_work_start(day + timedelta(days=1))
 
     return cursor
-
