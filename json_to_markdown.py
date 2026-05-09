@@ -11,7 +11,7 @@ TZ_TAIPEI = timezone(timedelta(hours=8))
 
 def to_local_display(iso_str: str) -> str:
     dt = datetime.fromisoformat(iso_str.replace('Z', '+00:00'))
-    return dt.astimezone(TZ_TAIPEI).strftime('%Y-%m-%d %H:%M')
+    return dt.astimezone(TZ_TAIPEI).strftime('%Y-%m-%d %a %H:%M')
 
 
 def fmt_work(minutes: int | None) -> str:
@@ -39,6 +39,19 @@ def parse_base_deadline_local(task: dict) -> datetime | None:
     return None
 
 
+def parse_base_created_local(task: dict) -> datetime | None:
+    created_at = task.get('createdAt')
+    if isinstance(created_at, str):
+        dt = datetime.fromisoformat(created_at.replace('Z', '+00:00'))
+        return dt.astimezone(TZ_TAIPEI)
+
+    created_date = task.get('createdDate')
+    if isinstance(created_date, str):
+        return datetime.fromisoformat(f"{created_date}T09:00:00+08:00")
+
+    return None
+
+
 def sum_immediate_children_work_minutes(task: dict) -> int:
     total = 0
     children = task.get('children')
@@ -61,7 +74,7 @@ def normalize_tasks(data):
     raise ValueError('JSON must be an object or array of objects')
 
 
-def render_task(lines: list[str], task: dict, level: int, factor: float) -> None:
+def render_task(lines: list[str], task: dict, level: int, factor: float, now_local: datetime) -> None:
     name = task.get('name') or task.get('title') or '(Untitled)'
     created_at = task.get('createdAt')
     deadline = task.get('deadline')
@@ -75,13 +88,20 @@ def render_task(lines: list[str], task: dict, level: int, factor: float) -> None
     created_display = (
         to_local_display(created_at)
         if isinstance(created_at, str)
-        else (created_date if isinstance(created_date, str) else '-')
+        else (f"{created_date} {datetime.fromisoformat(created_date).strftime('%a')} 09:00" if isinstance(created_date, str) else '-')
     )
     deadline_display = (
         to_local_display(deadline)
-        if isinstance(deadline, str)
-        else (deadline_date if isinstance(deadline_date, str) else '-')
+        if isinstance(deadline, str) else '-'
     )
+    # For date-only tasks, derive display times from work-time schedule.
+    if not isinstance(deadline, str) and isinstance(created_date, str) and isinstance(work_minutes, int):
+        derived_created = now_local
+        derived_deadline = add_work_minutes(derived_created, work_minutes)
+        created_display = derived_created.strftime('%Y-%m-%d %a %H:%M')
+        deadline_display = derived_deadline.strftime('%Y-%m-%d %a %H:%M')
+    elif not isinstance(deadline, str) and isinstance(deadline_date, str):
+        deadline_display = f"{deadline_date} {datetime.fromisoformat(deadline_date).strftime('%a')} 17:00"
     lines.append(f"- Created: {created_display}")
     lines.append(f"- Deadline: {deadline_display}")
     base_deadline_local = parse_base_deadline_local(task)
@@ -89,7 +109,7 @@ def render_task(lines: list[str], task: dict, level: int, factor: float) -> None
     if base_deadline_local and child_minutes > 0:
         adjusted_minutes = int(round(child_minutes * factor))
         extended = add_work_minutes(base_deadline_local, adjusted_minutes)
-        lines.append(f"- Extended deadline: {extended.strftime('%Y-%m-%d %H:%M')}")
+        lines.append(f"- Extended deadline: {extended.strftime('%Y-%m-%d %a %H:%M')}")
     lines.append(f'- Work time: {fmt_work(work_minutes)}')
     lines.append('')
 
@@ -97,14 +117,15 @@ def render_task(lines: list[str], task: dict, level: int, factor: float) -> None
     if isinstance(children, list):
         for child in children:
             if isinstance(child, dict):
-                render_task(lines, child, level + 1, factor)
+                render_task(lines, child, level + 1, factor, now_local)
 
 
 def render(tasks: list[dict], factor: float) -> str:
     lines: list[str] = ['# Tasks', '']
+    now_local = datetime.now(TZ_TAIPEI)
     for task in tasks:
         if isinstance(task, dict):
-            render_task(lines, task, 2, factor)
+            render_task(lines, task, 2, factor, now_local)
 
     return '\n'.join(lines).rstrip() + '\n'
 
