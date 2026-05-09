@@ -94,13 +94,11 @@ def parse_batch_tasks(text: str, year: int, owner_filter: str):
             continue
 
         work_minutes = parse_hhmm_to_work_minutes(duration)
-        created_at = None
-        deadline = None
+        created_date = None
+        deadline_date = None
         if current_month is not None and current_day is not None:
-            local_start = datetime(year, current_month, current_day, 9, 0, tzinfo=TZ_TAIPEI)
-            local_deadline = datetime(year, current_month, current_day, 17, 0, tzinfo=TZ_TAIPEI)
-            created_at = local_start.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
-            deadline = local_deadline.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
+            created_date = f"{year:04d}-{current_month:02d}-{current_day:02d}"
+            deadline_date = created_date
 
         task = {
             "name": name,
@@ -109,10 +107,10 @@ def parse_batch_tasks(text: str, year: int, owner_filter: str):
             "children": [],
             "sourceText": raw_line,
         }
-        if created_at:
-            task["createdAt"] = created_at
-        if deadline:
-            task["deadline"] = deadline
+        if created_date:
+            task["createdDate"] = created_date
+        if deadline_date:
+            task["deadlineDate"] = deadline_date
         tasks.append(task)
 
     return tasks
@@ -162,6 +160,39 @@ def insert_under_parent(tasks, parent_id, new_task):
     return False
 
 
+def normalize_task_shape(task):
+    children_raw = task.get("children")
+    children = []
+    if isinstance(children_raw, list):
+        children = [normalize_task_shape(child) for child in children_raw if isinstance(child, dict)]
+
+    normalized = {
+        "id": str(task.get("id", "")),
+        "name": task.get("name", ""),
+        "owner": task.get("owner", ""),
+    }
+
+    if isinstance(task.get("createdAt"), str):
+        normalized["createdAt"] = task["createdAt"]
+    if isinstance(task.get("createdDate"), str):
+        normalized["createdDate"] = task["createdDate"]
+    if isinstance(task.get("deadline"), str):
+        normalized["deadline"] = task["deadline"]
+    if isinstance(task.get("deadlineDate"), str):
+        normalized["deadlineDate"] = task["deadlineDate"]
+    if isinstance(task.get("workMinutes"), int):
+        normalized["workMinutes"] = task["workMinutes"]
+    if isinstance(task.get("contentSeconds"), int):
+        normalized["contentSeconds"] = task["contentSeconds"]
+
+    normalized["children"] = children
+
+    if isinstance(task.get("sourceText"), str):
+        normalized["sourceText"] = task["sourceText"]
+
+    return normalized
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("text", nargs="?", help="source task text")
@@ -205,7 +236,8 @@ def main():
     else:
         tasks.extend(new_items)
 
-    out_path.write_text(json.dumps(tasks, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    normalized_tasks = [normalize_task_shape(task) for task in tasks if isinstance(task, dict)]
+    out_path.write_text(json.dumps(normalized_tasks, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     if args.parent_id:
         print(f"Inserted {len(new_items)} task(s) under {args.parent_id} in {args.out}")
     else:

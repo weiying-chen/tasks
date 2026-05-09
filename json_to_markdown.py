@@ -37,14 +37,26 @@ def render_task(lines: list[str], task: dict, level: int) -> None:
     owner = task.get('owner', '-')
     created_at = task.get('createdAt')
     deadline = task.get('deadline')
+    created_date = task.get('createdDate')
+    deadline_date = task.get('deadlineDate')
     work_minutes = task.get('workMinutes')
 
     heading_prefix = '#' * min(6, level)
     lines.append(f'{heading_prefix} {name}')
     lines.append('')
     lines.append(f'- Owner: {owner}')
-    lines.append(f"- Created: {to_local_display(created_at) if isinstance(created_at, str) else '-'}")
-    lines.append(f"- Deadline: {to_local_display(deadline) if isinstance(deadline, str) else '-'}")
+    created_display = (
+        to_local_display(created_at)
+        if isinstance(created_at, str)
+        else (created_date if isinstance(created_date, str) else '-')
+    )
+    deadline_display = (
+        to_local_display(deadline)
+        if isinstance(deadline, str)
+        else (deadline_date if isinstance(deadline_date, str) else '-')
+    )
+    lines.append(f"- Created: {created_display}")
+    lines.append(f"- Deadline: {deadline_display}")
     lines.append(f'- Work time: {fmt_work(work_minutes)}')
     lines.append('')
 
