@@ -93,7 +93,8 @@ def parse_news_input(text: str, year: int, owner_filter: str):
         if owner != owner_filter:
             continue
 
-        work_minutes = parse_hhmm_to_work_minutes(duration)
+        original_minutes = parse_hhmm_to_work_minutes(duration)
+        work_minutes = original_minutes + 20
         created_date = None
         deadline_date = None
         if current_month is not None and current_day is not None:
