@@ -24,12 +24,6 @@ def fmt_work(minutes: int | None) -> str:
     return f'{m}m'
 
 
-def fmt_content(minutes: int | None) -> str:
-    if not isinstance(minutes, int):
-        return '-'
-    return f'{minutes}m'
-
-
 def normalize_tasks(data):
     if isinstance(data, dict):
         return [data]
@@ -41,20 +35,18 @@ def normalize_tasks(data):
 def render(tasks: list[dict]) -> str:
     lines: list[str] = ['# Tasks', '']
     for task in tasks:
-        title = task.get('title', '(Untitled)')
+        name = task.get('name') or task.get('title') or '(Untitled)'
         owner = task.get('owner', '-')
         created_at = task.get('createdAt')
         deadline = task.get('deadline')
         work_minutes = task.get('workMinutes')
-        content_minutes = task.get('contentMinutes')
 
-        lines.append(f'## {title}')
+        lines.append(f'## {name}')
         lines.append('')
         lines.append(f'- Owner: {owner}')
         lines.append(f"- Created: {to_local_display(created_at) if isinstance(created_at, str) else '-'}")
         lines.append(f"- Deadline: {to_local_display(deadline) if isinstance(deadline, str) else '-'}")
         lines.append(f'- Work time: {fmt_work(work_minutes)}')
-        lines.append(f'- Content length: {fmt_content(content_minutes)}')
         lines.append('')
 
     return '\n'.join(lines).rstrip() + '\n'
