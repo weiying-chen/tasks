@@ -28,7 +28,7 @@ def must_match(text: str, pattern: str, field: str, flags=0):
 
 def parse_task_input(text: str, year: int, task_id: str):
     owner = must_match(text, r"請\s*([^\s]+(?:\s+[^\s]+)?)\s+翻譯", "owner").group(1).strip()
-    title = must_match(text, r"翻譯\s*([^，,]+?)\s*\d+\s*個短版", "title").group(1).strip()
+    name = must_match(text, r"翻譯\s*([^，,]+?)\s*\d+\s*個短版", "name").group(1).strip()
 
     must_match(text, r"(\d+)\s*個短版", "short count")
     content_minutes = int(must_match(text, r"長度\s*(\d+)\s*分", "content minutes").group(1))
@@ -43,18 +43,78 @@ def parse_task_input(text: str, year: int, task_id: str):
     deadline = parse_datetime(dl.group(1), dl.group(2), year)
     task = {
         "id": task_id,
-        "title": title,
+        "name": name,
         "owner": owner,
         "createdAt": created_at,
         "deadline": deadline,
         "workMinutes": work_minutes,
-        "contentMinutes": content_minutes,
         "contentSeconds": content_minutes * 60,
         "children": [],
         "sourceText": text,
     }
 
     return task
+
+
+def parse_mmss_to_work_minutes(mmss: str) -> int:
+    m = re.match(r"^\s*(\d+):(\d{2})\s*$", mmss)
+    if not m:
+        raise ValueError(f"Invalid duration: {mmss}")
+    mins = int(m.group(1))
+    secs = int(m.group(2))
+    return mins + (1 if secs >= 30 else 0)
+
+
+def parse_batch_tasks(text: str, year: int, owner_filter: str):
+    tasks = []
+    current_month = None
+    current_day = None
+
+    for raw_line in text.splitlines():
+        line = raw_line.strip()
+        if not line:
+            continue
+
+        date_match = re.match(r"^(\d{1,2})/(\d{1,2})$", line)
+        if date_match:
+            current_month = int(date_match.group(1))
+            current_day = int(date_match.group(2))
+            continue
+
+        row_match = re.match(r"^([^:]+):\s*(.+?)\s+(\d+:\d{2})$", line)
+        if not row_match:
+            continue
+
+        owner = row_match.group(1).strip()
+        name = row_match.group(2).strip()
+        duration = row_match.group(3).strip()
+        if owner != owner_filter:
+            continue
+
+        work_minutes = parse_mmss_to_work_minutes(duration)
+        created_at = None
+        deadline = None
+        if current_month is not None and current_day is not None:
+            local_start = datetime(year, current_month, current_day, 9, 0, tzinfo=TZ_TAIPEI)
+            local_deadline = datetime(year, current_month, current_day, 17, 0, tzinfo=TZ_TAIPEI)
+            created_at = local_start.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
+            deadline = local_deadline.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
+
+        task = {
+            "name": name,
+            "owner": owner,
+            "workMinutes": work_minutes,
+            "contentSeconds": work_minutes * 60,
+            "children": [],
+            "sourceText": raw_line,
+        }
+        if created_at:
+            task["createdAt"] = created_at
+        if deadline:
+            task["deadline"] = deadline
+        tasks.append(task)
+
+    return tasks
 
 
 def normalize_tasks_json(data):
@@ -103,9 +163,11 @@ def insert_under_parent(tasks, parent_id, new_task):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("text", help="source task text")
+    parser.add_argument("text", nargs="?", help="source task text")
+    parser.add_argument("-i", "--infile", help="input text file path")
     parser.add_argument("-o", "--out", default="tasks.json", help="output JSON file path")
     parser.add_argument("--parent-id", help="insert new task under this parent task id")
+    parser.add_argument("--owner", default="Alex Chen", help="owner filter for batch text format")
     args = parser.parse_args()
 
     out_path = Path(args.out)
@@ -115,9 +177,24 @@ def main():
     else:
         tasks = []
 
-    new_task_id = next_numeric_task_id(tasks)
-    out = parse_task_input(args.text, datetime.now(TZ_TAIPEI).year, task_id=new_task_id)
-    new_items = [out]
+    if args.infile:
+        source_text = Path(args.infile).read_text(encoding="utf-8")
+    elif args.text:
+        source_text = args.text
+    else:
+        raise ValueError("Provide text or --infile")
+
+    now_year = datetime.now(TZ_TAIPEI).year
+    if "\n" in source_text and ":" in source_text and re.search(r"^\d{1,2}/\d{1,2}\s*$", source_text, re.M):
+        parsed_items = parse_batch_tasks(source_text, now_year, args.owner)
+        new_items = []
+        for item in parsed_items:
+            item["id"] = next_numeric_task_id(tasks + new_items)
+            new_items.append(item)
+    else:
+        new_task_id = next_numeric_task_id(tasks)
+        out = parse_task_input(source_text, now_year, task_id=new_task_id)
+        new_items = [out]
 
     if args.parent_id:
         for item in new_items:
