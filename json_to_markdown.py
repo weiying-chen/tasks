@@ -63,7 +63,6 @@ def normalize_tasks(data):
 
 def render_task(lines: list[str], task: dict, level: int, factor: float) -> None:
     name = task.get('name') or task.get('title') or '(Untitled)'
-    assigned_by = task.get('assignedBy') or task.get('owner') or '-'
     created_at = task.get('createdAt')
     deadline = task.get('deadline')
     created_date = task.get('createdDate')
@@ -73,7 +72,6 @@ def render_task(lines: list[str], task: dict, level: int, factor: float) -> None
     heading_prefix = '#' * min(6, level)
     lines.append(f'{heading_prefix} {name}')
     lines.append('')
-    lines.append(f'- Assigned by: {assigned_by}')
     created_display = (
         to_local_display(created_at)
         if isinstance(created_at, str)
