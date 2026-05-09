@@ -32,22 +32,34 @@ def normalize_tasks(data):
     raise ValueError('JSON must be an object or array of objects')
 
 
+def render_task(lines: list[str], task: dict, level: int) -> None:
+    name = task.get('name') or task.get('title') or '(Untitled)'
+    owner = task.get('owner', '-')
+    created_at = task.get('createdAt')
+    deadline = task.get('deadline')
+    work_minutes = task.get('workMinutes')
+
+    heading_prefix = '#' * min(6, level)
+    lines.append(f'{heading_prefix} {name}')
+    lines.append('')
+    lines.append(f'- Owner: {owner}')
+    lines.append(f"- Created: {to_local_display(created_at) if isinstance(created_at, str) else '-'}")
+    lines.append(f"- Deadline: {to_local_display(deadline) if isinstance(deadline, str) else '-'}")
+    lines.append(f'- Work time: {fmt_work(work_minutes)}')
+    lines.append('')
+
+    children = task.get('children')
+    if isinstance(children, list):
+        for child in children:
+            if isinstance(child, dict):
+                render_task(lines, child, level + 1)
+
+
 def render(tasks: list[dict]) -> str:
     lines: list[str] = ['# Tasks', '']
     for task in tasks:
-        name = task.get('name') or task.get('title') or '(Untitled)'
-        owner = task.get('owner', '-')
-        created_at = task.get('createdAt')
-        deadline = task.get('deadline')
-        work_minutes = task.get('workMinutes')
-
-        lines.append(f'## {name}')
-        lines.append('')
-        lines.append(f'- Owner: {owner}')
-        lines.append(f"- Created: {to_local_display(created_at) if isinstance(created_at, str) else '-'}")
-        lines.append(f"- Deadline: {to_local_display(deadline) if isinstance(deadline, str) else '-'}")
-        lines.append(f'- Work time: {fmt_work(work_minutes)}')
-        lines.append('')
+        if isinstance(task, dict):
+            render_task(lines, task, 2)
 
     return '\n'.join(lines).rstrip() + '\n'
 
