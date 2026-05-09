@@ -1,0 +1,34 @@
+[
+  {
+    "id": "1",
+    "name": "人文講堂(活出自己的第三人生 - 丁菱娟)",
+    "owner": "Alex Chen",
+    "createdAt": "2026-05-06T05:49:00Z",
+    "deadline": "2026-05-08T08:19:00Z",
+    "workMinutes": 1110,
+    "contentSeconds": 1380,
+    "children": [
+      {
+        "name": "墨安寧牙義診",
+        "owner": "Alex Chen",
+        "workMinutes": 110,
+        "children": [],
+        "sourceText": "Alex Chen: 墨安寧牙義診 1:50",
+        "createdDate": "2026-05-13",
+        "deadlineDate": "2026-05-13",
+        "id": "2"
+      },
+      {
+        "name": "加薩帳篷學校",
+        "owner": "Alex Chen",
+        "workMinutes": 134,
+        "children": [],
+        "sourceText": "Alex Chen: 加薩帳篷學校 2:14",
+        "createdDate": "2026-05-15",
+        "deadlineDate": "2026-05-15",
+        "id": "3"
+      }
+    ],
+    "sourceText": "請 Alex Chen 翻譯人文講堂(活出自己的第三人生 - 丁菱娟) 5 個短版, 長度23分, 預計翻譯18時30分(2天2時30分)，從5/6（三）13:49起算，deadline為5/8(五) 16:19，謝謝！"
+  }
+]
