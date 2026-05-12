@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
 import argparse
 import json
+import os
+import select
+import subprocess
 import sys
+import termios
 import time
+import tty
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
@@ -15,9 +20,10 @@ WORK_BLOCKS = (
 )
 RESET = '\x1b[0m'
 DIM = '\x1b[2m'
-YELLOW = '\x1b[33m'
-GREEN = '\x1b[32m'
-BROWN = '\x1b[38;5;180m'
+YELLOW = '\x1b[33m'   # theme yellow
+GREEN = '\x1b[32m'    # theme green
+BROWN = '\x1b[2;33m'  # dim yellow, like lazygit command-log hint
+BLUE = '\x1b[34m'     # theme blue
 
 
 def fmt_work(minutes: int | None) -> str:
@@ -52,6 +58,22 @@ def normalize_tasks(data):
     if isinstance(data, dict):
         return [data]
     raise ValueError('JSON must be an object or array of objects')
+
+
+def find_latest_task_id(tasks: list[dict]) -> str | None:
+    if not tasks:
+        return None
+    latest = tasks[-1]
+    if not isinstance(latest, dict):
+        return None
+    task_id = latest.get("id")
+    if isinstance(task_id, str) and task_id.strip():
+        return task_id
+    return None
+
+
+def build_add_to_latest_command(script_dir: str, parent_id: str) -> list[str]:
+    return ["python3", f"{script_dir}/text_to_json.py", "--parent-id", parent_id, "__CLIPBOARD__"]
 
 
 def task_base_created(task: dict, now_local: datetime) -> datetime:
@@ -169,7 +191,7 @@ def render_task_block(lines: list[str], task: dict, now_local: datetime, level: 
         lines.append(f'{color("Deadline", DIM)}: {color(to_display(deadline) if deadline else "-", YELLOW)}')
         lines.append('')
     else:
-        lines.append(color('Latest Task', BROWN))
+        lines.append(color('Latest task', BROWN))
         lines.append('')
         lines.append(f'{color("Name", DIM)}: {name}')
         lines.append(f'{color("Created", DIM)}: {to_display(created)}')
@@ -188,7 +210,7 @@ def render_task_block(lines: list[str], task: dict, now_local: datetime, level: 
         lines.append('')
         children = task.get('children')
         if isinstance(children, list) and children:
-            lines.append(color('Child Tasks', BROWN))
+            lines.append(color('Child tasks', BROWN))
             lines.append('')
 
         children = task.get('children')
@@ -198,21 +220,31 @@ def render_task_block(lines: list[str], task: dict, now_local: datetime, level: 
                     render_task_block(lines, child, now_local, level + 1)
 
 
-def build_latest_view(tasks: list[dict], now_local: datetime | None = None) -> str:
+def build_latest_view(tasks: list[dict], now_local: datetime | None = None, status: str = "") -> str:
     if now_local is None:
         now_local = datetime.now(TZ_TAIPEI)
 
     lines: list[str] = []
     if not tasks:
-        lines.append(color('No tasks', YELLOW + BOLD))
+        lines.append(color('No tasks', YELLOW))
         return '\n'.join(lines) + '\n'
 
     latest = tasks[-1]
     if not isinstance(latest, dict):
-        lines.append(color('Latest task is invalid', YELLOW + BOLD))
+        lines.append(color('Latest task is invalid', YELLOW))
         return '\n'.join(lines) + '\n'
 
     render_task_block(lines, latest, now_local, 2)
+    if status:
+        lines.append('')
+        lines.append(color(status, DIM))
+    lines.append('')
+    lines.append(
+        color('Actions: ', BLUE)
+        + color('a', GREEN) + color('dd clipboard', BLUE)
+        + color(' | ', DIM)
+        + color('q', GREEN) + color('uit', BLUE)
+    )
     return '\n'.join(lines).rstrip() + '\n'
 
 
@@ -225,10 +257,10 @@ def main():
 
     in_path = Path(args.infile)
 
-    def render_once():
+    def render_once(status: str = ""):
         data = json.loads(in_path.read_text(encoding='utf-8'))
         tasks = normalize_tasks(data)
-        return build_latest_view(tasks)
+        return build_latest_view(tasks, status=status)
 
     if args.once:
         print(render_once(), end='')
@@ -236,6 +268,11 @@ def main():
 
     previous_lines = 0
     interval = max(0.2, args.interval)
+    status = ""
+    script_dir = str(Path(__file__).resolve().parent)
+    stdin_fd = sys.stdin.fileno()
+    old_term = termios.tcgetattr(stdin_fd)
+    tty.setcbreak(stdin_fd)
     # Hide cursor in live mode for cleaner redraw.
     sys.stdout.write('\x1b[?25l')
     # Ensure we start from a clean visible frame.
@@ -243,7 +280,7 @@ def main():
     sys.stdout.flush()
     try:
         while True:
-            frame = render_once()
+            frame = render_once(status=status)
             frame_lines = frame.splitlines()
             # Move back to the start of previous frame and redraw in place.
             if previous_lines > 0:
@@ -252,10 +289,43 @@ def main():
             sys.stdout.write(frame)
             sys.stdout.flush()
             previous_lines = len(frame_lines)
-            time.sleep(interval)
+            status = ""
+            ready, _, _ = select.select([sys.stdin], [], [], interval)
+            if ready:
+                ch = os.read(stdin_fd, 1)
+                if ch == b"q":
+                    break
+                if ch == b"a":
+                    try:
+                        data = json.loads(in_path.read_text(encoding='utf-8'))
+                        tasks = normalize_tasks(data)
+                        latest_id = find_latest_task_id(tasks)
+                        if not latest_id:
+                            status = "No latest task id found."
+                            continue
+                        clipboard_proc = subprocess.run(
+                            ["wl-paste"],
+                            capture_output=True,
+                            text=True,
+                            check=True,
+                        )
+                        clipboard_text = clipboard_proc.stdout
+                        if not clipboard_text.strip():
+                            status = "Clipboard is empty."
+                            continue
+                        cmd = build_add_to_latest_command(script_dir, latest_id)
+                        cmd[-1] = clipboard_text
+                        add_proc = subprocess.run(cmd, capture_output=True, text=True)
+                        if add_proc.returncode != 0:
+                            status = (add_proc.stderr or add_proc.stdout or "Add failed").strip()
+                        else:
+                            status = (add_proc.stdout or "Added child task.").strip()
+                    except Exception as exc:
+                        status = f"Add failed: {exc}"
     except KeyboardInterrupt:
         pass
     finally:
+        termios.tcsetattr(stdin_fd, termios.TCSADRAIN, old_term)
         # Show cursor again before exit.
         sys.stdout.write('\x1b[?25h')
         sys.stdout.flush()

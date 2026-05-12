@@ -31,9 +31,9 @@ class LatestTaskViewTests(unittest.TestCase):
         ]
         now_local = datetime(2026, 5, 13, 12, 0, tzinfo=timezone(timedelta(hours=8)))
         out = self.strip_ansi(ltv.build_latest_view(tasks, now_local))
-        self.assertIn("Latest Task", out)
+        self.assertIn("Latest task", out)
         self.assertIn("Name: New Parent", out)
-        self.assertIn("Child Tasks", out)
+        self.assertIn("Child tasks", out)
         self.assertIn("Child", out)
         self.assertIn("Extended deadline:", out)
 
