@@ -281,6 +281,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("text", nargs="?", help="source task text")
     parser.add_argument("--parent-id", help="insert new task under this parent task id")
+    parser.add_argument("--debug", action="store_true", help="show full traceback on errors")
     args = parser.parse_args()
 
     out_path = Path("tasks.json")
@@ -300,7 +301,9 @@ def main():
     try:
         new_items = parse_source_text(source_text, tasks, now_year)
     except ValueError as exc:
-        raise ValueError(
+        if args.debug:
+            raise
+        raise SystemExit(
             "Cannot parse input as posts/news/subs. Check clipboard text format."
         ) from exc
 
