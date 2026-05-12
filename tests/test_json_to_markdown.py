@@ -24,7 +24,7 @@ class JsonToMarkdownTests(unittest.TestCase):
             }
         ]
 
-        md = j2m.render(tasks, factor=0.8)
+        md = j2m.render(tasks, factor=0.8, limit=0)
         self.assertIn("- Work time: 2h 10m", md)
         self.assertIn("- Created: 2026-05-11 Mon 08:00", md)
         self.assertIn("- Deadline: 2026-05-11 Mon 10:10", md)
@@ -49,7 +49,7 @@ class JsonToMarkdownTests(unittest.TestCase):
             }
         ]
 
-        md = j2m.render(tasks, factor=0.8)
+        md = j2m.render(tasks, factor=0.8, limit=0)
         self.assertIn("- Extended deadline: 2026-05-11 Mon 09:29", md)
 
 

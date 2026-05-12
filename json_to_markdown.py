@@ -133,10 +133,11 @@ def render_task(lines: list[str], task: dict, level: int, factor: float, now_loc
                 render_task(lines, child, level + 1, factor, now_local)
 
 
-def render(tasks: list[dict], factor: float) -> str:
+def render(tasks: list[dict], factor: float, limit: int) -> str:
     lines: list[str] = ['# Tasks', '']
     now_local = datetime.now(TZ_TAIPEI)
-    for task in tasks:
+    selected_tasks = tasks if limit <= 0 else tasks[-limit:]
+    for task in selected_tasks:
         if isinstance(task, dict):
             render_task(lines, task, 2, factor, now_local)
 
@@ -148,6 +149,12 @@ def main():
     parser.add_argument('-i', '--infile', default='tasks.json', help='input JSON path')
     parser.add_argument('-o', '--out', default='tasks.md', help='output markdown path')
     parser.add_argument('--factor', type=float, default=0.8, help='multiplier for child work minutes')
+    parser.add_argument(
+        '--limit',
+        type=int,
+        default=2,
+        help='number of latest top-level tasks to render (0 = all)',
+    )
     args = parser.parse_args()
 
     in_path = Path(args.infile)
@@ -155,7 +162,7 @@ def main():
 
     data = json.loads(in_path.read_text(encoding='utf-8'))
     tasks = normalize_tasks(data)
-    md = render(tasks, args.factor)
+    md = render(tasks, args.factor, args.limit)
     out_path.write_text(md, encoding='utf-8')
     print(f'Wrote {out_path}')
 
