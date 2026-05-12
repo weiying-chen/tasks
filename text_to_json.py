@@ -69,8 +69,7 @@ def parse_hhmm_to_work_minutes(hhmm: str) -> int:
 
 def parse_news_input(text: str, year: int, owner_filter: str):
     tasks = []
-    current_month = None
-    current_day = None
+    now_iso = datetime.now(TZ_TAIPEI).astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
 
     for raw_line in text.splitlines():
         line = raw_line.strip()
@@ -79,8 +78,6 @@ def parse_news_input(text: str, year: int, owner_filter: str):
 
         date_match = re.match(r"^(\d{1,2})/(\d{1,2})$", line)
         if date_match:
-            current_month = int(date_match.group(1))
-            current_day = int(date_match.group(2))
             continue
 
         row_match = re.match(r"^([^:]+):\s*(.+?)\s+(\d+:\d{2})$", line)
@@ -90,30 +87,77 @@ def parse_news_input(text: str, year: int, owner_filter: str):
         owner = row_match.group(1).strip()
         name = row_match.group(2).strip()
         duration = row_match.group(3).strip()
-        if owner != owner_filter:
+        if not owner_matches_filter(owner, owner_filter):
             continue
 
         original_minutes = parse_hhmm_to_work_minutes(duration)
         work_minutes = original_minutes + 20
-        created_date = None
-        deadline_date = None
-        if current_month is not None and current_day is not None:
-            created_date = f"{year:04d}-{current_month:02d}-{current_day:02d}"
-            deadline_date = created_date
-
         task = {
             "name": name,
-            "assignedBy": owner,
+            "createdAt": now_iso,
             "workMinutes": work_minutes,
             "contentSeconds": original_minutes * 60,
             "children": [],
             "sourceText": raw_line,
         }
-        if created_date:
-            task["createdDate"] = created_date
-        if deadline_date:
-            task["deadlineDate"] = deadline_date
         tasks.append(task)
+
+    return tasks
+
+
+def strip_leading_md_date(text: str) -> str:
+    # Example: "4/26無私大愛結好緣" -> "無私大愛結好緣"
+    return re.sub(r"^\s*\d{1,2}/\d{1,2}\s*", "", text).strip()
+
+
+def parse_posts_input(text: str, owner_filter: str):
+    tasks = []
+    now_iso = datetime.now(TZ_TAIPEI).astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
+    default_work_minutes = 48  # 1 hour with 0.8 applied
+
+    lines = [line.rstrip() for line in text.splitlines()]
+    i = 0
+
+    def next_non_empty_index(start: int):
+        j = start
+        while j < len(lines) and not lines[j].strip():
+            j += 1
+        return j
+
+    while i < len(lines):
+        line = lines[i].strip()
+        numbered_match = re.match(r"^\d+\.\s*(.+)$", line)
+        if not numbered_match:
+            i += 1
+            continue
+        owner_line = numbered_match.group(1).strip()
+        if not owner_matches_filter(owner_line, owner_filter):
+            i += 1
+            continue
+
+        title_idx = next_non_empty_index(i + 1)
+        url_idx = next_non_empty_index(title_idx + 1)
+        title_line = lines[title_idx].strip() if title_idx < len(lines) else ""
+        url_line = lines[url_idx].strip() if url_idx < len(lines) else ""
+        if not title_line:
+            i += 1
+            continue
+
+        name = strip_leading_md_date(title_line)
+        source_parts = [line]
+        source_parts.append(title_line)
+        if url_line.startswith("http://") or url_line.startswith("https://"):
+            source_parts.append(url_line)
+
+        task = {
+            "name": name,
+            "createdAt": now_iso,
+            "workMinutes": default_work_minutes,
+            "children": [],
+            "sourceText": "\n".join(source_parts),
+        }
+        tasks.append(task)
+        i = url_idx + 1 if url_idx < len(lines) else i + 1
 
     return tasks
 
@@ -124,6 +168,20 @@ def normalize_tasks_json(data):
     if isinstance(data, dict):
         return [data]
     raise ValueError("Existing JSON must be an object or array of objects")
+
+
+def normalize_owner_key(value: str) -> str:
+    return re.sub(r"\s+", "", value.strip().lower())
+
+
+def owner_matches_filter(owner_value: str, owner_filter: str) -> bool:
+    owner_key = normalize_owner_key(owner_value)
+    filter_key = normalize_owner_key(owner_filter)
+    if not filter_key:
+        return True
+    if owner_key == filter_key:
+        return True
+    return owner_key.startswith(filter_key) or filter_key.startswith(owner_key)
 
 
 def walk_tasks(tasks):
@@ -200,29 +258,47 @@ def normalize_task_shape(task):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("text", nargs="?", help="source task text")
-    parser.add_argument("-i", "--infile", help="input text file path")
-    parser.add_argument("-o", "--out", default="tasks.json", help="output JSON file path")
     parser.add_argument("--parent-id", help="insert new task under this parent task id")
-    parser.add_argument("--owner", default="Alex Chen", help="owner filter for news input format")
     args = parser.parse_args()
 
-    out_path = Path(args.out)
+    out_path = Path("tasks.json")
     if out_path.exists():
         existing = json.loads(out_path.read_text(encoding="utf-8"))
         tasks = normalize_tasks_json(existing)
     else:
         tasks = []
 
-    if args.infile:
-        source_text = Path(args.infile).read_text(encoding="utf-8")
-    elif args.text:
+    if args.text:
         source_text = args.text
     else:
-        raise ValueError("Provide text or --infile")
+        raise ValueError("Provide source text")
 
     now_year = datetime.now(TZ_TAIPEI).year
-    if "\n" in source_text and ":" in source_text and re.search(r"^\d{1,2}/\d{1,2}\s*$", source_text, re.M):
-        parsed_items = parse_news_input(source_text, now_year, args.owner)
+    is_news_like = "\n" in source_text and ":" in source_text and re.search(r"^\d{1,2}/\d{1,2}\s*$", source_text, re.M)
+    is_posts_like = bool(re.search(r"^\s*\d+\.\s*", source_text, re.M) and re.search(r"https?://", source_text))
+
+    if is_posts_like:
+        selected_type = "posts"
+    elif is_news_like:
+        selected_type = "news"
+    else:
+        selected_type = "subs"
+
+    if selected_type == "posts":
+        effective_owner = "alex"
+    elif selected_type == "news":
+        effective_owner = "Alex Chen"
+    else:
+        effective_owner = ""
+
+    if selected_type == "news":
+        parsed_items = parse_news_input(source_text, now_year, effective_owner)
+        new_items = []
+        for item in parsed_items:
+            item["id"] = next_numeric_task_id(tasks + new_items)
+            new_items.append(item)
+    elif selected_type == "posts":
+        parsed_items = parse_posts_input(source_text, effective_owner)
         new_items = []
         for item in parsed_items:
             item["id"] = next_numeric_task_id(tasks + new_items)
@@ -245,9 +321,9 @@ def main():
     normalized_tasks = [normalize_task_shape(task) for task in tasks if isinstance(task, dict)]
     out_path.write_text(json.dumps(normalized_tasks, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     if args.parent_id:
-        print(f"Inserted {len(new_items)} task(s) under {args.parent_id} in {args.out}")
+        print(f"Inserted {len(new_items)} task(s) under {args.parent_id} in tasks.json")
     else:
-        print(f"Appended {len(new_items)} task(s) to {args.out}")
+        print(f"Appended {len(new_items)} task(s) to tasks.json")
 
 
 if __name__ == "__main__":
