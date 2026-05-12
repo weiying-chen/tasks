@@ -103,8 +103,14 @@ def render_task(lines: list[str], task: dict, level: int, factor: float, now_loc
         if isinstance(deadline, str) else '-'
     )
     # For date-only tasks, derive display times from work-time schedule.
-    if not isinstance(deadline, str) and isinstance(created_date, str) and isinstance(child_rounded_minutes, int):
-        derived_created = next_work_start(now_local)
+    if not isinstance(deadline, str) and isinstance(child_rounded_minutes, int):
+        if isinstance(created_at, str):
+            base_created = datetime.fromisoformat(created_at.replace('Z', '+00:00')).astimezone(TZ_TAIPEI)
+        elif isinstance(created_date, str):
+            base_created = datetime.fromisoformat(f"{created_date}T09:00:00+08:00")
+        else:
+            base_created = now_local
+        derived_created = next_work_start(base_created)
         derived_deadline = add_work_minutes(derived_created, child_rounded_minutes)
         created_display = derived_created.strftime('%Y-%m-%d %a %H:%M')
         deadline_display = derived_deadline.strftime('%Y-%m-%d %a %H:%M')
