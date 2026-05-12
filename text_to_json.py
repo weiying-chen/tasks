@@ -162,6 +162,28 @@ def parse_posts_input(text: str, owner_filter: str):
     return tasks
 
 
+def parse_source_text(source_text: str, existing_tasks: list[dict], now_year: int) -> list[dict]:
+    # Parse precedence matters: posts/news can include text that fails subs.
+    new_items = []
+    parsed_posts = parse_posts_input(source_text, "alex")
+    if parsed_posts:
+        for item in parsed_posts:
+            item["id"] = next_numeric_task_id(existing_tasks + new_items)
+            new_items.append(item)
+        return new_items
+
+    parsed_news = parse_news_input(source_text, now_year, "Alex Chen")
+    if parsed_news:
+        for item in parsed_news:
+            item["id"] = next_numeric_task_id(existing_tasks + new_items)
+            new_items.append(item)
+        return new_items
+
+    new_task_id = next_numeric_task_id(existing_tasks)
+    out = parse_subs_input(source_text, now_year, task_id=new_task_id)
+    return [out]
+
+
 def normalize_tasks_json(data):
     if isinstance(data, list):
         return data
@@ -274,39 +296,13 @@ def main():
         raise ValueError("Provide source text")
 
     now_year = datetime.now(TZ_TAIPEI).year
-    is_news_like = "\n" in source_text and ":" in source_text and re.search(r"^\d{1,2}/\d{1,2}\s*$", source_text, re.M)
-    is_posts_like = bool(re.search(r"^\s*\d+\.\s*", source_text, re.M) and re.search(r"https?://", source_text))
 
-    if is_posts_like:
-        selected_type = "posts"
-    elif is_news_like:
-        selected_type = "news"
-    else:
-        selected_type = "subs"
-
-    if selected_type == "posts":
-        effective_owner = "alex"
-    elif selected_type == "news":
-        effective_owner = "Alex Chen"
-    else:
-        effective_owner = ""
-
-    if selected_type == "news":
-        parsed_items = parse_news_input(source_text, now_year, effective_owner)
-        new_items = []
-        for item in parsed_items:
-            item["id"] = next_numeric_task_id(tasks + new_items)
-            new_items.append(item)
-    elif selected_type == "posts":
-        parsed_items = parse_posts_input(source_text, effective_owner)
-        new_items = []
-        for item in parsed_items:
-            item["id"] = next_numeric_task_id(tasks + new_items)
-            new_items.append(item)
-    else:
-        new_task_id = next_numeric_task_id(tasks)
-        out = parse_subs_input(source_text, now_year, task_id=new_task_id)
-        new_items = [out]
+    try:
+        new_items = parse_source_text(source_text, tasks, now_year)
+    except ValueError as exc:
+        raise ValueError(
+            "Cannot parse input as posts/news/subs. Check clipboard text format."
+        ) from exc
 
     if args.parent_id:
         for item in new_items:
