@@ -239,7 +239,7 @@ def build_latest_view(tasks: list[dict], now_local: datetime | None = None, stat
     lines.append('')
     lines.append(
         color('Actions: ', BLUE)
-        + color('a', GREEN) + color('dd clipboard', BLUE)
+        + color('a', GREEN) + color('dd subtask', BLUE)
         + ' | '
         + color('q', GREEN) + color('uit', BLUE)
     )
