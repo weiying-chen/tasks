@@ -35,6 +35,7 @@ class LatestTaskViewTests(unittest.TestCase):
         self.assertIn("Name: New Parent", out)
         self.assertIn("Subtasks", out)
         self.assertIn("Child", out)
+        self.assertIn("Work time: 1h 40m", out)
         self.assertIn("Extended deadline:", out)
 
     def test_countdown_line_present(self):
@@ -74,6 +75,28 @@ class LatestTaskViewTests(unittest.TestCase):
         end = datetime(2026, 5, 14, 9, 0, tzinfo=timezone(timedelta(hours=8)))
         # Work windows counted: 16:00-17:00 (1h) + 8:00-9:00 (1h) = 2h.
         self.assertEqual(ltv.work_seconds_between(start, end), 2 * 3600)
+
+    def test_extended_deadline_uses_0_8_child_factor(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "Parent",
+                "createdAt": "2026-05-13T00:40:00Z",
+                "deadline": "2026-05-13T02:00:00Z",  # 10:00 local
+                "workMinutes": 60,
+                "children": [
+                    {
+                        "id": "2",
+                        "name": "Child",
+                        "createdAt": "2026-05-13T01:00:00Z",
+                        "workMinutes": 60,
+                        "children": [],
+                    }
+                ],
+            }
+        ]
+        out = self.strip_ansi(ltv.build_latest_view(tasks))
+        self.assertIn("Extended deadline: 2026-05-13 Wed 10:50", out)
 
 
 if __name__ == "__main__":

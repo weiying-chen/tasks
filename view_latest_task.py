@@ -23,6 +23,7 @@ YELLOW = '\x1b[33m'   # theme yellow
 GREEN = '\x1b[32m'    # theme green
 RED = '\x1b[31m'      # terminal red (git-style error emphasis)
 BLUE = '\x1b[34m'     # theme blue
+CHILD_WORK_FACTOR = 0.8
 
 
 def fmt_work(minutes: int | None) -> str:
@@ -41,6 +42,18 @@ def round_minutes_to_step(raw_minutes: int, step: int = 10) -> int:
     if raw_minutes <= 0:
         return 0
     return max(step, int((raw_minutes / step) + 0.5) * step)
+
+
+def js_math_round(x: float) -> int:
+    return int(x + 0.5) if x >= 0 else int(x - 0.5)
+
+
+def adjusted_child_minutes(raw_minutes: int, factor: float = CHILD_WORK_FACTOR) -> int:
+    if raw_minutes <= 0:
+        return 0
+    rounded_input = round_minutes_to_step(raw_minutes)
+    adjusted = max(1, js_math_round(rounded_input * factor))
+    return round_minutes_to_step(adjusted)
 
 
 def to_local(iso_str: str) -> datetime:
@@ -75,6 +88,19 @@ def build_add_to_latest_command(script_dir: str, parent_id: str) -> list[str]:
     return ["python3", f"{script_dir}/text_to_json.py", "--parent-id", parent_id, "__CLIPBOARD__"]
 
 
+def build_deadline_message_command(script_dir: str, infile: str, task_id: str) -> list[str]:
+    return [
+        "python3",
+        f"{script_dir}/create_message.py",
+        "-i",
+        infile,
+        "--type",
+        "deadline-extension",
+        "--task-id",
+        task_id,
+    ]
+
+
 def task_base_created(task: dict, now_local: datetime) -> datetime:
     created_at = task.get('createdAt')
     if isinstance(created_at, str):
@@ -100,7 +126,7 @@ def task_deadline(task: dict, now_local: datetime, is_child: bool) -> datetime |
     if not isinstance(work_minutes, int):
         return None
 
-    effective_minutes = round_minutes_to_step(work_minutes) if is_child else work_minutes
+    effective_minutes = adjusted_child_minutes(work_minutes) if is_child else work_minutes
     start = next_work_start(task_base_created(task, now_local))
     return add_work_minutes(start, effective_minutes)
 
@@ -115,7 +141,7 @@ def child_total_minutes(task: dict) -> int:
             continue
         minutes = child.get('workMinutes')
         if isinstance(minutes, int) and minutes > 0:
-            total += round_minutes_to_step(minutes)
+            total += adjusted_child_minutes(minutes)
     return total
 
 
@@ -182,11 +208,12 @@ def render_task_block(lines: list[str], task: dict, now_local: datetime, level: 
     deadline = task_deadline(task, now_local, is_child=is_child)
     work_minutes = task.get('workMinutes')
     if is_child and isinstance(work_minutes, int):
-        work_minutes = round_minutes_to_step(work_minutes)
+        work_minutes = adjusted_child_minutes(work_minutes)
 
     name = task.get("name") or "(Untitled)"
     if is_child:
         lines.append(f'Name: {name}')
+        lines.append(f'Work time: {fmt_work(work_minutes)}')
         lines.append(f'Deadline: {color(to_display(deadline) if deadline else "-", YELLOW)}')
         lines.append('')
     else:
@@ -244,6 +271,8 @@ def build_latest_view(tasks: list[dict], now_local: datetime | None = None, stat
     lines.append(
         color('Actions: ', BLUE)
         + color('a', GREEN) + color('dd subtask', BLUE)
+        + ' | '
+        + color('c', GREEN) + color('reate deadline message', BLUE)
         + ' | '
         + color('q', GREEN) + color('uit', BLUE)
     )
@@ -325,6 +354,37 @@ def main():
                             status = ""
                     except Exception as exc:
                         status = color(f"Add failed: {exc}", RED)
+                if ch == b"c":
+                    try:
+                        data = json.loads(in_path.read_text(encoding='utf-8'))
+                        tasks = normalize_tasks(data)
+                        latest_id = find_latest_task_id(tasks)
+                        if not latest_id:
+                            status = color("No latest task id found.", RED)
+                            continue
+                        msg_cmd = build_deadline_message_command(script_dir, str(in_path.resolve()), latest_id)
+                        msg_proc = subprocess.run(msg_cmd, capture_output=True, text=True)
+                        if msg_proc.returncode != 0:
+                            msg = (msg_proc.stderr or msg_proc.stdout or "Message generation failed").strip()
+                            status = color(msg, RED)
+                            continue
+                        message_text = msg_proc.stdout.strip()
+                        if not message_text:
+                            status = color("Generated message is empty.", RED)
+                            continue
+                        copy_proc = subprocess.run(
+                            ["wl-copy"],
+                            input=message_text,
+                            text=True,
+                            capture_output=True,
+                        )
+                        if copy_proc.returncode != 0:
+                            msg = (copy_proc.stderr or copy_proc.stdout or "Copy failed").strip()
+                            status = color(msg, RED)
+                        else:
+                            status = color("Deadline message copied.", GREEN)
+                    except Exception as exc:
+                        status = color(f"Message failed: {exc}", RED)
     except KeyboardInterrupt:
         pass
     finally:
