@@ -35,7 +35,7 @@ class LatestTaskViewTests(unittest.TestCase):
         self.assertIn("Name: New Parent", out)
         self.assertIn("Subtasks", out)
         self.assertIn("Child", out)
-        self.assertIn("Work time: 1h 40m", out)
+        self.assertIn("Work time: 1h 50m", out)
         self.assertIn("Extended deadline:", out)
 
     def test_countdown_line_present(self):

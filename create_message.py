@@ -5,10 +5,10 @@ from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
 from work_time import add_work_minutes
+from work_time_adjustments import adjusted_child_minutes
 
 TZ_TAIPEI = timezone(timedelta(hours=8))
 WEEKDAY_CN = ["一", "二", "三", "四", "五", "六", "日"]
-CHILD_WORK_FACTOR = 0.8
 
 
 def to_local(iso_str: str) -> datetime:
@@ -27,24 +27,6 @@ def format_duration_for_message(total_minutes: int) -> str:
     if hours > 0:
         return f"{hours}時"
     return f"{minutes}分"
-
-
-def round_minutes_to_step(raw_minutes: int, step: int = 10) -> int:
-    if raw_minutes <= 0:
-        return 0
-    return max(step, int((raw_minutes / step) + 0.5) * step)
-
-
-def js_math_round(x: float) -> int:
-    return int(x + 0.5) if x >= 0 else int(x - 0.5)
-
-
-def adjusted_child_minutes(raw_minutes: int, factor: float = CHILD_WORK_FACTOR) -> int:
-    if raw_minutes <= 0:
-        return 0
-    rounded_input = round_minutes_to_step(raw_minutes)
-    adjusted = max(1, js_math_round(rounded_input * factor))
-    return round_minutes_to_step(adjusted)
 
 
 def normalize_tasks(data):
