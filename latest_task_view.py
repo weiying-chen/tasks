@@ -208,7 +208,7 @@ def render_task_block(lines: list[str], task: dict, now_local: datetime, level: 
         lines.append('')
         children = task.get('children')
         if isinstance(children, list) and children:
-            lines.append('Child tasks')
+            lines.append('Subtasks')
             lines.append('')
 
         children = task.get('children')

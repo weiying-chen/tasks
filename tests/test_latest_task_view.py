@@ -33,7 +33,7 @@ class LatestTaskViewTests(unittest.TestCase):
         out = self.strip_ansi(ltv.build_latest_view(tasks, now_local))
         self.assertIn("Latest task", out)
         self.assertIn("Name: New Parent", out)
-        self.assertIn("Child tasks", out)
+        self.assertIn("Subtasks", out)
         self.assertIn("Child", out)
         self.assertIn("Extended deadline:", out)
 
