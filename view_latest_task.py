@@ -249,7 +249,8 @@ def build_latest_view(tasks: list[dict], now_local: datetime | None = None, stat
     if status:
         lines.append('')
         lines.append(status)
-    lines.append('')
+    if not lines or lines[-1] != '':
+        lines.append('')
     lines.append(
         color('Actions: ', BLUE)
         + color('a', GREEN) + color('dd subtask', BLUE)

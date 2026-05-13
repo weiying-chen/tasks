@@ -55,6 +55,22 @@ class LatestTaskViewTests(unittest.TestCase):
         out = self.strip_ansi(ltv.build_latest_view(tasks, now_local))
         self.assertIn("Work time left:", out)
 
+    def test_only_one_empty_line_before_actions(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "Only",
+                "createdAt": "2026-05-13T00:40:00Z",
+                "workMinutes": 120,
+                "children": [],
+            }
+        ]
+        out = self.strip_ansi(ltv.build_latest_view(tasks))
+        lines = out.splitlines()
+        actions_idx = lines.index("Actions: add subtask | create deadline message | quit")
+        self.assertEqual(lines[actions_idx - 1], "")
+        self.assertNotEqual(lines[actions_idx - 2], "")
+
     def test_uses_default_title_and_default_labels(self):
         tasks = [
             {
