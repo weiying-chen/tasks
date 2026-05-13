@@ -261,14 +261,18 @@ def build_latest_view(tasks: list[dict], now_local: datetime | None = None, stat
     return '\n'.join(lines).rstrip() + '\n'
 
 
+def resolve_input_path(fake_script: Path | None = None) -> Path:
+    script_file = fake_script or Path(__file__)
+    return script_file.resolve().parent / 'tasks.json'
+
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-i', '--infile', default='tasks.json', help='input JSON path')
     parser.add_argument('--once', action='store_true', help='print once and exit')
     parser.add_argument('--interval', type=float, default=1.0, help='refresh seconds for live mode')
     args = parser.parse_args()
 
-    in_path = Path(args.infile)
+    in_path = resolve_input_path()
 
     def render_once(status: str = ""):
         data = json.loads(in_path.read_text(encoding='utf-8'))

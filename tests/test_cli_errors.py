@@ -16,6 +16,16 @@ class CliErrorTests(unittest.TestCase):
         self.assertIn("Cannot parse input as posts/news/subs", proc.stderr)
         self.assertNotIn("Traceback", proc.stderr)
 
+    def test_view_latest_task_rejects_tasks_file_arg(self):
+        script = Path(__file__).resolve().parent.parent / "view_latest_task.py"
+        proc = subprocess.run(
+            [sys.executable, str(script), "--tasks-file", "tasks.json", "--once"],
+            capture_output=True,
+            text=True,
+        )
+        self.assertNotEqual(proc.returncode, 0)
+        self.assertIn("unrecognized arguments: --tasks-file", proc.stderr)
+
 
 if __name__ == "__main__":
     unittest.main()

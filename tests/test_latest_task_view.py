@@ -1,6 +1,9 @@
 import unittest
 from datetime import datetime, timezone, timedelta
 import re
+from pathlib import Path
+import os
+import tempfile
 
 import view_latest_task as ltv
 
@@ -97,6 +100,15 @@ class LatestTaskViewTests(unittest.TestCase):
         ]
         out = self.strip_ansi(ltv.build_latest_view(tasks))
         self.assertIn("Extended deadline: 2026-05-13 Wed 10:50", out)
+
+    def test_input_path_uses_script_dir_tasks_json(self):
+        fake_script = Path("/tmp/proj/view_latest_task.py")
+        old_cwd = Path.cwd()
+        with tempfile.TemporaryDirectory() as temp_dir:
+            os.chdir(temp_dir)
+            resolved = ltv.resolve_input_path(fake_script=fake_script)
+        os.chdir(old_cwd)
+        self.assertEqual(resolved, Path("/tmp/proj/tasks.json"))
 
 
 if __name__ == "__main__":
