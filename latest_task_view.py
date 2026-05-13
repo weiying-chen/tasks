@@ -19,10 +19,8 @@ WORK_BLOCKS = (
     ((13, 0), (17, 0)),
 )
 RESET = '\x1b[0m'
-DIM = '\x1b[2m'
 YELLOW = '\x1b[33m'   # theme yellow
 GREEN = '\x1b[32m'    # theme green
-CYAN = '\x1b[36m'     # lazygit-style command-log header color
 BLUE = '\x1b[34m'     # theme blue
 
 
@@ -179,7 +177,6 @@ def work_seconds_between(start: datetime, end: datetime) -> int:
 
 def render_task_block(lines: list[str], task: dict, now_local: datetime, level: int) -> None:
     is_child = level > 2
-    header_color = CYAN
     created = next_work_start(task_base_created(task, now_local))
     deadline = task_deadline(task, now_local, is_child=is_child)
     work_minutes = task.get('workMinutes')
@@ -188,30 +185,30 @@ def render_task_block(lines: list[str], task: dict, now_local: datetime, level: 
 
     name = task.get("name") or "(Untitled)"
     if is_child:
-        lines.append(f'{color("Name", header_color)}: {name}')
-        lines.append(f'{color("Deadline", header_color)}: {color(to_display(deadline) if deadline else "-", YELLOW)}')
+        lines.append(f'Name: {name}')
+        lines.append(f'Deadline: {color(to_display(deadline) if deadline else "-", YELLOW)}')
         lines.append('')
     else:
-        lines.append(color('Latest task', header_color))
+        lines.append('Latest task')
         lines.append('')
-        lines.append(f'{color("Name", header_color)}: {name}')
-        lines.append(f'{color("Created", header_color)}: {to_display(created)}')
-        lines.append(f'{color("Deadline", header_color)}: {color(to_display(deadline) if deadline else "-", YELLOW)}')
-        lines.append(f'{color("Work time", header_color)}: {fmt_work(work_minutes)}')
+        lines.append(f'Name: {name}')
+        lines.append(f'Created: {to_display(created)}')
+        lines.append(f'Deadline: {color(to_display(deadline) if deadline else "-", YELLOW)}')
+        lines.append(f'Work time: {fmt_work(work_minutes)}')
 
         extended = None
         child_minutes = child_total_minutes(task)
         if deadline and child_minutes > 0:
             extended = add_work_minutes(deadline, child_minutes)
         if extended:
-            lines.append(f'{color("Extended deadline", header_color)}: {to_display(extended)}')
-            lines.append(f'{color("Work time left", header_color)}: {color(fmt_countdown(now_local, extended), GREEN)}')
+            lines.append(f'Extended deadline: {to_display(extended)}')
+            lines.append(f'Work time left: {color(fmt_countdown(now_local, extended), GREEN)}')
         else:
-            lines.append(f'{color("Work time left", header_color)}: {color(fmt_countdown(now_local, deadline), GREEN)}')
+            lines.append(f'Work time left: {color(fmt_countdown(now_local, deadline), GREEN)}')
         lines.append('')
         children = task.get('children')
         if isinstance(children, list) and children:
-            lines.append(color('Child tasks', header_color))
+            lines.append('Child tasks')
             lines.append('')
 
         children = task.get('children')
@@ -238,12 +235,12 @@ def build_latest_view(tasks: list[dict], now_local: datetime | None = None, stat
     render_task_block(lines, latest, now_local, 2)
     if status:
         lines.append('')
-        lines.append(color(status, DIM))
+        lines.append(status)
     lines.append('')
     lines.append(
         color('Actions: ', BLUE)
         + color('a', GREEN) + color('dd clipboard', BLUE)
-        + color(' | ', DIM)
+        + ' | '
         + color('q', GREEN) + color('uit', BLUE)
     )
     return '\n'.join(lines).rstrip() + '\n'
