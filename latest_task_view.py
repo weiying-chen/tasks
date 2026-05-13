@@ -21,6 +21,7 @@ WORK_BLOCKS = (
 RESET = '\x1b[0m'
 YELLOW = '\x1b[33m'   # theme yellow
 GREEN = '\x1b[32m'    # theme green
+RED = '\x1b[31m'      # terminal red (git-style error emphasis)
 BLUE = '\x1b[34m'     # theme blue
 
 
@@ -299,7 +300,7 @@ def main():
                         tasks = normalize_tasks(data)
                         latest_id = find_latest_task_id(tasks)
                         if not latest_id:
-                            status = "No latest task id found."
+                            status = color("No latest task id found.", RED)
                             continue
                         clipboard_proc = subprocess.run(
                             ["wl-paste"],
@@ -309,17 +310,18 @@ def main():
                         )
                         clipboard_text = clipboard_proc.stdout
                         if not clipboard_text.strip():
-                            status = "Clipboard is empty."
+                            status = color("Clipboard is empty.", RED)
                             continue
                         cmd = build_add_to_latest_command(script_dir, latest_id)
                         cmd[-1] = clipboard_text
                         add_proc = subprocess.run(cmd, capture_output=True, text=True)
                         if add_proc.returncode != 0:
-                            status = (add_proc.stderr or add_proc.stdout or "Add failed").strip()
+                            msg = (add_proc.stderr or add_proc.stdout or "Add failed").strip()
+                            status = color(msg, RED)
                         else:
-                            status = (add_proc.stdout or "Added child task.").strip()
+                            status = ""
                     except Exception as exc:
-                        status = f"Add failed: {exc}"
+                        status = color(f"Add failed: {exc}", RED)
     except KeyboardInterrupt:
         pass
     finally:
