@@ -202,7 +202,7 @@ def render_task_block(lines: list[str], task: dict, now_local: datetime, level: 
         if deadline and child_minutes > 0:
             extended = add_work_minutes(deadline, child_minutes)
         if extended:
-            lines.append(f'Extended deadline: {to_display(extended)}')
+            lines.append(f'Extended deadline: {color(to_display(extended), YELLOW)}')
             lines.append(f'Work time left: {color(fmt_countdown(now_local, extended), GREEN)}')
         else:
             lines.append(f'Work time left: {color(fmt_countdown(now_local, deadline), GREEN)}')
