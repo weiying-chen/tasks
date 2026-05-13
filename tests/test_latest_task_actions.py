@@ -1,6 +1,6 @@
 import unittest
 
-import latest_task_view as ltv
+import view_latest_task as ltv
 
 
 class LatestTaskActionsTests(unittest.TestCase):

@@ -2,7 +2,7 @@ import unittest
 from datetime import datetime, timezone, timedelta
 import re
 
-import latest_task_view as ltv
+import view_latest_task as ltv
 
 
 class LatestTaskViewTests(unittest.TestCase):
