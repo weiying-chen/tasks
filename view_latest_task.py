@@ -24,6 +24,7 @@ YELLOW = '\x1b[33m'   # theme yellow
 GREEN = '\x1b[32m'    # theme green
 RED = '\x1b[31m'      # terminal red (git-style error emphasis)
 BLUE = '\x1b[34m'     # theme blue
+MAGENTA = '\x1b[35m'  # ANSI magenta (matches repo-sync DIRTY)
 
 
 def fmt_work(minutes: int | None) -> str:
@@ -253,12 +254,12 @@ def build_latest_view(tasks: list[dict], now_local: datetime | None = None, stat
     if not lines or lines[-1] != '':
         lines.append('')
     lines.append(
-        color('Actions: ', BLUE)
-        + color('a', GREEN) + color('dd subtask', BLUE)
-        + color(' | ', BLUE)
-        + color('c', GREEN) + color('reate deadline message', BLUE)
-        + color(' | ', BLUE)
-        + color('q', GREEN) + color('uit', BLUE)
+        color('Actions: ', MAGENTA)
+        + color('a', GREEN) + color('dd subtask', MAGENTA)
+        + color(' | ', MAGENTA)
+        + color('c', GREEN) + color('reate deadline message', MAGENTA)
+        + color(' | ', MAGENTA)
+        + color('q', GREEN) + color('uit', MAGENTA)
     )
     return '\n'.join(lines).rstrip() + '\n'
 
