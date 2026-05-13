@@ -247,7 +247,8 @@ def build_latest_view(tasks: list[dict], now_local: datetime | None = None, stat
 
     render_task_block(lines, latest, now_local, 2)
     if status:
-        lines.append('')
+        if not lines or lines[-1] != '':
+            lines.append('')
         lines.append(status)
     if not lines or lines[-1] != '':
         lines.append('')

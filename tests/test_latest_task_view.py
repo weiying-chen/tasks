@@ -71,6 +71,21 @@ class LatestTaskViewTests(unittest.TestCase):
         self.assertEqual(lines[actions_idx - 1], "")
         self.assertNotEqual(lines[actions_idx - 2], "")
 
+    def test_no_consecutive_empty_lines_with_status(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "Only",
+                "createdAt": "2026-05-13T00:40:00Z",
+                "workMinutes": 120,
+                "children": [],
+            }
+        ]
+        out = self.strip_ansi(ltv.build_latest_view(tasks, status="Task is missing deadline."))
+        lines = out.splitlines()
+        for idx in range(1, len(lines)):
+            self.assertFalse(lines[idx - 1] == "" and lines[idx] == "")
+
     def test_uses_default_title_and_default_labels(self):
         tasks = [
             {
