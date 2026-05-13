@@ -51,6 +51,24 @@ class LatestTaskViewTests(unittest.TestCase):
         out = self.strip_ansi(ltv.build_latest_view(tasks, now_local))
         self.assertIn("Work time left:", out)
 
+    def test_uses_cyan_for_title_and_headers(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "Only",
+                "createdAt": "2026-05-13T00:40:00Z",
+                "workMinutes": 120,
+                "children": [],
+            }
+        ]
+        now_local = datetime(2026, 5, 13, 10, 0, tzinfo=timezone(timedelta(hours=8)))
+        out = ltv.build_latest_view(tasks, now_local)
+        self.assertIn(f"{ltv.CYAN}Latest task{ltv.RESET}", out)
+        self.assertIn(f"{ltv.CYAN}Name{ltv.RESET}", out)
+        self.assertIn(f"{ltv.CYAN}Created{ltv.RESET}", out)
+        self.assertIn(f"{ltv.CYAN}Deadline{ltv.RESET}", out)
+        self.assertIn(f"{ltv.CYAN}Work time{ltv.RESET}", out)
+
     def test_work_seconds_between_skips_off_hours(self):
         start = datetime(2026, 5, 13, 16, 0, tzinfo=timezone(timedelta(hours=8)))
         end = datetime(2026, 5, 14, 9, 0, tzinfo=timezone(timedelta(hours=8)))
