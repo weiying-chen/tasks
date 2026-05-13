@@ -25,6 +25,7 @@ GREEN = '\x1b[32m'    # theme green
 RED = '\x1b[31m'      # terminal red (git-style error emphasis)
 BLUE = '\x1b[34m'     # theme blue
 MAGENTA = '\x1b[35m'  # ANSI magenta (matches repo-sync DIRTY)
+STATUS_TTL_SECONDS = 4.0
 
 
 def fmt_work(minutes: int | None) -> str:
@@ -289,6 +290,7 @@ def main():
     previous_lines = 0
     interval = max(0.2, args.interval)
     status = ""
+    status_until = 0.0
     script_dir = str(Path(__file__).resolve().parent)
     stdin_fd = sys.stdin.fileno()
     old_term = termios.tcgetattr(stdin_fd)
@@ -300,7 +302,8 @@ def main():
     sys.stdout.flush()
     try:
         while True:
-            frame = render_once(status=status)
+            visible_status = status if time.time() < status_until else ""
+            frame = render_once(status=visible_status)
             frame_lines = frame.splitlines()
             # Move back to the start of previous frame and redraw in place.
             if previous_lines > 0:
@@ -309,7 +312,6 @@ def main():
             sys.stdout.write(frame)
             sys.stdout.flush()
             previous_lines = len(frame_lines)
-            status = ""
             ready, _, _ = select.select([sys.stdin], [], [], interval)
             if ready:
                 ch = os.read(stdin_fd, 1)
@@ -322,6 +324,7 @@ def main():
                         latest_id = find_latest_task_id(tasks)
                         if not latest_id:
                             status = color("No latest task id found.", RED)
+                            status_until = time.time() + STATUS_TTL_SECONDS
                             continue
                         clipboard_proc = subprocess.run(
                             ["wl-paste"],
@@ -332,6 +335,7 @@ def main():
                         clipboard_text = clipboard_proc.stdout
                         if not clipboard_text.strip():
                             status = color("Clipboard is empty.", RED)
+                            status_until = time.time() + STATUS_TTL_SECONDS
                             continue
                         cmd = build_add_to_latest_command(script_dir, latest_id)
                         cmd[-1] = clipboard_text
@@ -339,10 +343,13 @@ def main():
                         if add_proc.returncode != 0:
                             msg = (add_proc.stderr or add_proc.stdout or "Add failed").strip()
                             status = color(msg, RED)
+                            status_until = time.time() + STATUS_TTL_SECONDS
                         else:
                             status = ""
+                            status_until = 0.0
                     except Exception as exc:
                         status = color(f"Add failed: {exc}", RED)
+                        status_until = time.time() + STATUS_TTL_SECONDS
                 if ch == b"c":
                     try:
                         data = json.loads(in_path.read_text(encoding='utf-8'))
@@ -350,16 +357,19 @@ def main():
                         latest_id = find_latest_task_id(tasks)
                         if not latest_id:
                             status = color("No latest task id found.", RED)
+                            status_until = time.time() + STATUS_TTL_SECONDS
                             continue
                         msg_cmd = build_deadline_message_command(script_dir, str(in_path.resolve()), latest_id)
                         msg_proc = subprocess.run(msg_cmd, capture_output=True, text=True)
                         if msg_proc.returncode != 0:
                             msg = (msg_proc.stderr or msg_proc.stdout or "Message generation failed").strip()
                             status = color(msg, RED)
+                            status_until = time.time() + STATUS_TTL_SECONDS
                             continue
                         message_text = msg_proc.stdout.strip()
                         if not message_text:
                             status = color("Generated message is empty.", RED)
+                            status_until = time.time() + STATUS_TTL_SECONDS
                             continue
                         copy_proc = subprocess.run(
                             ["wl-copy"],
@@ -370,10 +380,13 @@ def main():
                         if copy_proc.returncode != 0:
                             msg = (copy_proc.stderr or copy_proc.stdout or "Copy failed").strip()
                             status = color(msg, RED)
+                            status_until = time.time() + STATUS_TTL_SECONDS
                         else:
                             status = color("Deadline message copied.", GREEN)
+                            status_until = time.time() + STATUS_TTL_SECONDS
                     except Exception as exc:
                         status = color(f"Message failed: {exc}", RED)
+                        status_until = time.time() + STATUS_TTL_SECONDS
     except KeyboardInterrupt:
         pass
     finally:
