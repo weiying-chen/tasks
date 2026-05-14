@@ -364,7 +364,12 @@ def main():
                             continue
                         cmd = build_add_to_latest_command(script_dir, latest_id)
                         cmd[-1] = clipboard_text
-                        add_proc = subprocess.run(cmd, capture_output=True, text=True)
+                        add_proc = subprocess.run(
+                            cmd,
+                            capture_output=True,
+                            text=True,
+                            cwd=script_dir,
+                        )
                         if add_proc.returncode != 0:
                             msg = (add_proc.stderr or add_proc.stdout or "Add failed").strip()
                             status = color(f"Error: {msg}", RED)
