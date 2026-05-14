@@ -45,6 +45,7 @@ def parse_subs_input(text: str, year: int, task_id: str):
     deadline = parse_datetime(dl.group(1), dl.group(2), year)
     task = {
         "id": task_id,
+        "type": "subs",
         "name": name,
         "assignedBy": assigned_by,
         "createdAt": created_at,
@@ -95,6 +96,7 @@ def parse_news_input(text: str, year: int, owner_filter: str):
         original_minutes = parse_hhmm_to_work_minutes(duration)
         work_minutes = original_minutes + 20
         task = {
+            "type": "news",
             "name": name,
             "createdAt": now_iso,
             "workMinutes": work_minutes,
@@ -152,6 +154,7 @@ def parse_posts_input(text: str, owner_filter: str):
             source_parts.append(url_line)
 
         task = {
+            "type": "posts",
             "name": name,
             "createdAt": now_iso,
             "workMinutes": default_work_minutes,
@@ -254,6 +257,8 @@ def normalize_task_shape(task):
         "id": str(task.get("id", "")),
         "name": task.get("name", ""),
     }
+    if isinstance(task.get("type"), str):
+        normalized["type"] = task["type"]
     assigned_by = task.get("assignedBy")
     if isinstance(assigned_by, str):
         normalized["assignedBy"] = assigned_by

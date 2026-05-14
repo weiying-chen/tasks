@@ -9,6 +9,11 @@ from work_time import add_work_minutes
 TZ_TAIPEI = timezone(timedelta(hours=8))
 WEEKDAY_CN = ["一", "二", "三", "四", "五", "六", "日"]
 NEXT_TASK_RATE_NOTE = "之前是1分鐘算1小時，現在改成1分鐘算0.8 小時，謝謝。"
+TYPE_LABELS = {
+    "news": "英文新聞+錄音",
+    "posts": "小編文",
+    "subs": "短版翻譯",
+}
 
 
 def to_local(iso_str: str) -> datetime:
@@ -69,7 +74,7 @@ def get_target_task(tasks: list[dict], task_id: str | None) -> dict:
 
 def aggregate_children(task: dict) -> list[tuple[str, int]]:
     totals: dict[str, int] = {}
-    ordered_names: list[str] = []
+    ordered_labels: list[str] = []
     children = task.get("children")
     if not isinstance(children, list):
         return []
@@ -77,16 +82,19 @@ def aggregate_children(task: dict) -> list[tuple[str, int]]:
     for child in children:
         if not isinstance(child, dict):
             continue
-        name = str(child.get("name") or "").strip()
+        child_type = str(child.get("type") or "").strip().lower()
+        label = TYPE_LABELS.get(child_type)
+        if not label:
+            label = str(child.get("name") or "").strip()
         minutes = child.get("workMinutes")
-        if not name or not isinstance(minutes, int) or minutes <= 0:
+        if not label or not isinstance(minutes, int) or minutes <= 0:
             continue
-        if name not in totals:
-            ordered_names.append(name)
-            totals[name] = 0
-        totals[name] += minutes
+        if label not in totals:
+            ordered_labels.append(label)
+            totals[label] = 0
+        totals[label] += minutes
 
-    return [(name, totals[name]) for name in ordered_names]
+    return [(label, totals[label]) for label in ordered_labels]
 
 
 def format_deadline_extension_message(task: dict) -> str:

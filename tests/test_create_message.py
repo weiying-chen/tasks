@@ -36,8 +36,8 @@ class CreateMessageTests(unittest.TestCase):
                 "deadline": "2026-05-15T02:16:00Z",
                 "workMinutes": 1056,
                 "children": [
-                    {"id": "3", "name": "英文新聞+錄音", "workMinutes": 130, "children": []},
-                    {"id": "4", "name": "小編文", "workMinutes": 60, "children": []},
+                    {"id": "3", "type": "news", "name": "任意名稱A", "workMinutes": 130, "children": []},
+                    {"id": "4", "type": "posts", "name": "任意名稱B", "workMinutes": 60, "children": []},
                 ],
             },
         ]
@@ -77,13 +77,30 @@ class CreateMessageTests(unittest.TestCase):
                 "deadline": "2026-05-15T02:16:00Z",
                 "workMinutes": 1056,
                 "children": [
-                    {"id": "3", "name": "英文新聞+錄音", "workMinutes": 120, "children": []},
+                    {"id": "3", "type": "news", "name": "任意名稱", "workMinutes": 120, "children": []},
                 ],
             }
         ]
 
         message = cm.create_message(tasks, msg_type="deadline-extension")
         self.assertIn("今日做其他事時間是 2時", message)
+
+    def test_deadline_extension_falls_back_to_name_when_type_missing(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "Task",
+                "assignedBy": "Evelyn",
+                "createdAt": "2026-05-13T00:40:00Z",
+                "deadline": "2026-05-15T02:16:00Z",
+                "workMinutes": 1056,
+                "children": [
+                    {"id": "3", "name": "舊資料名稱", "workMinutes": 60, "children": []},
+                ],
+            }
+        ]
+        message = cm.create_message(tasks, msg_type="deadline-extension")
+        self.assertIn("舊資料名稱 1時", message)
 
     def test_next_task_message_uses_finished_task_and_next_name(self):
         tasks = [

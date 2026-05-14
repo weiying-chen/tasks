@@ -17,6 +17,7 @@ class TextToJsonTests(unittest.TestCase):
         self.assertEqual(len(tasks), 1)
         self.assertEqual(tasks[0]["name"], "無私大愛結好緣")
         self.assertEqual(tasks[0]["workMinutes"], 60)
+        self.assertEqual(tasks[0]["type"], "posts")
         self.assertNotIn("assignedBy", tasks[0])
 
     def test_parse_news_only_keeps_alex_chen(self):
@@ -30,6 +31,7 @@ class TextToJsonTests(unittest.TestCase):
         self.assertEqual(tasks[0]["name"], "墨安寧牙義診")
         self.assertEqual(tasks[0]["contentSeconds"], 110 * 60)
         self.assertEqual(tasks[0]["workMinutes"], 130)
+        self.assertEqual(tasks[0]["type"], "news")
 
     def test_parse_source_text_uses_posts_before_subs(self):
         text = (
@@ -53,6 +55,7 @@ class TextToJsonTests(unittest.TestCase):
         self.assertEqual(task["id"], "1")
         self.assertEqual(task["assignedBy"], "Alex Chen")
         self.assertEqual(task["contentSeconds"], 1380)
+        self.assertEqual(task["type"], "subs")
 
     def test_apply_child_work_rule_adjusts_inserted_child_minutes(self):
         task = {
