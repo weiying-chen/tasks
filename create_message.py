@@ -9,6 +9,7 @@ from work_time_adjustments import adjusted_child_minutes
 
 TZ_TAIPEI = timezone(timedelta(hours=8))
 WEEKDAY_CN = ["一", "二", "三", "四", "五", "六", "日"]
+NEXT_TASK_RATE_NOTE = "之前是1分鐘算1小時，現在改成1分鐘算0.8 小時，謝謝。"
 
 
 def to_local(iso_str: str) -> datetime:
@@ -122,11 +123,49 @@ def format_deadline_extension_message(task: dict) -> str:
     return "\n".join(lines)
 
 
+def final_deadline_local(task: dict) -> datetime:
+    deadline_raw = task.get("deadline")
+    if not isinstance(deadline_raw, str):
+        raise ValueError("Task is missing deadline.")
+    base_deadline = to_local(deadline_raw)
+    child_minutes = sum(minutes for _, minutes in aggregate_children(task))
+    if child_minutes <= 0:
+        return base_deadline
+    return add_work_minutes(base_deadline, child_minutes)
+
+
+def format_next_task_message(tasks: list[dict]) -> str:
+    if len(tasks) < 2:
+        raise ValueError("Need at least two top-level tasks for next-task message.")
+    previous = tasks[-2]
+    next_task = tasks[-1]
+    if not isinstance(previous, dict) or not isinstance(next_task, dict):
+        raise ValueError("Latest tasks are invalid.")
+
+    completed_task = str(previous.get("name") or "").strip()
+    next_task_name = str(next_task.get("name") or "").strip()
+    assignee = str(next_task.get("assignedBy") or "").strip()
+    if not completed_task or not next_task_name or not assignee:
+        raise ValueError("Missing required fields for next-task message.")
+
+    start = final_deadline_local(previous)
+    return (
+        f"已完成{completed_task}，接下來會開始翻譯{next_task_name}，"
+        f"再麻煩{assignee}便時幫忙設deadline，"
+        f"從{format_message_date(start)}起算，謝謝。\n=====\n"
+        f"{NEXT_TASK_RATE_NOTE}"
+    )
+
+
 def create_message(tasks: list[dict], msg_type: str, task_id: str | None = None) -> str:
-    if msg_type != "deadline-extension":
-        raise ValueError(f"Unsupported message type: {msg_type}")
-    task = get_target_task(tasks, task_id)
-    return format_deadline_extension_message(task)
+    if msg_type == "deadline-extension":
+        task = get_target_task(tasks, task_id)
+        return format_deadline_extension_message(task)
+    if msg_type == "next-task":
+        if task_id:
+            raise ValueError("--task-id is not supported for next-task message.")
+        return format_next_task_message(tasks)
+    raise ValueError(f"Unsupported message type: {msg_type}")
 
 
 def main():

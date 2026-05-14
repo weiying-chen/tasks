@@ -71,6 +71,34 @@ class CreateMessageTests(unittest.TestCase):
         message = cm.create_message(tasks, msg_type="deadline-extension")
         self.assertIn("今日做其他事時間是 1時40分", message)
 
+    def test_next_task_message_uses_previous_final_deadline(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "前一個任務",
+                "assignedBy": "Evelyn",
+                "deadline": "2026-05-14T02:00:00Z",  # 10:00 local
+                "children": [
+                    {"id": "2", "name": "其他事", "workMinutes": 60, "children": []},  # 50m after 0.8+round
+                ],
+            },
+            {
+                "id": "3",
+                "name": "下一個任務",
+                "assignedBy": "Evelyn",
+                "deadline": "2026-05-15T02:16:00Z",
+                "children": [],
+            },
+        ]
+
+        message = cm.create_message(tasks, msg_type="next-task")
+        self.assertEqual(
+            message,
+            "已完成前一個任務，接下來會開始翻譯下一個任務，再麻煩Evelyn便時幫忙設deadline，"
+            "從5/14（四）10:50起算，謝謝。\n=====\n"
+            "之前是1分鐘算1小時，現在改成1分鐘算0.8 小時，謝謝。",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
