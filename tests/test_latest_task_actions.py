@@ -7,7 +7,7 @@ class LatestTaskActionsTests(unittest.TestCase):
     def test_copy_success_status_messages(self):
         self.assertEqual(
             ltv.DEADLINE_MESSAGE_COPIED_STATUS,
-            "Success: Deadline message copied to clipboard",
+            "Success: Deadline extension message copied to clipboard",
         )
         self.assertEqual(
             ltv.NEXT_TASK_MESSAGE_COPIED_STATUS,

@@ -26,7 +26,7 @@ RED = '\x1b[31m'      # terminal red (git-style error emphasis)
 BLUE = '\x1b[34m'     # theme blue
 MAGENTA = '\x1b[35m'  # ANSI magenta (matches repo-sync DIRTY)
 STATUS_TTL_SECONDS = 4.0
-DEADLINE_MESSAGE_COPIED_STATUS = "Success: Deadline message copied to clipboard"
+DEADLINE_MESSAGE_COPIED_STATUS = "Success: Deadline extension message copied to clipboard"
 NEXT_TASK_MESSAGE_COPIED_STATUS = "Success: Next task message copied to clipboard"
 
 
