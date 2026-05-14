@@ -167,6 +167,45 @@ def parse_posts_input(text: str, owner_filter: str):
     return tasks
 
 
+def parse_simple_duration_input(text: str):
+    now_iso = datetime.now(TZ_TAIPEI).astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
+    for raw_line in text.splitlines():
+        line = raw_line.strip()
+        if not line:
+            continue
+
+        hm_match = re.match(r"^(.+?)\s+(\d+)時(\d+)分$", line)
+        if hm_match:
+            name = hm_match.group(1).strip()
+            hours = int(hm_match.group(2))
+            minutes = int(hm_match.group(3))
+            if name and 0 <= minutes < 60:
+                return {
+                    "type": "custom",
+                    "name": name,
+                    "createdAt": now_iso,
+                    "workMinutes": hours * 60 + minutes,
+                    "children": [],
+                    "sourceText": raw_line,
+                }
+
+        m_match = re.match(r"^(.+?)\s+(\d+)分$", line)
+        if m_match:
+            name = m_match.group(1).strip()
+            minutes = int(m_match.group(2))
+            if name and minutes > 0:
+                return {
+                    "type": "custom",
+                    "name": name,
+                    "createdAt": now_iso,
+                    "workMinutes": minutes,
+                    "children": [],
+                    "sourceText": raw_line,
+                }
+
+    return None
+
+
 def parse_source_text(source_text: str, existing_tasks: list[dict], now_year: int) -> list[dict]:
     # Parse precedence matters: posts/news can include text that fails subs.
     new_items = []
@@ -182,6 +221,12 @@ def parse_source_text(source_text: str, existing_tasks: list[dict], now_year: in
         for item in parsed_news:
             item["id"] = next_numeric_task_id(existing_tasks + new_items)
             new_items.append(item)
+        return new_items
+
+    parsed_simple = parse_simple_duration_input(source_text)
+    if parsed_simple:
+        parsed_simple["id"] = next_numeric_task_id(existing_tasks + new_items)
+        new_items.append(parsed_simple)
         return new_items
 
     new_task_id = next_numeric_task_id(existing_tasks)

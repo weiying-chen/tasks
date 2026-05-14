@@ -57,6 +57,31 @@ class TextToJsonTests(unittest.TestCase):
         self.assertEqual(task["contentSeconds"], 1380)
         self.assertEqual(task["type"], "subs")
 
+    def test_parse_source_text_custom_minutes_format(self):
+        parsed = t2j.parse_source_text(
+            "開會 50分",
+            [{"id": "1", "name": "root", "children": []}],
+            2026,
+        )
+        self.assertEqual(len(parsed), 1)
+        task = parsed[0]
+        self.assertEqual(task["id"], "2")
+        self.assertEqual(task["type"], "custom")
+        self.assertEqual(task["name"], "開會")
+        self.assertEqual(task["workMinutes"], 50)
+
+    def test_parse_source_text_custom_hours_minutes_format(self):
+        parsed = t2j.parse_source_text(
+            "開會 1時20分",
+            [{"id": "1", "name": "root", "children": []}],
+            2026,
+        )
+        self.assertEqual(len(parsed), 1)
+        task = parsed[0]
+        self.assertEqual(task["type"], "custom")
+        self.assertEqual(task["name"], "開會")
+        self.assertEqual(task["workMinutes"], 80)
+
     def test_apply_child_work_rule_adjusts_inserted_child_minutes(self):
         task = {
             "id": "3",
