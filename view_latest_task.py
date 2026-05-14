@@ -323,7 +323,7 @@ def main():
                         tasks = normalize_tasks(data)
                         latest_id = find_latest_task_id(tasks)
                         if not latest_id:
-                            status = color("No latest task id found.", RED)
+                            status = color("Error: No latest task id found.", RED)
                             status_until = time.time() + STATUS_TTL_SECONDS
                             continue
                         clipboard_proc = subprocess.run(
@@ -334,7 +334,7 @@ def main():
                         )
                         clipboard_text = clipboard_proc.stdout
                         if not clipboard_text.strip():
-                            status = color("Clipboard is empty.", RED)
+                            status = color("Error: Clipboard is empty.", RED)
                             status_until = time.time() + STATUS_TTL_SECONDS
                             continue
                         cmd = build_add_to_latest_command(script_dir, latest_id)
@@ -342,13 +342,13 @@ def main():
                         add_proc = subprocess.run(cmd, capture_output=True, text=True)
                         if add_proc.returncode != 0:
                             msg = (add_proc.stderr or add_proc.stdout or "Add failed").strip()
-                            status = color(msg, RED)
+                            status = color(f"Error: {msg}", RED)
                             status_until = time.time() + STATUS_TTL_SECONDS
                         else:
                             status = ""
                             status_until = 0.0
                     except Exception as exc:
-                        status = color(f"Add failed: {exc}", RED)
+                        status = color(f"Error: Add failed: {exc}", RED)
                         status_until = time.time() + STATUS_TTL_SECONDS
                 if ch == b"c":
                     try:
@@ -356,36 +356,33 @@ def main():
                         tasks = normalize_tasks(data)
                         latest_id = find_latest_task_id(tasks)
                         if not latest_id:
-                            status = color("No latest task id found.", RED)
+                            status = color("Error: No latest task id found.", RED)
                             status_until = time.time() + STATUS_TTL_SECONDS
                             continue
                         msg_cmd = build_deadline_message_command(script_dir, str(in_path.resolve()), latest_id)
                         msg_proc = subprocess.run(msg_cmd, capture_output=True, text=True)
                         if msg_proc.returncode != 0:
                             msg = (msg_proc.stderr or msg_proc.stdout or "Message generation failed").strip()
-                            status = color(msg, RED)
+                            status = color(f"Error: {msg}", RED)
                             status_until = time.time() + STATUS_TTL_SECONDS
                             continue
                         message_text = msg_proc.stdout.strip()
                         if not message_text:
-                            status = color("Generated message is empty.", RED)
+                            status = color("Error: Generated message is empty.", RED)
                             status_until = time.time() + STATUS_TTL_SECONDS
                             continue
-                        copy_proc = subprocess.run(
+                        copy_proc = subprocess.Popen(
                             ["wl-copy"],
-                            input=message_text,
+                            stdin=subprocess.PIPE,
                             text=True,
-                            capture_output=True,
                         )
-                        if copy_proc.returncode != 0:
-                            msg = (copy_proc.stderr or copy_proc.stdout or "Copy failed").strip()
-                            status = color(msg, RED)
-                            status_until = time.time() + STATUS_TTL_SECONDS
-                        else:
-                            status = color("Deadline message copied.", GREEN)
-                            status_until = time.time() + STATUS_TTL_SECONDS
+                        if copy_proc.stdin:
+                            copy_proc.stdin.write(message_text)
+                            copy_proc.stdin.close()
+                        status = color("Success: Deadline message queued for clipboard", GREEN)
+                        status_until = time.time() + STATUS_TTL_SECONDS
                     except Exception as exc:
-                        status = color(f"Message failed: {exc}", RED)
+                        status = color(f"Error: Message failed: {exc}", RED)
                         status_until = time.time() + STATUS_TTL_SECONDS
     except KeyboardInterrupt:
         pass
