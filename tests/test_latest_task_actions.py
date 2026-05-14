@@ -34,6 +34,20 @@ class LatestTaskActionsTests(unittest.TestCase):
             ],
         )
 
+    def test_build_next_task_message_command(self):
+        cmd = ltv.build_next_task_message_command("/tmp", "/tmp/tasks.json")
+        self.assertEqual(
+            cmd,
+            [
+                "python3",
+                "/tmp/create_message.py",
+                "-i",
+                "/tmp/tasks.json",
+                "--type",
+                "next-task",
+            ],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

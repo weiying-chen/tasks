@@ -85,6 +85,17 @@ def build_deadline_message_command(script_dir: str, infile: str, task_id: str) -
     ]
 
 
+def build_next_task_message_command(script_dir: str, infile: str) -> list[str]:
+    return [
+        "python3",
+        f"{script_dir}/create_message.py",
+        "-i",
+        infile,
+        "--type",
+        "next-task",
+    ]
+
+
 def task_base_created(task: dict, now_local: datetime) -> datetime:
     created_at = task.get('createdAt')
     if isinstance(created_at, str):
@@ -260,6 +271,8 @@ def build_latest_view(tasks: list[dict], now_local: datetime | None = None, stat
         + color(' | ', MAGENTA)
         + color('c', GREEN) + color('reate deadline message', MAGENTA)
         + color(' | ', MAGENTA)
+        + color('n', GREEN) + color(' create next task message', MAGENTA)
+        + color(' | ', MAGENTA)
         + color('q', GREEN) + color('uit', MAGENTA)
     )
     return '\n'.join(lines).rstrip() + '\n'
@@ -380,6 +393,33 @@ def main():
                             copy_proc.stdin.write(message_text)
                             copy_proc.stdin.close()
                         status = color("Success: Deadline message queued for clipboard", GREEN)
+                        status_until = time.time() + STATUS_TTL_SECONDS
+                    except Exception as exc:
+                        status = color(f"Error: Message failed: {exc}", RED)
+                        status_until = time.time() + STATUS_TTL_SECONDS
+                if ch == b"n":
+                    try:
+                        msg_cmd = build_next_task_message_command(script_dir, str(in_path.resolve()))
+                        msg_proc = subprocess.run(msg_cmd, capture_output=True, text=True)
+                        if msg_proc.returncode != 0:
+                            msg = (msg_proc.stderr or msg_proc.stdout or "Message generation failed").strip()
+                            status = color(f"Error: {msg}", RED)
+                            status_until = time.time() + STATUS_TTL_SECONDS
+                            continue
+                        message_text = msg_proc.stdout.strip()
+                        if not message_text:
+                            status = color("Error: Generated message is empty.", RED)
+                            status_until = time.time() + STATUS_TTL_SECONDS
+                            continue
+                        copy_proc = subprocess.Popen(
+                            ["wl-copy"],
+                            stdin=subprocess.PIPE,
+                            text=True,
+                        )
+                        if copy_proc.stdin:
+                            copy_proc.stdin.write(message_text)
+                            copy_proc.stdin.close()
+                        status = color("Success: Next task message queued for clipboard", GREEN)
                         status_until = time.time() + STATUS_TTL_SECONDS
                     except Exception as exc:
                         status = color(f"Error: Message failed: {exc}", RED)
