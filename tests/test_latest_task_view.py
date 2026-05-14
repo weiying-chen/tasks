@@ -38,7 +38,7 @@ class LatestTaskViewTests(unittest.TestCase):
         self.assertIn("Name: New Parent", out)
         self.assertIn("Subtasks", out)
         self.assertIn("Child", out)
-        self.assertIn("Work time: 1h 50m", out)
+        self.assertIn("Work time: 2h 14m", out)
         self.assertIn("Extended deadline:", out)
 
     def test_countdown_line_present(self):
@@ -124,7 +124,7 @@ class LatestTaskViewTests(unittest.TestCase):
         # Work windows counted: 16:00-17:00 (1h) + 8:00-9:00 (1h) = 2h.
         self.assertEqual(ltv.work_seconds_between(start, end), 2 * 3600)
 
-    def test_extended_deadline_uses_0_8_child_factor(self):
+    def test_extended_deadline_uses_stored_child_minutes(self):
         tasks = [
             {
                 "id": "1",
@@ -144,7 +144,7 @@ class LatestTaskViewTests(unittest.TestCase):
             }
         ]
         out = self.strip_ansi(ltv.build_latest_view(tasks))
-        self.assertIn("Extended deadline: 2026-05-13 Wed 10:50", out)
+        self.assertIn("Extended deadline: 2026-05-13 Wed 11:00", out)
 
     def test_input_path_uses_script_dir_tasks_json(self):
         fake_script = Path("/tmp/proj/view_latest_task.py")

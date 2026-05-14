@@ -12,7 +12,6 @@ from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
 from work_time import add_work_minutes, next_work_start
-from work_time_adjustments import adjusted_child_minutes
 
 TZ_TAIPEI = timezone(timedelta(hours=8))
 WORK_BLOCKS = (
@@ -119,7 +118,7 @@ def task_base_created(task: dict, now_local: datetime) -> datetime:
     return now_local
 
 
-def task_deadline(task: dict, now_local: datetime, is_child: bool) -> datetime | None:
+def task_deadline(task: dict, now_local: datetime) -> datetime | None:
     deadline = task.get('deadline')
     if isinstance(deadline, str):
         return to_local(deadline)
@@ -132,9 +131,8 @@ def task_deadline(task: dict, now_local: datetime, is_child: bool) -> datetime |
     if not isinstance(base_work_minutes, int):
         return None
 
-    effective_minutes = adjusted_child_minutes(base_work_minutes) if is_child else base_work_minutes
     start = next_work_start(task_base_created(task, now_local))
-    return add_work_minutes(start, effective_minutes)
+    return add_work_minutes(start, base_work_minutes)
 
 
 def child_total_minutes(task: dict) -> int:
@@ -147,7 +145,7 @@ def child_total_minutes(task: dict) -> int:
             continue
         base_child_minutes = child.get('workMinutes')
         if isinstance(base_child_minutes, int) and base_child_minutes > 0:
-            total += adjusted_child_minutes(base_child_minutes)
+            total += base_child_minutes
     return total
 
 
@@ -209,18 +207,14 @@ def work_seconds_between(start: datetime, end: datetime) -> int:
 
 
 def render_task_block(lines: list[str], task: dict, now_local: datetime, level: int) -> None:
-    is_child = level > 2
     created = next_work_start(task_base_created(task, now_local))
-    deadline = task_deadline(task, now_local, is_child=is_child)
-    base_work_minutes = task.get('workMinutes')
-    display_work_minutes = base_work_minutes
-    if is_child and isinstance(base_work_minutes, int):
-        display_work_minutes = adjusted_child_minutes(base_work_minutes)
+    deadline = task_deadline(task, now_local)
+    work_minutes = task.get('workMinutes')
 
     name = task.get("name") or "(Untitled)"
-    if is_child:
+    if level > 2:
         lines.append(f'Name: {name}')
-        lines.append(f'Work time: {fmt_work(display_work_minutes)}')
+        lines.append(f'Work time: {fmt_work(work_minutes)}')
         lines.append(f'Deadline: {color(to_display(deadline) if deadline else "-", YELLOW)}')
         lines.append('')
     else:
@@ -228,7 +222,7 @@ def render_task_block(lines: list[str], task: dict, now_local: datetime, level: 
         lines.append('')
         lines.append(f'Name: {name}')
         lines.append(f'Created: {to_display(created)}')
-        lines.append(f'Work time: {fmt_work(display_work_minutes)}')
+        lines.append(f'Work time: {fmt_work(work_minutes)}')
 
         extended = None
         child_minutes = child_total_minutes(task)

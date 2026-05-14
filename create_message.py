@@ -5,7 +5,6 @@ from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
 from work_time import add_work_minutes
-from work_time_adjustments import adjusted_child_minutes
 
 TZ_TAIPEI = timezone(timedelta(hours=8))
 WEEKDAY_CN = ["一", "二", "三", "四", "五", "六", "日"]
@@ -82,11 +81,10 @@ def aggregate_children(task: dict) -> list[tuple[str, int]]:
         minutes = child.get("workMinutes")
         if not name or not isinstance(minutes, int) or minutes <= 0:
             continue
-        rounded = adjusted_child_minutes(minutes)
         if name not in totals:
             ordered_names.append(name)
             totals[name] = 0
-        totals[name] += rounded
+        totals[name] += minutes
 
     return [(name, totals[name]) for name in ordered_names]
 
