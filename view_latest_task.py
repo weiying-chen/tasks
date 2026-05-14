@@ -26,6 +26,8 @@ RED = '\x1b[31m'      # terminal red (git-style error emphasis)
 BLUE = '\x1b[34m'     # theme blue
 MAGENTA = '\x1b[35m'  # ANSI magenta (matches repo-sync DIRTY)
 STATUS_TTL_SECONDS = 4.0
+DEADLINE_MESSAGE_COPIED_STATUS = "Success: Deadline message copied to clipboard"
+NEXT_TASK_MESSAGE_COPIED_STATUS = "Success: Next task message copied to clipboard"
 
 
 def fmt_work(minutes: int | None) -> str:
@@ -85,7 +87,12 @@ def build_deadline_message_command(script_dir: str, infile: str, task_id: str) -
     ]
 
 
-def build_next_task_message_command(script_dir: str, infile: str) -> list[str]:
+def build_next_task_message_command(
+    script_dir: str,
+    infile: str,
+    finished_task_id: str,
+    next_task_name: str,
+) -> list[str]:
     return [
         "python3",
         f"{script_dir}/create_message.py",
@@ -93,6 +100,10 @@ def build_next_task_message_command(script_dir: str, infile: str) -> list[str]:
         infile,
         "--type",
         "next-task",
+        "--task-id",
+        finished_task_id,
+        "--next-task-name",
+        next_task_name,
     ]
 
 
@@ -393,14 +404,37 @@ def main():
                         if copy_proc.stdin:
                             copy_proc.stdin.write(message_text)
                             copy_proc.stdin.close()
-                        status = color("Success: Deadline message queued for clipboard", GREEN)
+                        status = color(DEADLINE_MESSAGE_COPIED_STATUS, GREEN)
                         status_until = time.time() + STATUS_TTL_SECONDS
                     except Exception as exc:
                         status = color(f"Error: Message failed: {exc}", RED)
                         status_until = time.time() + STATUS_TTL_SECONDS
                 if ch == b"n":
                     try:
-                        msg_cmd = build_next_task_message_command(script_dir, str(in_path.resolve()))
+                        data = json.loads(in_path.read_text(encoding='utf-8'))
+                        tasks = normalize_tasks(data)
+                        latest_id = find_latest_task_id(tasks)
+                        if not latest_id:
+                            status = color("Error: No latest task id found.", RED)
+                            status_until = time.time() + STATUS_TTL_SECONDS
+                            continue
+                        clipboard_proc = subprocess.run(
+                            ["wl-paste"],
+                            capture_output=True,
+                            text=True,
+                            check=True,
+                        )
+                        next_task_name = clipboard_proc.stdout.strip()
+                        if not next_task_name:
+                            status = color("Error: Clipboard is empty.", RED)
+                            status_until = time.time() + STATUS_TTL_SECONDS
+                            continue
+                        msg_cmd = build_next_task_message_command(
+                            script_dir,
+                            str(in_path.resolve()),
+                            latest_id,
+                            next_task_name,
+                        )
                         msg_proc = subprocess.run(msg_cmd, capture_output=True, text=True)
                         if msg_proc.returncode != 0:
                             msg = (msg_proc.stderr or msg_proc.stdout or "Message generation failed").strip()
@@ -420,7 +454,7 @@ def main():
                         if copy_proc.stdin:
                             copy_proc.stdin.write(message_text)
                             copy_proc.stdin.close()
-                        status = color("Success: Next task message queued for clipboard", GREEN)
+                        status = color(NEXT_TASK_MESSAGE_COPIED_STATUS, GREEN)
                         status_until = time.time() + STATUS_TTL_SECONDS
                     except Exception as exc:
                         status = color(f"Error: Message failed: {exc}", RED)

@@ -4,6 +4,16 @@ import view_latest_task as ltv
 
 
 class LatestTaskActionsTests(unittest.TestCase):
+    def test_copy_success_status_messages(self):
+        self.assertEqual(
+            ltv.DEADLINE_MESSAGE_COPIED_STATUS,
+            "Success: Deadline message copied to clipboard",
+        )
+        self.assertEqual(
+            ltv.NEXT_TASK_MESSAGE_COPIED_STATUS,
+            "Success: Next task message copied to clipboard",
+        )
+
     def test_find_latest_task_id(self):
         tasks = [
             {"id": "1", "name": "A", "children": []},
@@ -35,7 +45,7 @@ class LatestTaskActionsTests(unittest.TestCase):
         )
 
     def test_build_next_task_message_command(self):
-        cmd = ltv.build_next_task_message_command("/tmp", "/tmp/tasks.json")
+        cmd = ltv.build_next_task_message_command("/tmp", "/tmp/tasks.json", "9", "new task")
         self.assertEqual(
             cmd,
             [
@@ -45,6 +55,10 @@ class LatestTaskActionsTests(unittest.TestCase):
                 "/tmp/tasks.json",
                 "--type",
                 "next-task",
+                "--task-id",
+                "9",
+                "--next-task-name",
+                "new task",
             ],
         )
 

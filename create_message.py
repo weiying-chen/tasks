@@ -94,16 +94,11 @@ def aggregate_children(task: dict) -> list[tuple[str, int]]:
 def format_deadline_extension_message(task: dict) -> str:
     assignment = str(task.get("name") or "").strip()
     assignee = str(task.get("assignedBy") or "").strip()
-    deadline_raw = task.get("deadline")
-    if not isinstance(deadline_raw, str):
-        raise ValueError("Task is missing deadline.")
-    previous = to_local(deadline_raw)
-
     assignments = aggregate_children(task)
     total_minutes = sum(minutes for _, minutes in assignments)
     if total_minutes <= 0:
         raise ValueError("Task has no subtasks to build deadline extension message.")
-    next_deadline = add_work_minutes(previous, total_minutes)
+    previous, next_deadline = deadline_window_local(task)
     transition_text = "延後至" if next_deadline >= previous else "提前至"
 
     lines = []
@@ -123,32 +118,29 @@ def format_deadline_extension_message(task: dict) -> str:
     return "\n".join(lines)
 
 
-def final_deadline_local(task: dict) -> datetime:
+def deadline_window_local(task: dict) -> tuple[datetime, datetime]:
     deadline_raw = task.get("deadline")
     if not isinstance(deadline_raw, str):
         raise ValueError("Task is missing deadline.")
     base_deadline = to_local(deadline_raw)
     child_minutes = sum(minutes for _, minutes in aggregate_children(task))
     if child_minutes <= 0:
-        return base_deadline
-    return add_work_minutes(base_deadline, child_minutes)
+        return base_deadline, base_deadline
+    return base_deadline, add_work_minutes(base_deadline, child_minutes)
 
 
-def format_next_task_message(tasks: list[dict]) -> str:
-    if len(tasks) < 2:
-        raise ValueError("Need at least two top-level tasks for next-task message.")
-    previous = tasks[-2]
-    next_task = tasks[-1]
-    if not isinstance(previous, dict) or not isinstance(next_task, dict):
-        raise ValueError("Latest tasks are invalid.")
+def final_deadline_local(task: dict) -> datetime:
+    _, final_deadline = deadline_window_local(task)
+    return final_deadline
 
-    completed_task = str(previous.get("name") or "").strip()
-    next_task_name = str(next_task.get("name") or "").strip()
-    assignee = str(next_task.get("assignedBy") or "").strip()
+
+def format_next_task_message(finished_task: dict, next_task_name: str) -> str:
+    completed_task = str(finished_task.get("name") or "").strip()
+    assignee = str(finished_task.get("assignedBy") or "").strip()
     if not completed_task or not next_task_name or not assignee:
         raise ValueError("Missing required fields for next-task message.")
 
-    start = final_deadline_local(previous)
+    start = final_deadline_local(finished_task)
     return (
         f"已完成{completed_task}，接下來會開始翻譯{next_task_name}，"
         f"再麻煩{assignee}便時幫忙設deadline，"
@@ -157,14 +149,23 @@ def format_next_task_message(tasks: list[dict]) -> str:
     )
 
 
-def create_message(tasks: list[dict], msg_type: str, task_id: str | None = None) -> str:
+def create_message(
+    tasks: list[dict],
+    msg_type: str,
+    task_id: str | None = None,
+    next_task_name: str | None = None,
+) -> str:
     if msg_type == "deadline-extension":
         task = get_target_task(tasks, task_id)
         return format_deadline_extension_message(task)
     if msg_type == "next-task":
-        if task_id:
-            raise ValueError("--task-id is not supported for next-task message.")
-        return format_next_task_message(tasks)
+        if not task_id:
+            raise ValueError("--task-id is required for next-task message.")
+        name = str(next_task_name or "").strip()
+        if not name:
+            raise ValueError("--next-task-name is required for next-task message.")
+        finished_task = get_target_task(tasks, task_id)
+        return format_next_task_message(finished_task, name)
     raise ValueError(f"Unsupported message type: {msg_type}")
 
 
@@ -173,13 +174,19 @@ def main():
     parser.add_argument("-i", "--infile", default="tasks.json", help="input JSON path")
     parser.add_argument("--type", required=True, help="message type, e.g. deadline-extension")
     parser.add_argument("--task-id", help="specific task id; default is latest top-level task")
+    parser.add_argument("--next-task-name", help="next task name text for next-task message")
     args = parser.parse_args()
 
     in_path = Path(args.infile)
     data = json.loads(in_path.read_text(encoding="utf-8"))
     tasks = normalize_tasks(data)
     try:
-        message = create_message(tasks, msg_type=args.type, task_id=args.task_id)
+        message = create_message(
+            tasks,
+            msg_type=args.type,
+            task_id=args.task_id,
+            next_task_name=args.next_task_name,
+        )
     except ValueError as exc:
         raise SystemExit(str(exc)) from exc
     print(message)
