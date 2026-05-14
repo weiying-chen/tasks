@@ -269,7 +269,7 @@ def build_latest_view(tasks: list[dict], now_local: datetime | None = None, stat
         color('Actions: ', MAGENTA)
         + color('a', GREEN) + color('dd subtask', MAGENTA)
         + color(' | ', MAGENTA)
-        + color('c', GREEN) + color('reate deadline message', MAGENTA)
+        + color('d', GREEN) + color(' create deadline message', MAGENTA)
         + color(' | ', MAGENTA)
         + color('n', GREEN) + color(' create next task message', MAGENTA)
         + color(' | ', MAGENTA)
@@ -363,7 +363,7 @@ def main():
                     except Exception as exc:
                         status = color(f"Error: Add failed: {exc}", RED)
                         status_until = time.time() + STATUS_TTL_SECONDS
-                if ch == b"c":
+                if ch == b"d":
                     try:
                         data = json.loads(in_path.read_text(encoding='utf-8'))
                         tasks = normalize_tasks(data)

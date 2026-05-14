@@ -67,7 +67,7 @@ class LatestTaskViewTests(unittest.TestCase):
         ]
         out = self.strip_ansi(ltv.build_latest_view(tasks))
         lines = out.splitlines()
-        actions_idx = lines.index("Actions: add subtask | create deadline message | n create next task message | quit")
+        actions_idx = lines.index("Actions: add subtask | d create deadline message | n create next task message | quit")
         self.assertEqual(lines[actions_idx - 1], "")
         self.assertNotEqual(lines[actions_idx - 2], "")
 
