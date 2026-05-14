@@ -5,6 +5,8 @@ import re
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
+from work_time_adjustments import adjusted_child_minutes
+
 TZ_TAIPEI = timezone(timedelta(hours=8))
 
 
@@ -277,6 +279,18 @@ def normalize_task_shape(task):
     return normalized
 
 
+def apply_child_work_rule(task: dict) -> None:
+    minutes = task.get("workMinutes")
+    if isinstance(minutes, int) and minutes > 0:
+        task["workMinutes"] = adjusted_child_minutes(minutes)
+
+    children = task.get("children")
+    if isinstance(children, list):
+        for child in children:
+            if isinstance(child, dict):
+                apply_child_work_rule(child)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("text", nargs="?", help="source task text")
@@ -311,6 +325,7 @@ def main():
         for item in new_items:
             item.pop("assignedBy", None)
             item.pop("owner", None)
+            apply_child_work_rule(item)
             inserted = insert_under_parent(tasks, args.parent_id, item)
             if not inserted:
                 raise ValueError(f"Parent id not found: {args.parent_id}")

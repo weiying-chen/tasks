@@ -54,6 +54,16 @@ class TextToJsonTests(unittest.TestCase):
         self.assertEqual(task["assignedBy"], "Alex Chen")
         self.assertEqual(task["contentSeconds"], 1380)
 
+    def test_apply_child_work_rule_adjusts_inserted_child_minutes(self):
+        task = {
+            "id": "3",
+            "name": "child",
+            "workMinutes": 60,
+            "children": [],
+        }
+        t2j.apply_child_work_rule(task)
+        self.assertEqual(task["workMinutes"], 50)
+
 
 if __name__ == "__main__":
     unittest.main()
