@@ -113,7 +113,7 @@ def strip_leading_md_date(text: str) -> str:
 def parse_posts_input(text: str, owner_filter: str):
     tasks = []
     now_iso = datetime.now(TZ_TAIPEI).astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
-    default_work_minutes = 48  # 1 hour with 0.8 applied
+    default_work_minutes = 60  # Raw 1 hour; child factor is applied in view/message rendering
 
     lines = [line.rstrip() for line in text.splitlines()]
     i = 0

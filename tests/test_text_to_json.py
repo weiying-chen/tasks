@@ -16,7 +16,7 @@ class TextToJsonTests(unittest.TestCase):
         tasks = t2j.parse_posts_input(text, "alex")
         self.assertEqual(len(tasks), 1)
         self.assertEqual(tasks[0]["name"], "無私大愛結好緣")
-        self.assertEqual(tasks[0]["workMinutes"], 48)
+        self.assertEqual(tasks[0]["workMinutes"], 60)
         self.assertNotIn("assignedBy", tasks[0])
 
     def test_parse_news_only_keeps_alex_chen(self):
