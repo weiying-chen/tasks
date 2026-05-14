@@ -269,7 +269,7 @@ def build_latest_view(tasks: list[dict], now_local: datetime | None = None, stat
         color('Actions: ', MAGENTA)
         + color('a', GREEN) + color('dd subtask', MAGENTA)
         + color(' | ', MAGENTA)
-        + color('d', GREEN) + color(' create deadline message', MAGENTA)
+        + color('d', GREEN) + color(' create deadline extension message', MAGENTA)
         + color(' | ', MAGENTA)
         + color('n', GREEN) + color(' create next task message', MAGENTA)
         + color(' | ', MAGENTA)
