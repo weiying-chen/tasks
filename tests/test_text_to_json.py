@@ -92,6 +92,12 @@ class TextToJsonTests(unittest.TestCase):
         t2j.apply_child_work_rule(task)
         self.assertEqual(task["workMinutes"], 50)
 
+    def test_news_1h45_stores_1h40_after_bonus_and_factor(self):
+        parsed = t2j.parse_source_text("Alex Chen: 測試新聞 1:45", [], 2026)
+        task = parsed[0]
+        t2j.apply_child_work_rule(task)
+        self.assertEqual(task["workMinutes"], 100)
+
 
 if __name__ == "__main__":
     unittest.main()
