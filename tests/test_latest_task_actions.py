@@ -45,7 +45,7 @@ class LatestTaskActionsTests(unittest.TestCase):
         )
 
     def test_build_next_task_message_command(self):
-        cmd = ltv.build_next_task_message_command("/tmp", "/tmp/tasks.json", "9", "new task")
+        cmd = ltv.build_next_task_message_command("/tmp", "/tmp/tasks.json", "9", "new task", "Alex")
         self.assertEqual(
             cmd,
             [
@@ -59,8 +59,15 @@ class LatestTaskActionsTests(unittest.TestCase):
                 "9",
                 "--next-task-name",
                 "new task",
+                "--next-assignee",
+                "Alex",
             ],
         )
+
+    def test_parse_next_task_clipboard_payload(self):
+        assignee, name = ltv.parse_next_task_clipboard_payload("Alex | 新任務")
+        self.assertEqual(assignee, "Alex")
+        self.assertEqual(name, "新任務")
 
 
 if __name__ == "__main__":

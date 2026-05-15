@@ -128,6 +128,25 @@ class CreateMessageTests(unittest.TestCase):
             "之前是1分鐘算1小時，現在改成1分鐘算0.8 小時，謝謝。",
         )
 
+    def test_next_task_message_uses_explicit_next_assignee(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "目前完成任務",
+                "assignedBy": "Evelyn",
+                "deadline": "2026-05-14T02:00:00Z",
+                "children": [],
+            }
+        ]
+        message = cm.create_message(
+            tasks,
+            msg_type="next-task",
+            task_id="1",
+            next_task_name="新的任務",
+            next_assignee="Alex",
+        )
+        self.assertIn("再麻煩Alex便時幫忙設deadline", message)
+
     def test_next_task_message_requires_task_id_and_next_name(self):
         tasks = [
             {

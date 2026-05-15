@@ -91,8 +91,9 @@ def build_next_task_message_command(
     infile: str,
     finished_task_id: str,
     next_task_name: str,
+    next_assignee: str | None = None,
 ) -> list[str]:
-    return [
+    cmd = [
         "python3",
         f"{script_dir}/create_message.py",
         "-i",
@@ -104,6 +105,22 @@ def build_next_task_message_command(
         "--next-task-name",
         next_task_name,
     ]
+    if next_assignee:
+        cmd.extend(["--next-assignee", next_assignee])
+    return cmd
+
+
+def parse_next_task_clipboard_payload(clipboard_text: str) -> tuple[str | None, str]:
+    text = clipboard_text.strip()
+    if not text:
+        return None, ""
+    if "|" in text:
+        left, right = text.split("|", 1)
+        assignee = left.strip()
+        task_name = right.strip()
+        if assignee and task_name:
+            return assignee, task_name
+    return None, text
 
 
 def task_base_created(task: dict, now_local: datetime) -> datetime:
@@ -424,7 +441,7 @@ def main():
                             text=True,
                             check=True,
                         )
-                        next_task_name = clipboard_proc.stdout.strip()
+                        next_assignee, next_task_name = parse_next_task_clipboard_payload(clipboard_proc.stdout)
                         if not next_task_name:
                             status = color("Error: Clipboard is empty.", RED)
                             status_until = time.time() + STATUS_TTL_SECONDS
@@ -434,6 +451,7 @@ def main():
                             str(in_path.resolve()),
                             latest_id,
                             next_task_name,
+                            next_assignee,
                         )
                         msg_proc = subprocess.run(msg_cmd, capture_output=True, text=True)
                         if msg_proc.returncode != 0:

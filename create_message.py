@@ -139,9 +139,9 @@ def final_deadline_local(task: dict) -> datetime:
     return final_deadline
 
 
-def format_next_task_message(finished_task: dict, next_task_name: str) -> str:
+def format_next_task_message(finished_task: dict, next_task_name: str, next_assignee: str | None = None) -> str:
     completed_task = str(finished_task.get("name") or "").strip()
-    assignee = str(finished_task.get("assignedBy") or "").strip()
+    assignee = str(next_assignee or finished_task.get("assignedBy") or "").strip()
     if not completed_task or not next_task_name or not assignee:
         raise ValueError("Missing required fields for next-task message.")
 
@@ -159,6 +159,7 @@ def create_message(
     msg_type: str,
     task_id: str | None = None,
     next_task_name: str | None = None,
+    next_assignee: str | None = None,
 ) -> str:
     if msg_type == "deadline-extension":
         task = get_target_task(tasks, task_id)
@@ -170,7 +171,8 @@ def create_message(
         if not name:
             raise ValueError("--next-task-name is required for next-task message.")
         finished_task = get_target_task(tasks, task_id)
-        return format_next_task_message(finished_task, name)
+        assignee = str(next_assignee or "").strip() or None
+        return format_next_task_message(finished_task, name, assignee)
     raise ValueError(f"Unsupported message type: {msg_type}")
 
 
@@ -180,6 +182,7 @@ def main():
     parser.add_argument("--type", required=True, help="message type, e.g. deadline-extension")
     parser.add_argument("--task-id", help="specific task id; default is latest top-level task")
     parser.add_argument("--next-task-name", help="next task name text for next-task message")
+    parser.add_argument("--next-assignee", help="assignee to ask for next-task deadline")
     args = parser.parse_args()
 
     in_path = Path(args.infile)
@@ -191,6 +194,7 @@ def main():
             msg_type=args.type,
             task_id=args.task_id,
             next_task_name=args.next_task_name,
+            next_assignee=args.next_assignee,
         )
     except ValueError as exc:
         raise SystemExit(str(exc)) from exc
