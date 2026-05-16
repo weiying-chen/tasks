@@ -164,13 +164,12 @@ def fmt_countdown(now_local: datetime, target: datetime | None) -> str:
     if target is None:
         return '-'
     total_seconds = work_seconds_between(now_local, target)
-    overdue = total_seconds < 0
-    total_seconds = abs(total_seconds)
+    if total_seconds <= 0:
+        return '-'
 
     hours, rem = divmod(total_seconds, 3600)
     minutes, seconds = divmod(rem, 60)
-    label = f'{hours}h {minutes}m {seconds}s'
-    return f'Overdue by {label}' if overdue else f'{label}'
+    return f'{hours}h {minutes}m {seconds}s'
 
 
 def color(text: str, code: str) -> str:
