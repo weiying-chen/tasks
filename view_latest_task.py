@@ -69,8 +69,16 @@ def find_latest_task_id(tasks: list[dict]) -> str | None:
     return None
 
 
-def build_add_to_latest_command(script_dir: str, parent_id: str) -> list[str]:
-    return ["python3", f"{script_dir}/text_to_json.py", "--parent-id", parent_id, "__CLIPBOARD__"]
+def build_add_to_latest_command(script_dir: str, parent_id: str, target: str = "children") -> list[str]:
+    return [
+        "python3",
+        f"{script_dir}/text_to_json.py",
+        "--parent-id",
+        parent_id,
+        "--target",
+        target,
+        "__CLIPBOARD__",
+    ]
 
 
 def build_add_task_command(script_dir: str) -> list[str]:
@@ -262,6 +270,16 @@ def render_task_block(lines: list[str], task: dict, now_local: datetime, level: 
                 if isinstance(child, dict):
                     render_task_block(lines, child, now_local, level + 1)
 
+        notes = task.get("notes")
+        if isinstance(notes, list):
+            rendered_notes = [note.strip() for note in notes if isinstance(note, str) and note.strip()]
+            if rendered_notes:
+                lines.append('Notes')
+                lines.append('')
+                for note in rendered_notes:
+                    lines.append(f'• {note}')
+                lines.append('')
+
 
 def build_latest_view(tasks: list[dict], now_local: datetime | None = None, status: str = "") -> str:
     if now_local is None:
@@ -289,6 +307,8 @@ def build_latest_view(tasks: list[dict], now_local: datetime | None = None, stat
         + color('create ', MAGENTA) + color('t', GREEN) + color('ask', MAGENTA)
         + color(' | ', MAGENTA)
         + color('add ', MAGENTA) + color('s', GREEN) + color('ubtasks', MAGENTA)
+        + color(' | ', MAGENTA)
+        + color('add ', MAGENTA) + color('n', GREEN) + color('otes', MAGENTA)
         + color(' | ', MAGENTA)
         + color('copy ', MAGENTA) + color('e', GREEN) + color('xtension msg', MAGENTA)
         + color(' | ', MAGENTA)
@@ -384,7 +404,45 @@ def main():
                             status = color("Error: Clipboard is empty.", RED)
                             status_until = time.time() + STATUS_TTL_SECONDS
                             continue
-                        cmd = build_add_to_latest_command(script_dir, latest_id)
+                        cmd = build_add_to_latest_command(script_dir, latest_id, "children")
+                        cmd[-1] = clipboard_text
+                        add_proc = subprocess.run(
+                            cmd,
+                            capture_output=True,
+                            text=True,
+                            cwd=script_dir,
+                        )
+                        if add_proc.returncode != 0:
+                            msg = (add_proc.stderr or add_proc.stdout or "Add failed").strip()
+                            status = color(f"Error: {msg}", RED)
+                            status_until = time.time() + STATUS_TTL_SECONDS
+                        else:
+                            status = ""
+                            status_until = 0.0
+                    except Exception as exc:
+                        status = color(f"Error: Add failed: {exc}", RED)
+                        status_until = time.time() + STATUS_TTL_SECONDS
+                if ch == b"n":
+                    try:
+                        data = json.loads(in_path.read_text(encoding='utf-8'))
+                        tasks = normalize_tasks(data)
+                        latest_id = find_latest_task_id(tasks)
+                        if not latest_id:
+                            status = color("Error: No latest task id found.", RED)
+                            status_until = time.time() + STATUS_TTL_SECONDS
+                            continue
+                        clipboard_proc = subprocess.run(
+                            ["wl-paste"],
+                            capture_output=True,
+                            text=True,
+                            check=True,
+                        )
+                        clipboard_text = clipboard_proc.stdout
+                        if not clipboard_text.strip():
+                            status = color("Error: Clipboard is empty.", RED)
+                            status_until = time.time() + STATUS_TTL_SECONDS
+                            continue
+                        cmd = build_add_to_latest_command(script_dir, latest_id, "notes")
                         cmd[-1] = clipboard_text
                         add_proc = subprocess.run(
                             cmd,

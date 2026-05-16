@@ -21,6 +21,7 @@ class LatestTaskViewTests(unittest.TestCase):
                 "name": "New Parent",
                 "createdAt": "2026-05-13T00:40:00Z",
                 "workMinutes": 1056,
+                "notes": ['"上肢" referred to arms rather than upper body.'],
                 "children": [
                     {
                         "id": "3",
@@ -37,6 +38,8 @@ class LatestTaskViewTests(unittest.TestCase):
         self.assertIn("Latest task", out)
         self.assertIn("Name: New Parent", out)
         self.assertIn("Subtasks", out)
+        self.assertIn("Notes", out)
+        self.assertIn('• "上肢" referred to arms rather than upper body.', out)
         self.assertIn("Child", out)
         self.assertIn("Work time: 2h 14m", out)
         self.assertIn("Extended deadline:", out)
@@ -72,7 +75,7 @@ class LatestTaskViewTests(unittest.TestCase):
         ]
         out = self.strip_ansi(view_latest_task.build_latest_view(tasks))
         lines = out.splitlines()
-        actions_idx = lines.index("Actions: create task | add subtasks | copy extension msg | copy completion msg | quit")
+        actions_idx = lines.index("Actions: create task | add subtasks | add notes | copy extension msg | copy completion msg | quit")
         self.assertEqual(lines[actions_idx - 1], "")
         self.assertNotEqual(lines[actions_idx - 2], "")
 
@@ -89,6 +92,7 @@ class LatestTaskViewTests(unittest.TestCase):
         out = view_latest_task.build_latest_view(tasks)
         self.assertRegex(out, r"\x1b\[35mcreate \x1b\[0m\x1b\[32mt\x1b\[0m\x1b\[35mask")
         self.assertRegex(out, r"\x1b\[35madd \x1b\[0m\x1b\[32ms\x1b\[0m\x1b\[35mubtasks")
+        self.assertRegex(out, r"\x1b\[35madd \x1b\[0m\x1b\[32mn\x1b\[0m\x1b\[35motes")
         self.assertRegex(out, r"\x1b\[35mcopy \x1b\[0m\x1b\[32me\x1b\[0m\x1b\[35mxtension msg")
         self.assertRegex(out, r"\x1b\[35mcopy \x1b\[0m\x1b\[32mc\x1b\[0m\x1b\[35mompletion msg")
 

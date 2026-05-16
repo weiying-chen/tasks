@@ -22,10 +22,17 @@ class LatestTaskActionsTests(unittest.TestCase):
         self.assertEqual(view_latest_task.find_latest_task_id(tasks), "7")
 
     def test_build_add_to_latest_command(self):
-        cmd = view_latest_task.build_add_to_latest_command("/tmp", "9")
+        cmd = view_latest_task.build_add_to_latest_command("/tmp", "9", "children")
         self.assertEqual(
             cmd,
-            ["python3", "/tmp/text_to_json.py", "--parent-id", "9", "__CLIPBOARD__"],
+            ["python3", "/tmp/text_to_json.py", "--parent-id", "9", "--target", "children", "__CLIPBOARD__"],
+        )
+
+    def test_build_add_notes_to_latest_command(self):
+        cmd = view_latest_task.build_add_to_latest_command("/tmp", "9", "notes")
+        self.assertEqual(
+            cmd,
+            ["python3", "/tmp/text_to_json.py", "--parent-id", "9", "--target", "notes", "__CLIPBOARD__"],
         )
 
     def test_build_add_task_command(self):
