@@ -46,16 +46,24 @@ class TextToJsonTests(unittest.TestCase):
 
     def test_parse_source_text_subs_shape(self):
         text = (
-            "請 Alex Chen 翻譯人文講堂(活出自己的第三人生 - 丁菱娟) 5 個短版, 長度23分, "
+            "請 Evelyn 翻譯人文講堂(活出自己的第三人生 - 丁菱娟) 5 個短版, 長度23分, "
             "預計翻譯18時30分(2天2時30分)，從5/6（三）13:49起算，deadline為5/8(五) 16:19，謝謝！"
         )
         parsed = t2j.parse_source_text(text, [], 2026)
         self.assertEqual(len(parsed), 1)
         task = parsed[0]
         self.assertEqual(task["id"], "1")
-        self.assertEqual(task["assignedBy"], "Alex Chen")
+        self.assertEqual(task["assignedBy"], "Evelyn")
         self.assertEqual(task["contentSeconds"], 1380)
         self.assertEqual(task["type"], "subs")
+
+    def test_subs_program_assignee_mismatch_raises_error(self):
+        text = (
+            "請 Someone 翻譯3集精舍日常(淳師父09 如律如儀) 3 個短版, 長度7分, "
+            "預計翻譯5時45分，從4/28（二）16:10起算，deadline為4/29(三) 10:00，謝謝！"
+        )
+        with self.assertRaises(ValueError):
+            t2j.parse_source_text(text, [], 2026)
 
     def test_parse_source_text_custom_minutes_format(self):
         parsed = t2j.parse_source_text(

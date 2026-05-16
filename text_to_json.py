@@ -8,6 +8,11 @@ from pathlib import Path
 from work_time_adjustments import adjusted_child_minutes
 
 TZ_TAIPEI = timezone(timedelta(hours=8))
+SUBS_PROGRAM_DEFAULT_ASSIGNEE = {
+    "人文講堂": "Evelyn",
+    "精舍日常": "張牧軒",
+    "大愛真健康": "Emily",
+}
 
 
 def parse_datetime(md: str, hm: str, year: int) -> str:
@@ -28,9 +33,29 @@ def must_match(text: str, pattern: str, field: str, flags=0):
     return m
 
 
+def extract_subs_program_name(subs_name: str) -> str:
+    cleaned = re.sub(r"^\s*(?:\d+|[零一二三四五六七八九十百千兩]+)\s*集\s*", "", subs_name).strip()
+    program = re.split(r"[（(]", cleaned, maxsplit=1)[0].strip()
+    return program
+
+
+def resolve_subs_assigned_by(subs_name: str, parsed_assigned_by: str) -> str:
+    program = extract_subs_program_name(subs_name)
+    expected_assignee = SUBS_PROGRAM_DEFAULT_ASSIGNEE.get(program)
+    if expected_assignee is None:
+        return parsed_assigned_by
+    if parsed_assigned_by != expected_assignee:
+        raise ValueError(
+            f"AssignedBy mismatch for subs program '{program}': "
+            f"expected '{expected_assignee}', got '{parsed_assigned_by}'"
+        )
+    return expected_assignee
+
+
 def parse_subs_input(text: str, year: int, task_id: str):
-    assigned_by = must_match(text, r"請\s*([^\s]+(?:\s+[^\s]+)?)\s+翻譯", "assignedBy").group(1).strip()
     name = must_match(text, r"翻譯\s*([^，,]+?)\s*\d+\s*個短版", "name").group(1).strip()
+    parsed_assigned_by = must_match(text, r"請\s*([^\s]+(?:\s+[^\s]+)?)\s+翻譯", "assignedBy").group(1).strip()
+    assigned_by = resolve_subs_assigned_by(name, parsed_assigned_by)
 
     must_match(text, r"(\d+)\s*個短版", "short count")
     content_minutes = int(must_match(text, r"長度\s*(\d+)\s*分", "content minutes").group(1))
