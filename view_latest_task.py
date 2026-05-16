@@ -114,12 +114,6 @@ def parse_next_task_clipboard_payload(clipboard_text: str) -> tuple[str | None, 
     text = clipboard_text.strip()
     if not text:
         return None, ""
-    if "|" in text:
-        left, right = text.split("|", 1)
-        assignee = left.strip()
-        task_name = right.strip()
-        if assignee and task_name:
-            return assignee, task_name
     return None, text
 
 

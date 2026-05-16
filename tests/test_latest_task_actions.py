@@ -66,8 +66,8 @@ class LatestTaskActionsTests(unittest.TestCase):
 
     def test_parse_next_task_clipboard_payload(self):
         assignee, name = ltv.parse_next_task_clipboard_payload("Alex | 新任務")
-        self.assertEqual(assignee, "Alex")
-        self.assertEqual(name, "新任務")
+        self.assertIsNone(assignee)
+        self.assertEqual(name, "Alex | 新任務")
 
 
 if __name__ == "__main__":
