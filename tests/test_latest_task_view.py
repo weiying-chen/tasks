@@ -26,6 +26,7 @@ class LatestTaskViewTests(unittest.TestCase):
                     {
                         "id": "3",
                         "name": "Child",
+                        "type": "news",
                         "createdAt": "2026-05-13T01:00:00Z",
                         "workMinutes": 134,
                         "children": [],
@@ -41,6 +42,8 @@ class LatestTaskViewTests(unittest.TestCase):
         self.assertIn("Notes", out)
         self.assertIn('• "上肢" referred to arms rather than upper body.', out)
         self.assertIn("Child", out)
+        self.assertIn("Type: news", out)
+        self.assertNotIn("Type: subs", out)
         self.assertIn("Work time: 2h 14m", out)
         self.assertIn("Extended deadline:", out)
 

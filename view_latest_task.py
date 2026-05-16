@@ -235,6 +235,9 @@ def render_task_block(lines: list[str], task: dict, now_local: datetime, level: 
     name = task.get("name") or "(Untitled)"
     if level > 2:
         lines.append(f'Name: {name}')
+        task_type = task.get("type")
+        if isinstance(task_type, str) and task_type.strip():
+            lines.append(f'Type: {task_type}')
         lines.append(f'Work time: {fmt_work(work_minutes)}')
         lines.append(f'Deadline: {color(to_display(deadline) if deadline else "-", YELLOW)}')
         lines.append('')
