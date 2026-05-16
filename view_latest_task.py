@@ -164,8 +164,7 @@ def fmt_countdown(now_local: datetime, target: datetime | None) -> str:
     if target is None:
         return '-'
     total_seconds = work_seconds_between(now_local, target)
-    if total_seconds <= 0:
-        return '-'
+    total_seconds = max(total_seconds, 0)
 
     hours, rem = divmod(total_seconds, 3600)
     minutes, seconds = divmod(rem, 60)

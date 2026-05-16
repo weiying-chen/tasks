@@ -58,7 +58,7 @@ class LatestTaskViewTests(unittest.TestCase):
     def test_countdown_does_not_show_overdue_label(self):
         now_local = datetime(2026, 5, 13, 12, 0, tzinfo=timezone(timedelta(hours=8)))
         target = datetime(2026, 5, 13, 10, 0, tzinfo=timezone(timedelta(hours=8)))
-        self.assertEqual(ltv.fmt_countdown(now_local, target), "-")
+        self.assertEqual(ltv.fmt_countdown(now_local, target), "0h 0m 0s")
 
     def test_only_one_empty_line_before_actions(self):
         tasks = [
