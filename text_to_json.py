@@ -39,31 +39,31 @@ def extract_subs_program_name(subs_name: str) -> str:
     return program
 
 
-def resolve_subs_assigned_by(subs_name: str, parsed_assigned_by: str) -> str:
+def resolve_subs_assigned_by(subs_name: str) -> str:
     program = extract_subs_program_name(subs_name)
     expected_assignee = SUBS_PROGRAM_DEFAULT_ASSIGNEE.get(program)
     if expected_assignee is None:
-        return parsed_assigned_by
-    if parsed_assigned_by != expected_assignee:
-        raise ValueError(
-            f"AssignedBy mismatch for subs program '{program}': "
-            f"expected '{expected_assignee}', got '{parsed_assigned_by}'"
-        )
+        raise ValueError(f"No assignedBy mapping for subs program '{program}'")
     return expected_assignee
 
 
 def parse_subs_input(text: str, year: int, task_id: str):
-    name = must_match(text, r"翻譯\s*([^，,]+?)\s*\d+\s*個短版", "name").group(1).strip()
-    parsed_assigned_by = must_match(text, r"請\s*([^\s]+(?:\s+[^\s]+)?)\s+翻譯", "assignedBy").group(1).strip()
-    assigned_by = resolve_subs_assigned_by(name, parsed_assigned_by)
+    name = must_match(text, r"翻譯\s*([^，,]+?)(?:\s*\d+\s*個短版)?\s*[，,]", "name").group(1).strip()
+    assigned_by = resolve_subs_assigned_by(name)
 
-    must_match(text, r"(\d+)\s*個短版", "short count")
-    content_minutes = int(must_match(text, r"長度\s*(\d+)\s*分", "content minutes").group(1))
+    content_match = must_match(text, r"(?:長度|片長)\s*(\d+)\s*分(?:\s*(\d+)\s*秒)?", "content duration")
+    content_minutes = int(content_match.group(1))
+    content_seconds_extra = int(content_match.group(2) or 0)
+    content_seconds = content_minutes * 60 + content_seconds_extra
 
-    work = must_match(text, r"預計翻譯\s*(\d+)\s*時\s*(\d+)\s*分", "work time")
+    work = must_match(text, r"預計(?:翻譯|做)\s*(\d+)\s*(?:時|小時)\s*(\d+)\s*分", "work time")
     work_minutes = int(work.group(1)) * 60 + int(work.group(2))
 
-    start = must_match(text, r"從\s*(\d{1,2}/\d{1,2})(?:[（(][^）)]*[）)])?\s*(\d{1,2}:\d{2})\s*起算", "start time")
+    start = must_match(
+        text,
+        r"(?:從|由)\s*(\d{1,2}/\d{1,2})(?:[（(][^）)]*[）)])?\s*(\d{1,2}:\d{2})\s*起算",
+        "start time",
+    )
     dl = must_match(text, r"deadline為\s*(\d{1,2}/\d{1,2})(?:[（(][^）)]*[）)])?\s*(\d{1,2}:\d{2})", "deadline", flags=re.I)
 
     created_at = parse_datetime(start.group(1), start.group(2), year)
@@ -76,7 +76,7 @@ def parse_subs_input(text: str, year: int, task_id: str):
         "createdAt": created_at,
         "deadline": deadline,
         "workMinutes": work_minutes,
-        "contentSeconds": content_minutes * 60,
+        "contentSeconds": content_seconds,
         "children": [],
         "sourceText": text,
     }
@@ -393,7 +393,7 @@ def main():
         if args.debug:
             raise
         raise SystemExit(
-            "Cannot parse input as posts/news/subs. Check clipboard text format."
+            f"Cannot parse input as posts/news/subs. Check clipboard text format. ({exc})"
         ) from exc
 
     if args.parent_id:
