@@ -73,6 +73,10 @@ def build_add_to_latest_command(script_dir: str, parent_id: str) -> list[str]:
     return ["python3", f"{script_dir}/text_to_json.py", "--parent-id", parent_id, "__CLIPBOARD__"]
 
 
+def build_add_task_command(script_dir: str) -> list[str]:
+    return [f"{script_dir}/add_task.sh"]
+
+
 def build_deadline_message_command(script_dir: str, infile: str, task_id: str) -> list[str]:
     return [
         "python3",
@@ -282,12 +286,14 @@ def build_latest_view(tasks: list[dict], now_local: datetime | None = None, stat
         lines.append('')
     lines.append(
         color('Actions: ', MAGENTA)
+        + color('n', GREEN) + color('ew task', MAGENTA)
+        + color(' | ', MAGENTA)
         + color('a', GREEN) + color('dd subtask', MAGENTA)
         + color(' | ', MAGENTA)
         + color('copy d', MAGENTA) + color('eadline ', MAGENTA)
         + color('e', GREEN) + color('xtension message', MAGENTA)
         + color(' | ', MAGENTA)
-        + color('copy ', MAGENTA) + color('n', GREEN) + color('ext task message', MAGENTA)
+        + color('copy next ', MAGENTA) + color('t', GREEN) + color('ask message', MAGENTA)
         + color(' | ', MAGENTA)
         + color('q', GREEN) + color('uit', MAGENTA)
     )
@@ -316,7 +322,6 @@ def main():
         print(render_once(), end='')
         return
 
-    previous_lines = 0
     interval = max(0.2, args.interval)
     status = ""
     status_until = 0.0
@@ -333,19 +338,33 @@ def main():
         while True:
             visible_status = status if time.time() < status_until else ""
             frame = render_once(status=visible_status)
-            frame_lines = frame.splitlines()
-            # Move back to the start of previous frame and redraw in place.
-            if previous_lines > 0:
-                sys.stdout.write(f'\x1b[{previous_lines}F')
-            sys.stdout.write('\x1b[J')
+            # Full-screen redraw avoids stale wrapped rows accumulating.
+            sys.stdout.write('\x1b[H\x1b[J')
             sys.stdout.write(frame)
             sys.stdout.flush()
-            previous_lines = len(frame_lines)
             ready, _, _ = select.select([sys.stdin], [], [], interval)
             if ready:
                 ch = os.read(stdin_fd, 1)
                 if ch == b"q":
                     break
+                if ch == b"n":
+                    try:
+                        add_proc = subprocess.run(
+                            build_add_task_command(script_dir),
+                            capture_output=True,
+                            text=True,
+                            cwd=script_dir,
+                        )
+                        if add_proc.returncode != 0:
+                            msg = (add_proc.stderr or add_proc.stdout or "Add failed").strip()
+                            status = color(f"Error: {msg}", RED)
+                            status_until = time.time() + STATUS_TTL_SECONDS
+                        else:
+                            status = ""
+                            status_until = 0.0
+                    except Exception as exc:
+                        status = color(f"Error: Add failed: {exc}", RED)
+                        status_until = time.time() + STATUS_TTL_SECONDS
                 if ch == b"a":
                     try:
                         data = json.loads(in_path.read_text(encoding='utf-8'))
@@ -418,7 +437,7 @@ def main():
                     except Exception as exc:
                         status = color(f"Error: Message failed: {exc}", RED)
                         status_until = time.time() + STATUS_TTL_SECONDS
-                if ch == b"n":
+                if ch == b"t":
                     try:
                         data = json.loads(in_path.read_text(encoding='utf-8'))
                         tasks = normalize_tasks(data)

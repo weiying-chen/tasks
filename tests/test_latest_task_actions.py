@@ -28,6 +28,10 @@ class LatestTaskActionsTests(unittest.TestCase):
             ["python3", "/tmp/text_to_json.py", "--parent-id", "9", "__CLIPBOARD__"],
         )
 
+    def test_build_add_task_command(self):
+        cmd = ltv.build_add_task_command("/tmp")
+        self.assertEqual(cmd, ["/tmp/add_task.sh"])
+
     def test_build_deadline_message_command(self):
         cmd = ltv.build_deadline_message_command("/tmp", "/tmp/tasks.json", "9")
         self.assertEqual(
