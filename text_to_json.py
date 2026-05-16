@@ -231,6 +231,22 @@ def parse_simple_duration_input(text: str):
     return None
 
 
+def parse_notes_input(text: str) -> list[str]:
+    notes: list[str] = []
+    for raw_line in text.splitlines():
+        line = raw_line.strip()
+        if not line:
+            continue
+        m = re.match(r"^[•*-]\s*(.+)$", line)
+        if not m:
+            return []
+        note = m.group(1).strip()
+        if not note:
+            return []
+        notes.append(note)
+    return notes
+
+
 def parse_source_text(source_text: str, existing_tasks: list[dict], now_year: int) -> list[dict]:
     # Parse precedence matters: posts/news can include text that fails subs.
     new_items = []
@@ -317,6 +333,22 @@ def insert_under_parent(tasks, parent_id, new_task):
     return False
 
 
+def append_notes_under_parent(tasks, parent_id, notes: list[str]) -> bool:
+    for task in tasks:
+        if task.get("id") == parent_id:
+            existing_notes = task.get("notes")
+            if isinstance(existing_notes, list):
+                normalized_existing = [n for n in existing_notes if isinstance(n, str)]
+                task["notes"] = normalized_existing + notes
+            else:
+                task["notes"] = notes[:]
+            return True
+        children = task.get("children")
+        if isinstance(children, list) and append_notes_under_parent(children, parent_id, notes):
+            return True
+    return False
+
+
 def normalize_task_shape(task):
     children_raw = task.get("children")
     children = []
@@ -345,6 +377,11 @@ def normalize_task_shape(task):
         normalized["workMinutes"] = task["workMinutes"]
     if isinstance(task.get("contentSeconds"), int):
         normalized["contentSeconds"] = task["contentSeconds"]
+    notes = task.get("notes")
+    if isinstance(notes, list):
+        normalized_notes = [note for note in notes if isinstance(note, str) and note.strip()]
+        if normalized_notes:
+            normalized["notes"] = normalized_notes
 
     normalized["children"] = children
 
@@ -370,6 +407,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("text", nargs="?", help="source task text")
     parser.add_argument("--parent-id", help="insert new task under this parent task id")
+    parser.add_argument("--target", choices=["children", "notes"], default="children", help="parent field target when using --parent-id")
     parser.add_argument("--debug", action="store_true", help="show full traceback on errors")
     args = parser.parse_args()
 
@@ -386,6 +424,20 @@ def main():
         raise ValueError("Provide source text")
 
     now_year = datetime.now(TZ_TAIPEI).year
+
+    if args.target == "notes":
+        if not args.parent_id:
+            raise ValueError("--target notes requires --parent-id")
+        notes = parse_notes_input(source_text)
+        if not notes:
+            raise ValueError("Cannot parse notes bullets")
+        inserted = append_notes_under_parent(tasks, args.parent_id, notes)
+        if not inserted:
+            raise ValueError(f"Parent id not found: {args.parent_id}")
+        normalized_tasks = [normalize_task_shape(task) for task in tasks if isinstance(task, dict)]
+        out_path.write_text(json.dumps(normalized_tasks, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        print(f"Inserted {len(notes)} note(s) under {args.parent_id} in tasks.json")
+        return
 
     try:
         new_items = parse_source_text(source_text, tasks, now_year)

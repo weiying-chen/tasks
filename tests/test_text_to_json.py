@@ -120,6 +120,29 @@ class TextToJsonTests(unittest.TestCase):
         text_to_json.apply_child_work_rule(task)
         self.assertEqual(task["workMinutes"], 100)
 
+    def test_parse_notes_input_bullet_list(self):
+        text = (
+            '• "上肢" referred to arms rather than upper body.\n'
+            '• "軟" referred to physical weakness/instability rather than tiredness.\n'
+        )
+        notes = text_to_json.parse_notes_input(text)
+        self.assertEqual(
+            notes,
+            [
+                '"上肢" referred to arms rather than upper body.',
+                '"軟" referred to physical weakness/instability rather than tiredness.',
+            ],
+        )
+
+    def test_append_notes_under_parent(self):
+        tasks = [
+            {"id": "1", "name": "A", "children": []},
+            {"id": "2", "name": "B", "children": []},
+        ]
+        inserted = text_to_json.append_notes_under_parent(tasks, "2", ["note 1", "note 2"])
+        self.assertTrue(inserted)
+        self.assertEqual(tasks[1]["notes"], ["note 1", "note 2"])
+
 
 if __name__ == "__main__":
     unittest.main()
