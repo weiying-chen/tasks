@@ -72,7 +72,7 @@ class LatestTaskViewTests(unittest.TestCase):
         ]
         out = self.strip_ansi(ltv.build_latest_view(tasks))
         lines = out.splitlines()
-        actions_idx = lines.index("Actions: new task | add subtask | copy deadline extension message | copy next task message | quit")
+        actions_idx = lines.index("Actions: new task | add subtasks | copy deadline extension message | copy next task message | quit")
         self.assertEqual(lines[actions_idx - 1], "")
         self.assertNotEqual(lines[actions_idx - 2], "")
 
@@ -88,7 +88,7 @@ class LatestTaskViewTests(unittest.TestCase):
         ]
         out = ltv.build_latest_view(tasks)
         self.assertRegex(out, r"\x1b\[32mn\x1b\[0m\x1b\[35mew task")
-        self.assertRegex(out, r"\x1b\[32ma\x1b\[0m\x1b\[35mdd subtask")
+        self.assertRegex(out, r"\x1b\[32ma\x1b\[0m\x1b\[35mdd subtasks")
         self.assertRegex(out, r"\x1b\[32me\x1b\[0m\x1b\[35mxtension")
         self.assertRegex(out, r"\x1b\[35mcopy next \x1b\[0m\x1b\[32mt\x1b\[0m\x1b\[35mask message")
 

@@ -288,7 +288,7 @@ def build_latest_view(tasks: list[dict], now_local: datetime | None = None, stat
         color('Actions: ', MAGENTA)
         + color('n', GREEN) + color('ew task', MAGENTA)
         + color(' | ', MAGENTA)
-        + color('a', GREEN) + color('dd subtask', MAGENTA)
+        + color('a', GREEN) + color('dd subtasks', MAGENTA)
         + color(' | ', MAGENTA)
         + color('copy d', MAGENTA) + color('eadline ', MAGENTA)
         + color('e', GREEN) + color('xtension message', MAGENTA)
