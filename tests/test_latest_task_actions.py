@@ -1,16 +1,16 @@
 import unittest
 
-import view_latest_task as ltv
+import view_latest_task
 
 
 class LatestTaskActionsTests(unittest.TestCase):
     def test_copy_success_status_messages(self):
         self.assertEqual(
-            ltv.DEADLINE_MESSAGE_COPIED_STATUS,
+            view_latest_task.DEADLINE_MESSAGE_COPIED_STATUS,
             "Success: Deadline extension message copied to clipboard",
         )
         self.assertEqual(
-            ltv.NEXT_TASK_MESSAGE_COPIED_STATUS,
+            view_latest_task.NEXT_TASK_MESSAGE_COPIED_STATUS,
             "Success: Next task message copied to clipboard",
         )
 
@@ -19,21 +19,21 @@ class LatestTaskActionsTests(unittest.TestCase):
             {"id": "1", "name": "A", "children": []},
             {"id": "7", "name": "B", "children": []},
         ]
-        self.assertEqual(ltv.find_latest_task_id(tasks), "7")
+        self.assertEqual(view_latest_task.find_latest_task_id(tasks), "7")
 
     def test_build_add_to_latest_command(self):
-        cmd = ltv.build_add_to_latest_command("/tmp", "9")
+        cmd = view_latest_task.build_add_to_latest_command("/tmp", "9")
         self.assertEqual(
             cmd,
             ["python3", "/tmp/text_to_json.py", "--parent-id", "9", "__CLIPBOARD__"],
         )
 
     def test_build_add_task_command(self):
-        cmd = ltv.build_add_task_command("/tmp")
+        cmd = view_latest_task.build_add_task_command("/tmp")
         self.assertEqual(cmd, ["/tmp/add_task.sh"])
 
     def test_build_deadline_message_command(self):
-        cmd = ltv.build_deadline_message_command("/tmp", "/tmp/tasks.json", "9")
+        cmd = view_latest_task.build_deadline_message_command("/tmp", "/tmp/tasks.json", "9")
         self.assertEqual(
             cmd,
             [
@@ -49,7 +49,7 @@ class LatestTaskActionsTests(unittest.TestCase):
         )
 
     def test_build_next_task_message_command(self):
-        cmd = ltv.build_next_task_message_command("/tmp", "/tmp/tasks.json", "9", "new task", "Alex")
+        cmd = view_latest_task.build_next_task_message_command("/tmp", "/tmp/tasks.json", "9", "new task", "Alex")
         self.assertEqual(
             cmd,
             [
@@ -69,7 +69,7 @@ class LatestTaskActionsTests(unittest.TestCase):
         )
 
     def test_parse_next_task_clipboard_payload(self):
-        assignee, name = ltv.parse_next_task_clipboard_payload("Alex | 新任務")
+        assignee, name = view_latest_task.parse_next_task_clipboard_payload("Alex | 新任務")
         self.assertIsNone(assignee)
         self.assertEqual(name, "Alex | 新任務")
 

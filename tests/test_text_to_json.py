@@ -1,6 +1,6 @@
 import unittest
 
-import text_to_json as t2j
+import text_to_json
 
 
 class TextToJsonTests(unittest.TestCase):
@@ -13,7 +13,7 @@ class TextToJsonTests(unittest.TestCase):
             "4/26無私大愛結好緣\n"
             "https://example.com/b\n"
         )
-        tasks = t2j.parse_posts_input(text, "alex")
+        tasks = text_to_json.parse_posts_input(text, "alex")
         self.assertEqual(len(tasks), 1)
         self.assertEqual(tasks[0]["name"], "無私大愛結好緣")
         self.assertEqual(tasks[0]["workMinutes"], 60)
@@ -26,7 +26,7 @@ class TextToJsonTests(unittest.TestCase):
             "Emily Ding: 美YMCA發食物 1:55\n"
             "Alex Chen: 墨安寧牙義診 1:50\n"
         )
-        tasks = t2j.parse_news_input(text, 2026, "Alex Chen")
+        tasks = text_to_json.parse_news_input(text, 2026, "Alex Chen")
         self.assertEqual(len(tasks), 1)
         self.assertEqual(tasks[0]["name"], "墨安寧牙義診")
         self.assertEqual(tasks[0]["contentSeconds"], 110 * 60)
@@ -39,7 +39,7 @@ class TextToJsonTests(unittest.TestCase):
             "4/26無私大愛結好緣\n"
             "https://www.daai.tv/master/life-wisdom/P90230241?more=true\n"
         )
-        parsed = t2j.parse_source_text(text, [{"id": "1", "name": "root", "children": []}], 2026)
+        parsed = text_to_json.parse_source_text(text, [{"id": "1", "name": "root", "children": []}], 2026)
         self.assertEqual(len(parsed), 1)
         self.assertEqual(parsed[0]["id"], "2")
         self.assertEqual(parsed[0]["name"], "無私大愛結好緣")
@@ -49,7 +49,7 @@ class TextToJsonTests(unittest.TestCase):
             "請 Anyone 翻譯人文講堂(活出自己的第三人生 - 丁菱娟) 5 個短版, 長度23分, "
             "預計翻譯18時30分(2天2時30分)，從5/6（三）13:49起算，deadline為5/8(五) 16:19，謝謝！"
         )
-        parsed = t2j.parse_source_text(text, [], 2026)
+        parsed = text_to_json.parse_source_text(text, [], 2026)
         self.assertEqual(len(parsed), 1)
         task = parsed[0]
         self.assertEqual(task["id"], "1")
@@ -62,7 +62,7 @@ class TextToJsonTests(unittest.TestCase):
             "請 Someone 翻譯3集精舍日常(淳師父09 如律如儀) 3 個短版, 長度7分, "
             "預計翻譯5時45分，從4/28（二）16:10起算，deadline為4/29(三) 10:00，謝謝！"
         )
-        parsed = t2j.parse_source_text(text, [], 2026)
+        parsed = text_to_json.parse_source_text(text, [], 2026)
         self.assertEqual(parsed[0]["assignedBy"], "張牧軒")
 
     def test_parse_source_text_subs_alt_format(self):
@@ -71,7 +71,7 @@ class TextToJsonTests(unittest.TestCase):
             "怡師父05種菜修行。種希望 )，片長10分29秒，預計做8小時24分，由5/18（一）08:36起算，"
             "deadline為5/19(二) 9:00，謝謝。"
         )
-        parsed = t2j.parse_source_text(text, [], 2026)
+        parsed = text_to_json.parse_source_text(text, [], 2026)
         self.assertEqual(len(parsed), 1)
         task = parsed[0]
         self.assertEqual(task["type"], "subs")
@@ -80,7 +80,7 @@ class TextToJsonTests(unittest.TestCase):
         self.assertEqual(task["contentSeconds"], 629)
 
     def test_parse_source_text_custom_minutes_format(self):
-        parsed = t2j.parse_source_text(
+        parsed = text_to_json.parse_source_text(
             "開會 50分",
             [{"id": "1", "name": "root", "children": []}],
             2026,
@@ -93,7 +93,7 @@ class TextToJsonTests(unittest.TestCase):
         self.assertEqual(task["workMinutes"], 50)
 
     def test_parse_source_text_custom_hours_minutes_format(self):
-        parsed = t2j.parse_source_text(
+        parsed = text_to_json.parse_source_text(
             "開會 1時20分",
             [{"id": "1", "name": "root", "children": []}],
             2026,
@@ -111,13 +111,13 @@ class TextToJsonTests(unittest.TestCase):
             "workMinutes": 60,
             "children": [],
         }
-        t2j.apply_child_work_rule(task)
+        text_to_json.apply_child_work_rule(task)
         self.assertEqual(task["workMinutes"], 50)
 
     def test_news_1h45_stores_1h40_after_bonus_and_factor(self):
-        parsed = t2j.parse_source_text("Alex Chen: 測試新聞 1:45", [], 2026)
+        parsed = text_to_json.parse_source_text("Alex Chen: 測試新聞 1:45", [], 2026)
         task = parsed[0]
-        t2j.apply_child_work_rule(task)
+        text_to_json.apply_child_work_rule(task)
         self.assertEqual(task["workMinutes"], 100)
 
 

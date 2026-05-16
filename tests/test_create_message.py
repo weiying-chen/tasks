@@ -1,6 +1,6 @@
 import unittest
 
-import create_message as cm
+import create_message
 
 
 class CreateMessageTests(unittest.TestCase):
@@ -14,9 +14,9 @@ class CreateMessageTests(unittest.TestCase):
                 {"id": "3", "name": "英文新聞+錄音", "workMinutes": 120, "children": []},
             ],
         }
-        previous, next_deadline = cm.deadline_window_local(task)
-        self.assertEqual(cm.format_message_date(previous), "5/15（五）10:16")
-        self.assertEqual(cm.format_message_date(next_deadline), "5/15（五）13:16")
+        previous, next_deadline = create_message.deadline_window_local(task)
+        self.assertEqual(create_message.format_message_date(previous), "5/15（五）10:16")
+        self.assertEqual(create_message.format_message_date(next_deadline), "5/15（五）13:16")
 
     def test_deadline_extension_message_defaults_to_latest_task(self):
         tasks = [
@@ -42,7 +42,7 @@ class CreateMessageTests(unittest.TestCase):
             },
         ]
 
-        message = cm.create_message(tasks, msg_type="deadline-extension")
+        message = create_message.create_message(tasks, msg_type="deadline-extension")
         self.assertEqual(
             message,
             "今日做其他事時間是 3時10分\n\n"
@@ -65,7 +65,7 @@ class CreateMessageTests(unittest.TestCase):
         ]
 
         with self.assertRaises(ValueError):
-            cm.create_message(tasks, msg_type="deadline-extension")
+            create_message.create_message(tasks, msg_type="deadline-extension")
 
     def test_deadline_extension_message_uses_stored_child_minutes(self):
         tasks = [
@@ -82,7 +82,7 @@ class CreateMessageTests(unittest.TestCase):
             }
         ]
 
-        message = cm.create_message(tasks, msg_type="deadline-extension")
+        message = create_message.create_message(tasks, msg_type="deadline-extension")
         self.assertIn("今日做其他事時間是 2時", message)
 
     def test_deadline_extension_falls_back_to_name_when_type_missing(self):
@@ -99,7 +99,7 @@ class CreateMessageTests(unittest.TestCase):
                 ],
             }
         ]
-        message = cm.create_message(tasks, msg_type="deadline-extension")
+        message = create_message.create_message(tasks, msg_type="deadline-extension")
         self.assertIn("舊資料名稱 1時", message)
 
     def test_next_task_message_uses_finished_task_and_next_name(self):
@@ -115,7 +115,7 @@ class CreateMessageTests(unittest.TestCase):
             }
         ]
 
-        message = cm.create_message(
+        message = create_message.create_message(
             tasks,
             msg_type="next-task",
             task_id="1",
@@ -138,7 +138,7 @@ class CreateMessageTests(unittest.TestCase):
                 "children": [],
             }
         ]
-        message = cm.create_message(
+        message = create_message.create_message(
             tasks,
             msg_type="next-task",
             task_id="1",
@@ -158,9 +158,9 @@ class CreateMessageTests(unittest.TestCase):
             }
         ]
         with self.assertRaises(ValueError):
-            cm.create_message(tasks, msg_type="next-task", next_task_name="新的任務")
+            create_message.create_message(tasks, msg_type="next-task", next_task_name="新的任務")
         with self.assertRaises(ValueError):
-            cm.create_message(tasks, msg_type="next-task", task_id="1")
+            create_message.create_message(tasks, msg_type="next-task", task_id="1")
 
 
 if __name__ == "__main__":
