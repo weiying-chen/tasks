@@ -5,7 +5,7 @@ from pathlib import Path
 import os
 import tempfile
 
-import view_latest_task as ltv
+import view_latest_task
 
 
 class LatestTaskViewTests(unittest.TestCase):
@@ -33,7 +33,7 @@ class LatestTaskViewTests(unittest.TestCase):
             },
         ]
         now_local = datetime(2026, 5, 13, 12, 0, tzinfo=timezone(timedelta(hours=8)))
-        out = self.strip_ansi(ltv.build_latest_view(tasks, now_local))
+        out = self.strip_ansi(view_latest_task.build_latest_view(tasks, now_local))
         self.assertIn("Latest task", out)
         self.assertIn("Name: New Parent", out)
         self.assertIn("Subtasks", out)
@@ -52,13 +52,13 @@ class LatestTaskViewTests(unittest.TestCase):
             }
         ]
         now_local = datetime(2026, 5, 13, 10, 0, tzinfo=timezone(timedelta(hours=8)))
-        out = self.strip_ansi(ltv.build_latest_view(tasks, now_local))
+        out = self.strip_ansi(view_latest_task.build_latest_view(tasks, now_local))
         self.assertIn("Work time left:", out)
 
     def test_countdown_does_not_show_overdue_label(self):
         now_local = datetime(2026, 5, 13, 12, 0, tzinfo=timezone(timedelta(hours=8)))
         target = datetime(2026, 5, 13, 10, 0, tzinfo=timezone(timedelta(hours=8)))
-        self.assertEqual(ltv.fmt_countdown(now_local, target), "0h 0m 0s")
+        self.assertEqual(view_latest_task.fmt_countdown(now_local, target), "0h 0m 0s")
 
     def test_only_one_empty_line_before_actions(self):
         tasks = [
@@ -70,9 +70,9 @@ class LatestTaskViewTests(unittest.TestCase):
                 "children": [],
             }
         ]
-        out = self.strip_ansi(ltv.build_latest_view(tasks))
+        out = self.strip_ansi(view_latest_task.build_latest_view(tasks))
         lines = out.splitlines()
-        actions_idx = lines.index("Actions: new task | add subtasks | copy deadline extension message | copy next task message | quit")
+        actions_idx = lines.index("Actions: create task | add subtasks | copy extension msg | copy completion msg | quit")
         self.assertEqual(lines[actions_idx - 1], "")
         self.assertNotEqual(lines[actions_idx - 2], "")
 
@@ -86,11 +86,11 @@ class LatestTaskViewTests(unittest.TestCase):
                 "children": [],
             }
         ]
-        out = ltv.build_latest_view(tasks)
-        self.assertRegex(out, r"\x1b\[32mn\x1b\[0m\x1b\[35mew task")
-        self.assertRegex(out, r"\x1b\[32ma\x1b\[0m\x1b\[35mdd subtasks")
-        self.assertRegex(out, r"\x1b\[32me\x1b\[0m\x1b\[35mxtension")
-        self.assertRegex(out, r"\x1b\[35mcopy next \x1b\[0m\x1b\[32mt\x1b\[0m\x1b\[35mask message")
+        out = view_latest_task.build_latest_view(tasks)
+        self.assertRegex(out, r"\x1b\[35mcreate \x1b\[0m\x1b\[32mt\x1b\[0m\x1b\[35mask")
+        self.assertRegex(out, r"\x1b\[35madd \x1b\[0m\x1b\[32ms\x1b\[0m\x1b\[35mubtasks")
+        self.assertRegex(out, r"\x1b\[35mcopy \x1b\[0m\x1b\[32me\x1b\[0m\x1b\[35mxtension msg")
+        self.assertRegex(out, r"\x1b\[35mcopy \x1b\[0m\x1b\[32mc\x1b\[0m\x1b\[35mompletion msg")
 
     def test_no_consecutive_empty_lines_with_status(self):
         tasks = [
@@ -102,7 +102,7 @@ class LatestTaskViewTests(unittest.TestCase):
                 "children": [],
             }
         ]
-        out = self.strip_ansi(ltv.build_latest_view(tasks, status="Task is missing deadline."))
+        out = self.strip_ansi(view_latest_task.build_latest_view(tasks, status="Task is missing deadline."))
         lines = out.splitlines()
         for idx in range(1, len(lines)):
             self.assertFalse(lines[idx - 1] == "" and lines[idx] == "")
@@ -118,7 +118,7 @@ class LatestTaskViewTests(unittest.TestCase):
             }
         ]
         now_local = datetime(2026, 5, 13, 10, 0, tzinfo=timezone(timedelta(hours=8)))
-        out = ltv.build_latest_view(tasks, now_local)
+        out = view_latest_task.build_latest_view(tasks, now_local)
         self.assertIn("Latest task", out)
         self.assertIn("Name: Only", out)
         self.assertIn("Created: 2026-05-13 Wed 08:40", out)
@@ -129,7 +129,7 @@ class LatestTaskViewTests(unittest.TestCase):
         start = datetime(2026, 5, 13, 16, 0, tzinfo=timezone(timedelta(hours=8)))
         end = datetime(2026, 5, 14, 9, 0, tzinfo=timezone(timedelta(hours=8)))
         # Work windows counted: 16:00-17:00 (1h) + 8:00-9:00 (1h) = 2h.
-        self.assertEqual(ltv.work_seconds_between(start, end), 2 * 3600)
+        self.assertEqual(view_latest_task.work_seconds_between(start, end), 2 * 3600)
 
     def test_extended_deadline_uses_stored_child_minutes(self):
         tasks = [
@@ -150,7 +150,7 @@ class LatestTaskViewTests(unittest.TestCase):
                 ],
             }
         ]
-        out = self.strip_ansi(ltv.build_latest_view(tasks))
+        out = self.strip_ansi(view_latest_task.build_latest_view(tasks))
         self.assertIn("Extended deadline: 2026-05-13 Wed 11:00", out)
 
     def test_input_path_uses_script_dir_tasks_json(self):
@@ -158,7 +158,7 @@ class LatestTaskViewTests(unittest.TestCase):
         old_cwd = Path.cwd()
         with tempfile.TemporaryDirectory() as temp_dir:
             os.chdir(temp_dir)
-            resolved = ltv.resolve_input_path(fake_script=fake_script)
+            resolved = view_latest_task.resolve_input_path(fake_script=fake_script)
         os.chdir(old_cwd)
         self.assertEqual(resolved, Path("/tmp/proj/tasks.json"))
 

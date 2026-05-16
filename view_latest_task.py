@@ -286,14 +286,13 @@ def build_latest_view(tasks: list[dict], now_local: datetime | None = None, stat
         lines.append('')
     lines.append(
         color('Actions: ', MAGENTA)
-        + color('n', GREEN) + color('ew task', MAGENTA)
+        + color('create ', MAGENTA) + color('t', GREEN) + color('ask', MAGENTA)
         + color(' | ', MAGENTA)
-        + color('a', GREEN) + color('dd subtasks', MAGENTA)
+        + color('add ', MAGENTA) + color('s', GREEN) + color('ubtasks', MAGENTA)
         + color(' | ', MAGENTA)
-        + color('copy d', MAGENTA) + color('eadline ', MAGENTA)
-        + color('e', GREEN) + color('xtension message', MAGENTA)
+        + color('copy ', MAGENTA) + color('e', GREEN) + color('xtension msg', MAGENTA)
         + color(' | ', MAGENTA)
-        + color('copy next ', MAGENTA) + color('t', GREEN) + color('ask message', MAGENTA)
+        + color('copy ', MAGENTA) + color('c', GREEN) + color('ompletion msg', MAGENTA)
         + color(' | ', MAGENTA)
         + color('q', GREEN) + color('uit', MAGENTA)
     )
@@ -347,7 +346,7 @@ def main():
                 ch = os.read(stdin_fd, 1)
                 if ch == b"q":
                     break
-                if ch == b"n":
+                if ch == b"t":
                     try:
                         add_proc = subprocess.run(
                             build_add_task_command(script_dir),
@@ -365,7 +364,7 @@ def main():
                     except Exception as exc:
                         status = color(f"Error: Add failed: {exc}", RED)
                         status_until = time.time() + STATUS_TTL_SECONDS
-                if ch == b"a":
+                if ch == b"s":
                     try:
                         data = json.loads(in_path.read_text(encoding='utf-8'))
                         tasks = normalize_tasks(data)
@@ -437,7 +436,7 @@ def main():
                     except Exception as exc:
                         status = color(f"Error: Message failed: {exc}", RED)
                         status_until = time.time() + STATUS_TTL_SECONDS
-                if ch == b"t":
+                if ch == b"c":
                     try:
                         data = json.loads(in_path.read_text(encoding='utf-8'))
                         tasks = normalize_tasks(data)
