@@ -260,6 +260,17 @@ def render_task_block(lines: list[str], task: dict, now_local: datetime, level: 
     work_minutes = task.get('workMinutes')
 
     name = task.get("name") or "(Untitled)"
+    def render_notes_block() -> None:
+        notes = task.get("notes")
+        if isinstance(notes, list):
+            rendered_notes = [note.strip() for note in notes if isinstance(note, str) and note.strip()]
+            if rendered_notes:
+                lines.append('Notes')
+                lines.append('')
+                for note in rendered_notes:
+                    lines.append(f'• {note}')
+                lines.append('')
+
     if level > 2:
         lines.append(f'Name: {name}')
         task_type = task.get("type")
@@ -267,7 +278,9 @@ def render_task_block(lines: list[str], task: dict, now_local: datetime, level: 
             lines.append(f'Type: {task_type}')
         lines.append(f'Work time: {fmt_work(work_minutes)}')
         lines.append(f'Deadline: {color(to_display(deadline) if deadline else "-", YELLOW)}')
-        lines.append('')
+        render_notes_block()
+        if not lines or lines[-1] != '':
+            lines.append('')
     else:
         lines.append(bold('Latest task'))
         lines.append('')
@@ -469,9 +482,12 @@ def main():
                         target_id = latest_id
                         options = build_notes_target_options(latest_task)
                         if len(options) > 1:
-                            numbered = [f"{idx}. {label}" for idx, (_, label) in enumerate(options, start=1)]
+                            numbered = [
+                                color(f"{idx}.", GREEN) + color(f" {label}", MAGENTA)
+                                for idx, (_, label) in enumerate(options, start=1)
+                            ]
                             status = color(bold("Notes target"), MAGENTA) + "\n\n" + "\n".join(
-                                color(item, MAGENTA) for item in numbered
+                                numbered
                             )
                             status_until = time.time() + STATUS_TTL_SECONDS
                             frame = render_once(status=status)

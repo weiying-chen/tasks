@@ -160,6 +160,41 @@ class LatestTaskViewTests(unittest.TestCase):
         out = self.strip_ansi(view_latest_task.build_latest_view(tasks))
         self.assertIn("Extended deadline: 2026-05-13 Wed 11:00", out)
 
+    def test_child_blocks_have_single_blank_line_separator(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "Parent",
+                "createdAt": "2026-05-13T00:40:00Z",
+                "workMinutes": 60,
+                "children": [
+                    {
+                        "id": "2",
+                        "name": "Child A",
+                        "type": "news",
+                        "createdAt": "2026-05-13T01:00:00Z",
+                        "workMinutes": 60,
+                        "deadline": "2026-05-13T02:00:00Z",
+                        "children": [],
+                    },
+                    {
+                        "id": "3",
+                        "name": "Child B",
+                        "type": "posts",
+                        "createdAt": "2026-05-13T02:00:00Z",
+                        "workMinutes": 30,
+                        "deadline": "2026-05-13T03:00:00Z",
+                        "children": [],
+                    },
+                ],
+            }
+        ]
+        out = self.strip_ansi(view_latest_task.build_latest_view(tasks))
+        self.assertIn(
+            "Deadline: 2026-05-13 Wed 10:00\n\nName: Child B",
+            out,
+        )
+
     def test_input_path_uses_script_dir_tasks_json(self):
         fake_script = Path("/tmp/proj/view_latest_task.py")
         old_cwd = Path.cwd()

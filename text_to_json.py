@@ -426,18 +426,23 @@ def main():
     now_year = datetime.now(TZ_TAIPEI).year
 
     if args.target == "notes":
-        if not args.parent_id:
-            raise ValueError("--target notes requires --parent-id")
-        notes = parse_notes_input(source_text)
-        if not notes:
-            raise ValueError("Cannot parse notes bullets")
-        inserted = append_notes_under_parent(tasks, args.parent_id, notes)
-        if not inserted:
-            raise ValueError(f"Parent id not found: {args.parent_id}")
-        normalized_tasks = [normalize_task_shape(task) for task in tasks if isinstance(task, dict)]
-        out_path.write_text(json.dumps(normalized_tasks, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-        print(f"Inserted {len(notes)} note(s) under {args.parent_id} in tasks.json")
-        return
+        try:
+            if not args.parent_id:
+                raise ValueError("--target notes requires --parent-id")
+            notes = parse_notes_input(source_text)
+            if not notes:
+                raise ValueError("Cannot parse notes bullets")
+            inserted = append_notes_under_parent(tasks, args.parent_id, notes)
+            if not inserted:
+                raise ValueError(f"Parent id not found: {args.parent_id}")
+            normalized_tasks = [normalize_task_shape(task) for task in tasks if isinstance(task, dict)]
+            out_path.write_text(json.dumps(normalized_tasks, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            print(f"Inserted {len(notes)} note(s) under {args.parent_id} in tasks.json")
+            return
+        except ValueError as exc:
+            if args.debug:
+                raise
+            raise SystemExit(f"Cannot add notes. ({exc})") from exc
 
     try:
         new_items = parse_source_text(source_text, tasks, now_year)

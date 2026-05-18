@@ -26,6 +26,17 @@ class CliErrorTests(unittest.TestCase):
         self.assertNotEqual(proc.returncode, 0)
         self.assertIn("unrecognized arguments: --tasks-file", proc.stderr)
 
+    def test_notes_target_error_is_one_line_without_traceback(self):
+        script = Path(__file__).resolve().parent.parent / "text_to_json.py"
+        proc = subprocess.run(
+            [sys.executable, str(script), "--parent-id", "6", "--target", "notes", "not a bullet line"],
+            capture_output=True,
+            text=True,
+        )
+        self.assertNotEqual(proc.returncode, 0)
+        self.assertIn("Cannot add notes.", proc.stderr)
+        self.assertNotIn("Traceback", proc.stderr)
+
 
 if __name__ == "__main__":
     unittest.main()
