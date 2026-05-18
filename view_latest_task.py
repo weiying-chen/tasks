@@ -19,6 +19,7 @@ WORK_BLOCKS = (
     ((13, 0), (17, 0)),
 )
 RESET = '\x1b[0m'
+BOLD = '\x1b[1m'
 YELLOW = '\x1b[33m'   # theme yellow
 GREEN = '\x1b[32m'    # theme green
 RED = '\x1b[31m'      # terminal red (git-style error emphasis)
@@ -209,6 +210,10 @@ def color(text: str, code: str) -> str:
     return f'{code}{text}{RESET}'
 
 
+def bold(text: str) -> str:
+    return f'{BOLD}{text}{RESET}'
+
+
 def work_seconds_between(start: datetime, end: datetime) -> int:
     if start == end:
         return 0
@@ -264,7 +269,7 @@ def render_task_block(lines: list[str], task: dict, now_local: datetime, level: 
         lines.append(f'Deadline: {color(to_display(deadline) if deadline else "-", YELLOW)}')
         lines.append('')
     else:
-        lines.append('Latest task')
+        lines.append(bold('Latest task'))
         lines.append('')
         lines.append(f'Name: {name}')
         lines.append(f'Created: {to_display(created)}')
@@ -286,7 +291,7 @@ def render_task_block(lines: list[str], task: dict, now_local: datetime, level: 
         lines.append('')
         children = task.get('children')
         if isinstance(children, list) and children:
-            lines.append('Subtasks')
+            lines.append(bold('Subtasks'))
             lines.append('')
 
         children = task.get('children')
@@ -299,7 +304,7 @@ def render_task_block(lines: list[str], task: dict, now_local: datetime, level: 
         if isinstance(notes, list):
             rendered_notes = [note.strip() for note in notes if isinstance(note, str) and note.strip()]
             if rendered_notes:
-                lines.append('Notes')
+                lines.append(bold('Notes'))
                 lines.append('')
                 for note in rendered_notes:
                     lines.append(f'• {note}')
@@ -465,7 +470,7 @@ def main():
                         options = build_notes_target_options(latest_task)
                         if len(options) > 1:
                             numbered = [f"{idx}. {label}" for idx, (_, label) in enumerate(options, start=1)]
-                            status = color("Notes target", MAGENTA) + "\n\n" + "\n".join(
+                            status = color(bold("Notes target"), MAGENTA) + "\n\n" + "\n".join(
                                 color(item, MAGENTA) for item in numbered
                             )
                             status_until = time.time() + STATUS_TTL_SECONDS
