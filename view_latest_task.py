@@ -81,6 +81,10 @@ def build_add_to_latest_command(script_dir: str, parent_id: str, target: str = "
     ]
 
 
+def build_add_notes_command(script_dir: str, parent_id: str) -> list[str]:
+    return build_add_to_latest_command(script_dir, parent_id, "notes")
+
+
 def build_add_task_command(script_dir: str) -> list[str]:
     return [f"{script_dir}/add_task.sh"]
 
@@ -127,6 +131,24 @@ def parse_next_task_clipboard_payload(clipboard_text: str) -> tuple[str | None, 
     if not text:
         return None, ""
     return None, text
+
+
+def build_notes_target_options(latest_task: dict) -> list[tuple[str, str]]:
+    options: list[tuple[str, str]] = []
+    latest_id = str(latest_task.get("id") or "").strip()
+    latest_name = str(latest_task.get("name") or "(Untitled)").strip()
+    if latest_id:
+        options.append((latest_id, latest_name))
+    children = latest_task.get("children")
+    if isinstance(children, list):
+        for child in children:
+            if not isinstance(child, dict):
+                continue
+            child_id = str(child.get("id") or "").strip()
+            child_name = str(child.get("name") or "(Untitled)").strip()
+            if child_id:
+                options.append((child_id, f"{child_name} (subtask)"))
+    return options
 
 
 def task_base_created(task: dict, now_local: datetime) -> datetime:
@@ -429,11 +451,39 @@ def main():
                     try:
                         data = json.loads(in_path.read_text(encoding='utf-8'))
                         tasks = normalize_tasks(data)
+                        if not tasks or not isinstance(tasks[-1], dict):
+                            status = color("Error: Latest task is invalid.", RED)
+                            status_until = time.time() + STATUS_TTL_SECONDS
+                            continue
+                        latest_task = tasks[-1]
                         latest_id = find_latest_task_id(tasks)
                         if not latest_id:
                             status = color("Error: No latest task id found.", RED)
                             status_until = time.time() + STATUS_TTL_SECONDS
                             continue
+                        target_id = latest_id
+                        options = build_notes_target_options(latest_task)
+                        if len(options) > 1:
+                            numbered = [f"{idx}. {label}" for idx, (_, label) in enumerate(options, start=1)]
+                            status = color("Notes target", MAGENTA) + "\n\n" + "\n".join(
+                                color(item, MAGENTA) for item in numbered
+                            )
+                            status_until = time.time() + STATUS_TTL_SECONDS
+                            frame = render_once(status=status)
+                            sys.stdout.write('\x1b[H\x1b[J')
+                            sys.stdout.write(frame)
+                            sys.stdout.flush()
+                            key = os.read(stdin_fd, 1).decode("utf-8", errors="ignore")
+                            if not key.isdigit():
+                                status = color("Error: Select a number for notes target.", RED)
+                                status_until = time.time() + STATUS_TTL_SECONDS
+                                continue
+                            pick = int(key)
+                            if pick < 1 or pick > len(options):
+                                status = color("Error: Notes target out of range.", RED)
+                                status_until = time.time() + STATUS_TTL_SECONDS
+                                continue
+                            target_id = options[pick - 1][0]
                         clipboard_proc = subprocess.run(
                             ["wl-paste"],
                             capture_output=True,
@@ -445,7 +495,7 @@ def main():
                             status = color("Error: Clipboard is empty.", RED)
                             status_until = time.time() + STATUS_TTL_SECONDS
                             continue
-                        cmd = build_add_to_latest_command(script_dir, latest_id, "notes")
+                        cmd = build_add_notes_command(script_dir, target_id)
                         cmd[-1] = clipboard_text
                         add_proc = subprocess.run(
                             cmd,

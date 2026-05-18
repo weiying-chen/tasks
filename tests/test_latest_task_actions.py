@@ -39,6 +39,32 @@ class LatestTaskActionsTests(unittest.TestCase):
         cmd = view_latest_task.build_add_task_command("/tmp")
         self.assertEqual(cmd, ["/tmp/add_task.sh"])
 
+    def test_build_add_notes_command(self):
+        cmd = view_latest_task.build_add_notes_command("/tmp", "9")
+        self.assertEqual(
+            cmd,
+            ["python3", "/tmp/text_to_json.py", "--parent-id", "9", "--target", "notes", "__CLIPBOARD__"],
+        )
+
+    def test_build_notes_target_options_parent_and_children(self):
+        latest = {
+            "id": "6",
+            "name": "Parent",
+            "children": [
+                {"id": "7", "name": "Child A"},
+                {"id": "8", "name": "Child B"},
+            ],
+        }
+        options = view_latest_task.build_notes_target_options(latest)
+        self.assertEqual(
+            options,
+            [
+                ("6", "Parent"),
+                ("7", "Child A (subtask)"),
+                ("8", "Child B (subtask)"),
+            ],
+        )
+
     def test_build_deadline_message_command(self):
         cmd = view_latest_task.build_deadline_message_command("/tmp", "/tmp/tasks.json", "9")
         self.assertEqual(
