@@ -29,6 +29,7 @@ class LatestTaskViewTests(unittest.TestCase):
                         "type": "news",
                         "createdAt": "2026-05-13T01:00:00Z",
                         "workMinutes": 134,
+                        "notes": ["child-only note"],
                         "children": [],
                     }
                 ],
@@ -39,13 +40,54 @@ class LatestTaskViewTests(unittest.TestCase):
         self.assertIn("Latest task", out)
         self.assertIn("Name: New Parent", out)
         self.assertIn("Subtasks", out)
-        self.assertIn("Notes", out)
+        self.assertIn("Notes (1)", out)
         self.assertIn('• "上肢" referred to arms rather than upper body.', out)
+        self.assertNotIn('• child-only note', out)
         self.assertIn("Child", out)
         self.assertIn("Type: news", out)
         self.assertNotIn("Type: subs", out)
         self.assertIn("Work time: 2h 14m", out)
         self.assertIn("Extended deadline:", out)
+
+    def test_expanded_notes_render_bullets(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "Parent",
+                "createdAt": "2026-05-13T00:40:00Z",
+                "workMinutes": 120,
+                "notes": ["first note", "second note"],
+                "children": [],
+            }
+        ]
+        out = self.strip_ansi(view_latest_task.build_latest_view(tasks, show_subtask_notes=True))
+        self.assertIn("Notes (2)", out)
+        self.assertIn("• first note", out)
+        self.assertIn("• second note", out)
+
+    def test_expanded_view_renders_subtask_notes(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "Parent",
+                "createdAt": "2026-05-13T00:40:00Z",
+                "workMinutes": 120,
+                "children": [
+                    {
+                        "id": "2",
+                        "name": "Child",
+                        "type": "news",
+                        "createdAt": "2026-05-13T01:00:00Z",
+                        "workMinutes": 30,
+                        "notes": ["subtask note"],
+                        "children": [],
+                    }
+                ],
+            }
+        ]
+        out = self.strip_ansi(view_latest_task.build_latest_view(tasks, show_subtask_notes=True))
+        self.assertIn("Notes (1)", out)
+        self.assertIn("• subtask note", out)
 
     def test_countdown_line_present(self):
         tasks = [
@@ -78,7 +120,7 @@ class LatestTaskViewTests(unittest.TestCase):
         ]
         out = self.strip_ansi(view_latest_task.build_latest_view(tasks))
         lines = out.splitlines()
-        actions_idx = lines.index("Actions: create task | add subtasks | add notes | copy extension msg | copy completion msg | quit")
+        actions_idx = lines.index("Actions: create task | add subtasks | add notes | toggle view notes | copy extension msg | copy completion msg | quit")
         self.assertEqual(lines[actions_idx - 1], "")
         self.assertNotEqual(lines[actions_idx - 2], "")
 
@@ -96,6 +138,7 @@ class LatestTaskViewTests(unittest.TestCase):
         self.assertRegex(out, r"\x1b\[35mcreate \x1b\[0m\x1b\[32mt\x1b\[0m\x1b\[35mask")
         self.assertRegex(out, r"\x1b\[35madd \x1b\[0m\x1b\[32ms\x1b\[0m\x1b\[35mubtasks")
         self.assertRegex(out, r"\x1b\[35madd \x1b\[0m\x1b\[32mn\x1b\[0m\x1b\[35motes")
+        self.assertRegex(out, r"\x1b\[35mtoggle \x1b\[0m\x1b\[32mv\x1b\[0m\x1b\[35miew notes")
         self.assertRegex(out, r"\x1b\[35mcopy \x1b\[0m\x1b\[32me\x1b\[0m\x1b\[35mxtension msg")
         self.assertRegex(out, r"\x1b\[35mcopy \x1b\[0m\x1b\[32mc\x1b\[0m\x1b\[35mompletion msg")
 

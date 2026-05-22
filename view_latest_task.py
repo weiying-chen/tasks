@@ -254,22 +254,30 @@ def work_seconds_between(start: datetime, end: datetime) -> int:
     return seconds
 
 
-def render_task_block(lines: list[str], task: dict, now_local: datetime, level: int) -> None:
+def clean_notes(task: dict) -> list[str]:
+    notes = task.get("notes")
+    if not isinstance(notes, list):
+        return []
+    return [note.strip() for note in notes if isinstance(note, str) and note.strip()]
+
+
+def render_notes_block(lines: list[str], title: str, notes: list[str], show_notes: bool) -> None:
+    if not notes:
+        return
+    lines.append(title)
+    lines.append('')
+    if show_notes:
+        for note in notes:
+            lines.append(f'• {note}')
+        lines.append('')
+
+
+def render_task_block(lines: list[str], task: dict, now_local: datetime, level: int, show_subtask_notes: bool) -> None:
     created = next_work_start(task_base_created(task, now_local))
     deadline = task_deadline(task, now_local)
     work_minutes = task.get('workMinutes')
 
     name = task.get("name") or "(Untitled)"
-    def render_notes_block() -> None:
-        notes = task.get("notes")
-        if isinstance(notes, list):
-            rendered_notes = [note.strip() for note in notes if isinstance(note, str) and note.strip()]
-            if rendered_notes:
-                lines.append('Notes')
-                lines.append('')
-                for note in rendered_notes:
-                    lines.append(f'• {note}')
-                lines.append('')
 
     if level > 2:
         lines.append(f'Name: {name}')
@@ -278,7 +286,8 @@ def render_task_block(lines: list[str], task: dict, now_local: datetime, level: 
             lines.append(f'Type: {task_type}')
         lines.append(f'Work time: {fmt_work(work_minutes)}')
         lines.append(f'Deadline: {color(to_display(deadline) if deadline else "-", YELLOW)}')
-        render_notes_block()
+        notes = clean_notes(task)
+        render_notes_block(lines, f'Notes ({len(notes)})', notes, show_subtask_notes)
         if not lines or lines[-1] != '':
             lines.append('')
     else:
@@ -311,20 +320,18 @@ def render_task_block(lines: list[str], task: dict, now_local: datetime, level: 
         if isinstance(children, list):
             for child in children:
                 if isinstance(child, dict):
-                    render_task_block(lines, child, now_local, level + 1)
+                    render_task_block(lines, child, now_local, level + 1, show_subtask_notes)
 
-        notes = task.get("notes")
-        if isinstance(notes, list):
-            rendered_notes = [note.strip() for note in notes if isinstance(note, str) and note.strip()]
-            if rendered_notes:
-                lines.append(bold('Notes'))
-                lines.append('')
-                for note in rendered_notes:
-                    lines.append(f'• {note}')
-                lines.append('')
+        notes = clean_notes(task)
+        render_notes_block(lines, bold(f'Notes ({len(notes)})'), notes, True)
 
 
-def build_latest_view(tasks: list[dict], now_local: datetime | None = None, status: str = "") -> str:
+def build_latest_view(
+    tasks: list[dict],
+    now_local: datetime | None = None,
+    status: str = "",
+    show_subtask_notes: bool = False,
+) -> str:
     if now_local is None:
         now_local = datetime.now(TZ_TAIPEI)
 
@@ -338,7 +345,7 @@ def build_latest_view(tasks: list[dict], now_local: datetime | None = None, stat
         lines.append(color('Latest task is invalid', YELLOW))
         return '\n'.join(lines) + '\n'
 
-    render_task_block(lines, latest, now_local, 2)
+    render_task_block(lines, latest, now_local, 2, show_subtask_notes)
     if status:
         if not lines or lines[-1] != '':
             lines.append('')
@@ -352,6 +359,8 @@ def build_latest_view(tasks: list[dict], now_local: datetime | None = None, stat
         + color('add ', MAGENTA) + color('s', GREEN) + color('ubtasks', MAGENTA)
         + color(' | ', MAGENTA)
         + color('add ', MAGENTA) + color('n', GREEN) + color('otes', MAGENTA)
+        + color(' | ', MAGENTA)
+        + color('toggle ', MAGENTA) + color('v', GREEN) + color('iew notes', MAGENTA)
         + color(' | ', MAGENTA)
         + color('copy ', MAGENTA) + color('e', GREEN) + color('xtension msg', MAGENTA)
         + color(' | ', MAGENTA)
@@ -375,10 +384,12 @@ def main():
 
     in_path = resolve_input_path()
 
+    show_notes = False
+
     def render_once(status: str = ""):
         data = json.loads(in_path.read_text(encoding='utf-8'))
         tasks = normalize_tasks(data)
-        return build_latest_view(tasks, status=status)
+        return build_latest_view(tasks, status=status, show_subtask_notes=show_notes)
 
     if args.once:
         print(render_once(), end='')
@@ -534,6 +545,8 @@ def main():
                     except Exception as exc:
                         status = color(f"Error: Add failed: {exc}", RED)
                         status_until = time.time() + STATUS_TTL_SECONDS
+                if ch == b"v":
+                    show_notes = not show_notes
                 if ch == b"e":
                     try:
                         data = json.loads(in_path.read_text(encoding='utf-8'))
