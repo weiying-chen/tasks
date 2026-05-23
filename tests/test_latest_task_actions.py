@@ -65,6 +65,15 @@ class LatestTaskActionsTests(unittest.TestCase):
             ],
         )
 
+    def test_build_message_target_options(self):
+        self.assertEqual(
+            view_latest_task.build_message_target_options(),
+            [
+                ("deadline-extension", "Deadline extension message"),
+                ("next-task", "Task completion message"),
+            ],
+        )
+
     def test_build_deadline_message_command(self):
         cmd = view_latest_task.build_deadline_message_command("/tmp", "/tmp/tasks.json", "9")
         self.assertEqual(

@@ -152,6 +152,39 @@ def build_notes_target_options(latest_task: dict) -> list[tuple[str, str]]:
     return options
 
 
+def build_message_target_options() -> list[tuple[str, str]]:
+    return [
+        ("deadline-extension", "Deadline extension message"),
+        ("next-task", "Task completion message"),
+    ]
+
+
+def choose_numbered_option(
+    stdin_fd: int,
+    render_once_fn,
+    title: str,
+    options: list[tuple[str, str]],
+    out_of_range_msg: str,
+    not_number_msg: str,
+) -> tuple[int | None, str | None]:
+    numbered = [
+        color(f"{idx}.", GREEN) + color(f" {label}", MAGENTA)
+        for idx, (_, label) in enumerate(options, start=1)
+    ]
+    status = color(bold(title), MAGENTA) + "\n\n" + "\n".join(numbered)
+    frame = render_once_fn(status=status)
+    sys.stdout.write('\x1b[H\x1b[J')
+    sys.stdout.write(frame)
+    sys.stdout.flush()
+    key = os.read(stdin_fd, 1).decode("utf-8", errors="ignore")
+    if not key.isdigit():
+        return None, not_number_msg
+    pick = int(key)
+    if pick < 1 or pick > len(options):
+        return None, out_of_range_msg
+    return pick - 1, None
+
+
 def task_base_created(task: dict, now_local: datetime) -> datetime:
     created_at = task.get('createdAt')
     if isinstance(created_at, str):
@@ -362,9 +395,7 @@ def build_latest_view(
         + color(' | ', MAGENTA)
         + color('toggle ', MAGENTA) + color('v', GREEN) + color('iew notes', MAGENTA)
         + color(' | ', MAGENTA)
-        + color('copy ', MAGENTA) + color('e', GREEN) + color('xtension msg', MAGENTA)
-        + color(' | ', MAGENTA)
-        + color('copy ', MAGENTA) + color('c', GREEN) + color('ompletion msg', MAGENTA)
+        + color('copy ', MAGENTA) + color('m', GREEN) + color('essage', MAGENTA)
         + color(' | ', MAGENTA)
         + color('q', GREEN) + color('uit', MAGENTA)
     )
@@ -493,29 +524,19 @@ def main():
                         target_id = latest_id
                         options = build_notes_target_options(latest_task)
                         if len(options) > 1:
-                            numbered = [
-                                color(f"{idx}.", GREEN) + color(f" {label}", MAGENTA)
-                                for idx, (_, label) in enumerate(options, start=1)
-                            ]
-                            status = color(bold("Notes target"), MAGENTA) + "\n\n" + "\n".join(
-                                numbered
+                            pick_idx, pick_err = choose_numbered_option(
+                                stdin_fd=stdin_fd,
+                                render_once_fn=render_once,
+                                title="Notes target",
+                                options=options,
+                                out_of_range_msg="Error: Notes target out of range.",
+                                not_number_msg="Error: Select a number for notes target.",
                             )
-                            status_until = time.time() + STATUS_TTL_SECONDS
-                            frame = render_once(status=status)
-                            sys.stdout.write('\x1b[H\x1b[J')
-                            sys.stdout.write(frame)
-                            sys.stdout.flush()
-                            key = os.read(stdin_fd, 1).decode("utf-8", errors="ignore")
-                            if not key.isdigit():
-                                status = color("Error: Select a number for notes target.", RED)
+                            if pick_err:
+                                status = color(pick_err, RED)
                                 status_until = time.time() + STATUS_TTL_SECONDS
                                 continue
-                            pick = int(key)
-                            if pick < 1 or pick > len(options):
-                                status = color("Error: Notes target out of range.", RED)
-                                status_until = time.time() + STATUS_TTL_SECONDS
-                                continue
-                            target_id = options[pick - 1][0]
+                            target_id = options[pick_idx][0]
                         clipboard_proc = subprocess.run(
                             ["wl-paste"],
                             capture_output=True,
@@ -547,7 +568,7 @@ def main():
                         status_until = time.time() + STATUS_TTL_SECONDS
                 if ch == b"v":
                     show_notes = not show_notes
-                if ch == b"e":
+                if ch == b"m":
                     try:
                         data = json.loads(in_path.read_text(encoding='utf-8'))
                         tasks = normalize_tasks(data)
@@ -556,79 +577,83 @@ def main():
                             status = color("Error: No latest task id found.", RED)
                             status_until = time.time() + STATUS_TTL_SECONDS
                             continue
-                        msg_cmd = build_deadline_message_command(script_dir, str(in_path.resolve()), latest_id)
-                        msg_proc = subprocess.run(msg_cmd, capture_output=True, text=True)
-                        if msg_proc.returncode != 0:
-                            msg = (msg_proc.stderr or msg_proc.stdout or "Message generation failed").strip()
-                            status = color(f"Error: {msg}", RED)
-                            status_until = time.time() + STATUS_TTL_SECONDS
-                            continue
-                        message_text = msg_proc.stdout.strip()
-                        if not message_text:
-                            status = color("Error: Generated message is empty.", RED)
-                            status_until = time.time() + STATUS_TTL_SECONDS
-                            continue
-                        copy_proc = subprocess.Popen(
-                            ["wl-copy"],
-                            stdin=subprocess.PIPE,
-                            text=True,
+                        msg_options = build_message_target_options()
+                        pick_idx, pick_err = choose_numbered_option(
+                            stdin_fd=stdin_fd,
+                            render_once_fn=render_once,
+                            title="Copy message",
+                            options=msg_options,
+                            out_of_range_msg="Error: Message target out of range.",
+                            not_number_msg="Error: Select a number for message target.",
                         )
-                        if copy_proc.stdin:
-                            copy_proc.stdin.write(message_text)
-                            copy_proc.stdin.close()
-                        status = color(DEADLINE_MESSAGE_COPIED_STATUS, GREEN)
-                        status_until = time.time() + STATUS_TTL_SECONDS
-                    except Exception as exc:
-                        status = color(f"Error: Message failed: {exc}", RED)
-                        status_until = time.time() + STATUS_TTL_SECONDS
-                if ch == b"c":
-                    try:
-                        data = json.loads(in_path.read_text(encoding='utf-8'))
-                        tasks = normalize_tasks(data)
-                        latest_id = find_latest_task_id(tasks)
-                        if not latest_id:
-                            status = color("Error: No latest task id found.", RED)
+                        if pick_err:
+                            status = color(pick_err, RED)
                             status_until = time.time() + STATUS_TTL_SECONDS
                             continue
-                        clipboard_proc = subprocess.run(
-                            ["wl-paste"],
-                            capture_output=True,
-                            text=True,
-                            check=True,
-                        )
-                        next_assignee, next_task_name = parse_next_task_clipboard_payload(clipboard_proc.stdout)
-                        if not next_task_name:
-                            status = color("Error: Clipboard is empty.", RED)
+                        picked_kind = msg_options[pick_idx][0]
+                        if picked_kind == "deadline-extension":
+                            msg_cmd = build_deadline_message_command(script_dir, str(in_path.resolve()), latest_id)
+                            msg_proc = subprocess.run(msg_cmd, capture_output=True, text=True)
+                            if msg_proc.returncode != 0:
+                                msg = (msg_proc.stderr or msg_proc.stdout or "Message generation failed").strip()
+                                status = color(f"Error: {msg}", RED)
+                                status_until = time.time() + STATUS_TTL_SECONDS
+                                continue
+                            message_text = msg_proc.stdout.strip()
+                            if not message_text:
+                                status = color("Error: Generated message is empty.", RED)
+                                status_until = time.time() + STATUS_TTL_SECONDS
+                                continue
+                            copy_proc = subprocess.Popen(
+                                ["wl-copy"],
+                                stdin=subprocess.PIPE,
+                                text=True,
+                            )
+                            if copy_proc.stdin:
+                                copy_proc.stdin.write(message_text)
+                                copy_proc.stdin.close()
+                            status = color(DEADLINE_MESSAGE_COPIED_STATUS, GREEN)
                             status_until = time.time() + STATUS_TTL_SECONDS
-                            continue
-                        msg_cmd = build_next_task_message_command(
-                            script_dir,
-                            str(in_path.resolve()),
-                            latest_id,
-                            next_task_name,
-                            next_assignee,
-                        )
-                        msg_proc = subprocess.run(msg_cmd, capture_output=True, text=True)
-                        if msg_proc.returncode != 0:
-                            msg = (msg_proc.stderr or msg_proc.stdout or "Message generation failed").strip()
-                            status = color(f"Error: {msg}", RED)
+                        else:
+                            clipboard_proc = subprocess.run(
+                                ["wl-paste"],
+                                capture_output=True,
+                                text=True,
+                                check=True,
+                            )
+                            next_assignee, next_task_name = parse_next_task_clipboard_payload(clipboard_proc.stdout)
+                            if not next_task_name:
+                                status = color("Error: Clipboard is empty.", RED)
+                                status_until = time.time() + STATUS_TTL_SECONDS
+                                continue
+                            msg_cmd = build_next_task_message_command(
+                                script_dir,
+                                str(in_path.resolve()),
+                                latest_id,
+                                next_task_name,
+                                next_assignee,
+                            )
+                            msg_proc = subprocess.run(msg_cmd, capture_output=True, text=True)
+                            if msg_proc.returncode != 0:
+                                msg = (msg_proc.stderr or msg_proc.stdout or "Message generation failed").strip()
+                                status = color(f"Error: {msg}", RED)
+                                status_until = time.time() + STATUS_TTL_SECONDS
+                                continue
+                            message_text = msg_proc.stdout.strip()
+                            if not message_text:
+                                status = color("Error: Generated message is empty.", RED)
+                                status_until = time.time() + STATUS_TTL_SECONDS
+                                continue
+                            copy_proc = subprocess.Popen(
+                                ["wl-copy"],
+                                stdin=subprocess.PIPE,
+                                text=True,
+                            )
+                            if copy_proc.stdin:
+                                copy_proc.stdin.write(message_text)
+                                copy_proc.stdin.close()
+                            status = color(NEXT_TASK_MESSAGE_COPIED_STATUS, GREEN)
                             status_until = time.time() + STATUS_TTL_SECONDS
-                            continue
-                        message_text = msg_proc.stdout.strip()
-                        if not message_text:
-                            status = color("Error: Generated message is empty.", RED)
-                            status_until = time.time() + STATUS_TTL_SECONDS
-                            continue
-                        copy_proc = subprocess.Popen(
-                            ["wl-copy"],
-                            stdin=subprocess.PIPE,
-                            text=True,
-                        )
-                        if copy_proc.stdin:
-                            copy_proc.stdin.write(message_text)
-                            copy_proc.stdin.close()
-                        status = color(NEXT_TASK_MESSAGE_COPIED_STATUS, GREEN)
-                        status_until = time.time() + STATUS_TTL_SECONDS
                     except Exception as exc:
                         status = color(f"Error: Message failed: {exc}", RED)
                         status_until = time.time() + STATUS_TTL_SECONDS
