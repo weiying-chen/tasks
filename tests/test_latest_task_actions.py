@@ -1,4 +1,5 @@
 import unittest
+from unittest import mock
 
 import view_latest_task
 
@@ -114,6 +115,34 @@ class LatestTaskActionsTests(unittest.TestCase):
         assignee, name = view_latest_task.parse_next_task_clipboard_payload("Alex | 新任務")
         self.assertIsNone(assignee)
         self.assertEqual(name, "Alex | 新任務")
+
+    def test_choose_numbered_option_esc_cancels(self):
+        with mock.patch("view_latest_task.os.read", return_value=b"\x1b"):
+            pick_idx, pick_err, should_quit = view_latest_task.choose_numbered_option(
+                stdin_fd=0,
+                render_once_fn=lambda status="": "",
+                title="Pick",
+                options=[("a", "A"), ("b", "B")],
+                out_of_range_msg="out",
+                not_number_msg="num",
+            )
+        self.assertIsNone(pick_idx)
+        self.assertIsNone(pick_err)
+        self.assertFalse(should_quit)
+
+    def test_choose_numbered_option_q_requests_quit(self):
+        with mock.patch("view_latest_task.os.read", return_value=b"q"):
+            pick_idx, pick_err, should_quit = view_latest_task.choose_numbered_option(
+                stdin_fd=0,
+                render_once_fn=lambda status="": "",
+                title="Pick",
+                options=[("a", "A"), ("b", "B")],
+                out_of_range_msg="out",
+                not_number_msg="num",
+            )
+        self.assertIsNone(pick_idx)
+        self.assertIsNone(pick_err)
+        self.assertTrue(should_quit)
 
 
 if __name__ == "__main__":

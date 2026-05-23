@@ -166,7 +166,7 @@ def choose_numbered_option(
     options: list[tuple[str, str]],
     out_of_range_msg: str,
     not_number_msg: str,
-) -> tuple[int | None, str | None]:
+) -> tuple[int | None, str | None, bool]:
     numbered = [
         color(f"{idx}.", GREEN) + color(f" {label}", MAGENTA)
         for idx, (_, label) in enumerate(options, start=1)
@@ -177,12 +177,16 @@ def choose_numbered_option(
     sys.stdout.write(frame)
     sys.stdout.flush()
     key = os.read(stdin_fd, 1).decode("utf-8", errors="ignore")
+    if key == "q":
+        return None, None, True
+    if key == "\x1b":
+        return None, None, False
     if not key.isdigit():
-        return None, not_number_msg
+        return None, not_number_msg, False
     pick = int(key)
     if pick < 1 or pick > len(options):
-        return None, out_of_range_msg
-    return pick - 1, None
+        return None, out_of_range_msg, False
+    return pick - 1, None, False
 
 
 def task_base_created(task: dict, now_local: datetime) -> datetime:
@@ -524,7 +528,7 @@ def main():
                         target_id = latest_id
                         options = build_notes_target_options(latest_task)
                         if len(options) > 1:
-                            pick_idx, pick_err = choose_numbered_option(
+                            pick_idx, pick_err, should_quit = choose_numbered_option(
                                 stdin_fd=stdin_fd,
                                 render_once_fn=render_once,
                                 title="Notes target",
@@ -532,9 +536,15 @@ def main():
                                 out_of_range_msg="Error: Notes target out of range.",
                                 not_number_msg="Error: Select a number for notes target.",
                             )
+                            if should_quit:
+                                break
                             if pick_err:
                                 status = color(pick_err, RED)
                                 status_until = time.time() + STATUS_TTL_SECONDS
+                                continue
+                            if pick_idx is None:
+                                status = ""
+                                status_until = 0.0
                                 continue
                             target_id = options[pick_idx][0]
                         clipboard_proc = subprocess.run(
@@ -578,7 +588,7 @@ def main():
                             status_until = time.time() + STATUS_TTL_SECONDS
                             continue
                         msg_options = build_message_target_options()
-                        pick_idx, pick_err = choose_numbered_option(
+                        pick_idx, pick_err, should_quit = choose_numbered_option(
                             stdin_fd=stdin_fd,
                             render_once_fn=render_once,
                             title="Copy message",
@@ -586,9 +596,15 @@ def main():
                             out_of_range_msg="Error: Message target out of range.",
                             not_number_msg="Error: Select a number for message target.",
                         )
+                        if should_quit:
+                            break
                         if pick_err:
                             status = color(pick_err, RED)
                             status_until = time.time() + STATUS_TTL_SECONDS
+                            continue
+                        if pick_idx is None:
+                            status = ""
+                            status_until = 0.0
                             continue
                         picked_kind = msg_options[pick_idx][0]
                         if picked_kind == "deadline-extension":
