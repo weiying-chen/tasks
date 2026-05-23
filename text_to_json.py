@@ -364,6 +364,9 @@ def normalize_task_shape(task):
     assigned_by = task.get("assignedBy")
     if isinstance(assigned_by, str):
         normalized["assignedBy"] = assigned_by
+    assigned_to = task.get("assignedTo")
+    if isinstance(assigned_to, str):
+        normalized["assignedTo"] = assigned_to
 
     if isinstance(task.get("createdAt"), str):
         normalized["createdAt"] = task["createdAt"]

@@ -143,6 +143,18 @@ class TextToJsonTests(unittest.TestCase):
         self.assertTrue(inserted)
         self.assertEqual(tasks[1]["notes"], ["note 1", "note 2"])
 
+    def test_normalize_task_shape_keeps_assigned_to(self):
+        task = {
+            "id": "1",
+            "name": "Parent",
+            "assignedBy": "Evelyn",
+            "assignedTo": "Alex",
+            "children": [],
+        }
+        normalized = text_to_json.normalize_task_shape(task)
+        self.assertEqual(normalized["assignedBy"], "Evelyn")
+        self.assertEqual(normalized["assignedTo"], "Alex")
+
 
 if __name__ == "__main__":
     unittest.main()
