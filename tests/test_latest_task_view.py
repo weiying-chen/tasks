@@ -103,6 +103,37 @@ class LatestTaskViewTests(unittest.TestCase):
         out = self.strip_ansi(view_latest_task.build_latest_view(tasks, now_local))
         self.assertIn("Work time left:", out)
 
+    def test_countdown_shows_resume_hint_outside_work_hours(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "Only",
+                "createdAt": "2026-05-13T05:00:00Z",
+                "workMinutes": 120,
+                "children": [],
+            }
+        ]
+        # 2026-05-13 Wed 12:30 local is lunch break; next work start is 13:00.
+        now_local = datetime(2026, 5, 13, 12, 30, tzinfo=timezone(timedelta(hours=8)))
+        out = self.strip_ansi(view_latest_task.build_latest_view(tasks, now_local))
+        self.assertIn("Work time left:", out)
+        self.assertIn("(resumes 2026-05-13 Wed 13:00)", out)
+
+    def test_countdown_hides_resume_hint_during_work_hours(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "Only",
+                "createdAt": "2026-05-13T00:40:00Z",
+                "workMinutes": 120,
+                "children": [],
+            }
+        ]
+        now_local = datetime(2026, 5, 13, 10, 0, tzinfo=timezone(timedelta(hours=8)))
+        out = self.strip_ansi(view_latest_task.build_latest_view(tasks, now_local))
+        work_line = next(line for line in out.splitlines() if line.startswith("Work time left:"))
+        self.assertNotIn("(resumes ", work_line)
+
     def test_countdown_does_not_show_overdue_label(self):
         now_local = datetime(2026, 5, 13, 12, 0, tzinfo=timezone(timedelta(hours=8)))
         target = datetime(2026, 5, 13, 10, 0, tzinfo=timezone(timedelta(hours=8)))

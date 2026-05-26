@@ -243,6 +243,15 @@ def fmt_countdown(now_local: datetime, target: datetime | None) -> str:
     return f'{hours}h {minutes}m {seconds}s'
 
 
+def fmt_resume_hint(now_local: datetime, target: datetime | None) -> str:
+    if target is None or target <= now_local:
+        return ""
+    resume_at = next_work_start(now_local)
+    if resume_at <= now_local:
+        return ""
+    return f" (resumes {to_display(resume_at)})"
+
+
 def color(text: str, code: str) -> str:
     return f'{code}{text}{RESET}'
 
@@ -344,9 +353,13 @@ def render_task_block(lines: list[str], task: dict, now_local: datetime, level: 
             lines.append(f'Deadline: {color(to_display(deadline) if deadline else "-", YELLOW)}')
         if extended:
             lines.append(f'Extended deadline: {color(to_display(extended), YELLOW)}')
-            lines.append(f'Work time left: {color(fmt_countdown(now_local, extended), GREEN)}')
+            countdown = fmt_countdown(now_local, extended)
+            resume_hint = fmt_resume_hint(now_local, extended)
+            lines.append(f'Work time left: {color(countdown, GREEN)}{resume_hint}')
         else:
-            lines.append(f'Work time left: {color(fmt_countdown(now_local, deadline), GREEN)}')
+            countdown = fmt_countdown(now_local, deadline)
+            resume_hint = fmt_resume_hint(now_local, deadline)
+            lines.append(f'Work time left: {color(countdown, GREEN)}{resume_hint}')
         lines.append('')
         children = task.get('children')
         if isinstance(children, list) and children:
