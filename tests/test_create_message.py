@@ -1,4 +1,5 @@
 import unittest
+from datetime import datetime, timezone, timedelta
 
 import create_message
 
@@ -101,6 +102,42 @@ class CreateMessageTests(unittest.TestCase):
         ]
         message = create_message.create_message(tasks, msg_type="deadline-extension")
         self.assertIn("舊資料名稱 1時", message)
+
+    def test_deadline_extension_includes_only_current_workday_children(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "Task",
+                "assignedBy": "Evelyn",
+                "createdAt": "2026-05-13T00:40:00Z",
+                "deadline": "2026-05-15T02:16:00Z",
+                "workMinutes": 1056,
+                "children": [
+                    {
+                        "id": "2",
+                        "type": "news",
+                        "name": "old child",
+                        "createdAt": "2026-05-25T02:00:00Z",
+                        "workMinutes": 60,
+                        "children": [],
+                    },
+                    {
+                        "id": "3",
+                        "type": "posts",
+                        "name": "today child",
+                        "createdAt": "2026-05-26T01:00:00Z",
+                        "workMinutes": 50,
+                        "children": [],
+                    },
+                ],
+            }
+        ]
+        now_local = datetime(2026, 5, 26, 16, 0, tzinfo=timezone(timedelta(hours=8)))
+        message = create_message.create_message(tasks, msg_type="deadline-extension", now_local=now_local)
+        self.assertIn("今日做其他事時間是 50分", message)
+        self.assertIn("小編文 50分", message)
+        self.assertNotIn("英文新聞+錄音", message)
+        self.assertIn("延後至5/15（五）11:06", message)
 
     def test_next_task_message_uses_finished_task_and_next_name(self):
         tasks = [

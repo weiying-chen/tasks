@@ -71,7 +71,7 @@ def get_target_task(tasks: list[dict], task_id: str | None) -> dict:
     return latest
 
 
-def aggregate_children(task: dict) -> list[tuple[str, int]]:
+def aggregate_children(task: dict, only_local_date=None) -> list[tuple[str, int]]:
     totals: dict[str, int] = {}
     ordered_labels: list[str] = []
     children = task.get("children")
@@ -81,6 +81,11 @@ def aggregate_children(task: dict) -> list[tuple[str, int]]:
     for child in children:
         if not isinstance(child, dict):
             continue
+        if only_local_date is not None:
+            child_created = child.get("createdAt")
+            if isinstance(child_created, str):
+                if to_local(child_created).date() != only_local_date:
+                    continue
         child_type = str(child.get("type") or "").strip().lower()
         label = TYPE_LABELS.get(child_type)
         if not label:
@@ -96,14 +101,16 @@ def aggregate_children(task: dict) -> list[tuple[str, int]]:
     return [(label, totals[label]) for label in ordered_labels]
 
 
-def format_deadline_extension_message(task: dict) -> str:
+def format_deadline_extension_message(task: dict, now_local: datetime | None = None) -> str:
+    if now_local is None:
+        now_local = datetime.now(TZ_TAIPEI)
     assignment = str(task.get("name") or "").strip()
     assignee = str(task.get("assignedBy") or "").strip()
-    assignments = aggregate_children(task)
+    assignments = aggregate_children(task, only_local_date=now_local.date())
     total_minutes = sum(minutes for _, minutes in assignments)
     if total_minutes <= 0:
-        raise ValueError("Task has no subtasks to build deadline extension message.")
-    previous, next_deadline = deadline_window_local(task)
+        raise ValueError("Task has no subtasks for current workday.")
+    previous, next_deadline = deadline_window_local(task, child_minutes=total_minutes)
     transition_text = "延後至" if next_deadline >= previous else "提前至"
 
     lines = []
@@ -123,12 +130,13 @@ def format_deadline_extension_message(task: dict) -> str:
     return "\n".join(lines)
 
 
-def deadline_window_local(task: dict) -> tuple[datetime, datetime]:
+def deadline_window_local(task: dict, child_minutes: int | None = None) -> tuple[datetime, datetime]:
     deadline_raw = task.get("deadline")
     if not isinstance(deadline_raw, str):
         raise ValueError("Task is missing deadline.")
     base_deadline = to_local(deadline_raw)
-    child_minutes = sum(minutes for _, minutes in aggregate_children(task))
+    if child_minutes is None:
+        child_minutes = sum(minutes for _, minutes in aggregate_children(task))
     if child_minutes <= 0:
         return base_deadline, base_deadline
     return base_deadline, add_work_minutes(base_deadline, child_minutes)
@@ -160,10 +168,11 @@ def create_message(
     task_id: str | None = None,
     next_task_name: str | None = None,
     next_assignee: str | None = None,
+    now_local: datetime | None = None,
 ) -> str:
     if msg_type == "deadline-extension":
         task = get_target_task(tasks, task_id)
-        return format_deadline_extension_message(task)
+        return format_deadline_extension_message(task, now_local=now_local)
     if msg_type == "next-task":
         if not task_id:
             raise ValueError("--task-id is required for next-task message.")
