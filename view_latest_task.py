@@ -180,10 +180,11 @@ def choose_numbered_option(
         return None, None, True
     if key == "\x1b":
         return None, None, False
-    if not key.isdigit():
+    try:
+        pick = int(key)
+    except ValueError:
         return None, invalid_selection_msg, False
-    pick = int(key)
-    if pick < 1 or pick > len(options):
+    if not 1 <= pick <= len(options):
         return None, invalid_selection_msg, False
     return pick - 1, None, False
 
