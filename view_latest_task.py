@@ -164,8 +164,7 @@ def choose_numbered_option(
     render_once_fn,
     title: str,
     options: list[tuple[str, str]],
-    out_of_range_msg: str,
-    not_number_msg: str,
+    invalid_selection_msg: str,
 ) -> tuple[int | None, str | None, bool]:
     numbered = [
         color(f"{idx}.", GREEN) + color(f" {label}", MAGENTA)
@@ -182,10 +181,10 @@ def choose_numbered_option(
     if key == "\x1b":
         return None, None, False
     if not key.isdigit():
-        return None, not_number_msg, False
+        return None, invalid_selection_msg, False
     pick = int(key)
     if pick < 1 or pick > len(options):
-        return None, out_of_range_msg, False
+        return None, invalid_selection_msg, False
     return pick - 1, None, False
 
 
@@ -546,8 +545,7 @@ def main():
                                 render_once_fn=render_once,
                                 title="Select notes target",
                                 options=options,
-                                out_of_range_msg="Error: Notes target out of range.",
-                                not_number_msg="Error: Select a number for notes target.",
+                                invalid_selection_msg="Error: Enter a valid number to select a task.",
                             )
                             if should_quit:
                                 break
@@ -606,8 +604,7 @@ def main():
                             render_once_fn=render_once,
                             title="Select message type",
                             options=msg_options,
-                            out_of_range_msg="Error: Message target out of range.",
-                            not_number_msg="Error: Select a number for message target.",
+                            invalid_selection_msg="Error: Enter a valid number to select a message.",
                         )
                         if should_quit:
                             break

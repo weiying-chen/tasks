@@ -123,8 +123,7 @@ class LatestTaskActionsTests(unittest.TestCase):
                 render_once_fn=lambda status="": "",
                 title="Pick",
                 options=[("a", "A"), ("b", "B")],
-                out_of_range_msg="out",
-                not_number_msg="num",
+                invalid_selection_msg="bad",
             )
         self.assertIsNone(pick_idx)
         self.assertIsNone(pick_err)
@@ -137,8 +136,7 @@ class LatestTaskActionsTests(unittest.TestCase):
                 render_once_fn=lambda status="": "",
                 title="Pick",
                 options=[("a", "A"), ("b", "B")],
-                out_of_range_msg="out",
-                not_number_msg="num",
+                invalid_selection_msg="bad",
             )
         self.assertIsNone(pick_idx)
         self.assertIsNone(pick_err)
