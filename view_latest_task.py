@@ -544,7 +544,7 @@ def main():
                             pick_idx, pick_err, should_quit = choose_numbered_option(
                                 stdin_fd=stdin_fd,
                                 render_once_fn=render_once,
-                                title="Notes target",
+                                title="Select notes target",
                                 options=options,
                                 out_of_range_msg="Error: Notes target out of range.",
                                 not_number_msg="Error: Select a number for notes target.",
@@ -604,7 +604,7 @@ def main():
                         pick_idx, pick_err, should_quit = choose_numbered_option(
                             stdin_fd=stdin_fd,
                             render_once_fn=render_once,
-                            title="Copy message",
+                            title="Select message type",
                             options=msg_options,
                             out_of_range_msg="Error: Message target out of range.",
                             not_number_msg="Error: Select a number for message target.",
