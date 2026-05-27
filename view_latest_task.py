@@ -11,6 +11,7 @@ import tty
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
+from task_deadline import task_base_created_local, task_deadline_local
 from work_time import add_work_minutes, next_work_start
 
 TZ_TAIPEI = timezone(timedelta(hours=8))
@@ -189,35 +190,6 @@ def choose_numbered_option(
     return pick - 1, None, False
 
 
-def task_base_created(task: dict, now_local: datetime) -> datetime:
-    created_at = task.get('createdAt')
-    if isinstance(created_at, str):
-        return to_local(created_at)
-
-    created_date = task.get('createdDate')
-    if isinstance(created_date, str):
-        return datetime.fromisoformat(f'{created_date}T09:00:00+08:00')
-
-    return now_local
-
-
-def task_deadline(task: dict, now_local: datetime) -> datetime | None:
-    deadline = task.get('deadline')
-    if isinstance(deadline, str):
-        return to_local(deadline)
-
-    deadline_date = task.get('deadlineDate')
-    if isinstance(deadline_date, str):
-        return datetime.fromisoformat(f'{deadline_date}T17:00:00+08:00')
-
-    base_work_minutes = task.get('workMinutes')
-    if not isinstance(base_work_minutes, int):
-        return None
-
-    start = next_work_start(task_base_created(task, now_local))
-    return add_work_minutes(start, base_work_minutes)
-
-
 def child_total_minutes(task: dict) -> int:
     total = 0
     children = task.get('children')
@@ -319,8 +291,9 @@ def render_notes_block(lines: list[str], title: str, notes: list[str], show_note
 
 
 def render_task_block(lines: list[str], task: dict, now_local: datetime, level: int, show_subtask_notes: bool) -> None:
-    created = next_work_start(task_base_created(task, now_local))
-    deadline = task_deadline(task, now_local)
+    created_base = task_base_created_local(task, now_local=now_local) or now_local
+    created = next_work_start(created_base)
+    deadline = task_deadline_local(task, now_local=now_local)
     work_minutes = task.get('workMinutes')
 
     name = task.get("name") or "(Untitled)"

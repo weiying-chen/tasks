@@ -4,6 +4,7 @@ import json
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
+from task_deadline import require_task_deadline_local
 from work_time import add_work_minutes
 
 TZ_TAIPEI = timezone(timedelta(hours=8))
@@ -131,10 +132,7 @@ def format_deadline_extension_message(task: dict, now_local: datetime | None = N
 
 
 def deadline_window_local(task: dict, child_minutes: int | None = None) -> tuple[datetime, datetime]:
-    deadline_raw = task.get("deadline")
-    if not isinstance(deadline_raw, str):
-        raise ValueError("Task is missing deadline.")
-    base_deadline = to_local(deadline_raw)
+    base_deadline = require_task_deadline_local(task)
     if child_minutes is None:
         child_minutes = sum(minutes for _, minutes in aggregate_children(task))
     if child_minutes <= 0:

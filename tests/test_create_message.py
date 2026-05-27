@@ -19,6 +19,18 @@ class CreateMessageTests(unittest.TestCase):
         self.assertEqual(create_message.format_message_date(previous), "5/15（五）10:16")
         self.assertEqual(create_message.format_message_date(next_deadline), "5/15（五）13:16")
 
+    def test_deadline_window_local_falls_back_to_computed_deadline(self):
+        task = {
+            "id": "11",
+            "name": "Task",
+            "createdAt": "2026-05-26T07:04:00Z",
+            "workMinutes": 576,
+            "children": [],
+        }
+        previous, next_deadline = create_message.deadline_window_local(task, child_minutes=0)
+        self.assertEqual(create_message.format_message_date(previous), "5/27（三）16:40")
+        self.assertEqual(create_message.format_message_date(next_deadline), "5/27（三）16:40")
+
     def test_deadline_extension_message_defaults_to_latest_task(self):
         tasks = [
             {
