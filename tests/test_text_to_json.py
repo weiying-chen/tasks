@@ -91,6 +91,16 @@ class TextToJsonTests(unittest.TestCase):
         self.assertEqual(task["assignedBy"], "Evelyn")
         self.assertEqual(task["workMinutes"], 960)
 
+    def test_parse_source_text_subs_uses_computed_deadline_when_pm_differs(self):
+        text = (
+            "翻譯人文講堂 (送一份專業的禮物 職涯發光 - 方植永) 6 個短版, 長度20分, "
+            "預計做16時(2天), 從5/28（四）11:40起算，deadline 6/1(一)10:40，謝謝！"
+        )
+        parsed = text_to_json.parse_source_text(text, [], 2026)
+        task = parsed[0]
+        self.assertEqual(task["deadline"], "2026-06-01T03:40:00Z")
+        self.assertIn("Warning:", task.get("__warning__", ""))
+
     def test_parse_source_text_custom_minutes_format(self):
         parsed = text_to_json.parse_source_text(
             "開會 50分",

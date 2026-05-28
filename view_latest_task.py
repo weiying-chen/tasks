@@ -454,8 +454,13 @@ def main():
                             status = color(f"Error: {msg}", RED)
                             status_until = time.time() + STATUS_TTL_SECONDS
                         else:
-                            status = ""
-                            status_until = 0.0
+                            out = (add_proc.stdout or "").strip()
+                            if "Warning:" in out:
+                                status = out
+                                status_until = time.time() + STATUS_TTL_SECONDS
+                            else:
+                                status = ""
+                                status_until = 0.0
                     except Exception as exc:
                         status = color(f"Error: Add failed: {exc}", RED)
                         status_until = time.time() + STATUS_TTL_SECONDS

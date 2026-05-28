@@ -5,9 +5,12 @@ import re
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
+from work_time import add_work_minutes, next_work_start
 from work_time_adjustments import adjusted_child_minutes
 
 TZ_TAIPEI = timezone(timedelta(hours=8))
+RESET = '\x1b[0m'
+YELLOW = '\x1b[33m'
 SUBS_PROGRAM_DEFAULT_ASSIGNEE = {
     "人文講堂": "Evelyn",
     "精舍日常": "張牧軒",
@@ -24,6 +27,10 @@ def parse_datetime(md: str, hm: str, year: int) -> str:
     hour, minute = int(t.group(1)), int(t.group(2))
     local_dt = datetime(year, month, day, hour, minute, tzinfo=TZ_TAIPEI)
     return local_dt.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
+
+
+def to_local(iso_str: str) -> datetime:
+    return datetime.fromisoformat(iso_str.replace("Z", "+00:00")).astimezone(TZ_TAIPEI)
 
 
 def must_match(text: str, pattern: str, field: str, flags=0):
@@ -76,7 +83,10 @@ def parse_subs_input(text: str, year: int, task_id: str):
     )
 
     created_at = parse_datetime(start.group(1), start.group(2), year)
-    deadline = parse_datetime(dl.group(1), dl.group(2), year)
+    pm_deadline = parse_datetime(dl.group(1), dl.group(2), year)
+    start_local = next_work_start(to_local(created_at))
+    computed_deadline = add_work_minutes(start_local, work_minutes)
+    deadline = computed_deadline.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
     task = {
         "id": task_id,
         "type": "subs",
@@ -89,6 +99,13 @@ def parse_subs_input(text: str, year: int, task_id: str):
         "children": [],
         "sourceText": text,
     }
+
+    pm_deadline_local = to_local(pm_deadline)
+    if pm_deadline_local != computed_deadline:
+        task["__warning__"] = (
+            f"Warning: PM deadline differs; using computed deadline "
+            f"({pm_deadline_local.strftime('%Y-%m-%d %a %H:%M')} -> {computed_deadline.strftime('%Y-%m-%d %a %H:%M')})."
+        )
 
     return task
 
@@ -467,6 +484,9 @@ def main():
 
     if args.parent_id:
         for item in new_items:
+            warning = item.pop("__warning__", None)
+            if isinstance(warning, str) and warning.strip():
+                print(f"{YELLOW}{warning}{RESET}")
             item.pop("assignedBy", None)
             item.pop("owner", None)
             apply_child_work_rule(item)
@@ -474,6 +494,10 @@ def main():
             if not inserted:
                 raise ValueError(f"Parent id not found: {args.parent_id}")
     else:
+        for item in new_items:
+            warning = item.pop("__warning__", None)
+            if isinstance(warning, str) and warning.strip():
+                print(f"{YELLOW}{warning}{RESET}")
         tasks.extend(new_items)
 
     normalized_tasks = [normalize_task_shape(task) for task in tasks if isinstance(task, dict)]
