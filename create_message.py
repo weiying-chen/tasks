@@ -178,7 +178,7 @@ def format_next_task_message(finished_task: dict, next_task_name: str, next_assi
     start = final_deadline_local(finished_task)
     return (
         f"已完成{completed_task}，接下來會開始翻譯{next_task_name}，"
-        f"再麻煩{assignee}便時幫忙設deadline，"
+        f"再麻煩@{assignee}便時幫忙設deadline，"
         f"從{format_message_date(start)}起算，謝謝。\n=====\n"
         f"{NEXT_TASK_RATE_NOTE}"
     )

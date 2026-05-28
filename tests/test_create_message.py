@@ -206,7 +206,7 @@ class CreateMessageTests(unittest.TestCase):
         )
         self.assertEqual(
             message,
-            "已完成目前完成任務，接下來會開始翻譯新的任務，再麻煩Evelyn便時幫忙設deadline，"
+            "已完成目前完成任務，接下來會開始翻譯新的任務，再麻煩@Evelyn便時幫忙設deadline，"
             "從5/14（四）11:00起算，謝謝。\n=====\n"
             "之前是1分鐘算1小時，現在改成1分鐘算0.8 小時，謝謝。",
         )
@@ -228,7 +228,7 @@ class CreateMessageTests(unittest.TestCase):
             next_task_name="新的任務",
             next_assignee="Alex",
         )
-        self.assertIn("再麻煩Alex便時幫忙設deadline", message)
+        self.assertIn("再麻煩@Alex便時幫忙設deadline", message)
 
     def test_next_task_message_requires_task_id_and_next_name(self):
         tasks = [
