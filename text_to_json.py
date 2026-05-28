@@ -56,15 +56,24 @@ def parse_subs_input(text: str, year: int, task_id: str):
     content_seconds_extra = int(content_match.group(2) or 0)
     content_seconds = content_minutes * 60 + content_seconds_extra
 
-    work = must_match(text, r"預計(?:翻譯|做)\s*(\d+)\s*(?:時|小時)\s*(\d+)\s*分", "work time")
-    work_minutes = int(work.group(1)) * 60 + int(work.group(2))
+    work = must_match(
+        text,
+        r"預計(?:翻譯|做)\s*(\d+)\s*(?:時|小時)(?:\s*(\d+)\s*分)?(?:\s*[（(][^）)]*[）)])?",
+        "work time",
+    )
+    work_minutes = int(work.group(1)) * 60 + int(work.group(2) or 0)
 
     start = must_match(
         text,
         r"(?:從|由)\s*(\d{1,2}/\d{1,2})(?:[（(][^）)]*[）)])?\s*(\d{1,2}:\d{2})\s*起算",
         "start time",
     )
-    dl = must_match(text, r"deadline為\s*(\d{1,2}/\d{1,2})(?:[（(][^）)]*[）)])?\s*(\d{1,2}:\d{2})", "deadline", flags=re.I)
+    dl = must_match(
+        text,
+        r"deadline(?:為)?\s*(\d{1,2}/\d{1,2})(?:[（(][^）)]*[）)])?\s*(\d{1,2}:\d{2})",
+        "deadline",
+        flags=re.I,
+    )
 
     created_at = parse_datetime(start.group(1), start.group(2), year)
     deadline = parse_datetime(dl.group(1), dl.group(2), year)

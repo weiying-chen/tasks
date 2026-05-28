@@ -79,6 +79,18 @@ class TextToJsonTests(unittest.TestCase):
         self.assertEqual(task["workMinutes"], 504)
         self.assertEqual(task["contentSeconds"], 629)
 
+    def test_parse_source_text_subs_hour_only_with_day_note(self):
+        text = (
+            "請 Alex Chen 翻譯人文講堂 (送一份專業的禮物 職涯發光 - 方植永) 6 個短版, 長度20分, "
+            "預計做16時(2天), 從5/28（四）11:40起算，deadline 6/1(一)11:40，謝謝！"
+        )
+        parsed = text_to_json.parse_source_text(text, [], 2026)
+        self.assertEqual(len(parsed), 1)
+        task = parsed[0]
+        self.assertEqual(task["type"], "subs")
+        self.assertEqual(task["assignedBy"], "Evelyn")
+        self.assertEqual(task["workMinutes"], 960)
+
     def test_parse_source_text_custom_minutes_format(self):
         parsed = text_to_json.parse_source_text(
             "開會 50分",
