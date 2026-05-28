@@ -102,28 +102,52 @@ def aggregate_children(task: dict, only_local_date=None) -> list[tuple[str, int]
     return [(label, totals[label]) for label in ordered_labels]
 
 
+def total_child_minutes(task: dict, only_local_date=None) -> int:
+    total = 0
+    children = task.get("children")
+    if not isinstance(children, list):
+        return 0
+
+    for child in children:
+        if not isinstance(child, dict):
+            continue
+        if only_local_date is not None:
+            child_created = child.get("createdAt")
+            if isinstance(child_created, str) and to_local(child_created).date() != only_local_date:
+                continue
+        minutes = child.get("workMinutes")
+        if isinstance(minutes, int) and minutes > 0:
+            total += minutes
+
+    return total
+
+
 def format_deadline_extension_message(task: dict, now_local: datetime | None = None) -> str:
     if now_local is None:
         now_local = datetime.now(TZ_TAIPEI)
     assignment = str(task.get("name") or "").strip()
     assignee = str(task.get("assignedBy") or "").strip()
     assignments = aggregate_children(task, only_local_date=now_local.date())
-    total_minutes = sum(minutes for _, minutes in assignments)
-    if total_minutes <= 0:
+    today_minutes = sum(minutes for _, minutes in assignments)
+    if today_minutes <= 0:
         raise ValueError("Task has no subtasks for current workday.")
-    previous, next_deadline = deadline_window_local(task, child_minutes=total_minutes)
+    all_child_minutes = total_child_minutes(task)
+    previous_minutes = max(all_child_minutes - today_minutes, 0)
+    base_deadline = require_task_deadline_local(task)
+    previous = add_work_minutes(base_deadline, previous_minutes) if previous_minutes > 0 else base_deadline
+    next_deadline = add_work_minutes(previous, today_minutes)
     transition_text = "延後至" if next_deadline >= previous else "提前至"
 
     lines = []
-    if total_minutes > 0:
-        lines.append(f"今日做其他事時間是 {format_duration_for_message(total_minutes)}")
+    if today_minutes > 0:
+        lines.append(f"今日做其他事時間是 {format_duration_for_message(today_minutes)}")
         lines.append("")
         for name, minutes in assignments:
             lines.append(f"{name} {format_duration_for_message(minutes)}")
         lines.append("")
 
     prefix = f"{assignment}，" if assignment else ""
-    assignee_text = f"，請{assignee}幫我確認" if assignee else ""
+    assignee_text = f"，請@{assignee}幫我確認" if assignee else ""
     lines.append(
         f"{prefix}deadline由{format_message_date(previous)}，"
         f"{transition_text}{format_message_date(next_deadline)}{assignee_text}，謝謝。"

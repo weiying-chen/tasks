@@ -61,7 +61,7 @@ class CreateMessageTests(unittest.TestCase):
             "今日做其他事時間是 3時10分\n\n"
             "英文新聞+錄音 2時10分\n"
             "小編文 1時\n\n"
-            "人文講堂 (個人品牌的密碼 - 丁菱娟) 4 個短版，deadline由5/15（五）10:16，延後至5/15（五）14:26，請Evelyn幫我確認，謝謝。",
+            "人文講堂 (個人品牌的密碼 - 丁菱娟) 4 個短版，deadline由5/15（五）10:16，延後至5/15（五）14:26，請@Evelyn幫我確認，謝謝。",
         )
 
     def test_deadline_extension_requires_subtasks(self):
@@ -149,7 +149,41 @@ class CreateMessageTests(unittest.TestCase):
         self.assertIn("今日做其他事時間是 50分", message)
         self.assertIn("小編文 50分", message)
         self.assertNotIn("英文新聞+錄音", message)
-        self.assertIn("延後至5/15（五）11:06", message)
+        self.assertIn("deadline由5/15（五）11:16", message)
+        self.assertIn("延後至5/15（五）13:06", message)
+
+    def test_deadline_extension_uses_prior_subtasks_as_baseline(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "Task",
+                "assignedBy": "Evelyn",
+                "deadline": "2026-05-27T08:40:00Z",  # 16:40 local
+                "children": [
+                    {
+                        "id": "2",
+                        "type": "news",
+                        "name": "yesterday child",
+                        "createdAt": "2026-05-27T02:00:00Z",
+                        "workMinutes": 130,
+                        "children": [],
+                    },
+                    {
+                        "id": "3",
+                        "type": "news",
+                        "name": "today child",
+                        "createdAt": "2026-05-28T01:00:00Z",
+                        "workMinutes": 110,
+                        "children": [],
+                    },
+                ],
+            }
+        ]
+        now_local = datetime(2026, 5, 28, 10, 0, tzinfo=timezone(timedelta(hours=8)))
+        message = create_message.create_message(tasks, msg_type="deadline-extension", now_local=now_local)
+        self.assertIn("英文新聞+錄音 1時50分", message)
+        self.assertIn("deadline由5/28（四）09:50", message)
+        self.assertIn("延後至5/28（四）11:40", message)
 
     def test_next_task_message_uses_finished_task_and_next_name(self):
         tasks = [
