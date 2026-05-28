@@ -229,6 +229,42 @@ class CreateMessageTests(unittest.TestCase):
         )
         self.assertIn("再麻煩@Alex便時幫忙設deadline", message)
 
+    def test_next_task_message_prefers_mapping_from_next_task_name(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "目前完成任務",
+                "assignedBy": "Evelyn",
+                "deadline": "2026-05-14T02:00:00Z",
+                "children": [],
+            }
+        ]
+        message = create_message.create_message(
+            tasks,
+            msg_type="next-task",
+            task_id="1",
+            next_task_name="人文講堂（測試）",
+        )
+        self.assertIn("再麻煩@Evelyn便時幫忙設deadline", message)
+
+    def test_next_task_message_uses_mapping_over_finished_task_owner(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "目前完成任務",
+                "assignedBy": "Syharn Shen",
+                "deadline": "2026-05-14T02:00:00Z",
+                "children": [],
+            }
+        ]
+        message = create_message.create_message(
+            tasks,
+            msg_type="next-task",
+            task_id="1",
+            next_task_name="精舍日常（測試）",
+        )
+        self.assertIn("再麻煩@張牧軒便時幫忙設deadline", message)
+
     def test_next_task_message_requires_task_id_and_next_name(self):
         tasks = [
             {

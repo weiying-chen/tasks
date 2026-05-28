@@ -5,6 +5,7 @@ from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
 from task_deadline import require_task_deadline_local
+from text_to_json import resolve_subs_assigned_by
 from work_time import add_work_minutes
 
 TZ_TAIPEI = timezone(timedelta(hours=8))
@@ -168,9 +169,17 @@ def final_deadline_local(task: dict) -> datetime:
     return final_deadline
 
 
+def resolve_next_task_assignee(next_task_name: str, fallback_assignee: str | None = None) -> str:
+    try:
+        return resolve_subs_assigned_by(next_task_name)
+    except ValueError:
+        return str(fallback_assignee or "").strip()
+
+
 def format_next_task_message(finished_task: dict, next_task_name: str, next_assignee: str | None = None) -> str:
     completed_task = str(finished_task.get("name") or "").strip()
-    assignee = str(next_assignee or finished_task.get("assignedBy") or "").strip()
+    fallback_assignee = str(finished_task.get("assignedBy") or "").strip()
+    assignee = str(next_assignee or "").strip() or resolve_next_task_assignee(next_task_name, fallback_assignee)
     if not completed_task or not next_task_name or not assignee:
         raise ValueError("Missing required fields for next-task message.")
 
