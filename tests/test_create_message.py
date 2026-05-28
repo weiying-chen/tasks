@@ -207,8 +207,7 @@ class CreateMessageTests(unittest.TestCase):
         self.assertEqual(
             message,
             "已完成目前完成任務，接下來會開始翻譯新的任務，再麻煩@Evelyn便時幫忙設deadline，"
-            "從5/14（四）11:00起算，謝謝。\n=====\n"
-            "之前是1分鐘算1小時，現在改成1分鐘算0.8 小時，謝謝。",
+            "從5/14（四）11:00起算，謝謝。",
         )
 
     def test_next_task_message_uses_explicit_next_assignee(self):

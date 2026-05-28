@@ -9,7 +9,6 @@ from work_time import add_work_minutes
 
 TZ_TAIPEI = timezone(timedelta(hours=8))
 WEEKDAY_CN = ["一", "二", "三", "四", "五", "六", "日"]
-NEXT_TASK_RATE_NOTE = "之前是1分鐘算1小時，現在改成1分鐘算0.8 小時，謝謝。"
 TYPE_LABELS = {
     "news": "英文新聞+錄音",
     "posts": "小編文",
@@ -179,8 +178,7 @@ def format_next_task_message(finished_task: dict, next_task_name: str, next_assi
     return (
         f"已完成{completed_task}，接下來會開始翻譯{next_task_name}，"
         f"再麻煩@{assignee}便時幫忙設deadline，"
-        f"從{format_message_date(start)}起算，謝謝。\n=====\n"
-        f"{NEXT_TASK_RATE_NOTE}"
+        f"從{format_message_date(start)}起算，謝謝。"
     )
 
 
