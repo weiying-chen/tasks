@@ -90,6 +90,7 @@ class TextToJsonTests(unittest.TestCase):
         self.assertEqual(task["type"], "subs")
         self.assertEqual(task["assignedBy"], "Evelyn")
         self.assertEqual(task["workMinutes"], 960)
+        self.assertIn("6 個短版", task["name"])
 
     def test_parse_source_text_subs_uses_computed_deadline_when_pm_differs(self):
         text = (

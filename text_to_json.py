@@ -55,7 +55,7 @@ def resolve_subs_assigned_by(subs_name: str) -> str:
 
 
 def parse_subs_input(text: str, year: int, task_id: str):
-    name = must_match(text, r"翻譯\s*([^，,]+?)(?:\s*\d+\s*個短版)?\s*[，,]", "name").group(1).strip()
+    name = must_match(text, r"翻譯\s*([^，,]+?)\s*[，,]", "name").group(1).strip()
     assigned_by = resolve_subs_assigned_by(name)
 
     content_match = must_match(text, r"(?:長度|片長)\s*(\d+)\s*分(?:\s*(\d+)\s*秒)?", "content duration")
