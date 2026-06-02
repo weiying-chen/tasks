@@ -59,7 +59,7 @@ def parse_subs_input(text: str, year: int, task_id: str):
     name = must_match(text, r"翻譯\s*([^，,]+?)\s*[，,]", "name").group(1).strip()
     assigned_by = resolve_subs_assigned_by(name)
 
-    content_match = must_match(text, r"(?:長度|片長)\s*(\d+)\s*分(?:\s*(\d+)\s*秒)?", "content duration")
+    content_match = must_match(text, r"(?:長度|片長)\s*(?:共|合計)?\s*(\d+)\s*分(?:\s*(\d+)\s*秒)?", "content duration")
     content_minutes = int(content_match.group(1))
     content_seconds_extra = int(content_match.group(2) or 0)
     content_seconds = content_minutes * 60 + content_seconds_extra
@@ -78,7 +78,7 @@ def parse_subs_input(text: str, year: int, task_id: str):
     )
     dl = must_match(
         text,
-        r"deadline(?:為)?\s*(\d{1,2}/\d{1,2})(?:[（(][^）)]*[）)])?\s*(\d{1,2}:\d{2})",
+        r"deadline\s*(?:為)?\s*(\d{1,2}/\d{1,2})(?:[（(][^）)]*[）)])?\s*(\d{1,2}:\d{2})",
         "deadline",
         flags=re.I,
     )

@@ -74,6 +74,18 @@ class TextToJsonTests(unittest.TestCase):
         self.assertEqual(parsed[0]["assignedBy"], "Emily")
         self.assertEqual(parsed[0]["name"], "3集我的阿公阿媽做慈濟")
 
+    def test_parse_source_text_subs_accepts_total_content_duration(self):
+        text = (
+            "接下來請 Alex Chen 翻譯3集我的阿公阿媽做慈濟，片長合計9分，"
+            "預計做7 時 12 分，從6/2（二）13:30起算，deadline 為 6/3（三）11:45，謝謝 ~"
+        )
+        parsed = text_to_json.parse_source_text(text, [], 2026)
+        task = parsed[0]
+        self.assertEqual(task["assignedBy"], "Emily")
+        self.assertEqual(task["contentSeconds"], 540)
+        self.assertEqual(task["workMinutes"], 432)
+        self.assertEqual(task["deadline"], "2026-06-03T03:42:00Z")
+
     def test_parse_source_text_subs_alt_format(self):
         text = (
             "張牧軒接下來請翻譯三集精舍日常(怡師父03叢林作息。自我修正、怡師父04－新手典座。資深傳承、"
