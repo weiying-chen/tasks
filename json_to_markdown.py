@@ -4,6 +4,8 @@ import json
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
+from task_deadline import task_base_created_local, task_deadline_local
+from task_stages import active_stage, get_task_work_minutes
 from work_time import add_work_minutes, next_work_start
 
 TZ_TAIPEI = timezone(timedelta(hours=8))
@@ -44,11 +46,9 @@ def round_minutes_to_step(raw_minutes: int, step: int = 10) -> int:
 
 
 def parse_base_deadline_local(task: dict) -> datetime | None:
-    deadline = task.get('deadline')
-    if isinstance(deadline, str):
-        dt = datetime.fromisoformat(deadline.replace('Z', '+00:00'))
-        return dt.astimezone(TZ_TAIPEI)
-
+    deadline = task_deadline_local(task)
+    if deadline is not None:
+        return deadline
     deadline_date = task.get('deadlineDate')
     if isinstance(deadline_date, str):
         return datetime.fromisoformat(f"{deadline_date}T17:00:00+08:00")
@@ -64,7 +64,7 @@ def sum_immediate_children_work_minutes(task: dict, factor: float) -> int:
     for child in children:
         if not isinstance(child, dict):
             continue
-        minutes = child.get('workMinutes')
+        minutes = get_task_work_minutes(child)
         if isinstance(minutes, int) and minutes > 0:
             total += round_minutes_to_step(minutes)
     return total
@@ -80,11 +80,10 @@ def normalize_tasks(data):
 
 def render_task(lines: list[str], task: dict, level: int, factor: float, now_local: datetime) -> None:
     name = task.get('name') or task.get('title') or '(Untitled)'
-    created_at = task.get('startAt')
-    deadline = task.get('deadline')
     created_date = task.get('createdDate')
     deadline_date = task.get('deadlineDate')
-    work_minutes = task.get('workMinutes')
+    work_minutes = get_task_work_minutes(task)
+    stage = active_stage(task)
     is_child = level > 2
     child_rounded_minutes = (
         round_minutes_to_step(work_minutes) if is_child and isinstance(work_minutes, int) else work_minutes
@@ -93,19 +92,19 @@ def render_task(lines: list[str], task: dict, level: int, factor: float, now_loc
     heading_prefix = '#' * min(6, level)
     lines.append(f'{heading_prefix} {name}')
     lines.append('')
+    created_local = task_base_created_local(task, now_local=now_local)
+    explicit_deadline = stage.get('deadline')
+    deadline_local = task_deadline_local(task, now_local=now_local) if isinstance(explicit_deadline, str) else None
     created_display = (
-        to_local_display(created_at)
-        if isinstance(created_at, str)
+        next_work_start(created_local).strftime('%Y-%m-%d %a %H:%M')
+        if created_local is not None
         else (f"{created_date} {datetime.fromisoformat(created_date).strftime('%a')} 09:00" if isinstance(created_date, str) else '-')
     )
-    deadline_display = (
-        to_local_display(deadline)
-        if isinstance(deadline, str) else '-'
-    )
+    deadline_display = deadline_local.strftime('%Y-%m-%d %a %H:%M') if deadline_local is not None else '-'
     # For date-only tasks, derive display times from work-time schedule.
-    if not isinstance(deadline, str) and isinstance(child_rounded_minutes, int):
-        if isinstance(created_at, str):
-            base_created = datetime.fromisoformat(created_at.replace('Z', '+00:00')).astimezone(TZ_TAIPEI)
+    if deadline_local is None and isinstance(child_rounded_minutes, int):
+        if created_local is not None:
+            base_created = created_local
         elif isinstance(created_date, str):
             base_created = datetime.fromisoformat(f"{created_date}T09:00:00+08:00")
         else:
@@ -114,7 +113,7 @@ def render_task(lines: list[str], task: dict, level: int, factor: float, now_loc
         derived_deadline = add_work_minutes(derived_created, child_rounded_minutes)
         created_display = derived_created.strftime('%Y-%m-%d %a %H:%M')
         deadline_display = derived_deadline.strftime('%Y-%m-%d %a %H:%M')
-    elif not isinstance(deadline, str) and isinstance(deadline_date, str):
+    elif deadline_local is None and isinstance(deadline_date, str):
         deadline_display = f"{deadline_date} {datetime.fromisoformat(deadline_date).strftime('%a')} 17:00"
     lines.append(f"- Start: {created_display}")
     lines.append(f"- Deadline: {deadline_display}")

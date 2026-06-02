@@ -12,6 +12,7 @@ from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
 from task_deadline import task_base_created_local, task_deadline_local
+from task_stages import get_task_type, get_task_work_minutes
 from work_time import add_work_minutes, next_work_start
 
 TZ_TAIPEI = timezone(timedelta(hours=8))
@@ -198,7 +199,7 @@ def child_total_minutes(task: dict) -> int:
     for child in children:
         if not isinstance(child, dict):
             continue
-        base_child_minutes = child.get('workMinutes')
+        base_child_minutes = get_task_work_minutes(child)
         if isinstance(base_child_minutes, int) and base_child_minutes > 0:
             total += base_child_minutes
     return total
@@ -294,13 +295,13 @@ def render_task_block(lines: list[str], task: dict, now_local: datetime, level: 
     created_base = task_base_created_local(task, now_local=now_local) or now_local
     created = next_work_start(created_base)
     deadline = task_deadline_local(task, now_local=now_local)
-    work_minutes = task.get('workMinutes')
+    work_minutes = get_task_work_minutes(task)
 
     name = task.get("name") or "(Untitled)"
 
     if level > 2:
         lines.append(f'Name: {name}')
-        task_type = task.get("type")
+        task_type = get_task_type(task)
         if isinstance(task_type, str) and task_type.strip():
             lines.append(f'Type: {task_type}')
         lines.append(f'Work time: {fmt_work(work_minutes)}')

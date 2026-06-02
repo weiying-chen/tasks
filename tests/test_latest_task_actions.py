@@ -75,6 +75,23 @@ class LatestTaskActionsTests(unittest.TestCase):
             ],
         )
 
+    def test_stage_accessors_use_active_stage(self):
+        task = {
+            "name": "Parent",
+            "stages": [
+                {
+                    "type": "translate",
+                    "assignedTo": "Alex",
+                    "startAt": "2026-06-02T05:40:00Z",
+                    "deadline": "2026-06-03T03:40:00Z",
+                    "workMinutes": 960,
+                    "contentSeconds": 1200,
+                }
+            ],
+        }
+        self.assertEqual(view_latest_task.get_task_type(task), "translate")
+        self.assertEqual(view_latest_task.get_task_work_minutes(task), 960)
+
     def test_build_deadline_message_command(self):
         cmd = view_latest_task.build_deadline_message_command("/tmp", "/tmp/tasks.json", "9")
         self.assertEqual(

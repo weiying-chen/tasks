@@ -1,6 +1,7 @@
 import unittest
 
 import text_to_json
+from task_stages import get_task_content_seconds, get_task_type, get_task_work_minutes, normalize_stages
 
 
 class TextToJsonTests(unittest.TestCase):
@@ -16,8 +17,8 @@ class TextToJsonTests(unittest.TestCase):
         tasks = text_to_json.parse_posts_input(text, "alex")
         self.assertEqual(len(tasks), 1)
         self.assertEqual(tasks[0]["name"], "無私大愛結好緣")
-        self.assertEqual(tasks[0]["workMinutes"], 60)
-        self.assertEqual(tasks[0]["type"], "posts")
+        self.assertEqual(get_task_work_minutes(tasks[0]), 60)
+        self.assertEqual(get_task_type(tasks[0]), "posts")
         self.assertNotIn("assignedBy", tasks[0])
 
     def test_parse_news_only_keeps_alex_chen(self):
@@ -29,9 +30,9 @@ class TextToJsonTests(unittest.TestCase):
         tasks = text_to_json.parse_news_input(text, 2026, "Alex Chen")
         self.assertEqual(len(tasks), 1)
         self.assertEqual(tasks[0]["name"], "墨安寧牙義診")
-        self.assertEqual(tasks[0]["contentSeconds"], 110 * 60)
-        self.assertEqual(tasks[0]["workMinutes"], 130)
-        self.assertEqual(tasks[0]["type"], "news")
+        self.assertEqual(get_task_content_seconds(tasks[0]), 110 * 60)
+        self.assertEqual(get_task_work_minutes(tasks[0]), 130)
+        self.assertEqual(get_task_type(tasks[0]), "news")
 
     def test_parse_source_text_uses_posts_before_subs(self):
         text = (
@@ -54,8 +55,8 @@ class TextToJsonTests(unittest.TestCase):
         task = parsed[0]
         self.assertEqual(task["id"], "1")
         self.assertEqual(task["assignedBy"], "Evelyn")
-        self.assertEqual(task["contentSeconds"], 1380)
-        self.assertEqual(task["type"], "subs")
+        self.assertEqual(get_task_content_seconds(task), 1380)
+        self.assertEqual(get_task_type(task), "subs")
 
     def test_subs_program_assignee_uses_mapping_only(self):
         text = (
@@ -82,9 +83,9 @@ class TextToJsonTests(unittest.TestCase):
         parsed = text_to_json.parse_source_text(text, [], 2026)
         task = parsed[0]
         self.assertEqual(task["assignedBy"], "Emily")
-        self.assertEqual(task["contentSeconds"], 540)
-        self.assertEqual(task["workMinutes"], 432)
-        self.assertEqual(task["deadline"], "2026-06-03T03:42:00Z")
+        self.assertEqual(get_task_content_seconds(task), 540)
+        self.assertEqual(get_task_work_minutes(task), 432)
+        self.assertEqual(normalize_stages(task)[0]["deadline"], "2026-06-03T03:42:00Z")
 
     def test_parse_source_text_subs_alt_format(self):
         text = (
@@ -95,10 +96,10 @@ class TextToJsonTests(unittest.TestCase):
         parsed = text_to_json.parse_source_text(text, [], 2026)
         self.assertEqual(len(parsed), 1)
         task = parsed[0]
-        self.assertEqual(task["type"], "subs")
+        self.assertEqual(get_task_type(task), "subs")
         self.assertEqual(task["assignedBy"], "張牧軒")
-        self.assertEqual(task["workMinutes"], 504)
-        self.assertEqual(task["contentSeconds"], 629)
+        self.assertEqual(get_task_work_minutes(task), 504)
+        self.assertEqual(get_task_content_seconds(task), 629)
 
     def test_parse_source_text_subs_hour_only_with_day_note(self):
         text = (
@@ -108,9 +109,9 @@ class TextToJsonTests(unittest.TestCase):
         parsed = text_to_json.parse_source_text(text, [], 2026)
         self.assertEqual(len(parsed), 1)
         task = parsed[0]
-        self.assertEqual(task["type"], "subs")
+        self.assertEqual(get_task_type(task), "subs")
         self.assertEqual(task["assignedBy"], "Evelyn")
-        self.assertEqual(task["workMinutes"], 960)
+        self.assertEqual(get_task_work_minutes(task), 960)
         self.assertIn("6 個短版", task["name"])
 
     def test_parse_source_text_subs_uses_computed_deadline_when_pm_differs(self):
@@ -120,7 +121,7 @@ class TextToJsonTests(unittest.TestCase):
         )
         parsed = text_to_json.parse_source_text(text, [], 2026)
         task = parsed[0]
-        self.assertEqual(task["deadline"], "2026-06-01T03:40:00Z")
+        self.assertEqual(normalize_stages(task)[0]["deadline"], "2026-06-01T03:40:00Z")
         self.assertIn("Warning:", task.get("__warning__", ""))
 
     def test_parse_source_text_custom_minutes_format(self):
@@ -132,9 +133,9 @@ class TextToJsonTests(unittest.TestCase):
         self.assertEqual(len(parsed), 1)
         task = parsed[0]
         self.assertEqual(task["id"], "2")
-        self.assertEqual(task["type"], "custom")
+        self.assertEqual(get_task_type(task), "custom")
         self.assertEqual(task["name"], "開會")
-        self.assertEqual(task["workMinutes"], 50)
+        self.assertEqual(get_task_work_minutes(task), 50)
 
     def test_parse_source_text_custom_hours_minutes_format(self):
         parsed = text_to_json.parse_source_text(
@@ -144,25 +145,25 @@ class TextToJsonTests(unittest.TestCase):
         )
         self.assertEqual(len(parsed), 1)
         task = parsed[0]
-        self.assertEqual(task["type"], "custom")
+        self.assertEqual(get_task_type(task), "custom")
         self.assertEqual(task["name"], "開會")
-        self.assertEqual(task["workMinutes"], 80)
+        self.assertEqual(get_task_work_minutes(task), 80)
 
     def test_apply_child_work_rule_adjusts_inserted_child_minutes(self):
         task = {
             "id": "3",
             "name": "child",
-            "workMinutes": 60,
+            "stages": [{"workMinutes": 60}],
             "children": [],
         }
         text_to_json.apply_child_work_rule(task)
-        self.assertEqual(task["workMinutes"], 50)
+        self.assertEqual(get_task_work_minutes(task), 50)
 
     def test_news_1h45_stores_1h40_after_bonus_and_factor(self):
         parsed = text_to_json.parse_source_text("Alex Chen: 測試新聞 1:45", [], 2026)
         task = parsed[0]
         text_to_json.apply_child_work_rule(task)
-        self.assertEqual(task["workMinutes"], 100)
+        self.assertEqual(get_task_work_minutes(task), 100)
 
     def test_parse_notes_input_bullet_list(self):
         text = (
@@ -187,7 +188,7 @@ class TextToJsonTests(unittest.TestCase):
         self.assertTrue(inserted)
         self.assertEqual(tasks[1]["notes"], ["note 1", "note 2"])
 
-    def test_normalize_task_shape_keeps_assigned_to(self):
+    def test_normalize_task_shape_moves_assigned_to_into_stages(self):
         task = {
             "id": "1",
             "name": "Parent",
@@ -197,7 +198,40 @@ class TextToJsonTests(unittest.TestCase):
         }
         normalized = text_to_json.normalize_task_shape(task)
         self.assertEqual(normalized["assignedBy"], "Evelyn")
-        self.assertEqual(normalized["assignedTo"], "Alex")
+        self.assertEqual(normalized["stages"], [{"assignedTo": "Alex"}])
+
+    def test_normalize_task_shape_moves_flat_fields_into_stages(self):
+        task = {
+            "id": "1",
+            "name": "Parent",
+            "type": "subs",
+            "assignedTo": "Alex",
+            "startAt": "2026-06-02T05:40:00Z",
+            "deadline": "2026-06-03T03:40:00Z",
+            "workMinutes": 960,
+            "contentSeconds": 1200,
+            "children": [],
+        }
+        normalized = text_to_json.normalize_task_shape(task)
+        self.assertNotIn("type", normalized)
+        self.assertNotIn("assignedTo", normalized)
+        self.assertNotIn("startAt", normalized)
+        self.assertNotIn("deadline", normalized)
+        self.assertNotIn("workMinutes", normalized)
+        self.assertNotIn("contentSeconds", normalized)
+        self.assertEqual(
+            normalized["stages"],
+            [
+                {
+                    "type": "subs",
+                    "assignedTo": "Alex",
+                    "startAt": "2026-06-02T05:40:00Z",
+                    "deadline": "2026-06-03T03:40:00Z",
+                    "workMinutes": 960,
+                    "contentSeconds": 1200,
+                }
+            ],
+        )
 
 
 if __name__ == "__main__":

@@ -5,6 +5,7 @@ from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
 from task_deadline import require_task_deadline_local
+from task_stages import get_task_start_at, get_task_type, get_task_work_minutes
 from text_to_json import resolve_subs_assigned_by
 from work_time import add_work_minutes
 
@@ -83,15 +84,15 @@ def aggregate_children(task: dict, only_local_date=None) -> list[tuple[str, int]
         if not isinstance(child, dict):
             continue
         if only_local_date is not None:
-            child_created = child.get("startAt")
+            child_created = get_task_start_at(child)
             if isinstance(child_created, str):
                 if to_local(child_created).date() != only_local_date:
                     continue
-        child_type = str(child.get("type") or "").strip().lower()
+        child_type = str(get_task_type(child) or "").strip().lower()
         label = TYPE_LABELS.get(child_type)
         if not label:
             label = str(child.get("name") or "").strip()
-        minutes = child.get("workMinutes")
+        minutes = get_task_work_minutes(child)
         if not label or not isinstance(minutes, int) or minutes <= 0:
             continue
         if label not in totals:
@@ -112,10 +113,10 @@ def total_child_minutes(task: dict, only_local_date=None) -> int:
         if not isinstance(child, dict):
             continue
         if only_local_date is not None:
-            child_created = child.get("startAt")
+            child_created = get_task_start_at(child)
             if isinstance(child_created, str) and to_local(child_created).date() != only_local_date:
                 continue
-        minutes = child.get("workMinutes")
+        minutes = get_task_work_minutes(child)
         if isinstance(minutes, int) and minutes > 0:
             total += minutes
 

@@ -6,6 +6,7 @@ from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
 from work_time import add_work_minutes, next_work_start
+from task_stages import get_task_work_minutes, normalize_stages
 from work_time_adjustments import adjusted_child_minutes
 
 TZ_TAIPEI = timezone(timedelta(hours=8))
@@ -90,13 +91,17 @@ def parse_subs_input(text: str, year: int, task_id: str):
     deadline = computed_deadline.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
     task = {
         "id": task_id,
-        "type": "subs",
         "name": name,
         "assignedBy": assigned_by,
-        "startAt": created_at,
-        "deadline": deadline,
-        "workMinutes": work_minutes,
-        "contentSeconds": content_seconds,
+        "stages": [
+            {
+                "type": "subs",
+                "startAt": created_at,
+                "deadline": deadline,
+                "workMinutes": work_minutes,
+                "contentSeconds": content_seconds,
+            }
+        ],
         "children": [],
         "sourceText": text,
     }
@@ -148,11 +153,15 @@ def parse_news_input(text: str, year: int, owner_filter: str):
         original_minutes = parse_hhmm_to_work_minutes(duration)
         work_minutes = original_minutes + 20
         task = {
-            "type": "news",
             "name": name,
-            "startAt": now_iso,
-            "workMinutes": work_minutes,
-            "contentSeconds": original_minutes * 60,
+            "stages": [
+                {
+                    "type": "news",
+                    "startAt": now_iso,
+                    "workMinutes": work_minutes,
+                    "contentSeconds": original_minutes * 60,
+                }
+            ],
             "children": [],
             "sourceText": raw_line,
         }
@@ -206,10 +215,14 @@ def parse_posts_input(text: str, owner_filter: str):
             source_parts.append(url_line)
 
         task = {
-            "type": "posts",
             "name": name,
-            "startAt": now_iso,
-            "workMinutes": default_work_minutes,
+            "stages": [
+                {
+                    "type": "posts",
+                    "startAt": now_iso,
+                    "workMinutes": default_work_minutes,
+                }
+            ],
             "children": [],
             "sourceText": "\n".join(source_parts),
         }
@@ -233,10 +246,14 @@ def parse_simple_duration_input(text: str):
             minutes = int(hm_match.group(3))
             if name and 0 <= minutes < 60:
                 return {
-                    "type": "custom",
                     "name": name,
-                    "startAt": now_iso,
-                    "workMinutes": hours * 60 + minutes,
+                    "stages": [
+                        {
+                            "type": "custom",
+                            "startAt": now_iso,
+                            "workMinutes": hours * 60 + minutes,
+                        }
+                    ],
                     "children": [],
                     "sourceText": raw_line,
                 }
@@ -247,10 +264,14 @@ def parse_simple_duration_input(text: str):
             minutes = int(m_match.group(2))
             if name and minutes > 0:
                 return {
-                    "type": "custom",
                     "name": name,
-                    "startAt": now_iso,
-                    "workMinutes": minutes,
+                    "stages": [
+                        {
+                            "type": "custom",
+                            "startAt": now_iso,
+                            "workMinutes": minutes,
+                        }
+                    ],
                     "children": [],
                     "sourceText": raw_line,
                 }
@@ -386,27 +407,16 @@ def normalize_task_shape(task):
         "id": str(task.get("id", "")),
         "name": task.get("name", ""),
     }
-    if isinstance(task.get("type"), str):
-        normalized["type"] = task["type"]
     assigned_by = task.get("assignedBy")
     if isinstance(assigned_by, str):
         normalized["assignedBy"] = assigned_by
-    assigned_to = task.get("assignedTo")
-    if isinstance(assigned_to, str):
-        normalized["assignedTo"] = assigned_to
-
-    if isinstance(task.get("startAt"), str):
-        normalized["startAt"] = task["startAt"]
     if isinstance(task.get("createdDate"), str):
         normalized["createdDate"] = task["createdDate"]
-    if isinstance(task.get("deadline"), str):
-        normalized["deadline"] = task["deadline"]
     if isinstance(task.get("deadlineDate"), str):
         normalized["deadlineDate"] = task["deadlineDate"]
-    if isinstance(task.get("workMinutes"), int):
-        normalized["workMinutes"] = task["workMinutes"]
-    if isinstance(task.get("contentSeconds"), int):
-        normalized["contentSeconds"] = task["contentSeconds"]
+    stages = normalize_stages(task)
+    if stages:
+        normalized["stages"] = stages
     notes = task.get("notes")
     if isinstance(notes, list):
         normalized_notes = [note for note in notes if isinstance(note, str) and note.strip()]
@@ -422,9 +432,18 @@ def normalize_task_shape(task):
 
 
 def apply_child_work_rule(task: dict) -> None:
-    minutes = task.get("workMinutes")
-    if isinstance(minutes, int) and minutes > 0:
-        task["workMinutes"] = adjusted_child_minutes(minutes)
+    stages = task.get("stages")
+    if isinstance(stages, list):
+        for stage in stages:
+            if not isinstance(stage, dict):
+                continue
+            minutes = stage.get("workMinutes")
+            if isinstance(minutes, int) and minutes > 0:
+                stage["workMinutes"] = adjusted_child_minutes(minutes)
+    else:
+        minutes = get_task_work_minutes(task)
+        if isinstance(minutes, int) and minutes > 0:
+            task["workMinutes"] = adjusted_child_minutes(minutes)
 
     children = task.get("children")
     if isinstance(children, list):
