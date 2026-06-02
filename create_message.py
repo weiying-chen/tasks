@@ -83,7 +83,7 @@ def aggregate_children(task: dict, only_local_date=None) -> list[tuple[str, int]
         if not isinstance(child, dict):
             continue
         if only_local_date is not None:
-            child_created = child.get("createdAt")
+            child_created = child.get("startAt")
             if isinstance(child_created, str):
                 if to_local(child_created).date() != only_local_date:
                     continue
@@ -112,7 +112,7 @@ def total_child_minutes(task: dict, only_local_date=None) -> int:
         if not isinstance(child, dict):
             continue
         if only_local_date is not None:
-            child_created = child.get("createdAt")
+            child_created = child.get("startAt")
             if isinstance(child_created, str) and to_local(child_created).date() != only_local_date:
                 continue
         minutes = child.get("workMinutes")

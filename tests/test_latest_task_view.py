@@ -15,11 +15,11 @@ class LatestTaskViewTests(unittest.TestCase):
 
     def test_renders_latest_parent_and_children(self):
         tasks = [
-            {"id": "1", "name": "Old", "createdAt": "2026-05-01T00:00:00Z", "workMinutes": 60, "children": []},
+            {"id": "1", "name": "Old", "startAt": "2026-05-01T00:00:00Z", "workMinutes": 60, "children": []},
             {
                 "id": "2",
                 "name": "New Parent",
-                "createdAt": "2026-05-13T00:40:00Z",
+                "startAt": "2026-05-13T00:40:00Z",
                 "workMinutes": 1056,
                 "notes": ['"上肢" referred to arms rather than upper body.'],
                 "children": [
@@ -27,7 +27,7 @@ class LatestTaskViewTests(unittest.TestCase):
                         "id": "3",
                         "name": "Child",
                         "type": "news",
-                        "createdAt": "2026-05-13T01:00:00Z",
+                        "startAt": "2026-05-13T01:00:00Z",
                         "workMinutes": 134,
                         "notes": ["child-only note"],
                         "children": [],
@@ -54,7 +54,7 @@ class LatestTaskViewTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "Parent",
-                "createdAt": "2026-05-13T00:40:00Z",
+                "startAt": "2026-05-13T00:40:00Z",
                 "workMinutes": 120,
                 "notes": ["first note", "second note"],
                 "children": [],
@@ -70,14 +70,14 @@ class LatestTaskViewTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "Parent",
-                "createdAt": "2026-05-13T00:40:00Z",
+                "startAt": "2026-05-13T00:40:00Z",
                 "workMinutes": 120,
                 "children": [
                     {
                         "id": "2",
                         "name": "Child",
                         "type": "news",
-                        "createdAt": "2026-05-13T01:00:00Z",
+                        "startAt": "2026-05-13T01:00:00Z",
                         "workMinutes": 30,
                         "notes": ["subtask note"],
                         "children": [],
@@ -94,7 +94,7 @@ class LatestTaskViewTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "Only",
-                "createdAt": "2026-05-13T00:40:00Z",
+                "startAt": "2026-05-13T00:40:00Z",
                 "workMinutes": 120,
                 "children": [],
             }
@@ -108,7 +108,7 @@ class LatestTaskViewTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "Only",
-                "createdAt": "2026-05-13T05:00:00Z",
+                "startAt": "2026-05-13T05:00:00Z",
                 "workMinutes": 120,
                 "children": [],
             }
@@ -124,7 +124,7 @@ class LatestTaskViewTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "Only",
-                "createdAt": "2026-05-13T00:40:00Z",
+                "startAt": "2026-05-13T00:40:00Z",
                 "workMinutes": 120,
                 "children": [],
             }
@@ -144,7 +144,7 @@ class LatestTaskViewTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "Only",
-                "createdAt": "2026-05-13T00:40:00Z",
+                "startAt": "2026-05-13T00:40:00Z",
                 "workMinutes": 120,
                 "children": [],
             }
@@ -160,7 +160,7 @@ class LatestTaskViewTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "Only",
-                "createdAt": "2026-05-13T00:40:00Z",
+                "startAt": "2026-05-13T00:40:00Z",
                 "workMinutes": 120,
                 "children": [],
             }
@@ -177,7 +177,7 @@ class LatestTaskViewTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "Only",
-                "createdAt": "2026-05-13T00:40:00Z",
+                "startAt": "2026-05-13T00:40:00Z",
                 "workMinutes": 120,
                 "children": [],
             }
@@ -192,7 +192,7 @@ class LatestTaskViewTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "Only",
-                "createdAt": "2026-05-13T00:40:00Z",
+                "startAt": "2026-05-13T00:40:00Z",
                 "workMinutes": 120,
                 "children": [],
             }
@@ -201,7 +201,7 @@ class LatestTaskViewTests(unittest.TestCase):
         out = view_latest_task.build_latest_view(tasks, now_local)
         self.assertIn("Latest task", out)
         self.assertIn("Name: Only", out)
-        self.assertIn("Created: 2026-05-13 Wed 08:40", out)
+        self.assertIn("Start: 2026-05-13 Wed 08:40", out)
         self.assertIn("Deadline: ", out)
         self.assertIn("Work time: 2h", out)
 
@@ -216,14 +216,14 @@ class LatestTaskViewTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "Parent",
-                "createdAt": "2026-05-13T00:40:00Z",
+                "startAt": "2026-05-13T00:40:00Z",
                 "deadline": "2026-05-13T02:00:00Z",  # 10:00 local
                 "workMinutes": 60,
                 "children": [
                     {
                         "id": "2",
                         "name": "Child",
-                        "createdAt": "2026-05-13T01:00:00Z",
+                        "startAt": "2026-05-13T01:00:00Z",
                         "workMinutes": 60,
                         "children": [],
                     }
@@ -238,14 +238,14 @@ class LatestTaskViewTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "Parent",
-                "createdAt": "2026-05-13T00:40:00Z",
+                "startAt": "2026-05-13T00:40:00Z",
                 "workMinutes": 60,
                 "children": [
                     {
                         "id": "2",
                         "name": "Child A",
                         "type": "news",
-                        "createdAt": "2026-05-13T01:00:00Z",
+                        "startAt": "2026-05-13T01:00:00Z",
                         "workMinutes": 60,
                         "deadline": "2026-05-13T02:00:00Z",
                         "children": [],
@@ -254,7 +254,7 @@ class LatestTaskViewTests(unittest.TestCase):
                         "id": "3",
                         "name": "Child B",
                         "type": "posts",
-                        "createdAt": "2026-05-13T02:00:00Z",
+                        "startAt": "2026-05-13T02:00:00Z",
                         "workMinutes": 30,
                         "deadline": "2026-05-13T03:00:00Z",
                         "children": [],

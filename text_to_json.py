@@ -93,7 +93,7 @@ def parse_subs_input(text: str, year: int, task_id: str):
         "type": "subs",
         "name": name,
         "assignedBy": assigned_by,
-        "createdAt": created_at,
+        "startAt": created_at,
         "deadline": deadline,
         "workMinutes": work_minutes,
         "contentSeconds": content_seconds,
@@ -150,7 +150,7 @@ def parse_news_input(text: str, year: int, owner_filter: str):
         task = {
             "type": "news",
             "name": name,
-            "createdAt": now_iso,
+            "startAt": now_iso,
             "workMinutes": work_minutes,
             "contentSeconds": original_minutes * 60,
             "children": [],
@@ -208,7 +208,7 @@ def parse_posts_input(text: str, owner_filter: str):
         task = {
             "type": "posts",
             "name": name,
-            "createdAt": now_iso,
+            "startAt": now_iso,
             "workMinutes": default_work_minutes,
             "children": [],
             "sourceText": "\n".join(source_parts),
@@ -235,7 +235,7 @@ def parse_simple_duration_input(text: str):
                 return {
                     "type": "custom",
                     "name": name,
-                    "createdAt": now_iso,
+                    "startAt": now_iso,
                     "workMinutes": hours * 60 + minutes,
                     "children": [],
                     "sourceText": raw_line,
@@ -249,7 +249,7 @@ def parse_simple_duration_input(text: str):
                 return {
                     "type": "custom",
                     "name": name,
-                    "createdAt": now_iso,
+                    "startAt": now_iso,
                     "workMinutes": minutes,
                     "children": [],
                     "sourceText": raw_line,
@@ -395,8 +395,8 @@ def normalize_task_shape(task):
     if isinstance(assigned_to, str):
         normalized["assignedTo"] = assigned_to
 
-    if isinstance(task.get("createdAt"), str):
-        normalized["createdAt"] = task["createdAt"]
+    if isinstance(task.get("startAt"), str):
+        normalized["startAt"] = task["startAt"]
     if isinstance(task.get("createdDate"), str):
         normalized["createdDate"] = task["createdDate"]
     if isinstance(task.get("deadline"), str):

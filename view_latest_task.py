@@ -313,7 +313,7 @@ def render_task_block(lines: list[str], task: dict, now_local: datetime, level: 
         lines.append(bold('Latest task'))
         lines.append('')
         lines.append(f'Name: {name}')
-        lines.append(f'Created: {to_display(created)}')
+        lines.append(f'Start: {to_display(created)}')
         lines.append(f'Work time: {fmt_work(work_minutes)}')
 
         extended = None

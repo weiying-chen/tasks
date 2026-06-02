@@ -12,7 +12,7 @@ def to_local(iso_str: str) -> datetime:
 
 
 def task_base_created_local(task: dict, now_local: datetime | None = None) -> datetime | None:
-    created_at = task.get("createdAt")
+    created_at = task.get("startAt")
     if isinstance(created_at, str):
         return to_local(created_at)
 

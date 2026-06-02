@@ -80,7 +80,7 @@ def normalize_tasks(data):
 
 def render_task(lines: list[str], task: dict, level: int, factor: float, now_local: datetime) -> None:
     name = task.get('name') or task.get('title') or '(Untitled)'
-    created_at = task.get('createdAt')
+    created_at = task.get('startAt')
     deadline = task.get('deadline')
     created_date = task.get('createdDate')
     deadline_date = task.get('deadlineDate')
@@ -116,7 +116,7 @@ def render_task(lines: list[str], task: dict, level: int, factor: float, now_loc
         deadline_display = derived_deadline.strftime('%Y-%m-%d %a %H:%M')
     elif not isinstance(deadline, str) and isinstance(deadline_date, str):
         deadline_display = f"{deadline_date} {datetime.fromisoformat(deadline_date).strftime('%a')} 17:00"
-    lines.append(f"- Created: {created_display}")
+    lines.append(f"- Start: {created_display}")
     lines.append(f"- Deadline: {deadline_display}")
     base_deadline_local = parse_base_deadline_local(task)
     child_minutes = sum_immediate_children_work_minutes(task, factor)
