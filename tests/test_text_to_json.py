@@ -65,6 +65,15 @@ class TextToJsonTests(unittest.TestCase):
         parsed = text_to_json.parse_source_text(text, [], 2026)
         self.assertEqual(parsed[0]["assignedBy"], "張牧軒")
 
+    def test_subs_program_assignee_preserves_leading_episode_count(self):
+        text = (
+            "請 Someone 翻譯3集我的阿公阿媽做慈濟, 長度7分, "
+            "預計翻譯5時45分，從4/28（二）16:10起算，deadline為4/29(三) 10:00，謝謝！"
+        )
+        parsed = text_to_json.parse_source_text(text, [], 2026)
+        self.assertEqual(parsed[0]["assignedBy"], "Emily")
+        self.assertEqual(parsed[0]["name"], "3集我的阿公阿媽做慈濟")
+
     def test_parse_source_text_subs_alt_format(self):
         text = (
             "張牧軒接下來請翻譯三集精舍日常(怡師父03叢林作息。自我修正、怡師父04－新手典座。資深傳承、"
