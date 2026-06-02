@@ -92,6 +92,10 @@ def build_add_task_command(script_dir: str) -> list[str]:
     return [f"{script_dir}/add_task.sh"]
 
 
+def build_assign_coworker_command(script_dir: str) -> list[str]:
+    return ["python3", f"{script_dir}/assign_task.py", "__CLIPBOARD__"]
+
+
 def build_deadline_message_command(script_dir: str, infile: str, task_id: str) -> list[str]:
     return [
         "python3",
@@ -392,6 +396,8 @@ def build_latest_view(
         color('Actions: ', MAGENTA)
         + color('create ', MAGENTA) + color('t', GREEN) + color('ask', MAGENTA)
         + color(' | ', MAGENTA)
+        + color('', MAGENTA) + color('a', GREEN) + color('ssign coworker', MAGENTA)
+        + color(' | ', MAGENTA)
         + color('add ', MAGENTA) + color('s', GREEN) + color('ubtasks', MAGENTA)
         + color(' | ', MAGENTA)
         + color('add ', MAGENTA) + color('n', GREEN) + color('otes', MAGENTA)
@@ -476,6 +482,37 @@ def main():
                                 status_until = 0.0
                     except Exception as exc:
                         status = color(f"Error: Add failed: {exc}", RED)
+                        status_until = time.time() + STATUS_TTL_SECONDS
+                if ch == b"a":
+                    try:
+                        clipboard_proc = subprocess.run(
+                            ["wl-paste"],
+                            capture_output=True,
+                            text=True,
+                            check=True,
+                        )
+                        clipboard_text = clipboard_proc.stdout
+                        if not clipboard_text.strip():
+                            status = color("Error: Clipboard is empty.", RED)
+                            status_until = time.time() + STATUS_TTL_SECONDS
+                            continue
+                        cmd = build_assign_coworker_command(script_dir)
+                        cmd[-1] = clipboard_text
+                        assign_proc = subprocess.run(
+                            cmd,
+                            capture_output=True,
+                            text=True,
+                            cwd=script_dir,
+                        )
+                        if assign_proc.returncode != 0:
+                            msg = (assign_proc.stderr or assign_proc.stdout or "Assign failed").strip()
+                            status = color(f"Error: {msg}", RED)
+                            status_until = time.time() + STATUS_TTL_SECONDS
+                        else:
+                            status = ""
+                            status_until = 0.0
+                    except Exception as exc:
+                        status = color(f"Error: Assign failed: {exc}", RED)
                         status_until = time.time() + STATUS_TTL_SECONDS
                 if ch == b"s":
                     try:

@@ -47,6 +47,10 @@ class LatestTaskActionsTests(unittest.TestCase):
             ["python3", "/tmp/text_to_json.py", "--parent-id", "9", "--target", "notes", "__CLIPBOARD__"],
         )
 
+    def test_build_assign_coworker_command(self):
+        cmd = view_latest_task.build_assign_coworker_command("/tmp")
+        self.assertEqual(cmd, ["python3", "/tmp/assign_task.py", "__CLIPBOARD__"])
+
     def test_build_notes_target_options_parent_and_children(self):
         latest = {
             "id": "6",

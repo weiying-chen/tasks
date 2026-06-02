@@ -1,0 +1,113 @@
+#!/usr/bin/env python3
+import argparse
+import json
+import re
+from pathlib import Path
+
+from task_stages import normalize_stages
+from text_to_json import normalize_task_shape, normalize_tasks_json
+
+
+def normalize_task_name_for_match(name: str) -> str:
+    normalized = (
+        name.strip()
+        .replace("（", "(")
+        .replace("）", ")")
+        .replace("－", "-")
+        .replace("—", "-")
+        .replace("～", "~")
+    )
+    return re.sub(r"\s+", "", normalized)
+
+
+def parse_translate_assignment_message(text: str) -> dict[str, str]:
+    match = re.match(
+        r"^\s*(?P<assignedBy>.+?)\s*請\s*(?P<assignedTo>.+?)\s*翻譯\s*(?P<name>.+?)\s*$",
+        text.strip(),
+    )
+    if not match:
+        raise ValueError("Cannot parse translate assignment message")
+    parsed = {key: value.strip() for key, value in match.groupdict().items()}
+    parsed["name"] = re.sub(r"\s*[，,。!！~～]?\s*謝謝\s*[~～]?\s*$", "", parsed["name"]).strip()
+    return parsed
+
+
+def ensure_mutable_active_stage(task: dict) -> dict:
+    stages = task.get("stages")
+    if not isinstance(stages, list):
+        stages = normalize_stages(task)
+        task["stages"] = stages
+    if not stages:
+        stage = {}
+        task["stages"] = [stage]
+        return stage
+
+    for stage in reversed(stages):
+        if not isinstance(stage, dict):
+            continue
+        status = str(stage.get("status") or "").strip().lower()
+        if status not in {"done", "completed"}:
+            return stage
+    last = stages[-1]
+    if isinstance(last, dict):
+        return last
+    stage = {}
+    stages[-1] = stage
+    return stage
+
+
+def find_matching_top_level_tasks(tasks: list[dict], task_name: str) -> list[dict]:
+    target = normalize_task_name_for_match(task_name)
+    matched = []
+    for task in tasks:
+        if not isinstance(task, dict):
+            continue
+        task_name_value = str(task.get("name") or "")
+        if normalize_task_name_for_match(task_name_value) == target:
+            matched.append(task)
+    return matched
+
+
+def assign_translate_task(tasks: list[dict], text: str) -> list[dict]:
+    parsed = parse_translate_assignment_message(text)
+    matched = find_matching_top_level_tasks(tasks, parsed["name"])
+    if not matched:
+        raise ValueError(f"No matching top-level task: {parsed['name']}")
+    if len(matched) > 1:
+        raise ValueError(f"Multiple matching top-level tasks: {parsed['name']}")
+
+    task = matched[0]
+    stage = ensure_mutable_active_stage(task)
+    task["assignedBy"] = parsed["assignedBy"]
+    stage["assignedTo"] = parsed["assignedTo"]
+    stage["status"] = "assigned"
+    return tasks
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("text", nargs="?", help="assignment message text")
+    args = parser.parse_args()
+
+    if not args.text:
+        raise ValueError("Provide source text")
+
+    out_path = Path("tasks.json")
+    if out_path.exists():
+        existing = json.loads(out_path.read_text(encoding="utf-8"))
+        tasks = normalize_tasks_json(existing)
+    else:
+        tasks = []
+
+    try:
+        updated = assign_translate_task(tasks, args.text)
+    except ValueError as exc:
+        raise SystemExit(f"Cannot assign coworker. ({exc})") from exc
+
+    normalized_tasks = [normalize_task_shape(task) for task in updated if isinstance(task, dict)]
+    out_path.write_text(json.dumps(normalized_tasks, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    print("Assigned coworker in tasks.json")
+
+
+if __name__ == "__main__":
+    main()
