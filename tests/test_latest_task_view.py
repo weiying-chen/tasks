@@ -19,16 +19,27 @@ class LatestTaskViewTests(unittest.TestCase):
             {
                 "id": "2",
                 "name": "New Parent",
-                "startAt": "2026-05-13T00:40:00Z",
-                "workMinutes": 1056,
+                "stages": [
+                    {
+                        "type": "translate",
+                        "assignedTo": "Alex",
+                        "startAt": "2026-05-13T00:40:00Z",
+                        "workMinutes": 1056,
+                    }
+                ],
                 "notes": ['"上肢" referred to arms rather than upper body.'],
                 "children": [
                     {
                         "id": "3",
                         "name": "Child",
-                        "type": "news",
-                        "startAt": "2026-05-13T01:00:00Z",
-                        "workMinutes": 134,
+                        "stages": [
+                            {
+                                "type": "news",
+                                "assignedTo": "Alex",
+                                "startAt": "2026-05-13T01:00:00Z",
+                                "workMinutes": 134,
+                            }
+                        ],
                         "notes": ["child-only note"],
                         "children": [],
                     }
@@ -39,11 +50,13 @@ class LatestTaskViewTests(unittest.TestCase):
         out = self.strip_ansi(view_latest_task.build_latest_view(tasks, now_local))
         self.assertIn("Latest task", out)
         self.assertIn("Name: New Parent", out)
+        self.assertIn("Assigned to: Alex", out)
         self.assertIn("Subtasks", out)
         self.assertIn("Notes (1)", out)
         self.assertIn('• "上肢" referred to arms rather than upper body.', out)
         self.assertNotIn('• child-only note', out)
         self.assertIn("Child", out)
+        self.assertIn("Type: translate", out)
         self.assertIn("Type: news", out)
         self.assertNotIn("Type: subs", out)
         self.assertIn("Work time: 2h 14m", out)

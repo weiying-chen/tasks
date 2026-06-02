@@ -12,7 +12,7 @@ from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
 from task_deadline import task_base_created_local, task_deadline_local
-from task_stages import get_task_type, get_task_work_minutes
+from task_stages import get_task_assigned_to, get_task_type, get_task_work_minutes
 from work_time import add_work_minutes, next_work_start
 
 TZ_TAIPEI = timezone(timedelta(hours=8))
@@ -296,14 +296,17 @@ def render_task_block(lines: list[str], task: dict, now_local: datetime, level: 
     created = next_work_start(created_base)
     deadline = task_deadline_local(task, now_local=now_local)
     work_minutes = get_task_work_minutes(task)
+    task_type = get_task_type(task)
+    assigned_to = get_task_assigned_to(task)
 
     name = task.get("name") or "(Untitled)"
 
     if level > 2:
         lines.append(f'Name: {name}')
-        task_type = get_task_type(task)
         if isinstance(task_type, str) and task_type.strip():
             lines.append(f'Type: {task_type}')
+        if isinstance(assigned_to, str) and assigned_to.strip():
+            lines.append(f'Assigned to: {assigned_to}')
         lines.append(f'Work time: {fmt_work(work_minutes)}')
         lines.append(f'Deadline: {color(to_display(deadline) if deadline else "-", YELLOW)}')
         notes = clean_notes(task)
@@ -314,6 +317,10 @@ def render_task_block(lines: list[str], task: dict, now_local: datetime, level: 
         lines.append(bold('Latest task'))
         lines.append('')
         lines.append(f'Name: {name}')
+        if isinstance(task_type, str) and task_type.strip():
+            lines.append(f'Type: {task_type}')
+        if isinstance(assigned_to, str) and assigned_to.strip():
+            lines.append(f'Assigned to: {assigned_to}')
         lines.append(f'Start: {to_display(created)}')
         lines.append(f'Work time: {fmt_work(work_minutes)}')
 
