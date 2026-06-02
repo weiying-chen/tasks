@@ -79,3 +79,8 @@ def get_task_work_minutes(task: dict) -> int | None:
 def get_task_content_seconds(task: dict) -> int | None:
     value = active_stage(task).get("contentSeconds")
     return value if isinstance(value, int) else None
+
+
+def get_task_status(task: dict) -> str | None:
+    value = active_stage(task).get("status")
+    return value if isinstance(value, str) else None

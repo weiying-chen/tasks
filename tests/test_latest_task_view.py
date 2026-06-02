@@ -23,6 +23,7 @@ class LatestTaskViewTests(unittest.TestCase):
                     {
                         "type": "translate",
                         "assignedTo": "Alex",
+                        "status": "scheduled",
                         "startAt": "2026-05-13T00:40:00Z",
                         "workMinutes": 1056,
                     }
@@ -36,6 +37,7 @@ class LatestTaskViewTests(unittest.TestCase):
                             {
                                 "type": "news",
                                 "assignedTo": "Alex",
+                                "status": "queued",
                                 "startAt": "2026-05-13T01:00:00Z",
                                 "workMinutes": 134,
                             }
@@ -51,6 +53,7 @@ class LatestTaskViewTests(unittest.TestCase):
         self.assertIn("Latest task", out)
         self.assertIn("Name: New Parent", out)
         self.assertIn("Assigned to: Alex", out)
+        self.assertIn("Status: scheduled", out)
         self.assertIn("Subtasks", out)
         self.assertIn("Notes (1)", out)
         self.assertIn('• "上肢" referred to arms rather than upper body.', out)
@@ -58,6 +61,7 @@ class LatestTaskViewTests(unittest.TestCase):
         self.assertIn("Child", out)
         self.assertIn("Type: translate", out)
         self.assertIn("Type: news", out)
+        self.assertIn("Status: queued", out)
         self.assertNotIn("Type: subs", out)
         self.assertIn("Work time: 2h 14m", out)
         self.assertIn("Extended deadline:", out)
