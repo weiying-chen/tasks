@@ -85,7 +85,7 @@ class TextToJsonTests(unittest.TestCase):
         self.assertEqual(task["assignedBy"], "Emily")
         self.assertEqual(get_task_content_seconds(task), 540)
         self.assertEqual(get_task_work_minutes(task), 432)
-        self.assertEqual(normalize_stages(task)[0]["deadline"], "2026-06-03T03:42:00Z")
+        self.assertEqual(normalize_stages(task)[0]["deadline"], "2026-06-03T03:45:00Z")
 
     def test_parse_source_text_subs_alt_format(self):
         text = (
@@ -114,15 +114,18 @@ class TextToJsonTests(unittest.TestCase):
         self.assertEqual(get_task_work_minutes(task), 960)
         self.assertIn("6 個短版", task["name"])
 
-    def test_parse_source_text_subs_uses_computed_deadline_when_pm_differs(self):
+    def test_parse_source_text_subs_uses_pm_deadline_when_pm_differs(self):
         text = (
             "翻譯人文講堂 (送一份專業的禮物 職涯發光 - 方植永) 6 個短版, 長度20分, "
             "預計做16時(2天), 從5/28（四）11:40起算，deadline 6/1(一)10:40，謝謝！"
         )
         parsed = text_to_json.parse_source_text(text, [], 2026)
         task = parsed[0]
-        self.assertEqual(normalize_stages(task)[0]["deadline"], "2026-06-01T03:40:00Z")
-        self.assertIn("Warning:", task.get("__warning__", ""))
+        self.assertEqual(normalize_stages(task)[0]["deadline"], "2026-06-01T02:40:00Z")
+        self.assertEqual(
+            task.get("__warning__", ""),
+            "Warning: PM deadline differs; keeping PM deadline (PM: 2026-06-01 Mon 10:40, computed: 2026-06-01 Mon 11:40).",
+        )
 
     def test_parse_source_text_custom_minutes_format(self):
         parsed = text_to_json.parse_source_text(

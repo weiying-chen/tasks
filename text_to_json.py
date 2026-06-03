@@ -88,7 +88,7 @@ def parse_subs_input(text: str, year: int, task_id: str):
     pm_deadline = parse_datetime(dl.group(1), dl.group(2), year)
     start_local = next_work_start(to_local(created_at))
     computed_deadline = add_work_minutes(start_local, work_minutes)
-    deadline = computed_deadline.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
+    deadline = pm_deadline
     task = {
         "id": task_id,
         "name": name,
@@ -109,8 +109,9 @@ def parse_subs_input(text: str, year: int, task_id: str):
     pm_deadline_local = to_local(pm_deadline)
     if pm_deadline_local != computed_deadline:
         task["__warning__"] = (
-            f"Warning: PM deadline differs; using computed deadline "
-            f"({pm_deadline_local.strftime('%Y-%m-%d %a %H:%M')} -> {computed_deadline.strftime('%Y-%m-%d %a %H:%M')})."
+            f"Warning: PM deadline differs; keeping PM deadline "
+            f"(PM: {pm_deadline_local.strftime('%Y-%m-%d %a %H:%M')}, "
+            f"computed: {computed_deadline.strftime('%Y-%m-%d %a %H:%M')})."
         )
 
     return task
