@@ -132,10 +132,21 @@ class LatestTaskActionsTests(unittest.TestCase):
             ],
         )
 
-    def test_parse_next_task_clipboard_payload(self):
+    def test_parse_next_task_clipboard_payload_plain_name(self):
         assignee, name = view_latest_task.parse_next_task_clipboard_payload("Alex | 新任務")
         self.assertIsNone(assignee)
         self.assertEqual(name, "Alex | 新任務")
+
+    def test_parse_next_task_clipboard_payload_extracts_name_from_subs_block(self):
+        clipboard_text = """請
+Alex Chen 翻譯人文講堂 (人文講堂 親密搶奪：人性與法律的修煉 - 李永然) 6 個短版, 長度21分, 預計翻譯16時48分, deadline等手上工作完成再給
+
+親密搶奪：人性與法律的修煉 - 李永然20260110
+https://www.youtube.com/watch?v=C3gAhSDUe78
+"""
+        assignee, name = view_latest_task.parse_next_task_clipboard_payload(clipboard_text)
+        self.assertIsNone(assignee)
+        self.assertEqual(name, "人文講堂 (人文講堂 親密搶奪：人性與法律的修煉 - 李永然) 6 個短版")
 
     def test_choose_numbered_option_esc_cancels(self):
         with mock.patch("view_latest_task.os.read", return_value=b"\x1b"):

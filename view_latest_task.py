@@ -2,6 +2,7 @@
 import argparse
 import json
 import os
+import re
 import select
 import subprocess
 import sys
@@ -137,6 +138,9 @@ def parse_next_task_clipboard_payload(clipboard_text: str) -> tuple[str | None, 
     text = clipboard_text.strip()
     if not text:
         return None, ""
+    subs_match = re.search(r"翻譯\s*([^，,\n]+?)\s*[，,]", text)
+    if subs_match:
+        return None, subs_match.group(1).strip()
     return None, text
 
 
