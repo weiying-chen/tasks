@@ -34,6 +34,18 @@ class TextToJsonTests(unittest.TestCase):
         self.assertEqual(get_task_work_minutes(tasks[0]), 130)
         self.assertEqual(get_task_type(tasks[0]), "news")
 
+    def test_parse_news_accepts_no_space_before_duration(self):
+        text = (
+            "6/5\n\n"
+            "Alex\u00a0Chen: 爾灣人文揚名1:45\n"
+            "Emily\u00a0Ding: 鹿野苑首浴佛 1:18\n"
+        )
+        tasks = text_to_json.parse_news_input(text, 2026, "Alex Chen")
+        self.assertEqual(len(tasks), 1)
+        self.assertEqual(tasks[0]["name"], "爾灣人文揚名")
+        self.assertEqual(get_task_work_minutes(tasks[0]), 125)
+        self.assertEqual(get_task_type(tasks[0]), "news")
+
     def test_parse_source_text_uses_posts_before_subs(self):
         text = (
             "4. alex\n"
