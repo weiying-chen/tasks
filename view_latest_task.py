@@ -432,7 +432,7 @@ def build_task_view(
         color('Actions: ', MAGENTA)
         + color('create ', MAGENTA) + color('t', GREEN) + color('ask', MAGENTA)
         + color(' | ', MAGENTA)
-        + color('', MAGENTA) + color('a', GREEN) + color('ssign coworker', MAGENTA)
+        + color('set ', MAGENTA) + color('a', GREEN) + color('ssignee', MAGENTA)
         + color(' | ', MAGENTA)
         + color('add ', MAGENTA) + color('s', GREEN) + color('ubtasks', MAGENTA)
         + color(' | ', MAGENTA)

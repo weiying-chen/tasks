@@ -7,6 +7,8 @@ from pathlib import Path
 from task_stages import normalize_stages
 from text_to_json import normalize_task_shape, normalize_tasks_json
 
+DEFAULT_SELF_ASSIGNEE = "Alex Chen"
+
 
 def normalize_task_name_for_match(name: str) -> str:
     normalized = (
@@ -20,16 +22,44 @@ def normalize_task_name_for_match(name: str) -> str:
     return re.sub(r"\s+", "", normalized)
 
 
-def parse_translate_assignment_message(text: str) -> dict[str, str]:
-    match = re.match(
-        r"^\s*(?P<assignedBy>.+?)\s*請\s*(?P<assignedTo>.+?)\s*翻譯\s*(?P<name>.+?)\s*$",
-        text.strip(),
-    )
-    if not match:
-        raise ValueError("Cannot parse translate assignment message")
-    parsed = {key: value.strip() for key, value in match.groupdict().items()}
-    parsed["name"] = re.sub(r"\s*[，,。!！~～]?\s*謝謝\s*[~～]?\s*$", "", parsed["name"]).strip()
-    return parsed
+def strip_assignment_tail(name: str) -> str:
+    return re.sub(r"\s*[，,。!！~～]?\s*謝謝\s*[~～]?\s*$", "", name).strip()
+
+
+def parse_assignment_message(text: str) -> dict[str, str]:
+    stripped = text.strip()
+    patterns: list[tuple[str, str, str | None]] = [
+        (
+            r"^\s*(?P<assignedBy>.+?)\s*請\s*(?P<assignedTo>.+?)\s*edit\s*\+\s*定稿\s*(?P<name>.+?)\s*$",
+            "edit",
+            None,
+        ),
+        (
+            r"^\s*請\s*(?P<assignedBy>.+?)\s*給我\s*edit\s*\+\s*定稿\s*(?P<name>.+?)\s*$",
+            "edit",
+            DEFAULT_SELF_ASSIGNEE,
+        ),
+        (
+            r"^\s*(?P<assignedBy>.+?)\s*[.。．]?\s*請\s*(?P<assignedTo>.+?)\s*翻譯\s*(?P<name>.+?)\s*$",
+            "translate",
+            None,
+        ),
+    ]
+
+    for pattern, stage, default_assigned_to in patterns:
+        match = re.match(pattern, stripped, flags=re.I | re.S)
+        if not match:
+            continue
+        parsed = {key: value.strip() for key, value in match.groupdict().items() if value is not None}
+        parsed["assignedBy"] = re.sub(r"\s*[.。．]\s*$", "", parsed["assignedBy"]).strip()
+        parsed["assignedTo"] = parsed.get("assignedTo", default_assigned_to or "").strip()
+        parsed["name"] = strip_assignment_tail(parsed["name"])
+        parsed["stage"] = stage
+        if not parsed["assignedTo"]:
+            raise ValueError("Cannot parse assignedTo")
+        return parsed
+
+    raise ValueError("Cannot parse assignment message")
 
 
 def ensure_mutable_active_stage(task: dict) -> dict:
@@ -68,8 +98,8 @@ def find_matching_top_level_tasks(tasks: list[dict], task_name: str) -> list[dic
     return matched
 
 
-def assign_translate_task(tasks: list[dict], text: str) -> list[dict]:
-    parsed = parse_translate_assignment_message(text)
+def assign_task(tasks: list[dict], text: str) -> list[dict]:
+    parsed = parse_assignment_message(text)
     matched = find_matching_top_level_tasks(tasks, parsed["name"])
     if not matched:
         raise ValueError(f"No matching top-level task: {parsed['name']}")
@@ -80,8 +110,17 @@ def assign_translate_task(tasks: list[dict], text: str) -> list[dict]:
     stage = ensure_mutable_active_stage(task)
     task["assignedBy"] = parsed["assignedBy"]
     stage["assignedTo"] = parsed["assignedTo"]
+    stage["stage"] = parsed["stage"]
     stage["status"] = "assigned"
     return tasks
+
+
+def parse_translate_assignment_message(text: str) -> dict[str, str]:
+    return parse_assignment_message(text)
+
+
+def assign_translate_task(tasks: list[dict], text: str) -> list[dict]:
+    return assign_task(tasks, text)
 
 
 def main():
@@ -101,7 +140,7 @@ def main():
         tasks = []
 
     try:
-        updated = assign_translate_task(tasks, args.text)
+        updated = assign_task(tasks, args.text)
     except ValueError as exc:
         raise SystemExit(f"Cannot assign coworker. ({exc})") from exc
 

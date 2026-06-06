@@ -5,6 +5,7 @@ from typing import Any
 
 STAGE_FIELD_NAMES = (
     "type",
+    "stage",
     "assignedTo",
     "startAt",
     "deadline",
