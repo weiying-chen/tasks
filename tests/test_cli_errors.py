@@ -1,5 +1,6 @@
 import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -16,15 +17,31 @@ class CliErrorTests(unittest.TestCase):
         self.assertIn("Cannot parse input as posts/news/subs", proc.stderr)
         self.assertNotIn("Traceback", proc.stderr)
 
-    def test_view_latest_task_rejects_tasks_file_arg(self):
+    def test_view_latest_task_accepts_file_arg(self):
         script = Path(__file__).resolve().parent.parent / "view_latest_task.py"
-        proc = subprocess.run(
-            [sys.executable, str(script), "--tasks-file", "tasks.json", "--once"],
-            capture_output=True,
-            text=True,
-        )
-        self.assertNotEqual(proc.returncode, 0)
-        self.assertIn("unrecognized arguments: --tasks-file", proc.stderr)
+        with tempfile.TemporaryDirectory() as temp_dir:
+            tasks_path = Path(temp_dir) / "coworker_tasks.json"
+            tasks_path.write_text('[{"id":"1","name":"Coworker","stages":[{"type":"subs","startAt":"2026-06-02T01:00:00Z","workMinutes":240}],"children":[]}]', encoding="utf-8")
+            proc = subprocess.run(
+                [sys.executable, str(script), "--file", str(tasks_path), "--once"],
+                capture_output=True,
+                text=True,
+            )
+        self.assertEqual(proc.returncode, 0)
+        self.assertIn("Name: Coworker", proc.stdout)
+
+    def test_view_task_wrapper_accepts_file_arg(self):
+        script = Path(__file__).resolve().parent.parent / "view_task.py"
+        with tempfile.TemporaryDirectory() as temp_dir:
+            tasks_path = Path(temp_dir) / "coworker_tasks.json"
+            tasks_path.write_text('[{"id":"1","name":"Coworker","stages":[{"type":"subs","startAt":"2026-06-02T01:00:00Z","workMinutes":240}],"children":[]}]', encoding="utf-8")
+            proc = subprocess.run(
+                [sys.executable, str(script), "--file", str(tasks_path), "--once"],
+                capture_output=True,
+                text=True,
+            )
+        self.assertEqual(proc.returncode, 0)
+        self.assertIn("Name: Coworker", proc.stdout)
 
     def test_notes_target_error_is_one_line_without_traceback(self):
         script = Path(__file__).resolve().parent.parent / "text_to_json.py"

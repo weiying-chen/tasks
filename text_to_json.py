@@ -455,13 +455,14 @@ def apply_child_work_rule(task: dict) -> None:
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument("-i", "--infile", default="tasks.json", help="input/output JSON path")
     parser.add_argument("text", nargs="?", help="source task text")
     parser.add_argument("--parent-id", help="insert new task under this parent task id")
     parser.add_argument("--target", choices=["children", "notes"], default="children", help="parent field target when using --parent-id")
     parser.add_argument("--debug", action="store_true", help="show full traceback on errors")
     args = parser.parse_args()
 
-    out_path = Path("tasks.json")
+    out_path = Path(args.infile)
     if out_path.exists():
         existing = json.loads(out_path.read_text(encoding="utf-8"))
         tasks = normalize_tasks_json(existing)

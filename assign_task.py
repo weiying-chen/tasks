@@ -86,13 +86,14 @@ def assign_translate_task(tasks: list[dict], text: str) -> list[dict]:
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument("-i", "--infile", default="tasks.json", help="input/output JSON path")
     parser.add_argument("text", nargs="?", help="assignment message text")
     args = parser.parse_args()
 
     if not args.text:
         raise ValueError("Provide source text")
 
-    out_path = Path("tasks.json")
+    out_path = Path(args.infile)
     if out_path.exists():
         existing = json.loads(out_path.read_text(encoding="utf-8"))
         tasks = normalize_tasks_json(existing)

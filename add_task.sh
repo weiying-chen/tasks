@@ -4,8 +4,17 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 parent_id=""
+infile="tasks.json"
 while [[ $# -gt 0 ]]; do
   case "$1" in
+    --file)
+      if [[ $# -lt 2 ]]; then
+        echo "Missing value for --file" >&2
+        exit 1
+      fi
+      infile="$2"
+      shift 2
+      ;;
     --parent-id)
       if [[ $# -lt 2 ]]; then
         echo "Missing value for --parent-id" >&2
@@ -16,7 +25,7 @@ while [[ $# -gt 0 ]]; do
       ;;
     *)
       echo "Unknown argument: $1" >&2
-      echo "Usage: $0 [--parent-id ID]" >&2
+      echo "Usage: $0 [--file PATH] [--parent-id ID]" >&2
       exit 1
       ;;
   esac
@@ -34,9 +43,10 @@ if [[ -z "${input_text//[[:space:]]/}" ]]; then
 fi
 
 if [[ -n "$parent_id" ]]; then
-  python3 "$SCRIPT_DIR/text_to_json.py" --parent-id "$parent_id" "$input_text"
+  python3 "$SCRIPT_DIR/text_to_json.py" --infile "$infile" --parent-id "$parent_id" "$input_text"
 else
-  python3 "$SCRIPT_DIR/text_to_json.py" "$input_text"
+  python3 "$SCRIPT_DIR/text_to_json.py" --infile "$infile" "$input_text"
 fi
 
-python3 "$SCRIPT_DIR/json_to_markdown.py"
+outfile="${infile%.json}.md"
+python3 "$SCRIPT_DIR/json_to_markdown.py" -i "$infile" -o "$outfile"

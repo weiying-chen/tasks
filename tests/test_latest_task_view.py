@@ -295,6 +295,20 @@ class LatestTaskViewTests(unittest.TestCase):
         os.chdir(old_cwd)
         self.assertEqual(resolved, Path("/tmp/proj/tasks.json"))
 
+    def test_input_path_uses_explicit_file_in_script_dir(self):
+        fake_script = Path("/tmp/proj/view_task.py")
+        resolved = view_latest_task.resolve_input_path("coworker_tasks.json", fake_script=fake_script)
+        self.assertEqual(resolved, Path("/tmp/proj/coworker_tasks.json"))
+
+    def test_build_task_view_can_select_task_by_id(self):
+        tasks = [
+            {"id": "1", "name": "Old", "startAt": "2026-05-01T00:00:00Z", "workMinutes": 60, "children": []},
+            {"id": "2", "name": "New", "startAt": "2026-05-13T00:40:00Z", "workMinutes": 120, "children": []},
+        ]
+        out = self.strip_ansi(view_latest_task.build_task_view(tasks, task_id="1"))
+        self.assertIn("Name: Old", out)
+        self.assertNotIn("Name: New", out)
+
 
 if __name__ == "__main__":
     unittest.main()

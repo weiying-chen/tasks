@@ -73,28 +73,59 @@ def find_latest_task_id(tasks: list[dict]) -> str | None:
     return None
 
 
-def build_add_to_latest_command(script_dir: str, parent_id: str, target: str = "children") -> list[str]:
-    return [
-        "python3",
-        f"{script_dir}/text_to_json.py",
-        "--parent-id",
-        parent_id,
-        "--target",
-        target,
-        "__CLIPBOARD__",
-    ]
+def find_task_by_id(tasks: list[dict], task_id: str) -> dict | None:
+    for task in tasks:
+        if not isinstance(task, dict):
+            continue
+        if task.get("id") == task_id:
+            return task
+        children = task.get("children")
+        if isinstance(children, list):
+            found = find_task_by_id(children, task_id)
+            if found is not None:
+                return found
+    return None
 
 
-def build_add_notes_command(script_dir: str, parent_id: str) -> list[str]:
-    return build_add_to_latest_command(script_dir, parent_id, "notes")
+def get_view_task(tasks: list[dict], task_id: str | None = None) -> dict | None:
+    if task_id:
+        return find_task_by_id(tasks, task_id)
+    if not tasks:
+        return None
+    latest = tasks[-1]
+    return latest if isinstance(latest, dict) else None
 
 
-def build_add_task_command(script_dir: str) -> list[str]:
-    return [f"{script_dir}/add_task.sh"]
+def build_add_to_latest_command(
+    script_dir: str,
+    parent_id: str,
+    target: str = "children",
+    infile: str | None = None,
+) -> list[str]:
+    cmd = ["python3", f"{script_dir}/text_to_json.py"]
+    if infile:
+        cmd.extend(["--infile", infile])
+    cmd.extend(["--parent-id", parent_id, "--target", target, "__CLIPBOARD__"])
+    return cmd
 
 
-def build_assign_coworker_command(script_dir: str) -> list[str]:
-    return ["python3", f"{script_dir}/assign_task.py", "__CLIPBOARD__"]
+def build_add_notes_command(script_dir: str, parent_id: str, infile: str | None = None) -> list[str]:
+    return build_add_to_latest_command(script_dir, parent_id, "notes", infile)
+
+
+def build_add_task_command(script_dir: str, infile: str | None = None) -> list[str]:
+    cmd = [f"{script_dir}/add_task.sh"]
+    if infile:
+        cmd.extend(["--file", infile])
+    return cmd
+
+
+def build_assign_coworker_command(script_dir: str, infile: str | None = None) -> list[str]:
+    cmd = ["python3", f"{script_dir}/assign_task.py"]
+    if infile:
+        cmd.extend(["--infile", infile])
+    cmd.append("__CLIPBOARD__")
+    return cmd
 
 
 def build_deadline_message_command(script_dir: str, infile: str, task_id: str) -> list[str]:
@@ -370,8 +401,9 @@ def render_task_block(lines: list[str], task: dict, now_local: datetime, level: 
         render_notes_block(lines, bold(f'Notes ({len(notes)})'), notes, True)
 
 
-def build_latest_view(
+def build_task_view(
     tasks: list[dict],
+    task_id: str | None = None,
     now_local: datetime | None = None,
     status: str = "",
     show_subtask_notes: bool = False,
@@ -384,12 +416,12 @@ def build_latest_view(
         lines.append(color('No tasks', YELLOW))
         return '\n'.join(lines) + '\n'
 
-    latest = tasks[-1]
-    if not isinstance(latest, dict):
-        lines.append(color('Latest task is invalid', YELLOW))
+    selected = get_view_task(tasks, task_id=task_id)
+    if not isinstance(selected, dict):
+        lines.append(color('Selected task is invalid', YELLOW))
         return '\n'.join(lines) + '\n'
 
-    render_task_block(lines, latest, now_local, 2, show_subtask_notes)
+    render_task_block(lines, selected, now_local, 2, show_subtask_notes)
     if status:
         if not lines or lines[-1] != '':
             lines.append('')
@@ -415,25 +447,42 @@ def build_latest_view(
     return '\n'.join(lines).rstrip() + '\n'
 
 
-def resolve_input_path(fake_script: Path | None = None) -> Path:
+def build_latest_view(
+    tasks: list[dict],
+    now_local: datetime | None = None,
+    status: str = "",
+    show_subtask_notes: bool = False,
+) -> str:
+    return build_task_view(tasks, now_local=now_local, status=status, show_subtask_notes=show_subtask_notes)
+
+
+def resolve_input_path(input_file: str | None = None, fake_script: Path | None = None) -> Path:
     script_file = fake_script or Path(__file__)
+    if input_file:
+        candidate = Path(input_file).expanduser()
+        if candidate.is_absolute():
+            return candidate
+        return script_file.resolve().parent / candidate
     return script_file.resolve().parent / 'tasks.json'
 
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument('--file', help='input JSON path relative to script dir or absolute path')
+    parser.add_argument('--id', help='specific task id to view instead of latest')
     parser.add_argument('--once', action='store_true', help='print once and exit')
     parser.add_argument('--interval', type=float, default=1.0, help='refresh seconds for live mode')
     args = parser.parse_args()
 
-    in_path = resolve_input_path()
+    in_path = resolve_input_path(args.file)
 
     show_notes = False
+    input_file = str(in_path.resolve())
 
     def render_once(status: str = ""):
         data = json.loads(in_path.read_text(encoding='utf-8'))
         tasks = normalize_tasks(data)
-        return build_latest_view(tasks, status=status, show_subtask_notes=show_notes)
+        return build_task_view(tasks, task_id=args.id, status=status, show_subtask_notes=show_notes)
 
     if args.once:
         print(render_once(), end='')
@@ -467,7 +516,7 @@ def main():
                 if ch == b"t":
                     try:
                         add_proc = subprocess.run(
-                            build_add_task_command(script_dir),
+                            build_add_task_command(script_dir, input_file),
                             capture_output=True,
                             text=True,
                             cwd=script_dir,
@@ -500,7 +549,7 @@ def main():
                             status = color("Error: Clipboard is empty.", RED)
                             status_until = time.time() + STATUS_TTL_SECONDS
                             continue
-                        cmd = build_assign_coworker_command(script_dir)
+                        cmd = build_assign_coworker_command(script_dir, input_file)
                         cmd[-1] = clipboard_text
                         assign_proc = subprocess.run(
                             cmd,
@@ -522,9 +571,10 @@ def main():
                     try:
                         data = json.loads(in_path.read_text(encoding='utf-8'))
                         tasks = normalize_tasks(data)
-                        latest_id = find_latest_task_id(tasks)
-                        if not latest_id:
-                            status = color("Error: No latest task id found.", RED)
+                        selected_task = get_view_task(tasks, task_id=args.id)
+                        selected_id = str(selected_task.get("id") or "").strip() if isinstance(selected_task, dict) else ""
+                        if not selected_id:
+                            status = color("Error: No selected task id found.", RED)
                             status_until = time.time() + STATUS_TTL_SECONDS
                             continue
                         clipboard_proc = subprocess.run(
@@ -538,7 +588,7 @@ def main():
                             status = color("Error: Clipboard is empty.", RED)
                             status_until = time.time() + STATUS_TTL_SECONDS
                             continue
-                        cmd = build_add_to_latest_command(script_dir, latest_id, "children")
+                        cmd = build_add_to_latest_command(script_dir, selected_id, "children", input_file)
                         cmd[-1] = clipboard_text
                         add_proc = subprocess.run(
                             cmd,
@@ -560,14 +610,15 @@ def main():
                     try:
                         data = json.loads(in_path.read_text(encoding='utf-8'))
                         tasks = normalize_tasks(data)
-                        if not tasks or not isinstance(tasks[-1], dict):
-                            status = color("Error: Latest task is invalid.", RED)
+                        selected_task = get_view_task(tasks, task_id=args.id)
+                        if not isinstance(selected_task, dict):
+                            status = color("Error: Selected task is invalid.", RED)
                             status_until = time.time() + STATUS_TTL_SECONDS
                             continue
-                        latest_task = tasks[-1]
-                        latest_id = find_latest_task_id(tasks)
+                        latest_task = selected_task
+                        latest_id = str(selected_task.get("id") or "").strip()
                         if not latest_id:
-                            status = color("Error: No latest task id found.", RED)
+                            status = color("Error: No selected task id found.", RED)
                             status_until = time.time() + STATUS_TTL_SECONDS
                             continue
                         target_id = latest_id
@@ -602,7 +653,7 @@ def main():
                             status = color("Error: Clipboard is empty.", RED)
                             status_until = time.time() + STATUS_TTL_SECONDS
                             continue
-                        cmd = build_add_notes_command(script_dir, target_id)
+                        cmd = build_add_notes_command(script_dir, target_id, input_file)
                         cmd[-1] = clipboard_text
                         add_proc = subprocess.run(
                             cmd,
@@ -626,9 +677,10 @@ def main():
                     try:
                         data = json.loads(in_path.read_text(encoding='utf-8'))
                         tasks = normalize_tasks(data)
-                        latest_id = find_latest_task_id(tasks)
+                        selected_task = get_view_task(tasks, task_id=args.id)
+                        latest_id = str(selected_task.get("id") or "").strip() if isinstance(selected_task, dict) else ""
                         if not latest_id:
-                            status = color("Error: No latest task id found.", RED)
+                            status = color("Error: No selected task id found.", RED)
                             status_until = time.time() + STATUS_TTL_SECONDS
                             continue
                         msg_options = build_message_target_options()
