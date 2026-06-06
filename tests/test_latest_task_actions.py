@@ -23,14 +23,14 @@ class LatestTaskActionsTests(unittest.TestCase):
         self.assertEqual(view_latest_task.find_latest_task_id(tasks), "7")
 
     def test_build_add_to_latest_command(self):
-        cmd = view_latest_task.build_add_to_latest_command("/tmp", "9", "children", "/tmp/coworker_tasks.json")
+        cmd = view_latest_task.build_add_to_latest_command("/tmp", "9", "children", "/tmp/tasks_coworkers.json")
         self.assertEqual(
             cmd,
             [
                 "python3",
                 "/tmp/text_to_json.py",
                 "--infile",
-                "/tmp/coworker_tasks.json",
+                "/tmp/tasks_coworkers.json",
                 "--parent-id",
                 "9",
                 "--target",
@@ -40,14 +40,14 @@ class LatestTaskActionsTests(unittest.TestCase):
         )
 
     def test_build_add_notes_to_latest_command(self):
-        cmd = view_latest_task.build_add_to_latest_command("/tmp", "9", "notes", "/tmp/coworker_tasks.json")
+        cmd = view_latest_task.build_add_to_latest_command("/tmp", "9", "notes", "/tmp/tasks_coworkers.json")
         self.assertEqual(
             cmd,
             [
                 "python3",
                 "/tmp/text_to_json.py",
                 "--infile",
-                "/tmp/coworker_tasks.json",
+                "/tmp/tasks_coworkers.json",
                 "--parent-id",
                 "9",
                 "--target",
@@ -57,18 +57,18 @@ class LatestTaskActionsTests(unittest.TestCase):
         )
 
     def test_build_add_task_command(self):
-        cmd = view_latest_task.build_add_task_command("/tmp", "/tmp/coworker_tasks.json")
-        self.assertEqual(cmd, ["/tmp/add_task.sh", "--file", "/tmp/coworker_tasks.json"])
+        cmd = view_latest_task.build_add_task_command("/tmp", "/tmp/tasks_coworkers.json")
+        self.assertEqual(cmd, ["/tmp/add_task.sh", "--file", "/tmp/tasks_coworkers.json"])
 
     def test_build_add_notes_command(self):
-        cmd = view_latest_task.build_add_notes_command("/tmp", "9", "/tmp/coworker_tasks.json")
+        cmd = view_latest_task.build_add_notes_command("/tmp", "9", "/tmp/tasks_coworkers.json")
         self.assertEqual(
             cmd,
             [
                 "python3",
                 "/tmp/text_to_json.py",
                 "--infile",
-                "/tmp/coworker_tasks.json",
+                "/tmp/tasks_coworkers.json",
                 "--parent-id",
                 "9",
                 "--target",
@@ -78,10 +78,10 @@ class LatestTaskActionsTests(unittest.TestCase):
         )
 
     def test_build_assign_coworker_command(self):
-        cmd = view_latest_task.build_assign_coworker_command("/tmp", "/tmp/coworker_tasks.json")
+        cmd = view_latest_task.build_assign_coworker_command("/tmp", "/tmp/tasks_coworkers.json")
         self.assertEqual(
             cmd,
-            ["python3", "/tmp/assign_task.py", "--infile", "/tmp/coworker_tasks.json", "__CLIPBOARD__"],
+            ["python3", "/tmp/assign_task.py", "--infile", "/tmp/tasks_coworkers.json", "__CLIPBOARD__"],
         )
 
     def test_build_notes_target_options_parent_and_children(self):

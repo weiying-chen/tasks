@@ -297,8 +297,8 @@ class LatestTaskViewTests(unittest.TestCase):
 
     def test_input_path_uses_explicit_file_in_script_dir(self):
         fake_script = Path("/tmp/proj/view_task.py")
-        resolved = view_latest_task.resolve_input_path("coworker_tasks.json", fake_script=fake_script)
-        self.assertEqual(resolved, Path("/tmp/proj/coworker_tasks.json"))
+        resolved = view_latest_task.resolve_input_path("tasks_coworkers.json", fake_script=fake_script)
+        self.assertEqual(resolved, Path("/tmp/proj/tasks_coworkers.json"))
 
     def test_build_task_view_can_select_task_by_id(self):
         tasks = [
