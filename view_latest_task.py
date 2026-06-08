@@ -12,7 +12,13 @@ from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
 from task_deadline import task_base_created_local, task_deadline_local
-from task_stages import get_task_assigned_to, get_task_status, get_task_type, get_task_work_minutes
+from task_stages import (
+    get_task_assigned_to,
+    get_task_stage,
+    get_task_status,
+    get_task_type,
+    get_task_work_minutes,
+)
 from task_titles import extract_subs_task_name
 from work_time import add_work_minutes, next_work_start
 
@@ -342,6 +348,7 @@ def render_task_block(lines: list[str], task: dict, now_local: datetime, level: 
     deadline = task_deadline_local(task, now_local=now_local)
     work_minutes = get_task_work_minutes(task)
     task_type = get_task_type(task)
+    task_stage = get_task_stage(task)
     assigned_to = get_task_assigned_to(task)
     status = get_task_status(task)
 
@@ -351,6 +358,8 @@ def render_task_block(lines: list[str], task: dict, now_local: datetime, level: 
         lines.append(f'Name: {name}')
         if isinstance(task_type, str) and task_type.strip():
             lines.append(f'Type: {task_type}')
+        if isinstance(task_stage, str) and task_stage.strip():
+            lines.append(f'Stage: {task_stage}')
         if isinstance(assigned_to, str) and assigned_to.strip():
             lines.append(f'Assigned to: {assigned_to}')
         if isinstance(status, str) and status.strip():
@@ -362,11 +371,13 @@ def render_task_block(lines: list[str], task: dict, now_local: datetime, level: 
         if not lines or lines[-1] != '':
             lines.append('')
     else:
-        lines.append(bold('Latest task'))
+        lines.append(bold('View task'))
         lines.append('')
         lines.append(f'Name: {name}')
         if isinstance(task_type, str) and task_type.strip():
             lines.append(f'Type: {task_type}')
+        if isinstance(task_stage, str) and task_stage.strip():
+            lines.append(f'Stage: {task_stage}')
         if isinstance(assigned_to, str) and assigned_to.strip():
             lines.append(f'Assigned to: {assigned_to}')
         if isinstance(status, str) and status.strip():

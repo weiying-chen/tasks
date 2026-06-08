@@ -57,6 +57,11 @@ def get_task_type(task: dict) -> str | None:
     return value if isinstance(value, str) else None
 
 
+def get_task_stage(task: dict) -> str | None:
+    value = active_stage(task).get("stage")
+    return value if isinstance(value, str) else None
+
+
 def get_task_assigned_to(task: dict) -> str | None:
     value = active_stage(task).get("assignedTo")
     return value if isinstance(value, str) else None

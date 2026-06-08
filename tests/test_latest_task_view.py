@@ -21,7 +21,8 @@ class LatestTaskViewTests(unittest.TestCase):
                 "name": "New Parent",
                 "stages": [
                     {
-                        "type": "translate",
+                        "type": "subs",
+                        "stage": "translate",
                         "assignedTo": "Alex",
                         "status": "in_progress",
                         "startAt": "2026-05-13T00:40:00Z",
@@ -50,8 +51,9 @@ class LatestTaskViewTests(unittest.TestCase):
         ]
         now_local = datetime(2026, 5, 13, 12, 0, tzinfo=timezone(timedelta(hours=8)))
         out = self.strip_ansi(view_latest_task.build_latest_view(tasks, now_local))
-        self.assertIn("Latest task", out)
+        self.assertIn("View task", out)
         self.assertIn("Name: New Parent", out)
+        self.assertIn("Stage: translate", out)
         self.assertIn("Assigned to: Alex", out)
         self.assertIn("Status: in progress", out)
         self.assertIn("Subtasks", out)
@@ -59,7 +61,7 @@ class LatestTaskViewTests(unittest.TestCase):
         self.assertIn('• "上肢" referred to arms rather than upper body.', out)
         self.assertNotIn('• child-only note', out)
         self.assertIn("Child", out)
-        self.assertIn("Type: translate", out)
+        self.assertIn("Type: subs", out)
         self.assertIn("Type: news", out)
         self.assertIn("Status: queued", out)
         self.assertIn("Work time: 2h 14m", out)
@@ -216,7 +218,7 @@ class LatestTaskViewTests(unittest.TestCase):
         ]
         now_local = datetime(2026, 5, 13, 10, 0, tzinfo=timezone(timedelta(hours=8)))
         out = view_latest_task.build_latest_view(tasks, now_local)
-        self.assertIn("Latest task", out)
+        self.assertIn("View task", out)
         self.assertIn("Name: Only", out)
         self.assertIn("Start: 2026-05-13 Wed 08:40", out)
         self.assertIn("Deadline: ", out)
