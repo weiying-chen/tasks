@@ -22,6 +22,11 @@ def normalize_task_name_for_match(name: str) -> str:
     return re.sub(r"\s+", "", normalized)
 
 
+def normalize_program_name_for_match(name: str) -> str:
+    normalized = normalize_task_name_for_match(name)
+    return re.split(r"[(（]", normalized, maxsplit=1)[0]
+
+
 def strip_assignment_tail(name: str) -> str:
     return re.sub(r"\s*[，,。!！~～]?\s*謝謝\s*[~～]?\s*$", "", name).strip()
 
@@ -88,14 +93,21 @@ def ensure_mutable_active_stage(task: dict) -> dict:
 
 def find_matching_top_level_tasks(tasks: list[dict], task_name: str) -> list[dict]:
     target = normalize_task_name_for_match(task_name)
-    matched = []
+    target_program = normalize_program_name_for_match(task_name)
+    exact_matched = []
+    prefix_matched = []
     for task in tasks:
         if not isinstance(task, dict):
             continue
         task_name_value = str(task.get("name") or "")
-        if normalize_task_name_for_match(task_name_value) == target:
-            matched.append(task)
-    return matched
+        normalized_name = normalize_task_name_for_match(task_name_value)
+        if normalized_name == target:
+            exact_matched.append(task)
+            continue
+        normalized_program = normalize_program_name_for_match(task_name_value)
+        if normalized_name.startswith(target) or normalized_program == target_program:
+            prefix_matched.append(task)
+    return exact_matched or prefix_matched
 
 
 def assign_task(tasks: list[dict], text: str) -> list[dict]:

@@ -102,6 +102,32 @@ class AssignTaskTests(unittest.TestCase):
         self.assertEqual(stage["stage"], "edit")
         self.assertEqual(stage["status"], "assigned")
 
+    def test_assign_task_matches_short_program_name_to_full_task_name(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "3集大愛醫生館（杯弓蛇影 乳房腫瘤 + 鬼門關走一遭~冠心病 + 住輸尿管）",
+                "assignedBy": "Alex Chen",
+                "stages": [
+                    {
+                        "type": "subs",
+                        "status": "queued",
+                        "workMinutes": 333,
+                        "contentSeconds": 333,
+                    }
+                ],
+                "children": [],
+            }
+        ]
+        updated = assign_task.assign_task(
+            tasks,
+            "Alex Chen 請 張牧軒 Shawn edit+定稿 3 集大愛醫生館，謝謝~",
+        )
+        stage = updated[0]["stages"][0]
+        self.assertEqual(stage["assignedTo"], "張牧軒 Shawn")
+        self.assertEqual(stage["stage"], "edit")
+        self.assertEqual(stage["status"], "assigned")
+
     def test_assign_task_errors_when_no_match(self):
         tasks = [
             {
