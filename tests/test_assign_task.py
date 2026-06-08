@@ -73,7 +73,7 @@ class AssignTaskTests(unittest.TestCase):
         self.assertEqual(updated[0]["assignedBy"], "Emily Ding")
         self.assertEqual(stage["assignedTo"], "Alex Chen")
         self.assertEqual(stage["stage"], "translate")
-        self.assertEqual(stage["status"], "assigned")
+        self.assertEqual(stage["status"], "in_progress")
 
     def test_assign_edit_task_updates_matching_stage(self):
         tasks = [
@@ -100,7 +100,7 @@ class AssignTaskTests(unittest.TestCase):
         self.assertEqual(updated[0]["assignedBy"], "Emily Ding")
         self.assertEqual(stage["assignedTo"], "Alex Chen")
         self.assertEqual(stage["stage"], "edit")
-        self.assertEqual(stage["status"], "assigned")
+        self.assertEqual(stage["status"], "in_progress")
 
     def test_assign_task_matches_short_program_name_to_full_task_name(self):
         tasks = [
@@ -126,7 +126,7 @@ class AssignTaskTests(unittest.TestCase):
         stage = updated[0]["stages"][0]
         self.assertEqual(stage["assignedTo"], "張牧軒 Shawn")
         self.assertEqual(stage["stage"], "edit")
-        self.assertEqual(stage["status"], "assigned")
+        self.assertEqual(stage["status"], "in_progress")
 
     def test_assign_task_errors_when_no_match(self):
         tasks = [

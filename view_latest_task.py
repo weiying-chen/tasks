@@ -272,6 +272,12 @@ def bold(text: str) -> str:
     return f'{BOLD}{text}{RESET}'
 
 
+def fmt_status(status: str | None) -> str:
+    if not isinstance(status, str):
+        return "-"
+    return status.replace("_", " ").strip()
+
+
 def work_seconds_between(start: datetime, end: datetime) -> int:
     if start == end:
         return 0
@@ -348,7 +354,7 @@ def render_task_block(lines: list[str], task: dict, now_local: datetime, level: 
         if isinstance(assigned_to, str) and assigned_to.strip():
             lines.append(f'Assigned to: {assigned_to}')
         if isinstance(status, str) and status.strip():
-            lines.append(f'Status: {status}')
+            lines.append(f'Status: {fmt_status(status)}')
         lines.append(f'Work time: {fmt_work(work_minutes)}')
         lines.append(f'Deadline: {color(to_display(deadline) if deadline else "-", YELLOW)}')
         notes = clean_notes(task)
@@ -364,7 +370,7 @@ def render_task_block(lines: list[str], task: dict, now_local: datetime, level: 
         if isinstance(assigned_to, str) and assigned_to.strip():
             lines.append(f'Assigned to: {assigned_to}')
         if isinstance(status, str) and status.strip():
-            lines.append(f'Status: {status}')
+            lines.append(f'Status: {fmt_status(status)}')
         lines.append(f'Start: {to_display(created)}')
         lines.append(f'Work time: {fmt_work(work_minutes)}')
 

@@ -123,7 +123,7 @@ def assign_task(tasks: list[dict], text: str) -> list[dict]:
     task["assignedBy"] = parsed["assignedBy"]
     stage["assignedTo"] = parsed["assignedTo"]
     stage["stage"] = parsed["stage"]
-    stage["status"] = "assigned"
+    stage["status"] = "in_progress"
     return tasks
 
 
