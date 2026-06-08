@@ -43,6 +43,7 @@ class TextToJsonTests(unittest.TestCase):
         tasks = text_to_json.parse_news_input(text, 2026, "Alex Chen")
         self.assertEqual(len(tasks), 1)
         self.assertEqual(tasks[0]["name"], "爾灣人文揚名")
+        self.assertEqual(get_task_content_seconds(tasks[0]), 105 * 60)
         self.assertEqual(get_task_work_minutes(tasks[0]), 125)
         self.assertEqual(get_task_type(tasks[0]), "news")
 
