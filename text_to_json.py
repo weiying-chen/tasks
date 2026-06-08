@@ -7,17 +7,12 @@ from pathlib import Path
 
 from work_time import add_work_minutes, next_work_start
 from task_stages import get_task_work_minutes, normalize_stages
+from task_titles import SUBS_PROGRAM_DEFAULT_ASSIGNEE, extract_subs_task_name
 from work_time_adjustments import adjusted_child_minutes
 
 TZ_TAIPEI = timezone(timedelta(hours=8))
 RESET = '\x1b[0m'
 YELLOW = '\x1b[33m'
-SUBS_PROGRAM_DEFAULT_ASSIGNEE = {
-    "人文講堂": "Evelyn",
-    "精舍日常": "張牧軒",
-    "大愛真健康": "Emily",
-    "我的阿公阿媽做慈濟": "Emily",
-}
 
 
 def parse_datetime(md: str, hm: str, year: int) -> str:
@@ -57,7 +52,9 @@ def resolve_subs_assigned_by(subs_name: str) -> str:
 
 
 def parse_subs_input(text: str, year: int, task_id: str):
-    name = must_match(text, r"翻譯\s*([^，,]+?)\s*[，,]", "name").group(1).strip()
+    name = extract_subs_task_name(text)
+    if not name:
+        raise ValueError("Cannot parse name")
     assigned_by = resolve_subs_assigned_by(name)
 
     content_match = must_match(text, r"(?:長度|片長)\s*(?:共|合計)?\s*(\d+)\s*分(?:\s*(\d+)\s*秒)?", "content duration")
@@ -72,47 +69,49 @@ def parse_subs_input(text: str, year: int, task_id: str):
     )
     work_minutes = int(work.group(1)) * 60 + int(work.group(2) or 0)
 
-    start = must_match(
+    start = re.search(
+        r"(?:從|由)\s*(\d{1,2}/\d{1,2})\s*(?:[（(][^）)]*[）)])?\s*(\d{1,2}:\d{2})\s*起算",
         text,
-        r"(?:從|由)\s*(\d{1,2}/\d{1,2})(?:[（(][^）)]*[）)])?\s*(\d{1,2}:\d{2})\s*起算",
-        "start time",
     )
-    dl = must_match(
+    dl = re.search(
+        r"deadline\s*(?:為)?\s*(\d{1,2}/\d{1,2})\s*(?:[（(][^）)]*[）)])?\s*(\d{1,2}:\d{2})",
         text,
-        r"deadline\s*(?:為)?\s*(\d{1,2}/\d{1,2})(?:[（(][^）)]*[）)])?\s*(\d{1,2}:\d{2})",
-        "deadline",
         flags=re.I,
     )
+    if start and not dl:
+        raise ValueError("Cannot parse deadline")
+    if dl and not start:
+        raise ValueError("Cannot parse start time")
 
-    created_at = parse_datetime(start.group(1), start.group(2), year)
-    pm_deadline = parse_datetime(dl.group(1), dl.group(2), year)
-    start_local = next_work_start(to_local(created_at))
-    computed_deadline = add_work_minutes(start_local, work_minutes)
-    deadline = pm_deadline
+    stage = {
+        "type": "subs",
+        "workMinutes": work_minutes,
+        "contentSeconds": content_seconds,
+    }
+    if start and dl:
+        created_at = parse_datetime(start.group(1), start.group(2), year)
+        pm_deadline = parse_datetime(dl.group(1), dl.group(2), year)
+        stage["startAt"] = created_at
+        stage["deadline"] = pm_deadline
     task = {
         "id": task_id,
         "name": name,
         "assignedBy": assigned_by,
-        "stages": [
-            {
-                "type": "subs",
-                "startAt": created_at,
-                "deadline": deadline,
-                "workMinutes": work_minutes,
-                "contentSeconds": content_seconds,
-            }
-        ],
+        "stages": [stage],
         "children": [],
         "sourceText": text,
     }
 
-    pm_deadline_local = to_local(pm_deadline)
-    if pm_deadline_local != computed_deadline:
-        task["__warning__"] = (
-            f"Warning: PM deadline differs; keeping PM deadline "
-            f"(PM: {pm_deadline_local.strftime('%Y-%m-%d %a %H:%M')}, "
-            f"computed: {computed_deadline.strftime('%Y-%m-%d %a %H:%M')})."
-        )
+    if start and dl:
+        start_local = next_work_start(to_local(stage["startAt"]))
+        computed_deadline = add_work_minutes(start_local, work_minutes)
+        pm_deadline_local = to_local(stage["deadline"])
+        if pm_deadline_local != computed_deadline:
+            task["__warning__"] = (
+                f"Warning: PM deadline differs; keeping PM deadline "
+                f"(PM: {pm_deadline_local.strftime('%Y-%m-%d %a %H:%M')}, "
+                f"computed: {computed_deadline.strftime('%Y-%m-%d %a %H:%M')})."
+            )
 
     return task
 

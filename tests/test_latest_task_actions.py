@@ -181,6 +181,35 @@ https://www.youtube.com/watch?v=C3gAhSDUe78
         self.assertIsNone(assignee)
         self.assertEqual(name, "人文講堂 (人文講堂 親密搶奪：人性與法律的修煉 - 李永然) 6 個短版")
 
+    def test_parse_next_task_clipboard_payload_uses_program_selection_title(self):
+        clipboard_text = """請
+Alex Chen 翻譯以下節目部選的大愛學漢醫，片長12分，預計做9小時36分，謝謝：
+
+【大愛學漢醫】 排氣不停 中醫有解 - 20221201
+https://www.youtube.com/watch?v=DonrkiEXESs
+"""
+        assignee, name = view_latest_task.parse_next_task_clipboard_payload(clipboard_text)
+        self.assertIsNone(assignee)
+        self.assertEqual(name, "大愛學漢醫 (排氣不停 中醫有解)")
+
+    def test_parse_next_task_clipboard_payload_strips_program_selection_pipe_metadata(self):
+        clipboard_text = """請
+Alex Chen 翻譯以下節目部選的大愛學漢醫，片長12分，預計做9小時36分，謝謝：
+
+【大愛學漢醫】 吃出肺活力 — 肺癌照護 | 莊佳穎 | 大愛學漢醫 | 20220823
+https://www.youtube.com/watch?v=example
+"""
+        assignee, name = view_latest_task.parse_next_task_clipboard_payload(clipboard_text)
+        self.assertIsNone(assignee)
+        self.assertEqual(name, "大愛學漢醫 (吃出肺活力 — 肺癌照護)")
+
+    def test_parse_next_task_clipboard_payload_strips_program_selection_prefix(self):
+        assignee, name = view_latest_task.parse_next_task_clipboard_payload(
+            "請 Alex Chen 翻譯以下節目部選的大愛學漢醫，片長12分，預計做9小時36分，謝謝："
+        )
+        self.assertIsNone(assignee)
+        self.assertEqual(name, "大愛學漢醫")
+
     def test_choose_numbered_option_esc_cancels(self):
         with mock.patch("view_latest_task.os.read", return_value=b"\x1b"):
             pick_idx, pick_err, should_quit = view_latest_task.choose_numbered_option(

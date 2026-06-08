@@ -127,6 +127,48 @@ class TextToJsonTests(unittest.TestCase):
         self.assertEqual(get_task_work_minutes(task), 960)
         self.assertIn("6 個短版", task["name"])
 
+    def test_parse_source_text_subs_uses_program_selection_title(self):
+        text = (
+            "請\n"
+            "Alex Chen 翻譯以下節目部選的大愛學漢醫，片長12分，預計做9小時36分，謝謝：\n\n"
+            "【大愛學漢醫】 排氣不停 中醫有解 - 20221201\n"
+            "https://www.youtube.com/watch?v=DonrkiEXESs"
+        )
+        parsed = text_to_json.parse_source_text(text, [], 2026)
+        task = parsed[0]
+        self.assertEqual(task["name"], "大愛學漢醫 (排氣不停 中醫有解)")
+        self.assertEqual(task["assignedBy"], "Syharn Shen")
+        self.assertEqual(get_task_work_minutes(task), 576)
+        self.assertEqual(get_task_content_seconds(task), 720)
+        self.assertNotIn("deadline", normalize_stages(task)[0])
+
+    def test_parse_source_text_subs_strips_program_selection_pipe_metadata(self):
+        text = (
+            "請\n"
+            "Alex Chen 翻譯以下節目部選的大愛學漢醫，片長12分，預計做9小時36分，謝謝：\n\n"
+            "【大愛學漢醫】 吃出肺活力 — 肺癌照護 | 莊佳穎 | 大愛學漢醫 | 20220823\n"
+            "https://www.youtube.com/watch?v=example"
+        )
+        parsed = text_to_json.parse_source_text(text, [], 2026)
+        self.assertEqual(parsed[0]["name"], "大愛學漢醫 (吃出肺活力 — 肺癌照護)")
+
+    def test_parse_source_text_subs_strips_program_selection_prefix_without_title_line(self):
+        text = "請 Alex Chen 翻譯以下節目部選的大愛學漢醫，片長12分，預計做9小時36分，謝謝："
+        parsed = text_to_json.parse_source_text(text, [], 2026)
+        self.assertEqual(parsed[0]["name"], "大愛學漢醫")
+        self.assertEqual(parsed[0]["assignedBy"], "Syharn Shen")
+
+    def test_parse_source_text_subs_accepts_spaced_weekday_parentheses(self):
+        text = (
+            "請\n"
+            "Alex Chen 翻譯大愛學漢醫 (排氣不停 中醫有解)，片長12分，預計做9小時36分，"
+            "從6/8 (一) 14:43起算，deadline為6/9 (二) 16:20 ，謝謝~"
+        )
+        parsed = text_to_json.parse_source_text(text, [], 2026)
+        stage = normalize_stages(parsed[0])[0]
+        self.assertEqual(stage["startAt"], "2026-06-08T06:43:00Z")
+        self.assertEqual(stage["deadline"], "2026-06-09T08:20:00Z")
+
     def test_parse_source_text_subs_uses_pm_deadline_when_pm_differs(self):
         text = (
             "翻譯人文講堂 (送一份專業的禮物 職涯發光 - 方植永) 6 個短版, 長度20分, "

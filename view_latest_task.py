@@ -2,7 +2,6 @@
 import argparse
 import json
 import os
-import re
 import select
 import subprocess
 import sys
@@ -14,6 +13,7 @@ from pathlib import Path
 
 from task_deadline import task_base_created_local, task_deadline_local
 from task_stages import get_task_assigned_to, get_task_status, get_task_type, get_task_work_minutes
+from task_titles import extract_subs_task_name
 from work_time import add_work_minutes, next_work_start
 
 TZ_TAIPEI = timezone(timedelta(hours=8))
@@ -169,9 +169,9 @@ def parse_next_task_clipboard_payload(clipboard_text: str) -> tuple[str | None, 
     text = clipboard_text.strip()
     if not text:
         return None, ""
-    subs_match = re.search(r"翻譯\s*([^，,\n]+?)\s*[，,]", text)
-    if subs_match:
-        return None, subs_match.group(1).strip()
+    task_name = extract_subs_task_name(text)
+    if task_name:
+        return None, task_name
     return None, text
 
 
