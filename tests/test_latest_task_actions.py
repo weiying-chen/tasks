@@ -1,5 +1,6 @@
 import unittest
 from unittest import mock
+from datetime import datetime, timezone, timedelta
 
 import view_latest_task
 
@@ -216,6 +217,37 @@ class LatestTaskActionsTests(unittest.TestCase):
                 "--next-assignee",
                 "Alex",
             ],
+        )
+
+    def test_build_confirm_deadline_status_warns_on_mismatch(self):
+        task = {
+            "id": "1",
+            "name": "三集大愛醫生館",
+            "stages": [
+                {
+                    "type": "subs",
+                    "deadline": "2026-06-10T01:40:00Z",
+                    "workMinutes": 120,
+                    "contentSeconds": 120,
+                }
+            ],
+            "children": [
+                {"id": "2", "name": "新聞英文與配音", "workMinutes": 120, "children": []},
+            ],
+        }
+        clipboard_text = (
+            "因deadline 已至，我先加時間 做其他事時間是 1時35分\n\n"
+            "新聞英文與配音 1時35分\n\n"
+            "三集大愛醫生館 deadline 由 6/10（三）09:40，延後至6/10（三）11:15，再請 Alex Chen方便時幫我確認，謝謝。"
+        )
+        status = view_latest_task.build_confirm_deadline_status(
+            task,
+            clipboard_text,
+            now_local=datetime(2026, 6, 10, 10, 0, tzinfo=timezone(timedelta(hours=8))),
+        )
+        self.assertEqual(
+            status,
+            "Warning: Coworker deadline differs (provided 6/10（三）11:15, computed 6/10（三）11:40).",
         )
 
     def test_parse_next_task_clipboard_payload_plain_name(self):

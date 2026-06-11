@@ -18,7 +18,12 @@ from task_stages import (
     get_task_type,
     get_task_work_minutes,
 )
-from create_message import parse_task_assignment_task_name
+from create_message import (
+    final_deadline_local,
+    format_message_date,
+    parse_deadline_transition_message,
+    parse_task_assignment_task_name,
+)
 from task_titles import extract_subs_task_name
 from work_time import add_work_minutes, next_work_start
 
@@ -183,6 +188,22 @@ def build_task_assignment_message_command(script_dir: str, infile: str, task_id:
         "--task-id",
         task_id,
     ]
+
+
+def build_confirm_deadline_status(task: dict, clipboard_text: str, now_local: datetime | None = None) -> str:
+    if now_local is None:
+        now_local = datetime.now(TZ_TAIPEI)
+    text = clipboard_text.strip()
+    if not text:
+        raise ValueError("Clipboard is empty.")
+    _, provided_deadline = parse_deadline_transition_message(text, year=now_local.year)
+    computed_deadline = final_deadline_local(task)
+    if provided_deadline == computed_deadline:
+        return f"Success: Confirmed deadline matches computed deadline ({format_message_date(computed_deadline)})."
+    return (
+        f"Warning: Coworker deadline differs (provided {format_message_date(provided_deadline)}, "
+        f"computed {format_message_date(computed_deadline)})."
+    )
 
 
 def parse_next_task_clipboard_payload(clipboard_text: str) -> tuple[str | None, str]:
@@ -469,6 +490,8 @@ def build_task_view(
         + color(' | ', MAGENTA)
         + color('add ', MAGENTA) + color('n', GREEN) + color('otes', MAGENTA)
         + color(' | ', MAGENTA)
+        + color('confirm ', MAGENTA) + color('d', GREEN) + color('eadline', MAGENTA)
+        + color(' | ', MAGENTA)
         + color('toggle ', MAGENTA) + color('v', GREEN) + color('iew notes', MAGENTA)
         + color(' | ', MAGENTA)
         + color('copy ', MAGENTA) + color('m', GREEN) + color('essage', MAGENTA)
@@ -704,6 +727,29 @@ def main():
                         status_until = time.time() + STATUS_TTL_SECONDS
                 if ch == b"v":
                     show_notes = not show_notes
+                if ch == b"d":
+                    try:
+                        data = json.loads(in_path.read_text(encoding='utf-8'))
+                        tasks = normalize_tasks(data)
+                        selected_task = get_view_task(tasks, task_id=args.id)
+                        if not isinstance(selected_task, dict):
+                            status = color("Error: Selected task is invalid.", RED)
+                            status_until = time.time() + STATUS_TTL_SECONDS
+                            continue
+                        clipboard_proc = subprocess.run(
+                            ["wl-paste"],
+                            capture_output=True,
+                            text=True,
+                            check=True,
+                        )
+                        clipboard_text = clipboard_proc.stdout
+                        message = build_confirm_deadline_status(selected_task, clipboard_text)
+                        status_color = YELLOW if message.startswith("Warning:") else GREEN
+                        status = color(message, status_color)
+                        status_until = time.time() + STATUS_TTL_SECONDS
+                    except Exception as exc:
+                        status = color(f"Error: Deadline confirmation failed: {exc}", RED)
+                        status_until = time.time() + STATUS_TTL_SECONDS
                 if ch == b"m":
                     try:
                         data = json.loads(in_path.read_text(encoding='utf-8'))

@@ -6,6 +6,7 @@ from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
 from work_time import add_work_minutes, next_work_start
+from task_deadline import deadlines_match
 from task_stages import get_task_work_minutes, normalize_stages
 from task_titles import SUBS_PROGRAM_DEFAULT_ASSIGNEE, extract_subs_task_name
 from work_time_adjustments import adjusted_child_minutes
@@ -106,7 +107,7 @@ def parse_subs_input(text: str, year: int, task_id: str):
         start_local = next_work_start(to_local(stage["startAt"]))
         computed_deadline = add_work_minutes(start_local, work_minutes)
         pm_deadline_local = to_local(stage["deadline"])
-        if pm_deadline_local != computed_deadline:
+        if not deadlines_match(pm_deadline_local, computed_deadline):
             task["__warning__"] = (
                 f"Warning: PM deadline differs; keeping PM deadline "
                 f"(PM: {pm_deadline_local.strftime('%Y-%m-%d %a %H:%M')}, "

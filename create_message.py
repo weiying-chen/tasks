@@ -66,6 +66,37 @@ def format_mention(name: str) -> str:
     return f"@{value}"
 
 
+def parse_message_datetime(md: str, hm: str, year: int) -> datetime:
+    m = re.match(r"(\d{1,2})/(\d{1,2})", md)
+    t = re.match(r"(\d{1,2}):(\d{2})", hm)
+    if not m or not t:
+        raise ValueError("invalid date/time")
+    month, day = int(m.group(1)), int(m.group(2))
+    hour, minute = int(t.group(1)), int(t.group(2))
+    return datetime(year, month, day, hour, minute, tzinfo=TZ_TAIPEI)
+
+
+def parse_deadline_transition_message(text: str, year: int | None = None) -> tuple[datetime | None, datetime]:
+    target_year = year or datetime.now(TZ_TAIPEI).year
+    old_match = re.search(
+        r"deadline\s*由\s*(\d{1,2}/\d{1,2})\s*(?:[（(][^）)]*[）)])?\s*(\d{1,2}:\d{2})",
+        text,
+        flags=re.I,
+    )
+    new_match = re.search(
+        r"(?:延後至|提前至)\s*(\d{1,2}/\d{1,2})\s*(?:[（(][^）)]*[）)])?\s*(\d{1,2}:\d{2})",
+        text,
+        flags=re.I,
+    )
+    if not new_match:
+        raise ValueError("Cannot parse deadline")
+    old_deadline = None
+    if old_match:
+        old_deadline = parse_message_datetime(old_match.group(1), old_match.group(2), target_year)
+    new_deadline = parse_message_datetime(new_match.group(1), new_match.group(2), target_year)
+    return old_deadline, new_deadline
+
+
 def normalize_tasks(data):
     if isinstance(data, list):
         return data

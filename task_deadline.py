@@ -47,3 +47,7 @@ def require_task_deadline_local(task: dict, now_local: datetime | None = None) -
     if deadline is None:
         raise ValueError("Task is missing deadline.")
     return deadline
+
+
+def deadlines_match(provided_deadline: datetime, computed_deadline: datetime) -> bool:
+    return provided_deadline == computed_deadline
