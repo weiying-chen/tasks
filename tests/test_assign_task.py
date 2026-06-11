@@ -55,7 +55,6 @@ class AssignTaskTests(unittest.TestCase):
                 "stages": [
                     {
                         "type": "subs",
-                        "status": "queued",
                         "startAt": "2026-06-02T01:00:00Z",
                         "deadline": "2026-06-02T05:00:00Z",
                         "workMinutes": 240,
@@ -73,7 +72,7 @@ class AssignTaskTests(unittest.TestCase):
         self.assertEqual(updated[0]["assignedBy"], "Emily Ding")
         self.assertEqual(stage["assignedTo"], "Alex Chen")
         self.assertEqual(stage["stage"], "translate")
-        self.assertEqual(stage["status"], "in_progress")
+        self.assertNotIn("status", stage)
 
     def test_assign_edit_task_updates_matching_stage(self):
         tasks = [
@@ -84,7 +83,6 @@ class AssignTaskTests(unittest.TestCase):
                 "stages": [
                     {
                         "type": "subs",
-                        "status": "queued",
                         "workMinutes": 180,
                         "contentSeconds": 480,
                     }
@@ -100,7 +98,7 @@ class AssignTaskTests(unittest.TestCase):
         self.assertEqual(updated[0]["assignedBy"], "Emily Ding")
         self.assertEqual(stage["assignedTo"], "Alex Chen")
         self.assertEqual(stage["stage"], "edit")
-        self.assertEqual(stage["status"], "in_progress")
+        self.assertNotIn("status", stage)
 
     def test_assign_task_matches_short_program_name_to_full_task_name(self):
         tasks = [
@@ -111,7 +109,6 @@ class AssignTaskTests(unittest.TestCase):
                 "stages": [
                     {
                         "type": "subs",
-                        "status": "queued",
                         "workMinutes": 333,
                         "contentSeconds": 333,
                     }
@@ -126,14 +123,14 @@ class AssignTaskTests(unittest.TestCase):
         stage = updated[0]["stages"][0]
         self.assertEqual(stage["assignedTo"], "張牧軒 Shawn")
         self.assertEqual(stage["stage"], "edit")
-        self.assertEqual(stage["status"], "in_progress")
+        self.assertNotIn("status", stage)
 
     def test_assign_task_errors_when_no_match(self):
         tasks = [
             {
                 "id": "1",
                 "name": "別的任務",
-                "stages": [{"type": "subs", "status": "queued"}],
+                "stages": [{"type": "subs"}],
                 "children": [],
             }
         ]

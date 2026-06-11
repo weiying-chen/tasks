@@ -11,7 +11,6 @@ STAGE_FIELD_NAMES = (
     "deadline",
     "workMinutes",
     "contentSeconds",
-    "status",
 )
 
 
@@ -44,11 +43,6 @@ def active_stage(task: dict) -> dict:
     stages = normalize_stages(task)
     if not stages:
         return {}
-
-    for stage in reversed(stages):
-        status = str(stage.get("status") or "").strip().lower()
-        if status not in {"done", "completed"}:
-            return stage
     return stages[-1]
 
 
@@ -86,7 +80,3 @@ def get_task_content_seconds(task: dict) -> int | None:
     value = active_stage(task).get("contentSeconds")
     return value if isinstance(value, int) else None
 
-
-def get_task_status(task: dict) -> str | None:
-    value = active_stage(task).get("status")
-    return value if isinstance(value, str) else None

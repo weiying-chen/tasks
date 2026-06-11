@@ -80,14 +80,9 @@ def ensure_mutable_active_stage(task: dict) -> dict:
     for stage in reversed(stages):
         if not isinstance(stage, dict):
             continue
-        status = str(stage.get("status") or "").strip().lower()
-        if status not in {"done", "completed"}:
-            return stage
-    last = stages[-1]
-    if isinstance(last, dict):
-        return last
+        return stage
     stage = {}
-    stages[-1] = stage
+    stages.append(stage)
     return stage
 
 
@@ -123,7 +118,6 @@ def assign_task(tasks: list[dict], text: str) -> list[dict]:
     task["assignedBy"] = parsed["assignedBy"]
     stage["assignedTo"] = parsed["assignedTo"]
     stage["stage"] = parsed["stage"]
-    stage["status"] = "in_progress"
     return tasks
 
 

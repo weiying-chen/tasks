@@ -24,7 +24,6 @@ class LatestTaskViewTests(unittest.TestCase):
                         "type": "subs",
                         "stage": "translate",
                         "assignedTo": "Alex",
-                        "status": "in_progress",
                         "startAt": "2026-05-13T00:40:00Z",
                         "workMinutes": 1056,
                     }
@@ -38,7 +37,6 @@ class LatestTaskViewTests(unittest.TestCase):
                             {
                                 "type": "news",
                                 "assignedTo": "Alex",
-                                "status": "queued",
                                 "startAt": "2026-05-13T01:00:00Z",
                                 "workMinutes": 134,
                             }
@@ -55,7 +53,6 @@ class LatestTaskViewTests(unittest.TestCase):
         self.assertIn("Name: New Parent", out)
         self.assertIn("Stage: translate", out)
         self.assertIn("Assigned to: Alex", out)
-        self.assertIn("Status: in progress", out)
         self.assertIn("Subtasks", out)
         self.assertIn("Notes (1)", out)
         self.assertIn('• "上肢" referred to arms rather than upper body.', out)
@@ -63,7 +60,6 @@ class LatestTaskViewTests(unittest.TestCase):
         self.assertIn("Child", out)
         self.assertIn("Type: subs", out)
         self.assertIn("Type: news", out)
-        self.assertIn("Status: queued", out)
         self.assertIn("Work time: 2h 14m", out)
         self.assertIn("Extended deadline:", out)
 
@@ -191,7 +187,7 @@ class LatestTaskViewTests(unittest.TestCase):
         self.assertRegex(out, r"\x1b\[35mtoggle \x1b\[0m\x1b\[32mv\x1b\[0m\x1b\[35miew notes")
         self.assertRegex(out, r"\x1b\[35mcopy \x1b\[0m\x1b\[32mm\x1b\[0m\x1b\[35message")
 
-    def test_no_consecutive_empty_lines_with_status(self):
+    def test_no_consecutive_empty_lines_with_message_status(self):
         tasks = [
             {
                 "id": "1",
