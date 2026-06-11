@@ -259,7 +259,7 @@ def build_message_target_options(latest_task: dict | None = None) -> list[tuple[
         task_name = str(latest_task.get("name") or "").strip()
         start_at = str(get_task_start_at(latest_task) or "").strip()
         assigned_to = str(get_task_assigned_to(latest_task) or "").strip()
-        if start_at:
+        if start_at and assigned_to:
             options.append(("task-initiation", "Task initiation message"))
         if task_name and assigned_to:
             try:
