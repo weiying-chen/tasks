@@ -42,11 +42,42 @@ def get_assignee_work_rate(name: str) -> float:
     return ASSIGNEE_WORK_RATES.get(normalize_assignee_key(name), 1.0)
 
 
-def populate_assignee_work_minutes(stage: dict, assigned_to: str) -> None:
+def get_stage_label(stage: dict) -> str:
+    stage_value = stage.get("stage")
+    if isinstance(stage_value, str) and stage_value.strip():
+        return stage_value.strip().lower()
+    type_value = stage.get("type")
+    if isinstance(type_value, str) and type_value.strip():
+        return type_value.strip().lower()
+    return ""
+
+
+def find_translate_reference_minutes(task: dict) -> int | None:
+    stages = task.get("stages")
+    if not isinstance(stages, list):
+        return None
+    for stage in reversed(stages):
+        if not isinstance(stage, dict):
+            continue
+        if get_stage_label(stage) != "translate":
+            continue
+        minutes = stage.get("workMinutes")
+        if isinstance(minutes, int) and minutes > 0:
+            return minutes
+    return None
+
+
+def populate_stage_work_minutes(task: dict, stage: dict, assigned_to: str, stage_label: str) -> None:
+    stage_label = stage_label.strip().lower()
+    if stage_label == "edit":
+        base_minutes = find_translate_reference_minutes(task)
+        if base_minutes is None:
+            return
+        stage["workMinutes"] = max(1, int(round(base_minutes / 2)))
+        return
+
     content_seconds = stage.get("contentSeconds")
     if not isinstance(content_seconds, int) or content_seconds <= 0:
-        return
-    if isinstance(stage.get("workMinutes"), int) and stage["workMinutes"] > 0:
         return
     rate = get_assignee_work_rate(assigned_to)
     stage["workMinutes"] = int(round(content_seconds * rate))
@@ -138,8 +169,8 @@ def assign_task(tasks: list[dict], text: str) -> list[dict]:
     stage = ensure_mutable_active_stage(task)
     task["assignedBy"] = parsed["assignedBy"]
     stage["assignedTo"] = parsed["assignedTo"]
+    populate_stage_work_minutes(task, stage, parsed["assignedTo"], parsed["stage"])
     stage["stage"] = parsed["stage"]
-    populate_assignee_work_minutes(stage, parsed["assignedTo"])
     return tasks
 
 

@@ -122,6 +122,36 @@ class AssignTaskTests(unittest.TestCase):
         self.assertEqual(stage["stage"], "edit")
         self.assertNotIn("status", stage)
 
+    def test_assign_edit_task_sets_half_of_translate_minutes(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "3集大愛真健康",
+                "assignedBy": "Emily",
+                "stages": [
+                    {
+                        "type": "subs",
+                        "stage": "translate",
+                        "assignedTo": "Emily",
+                        "workMinutes": 240,
+                        "contentSeconds": 480,
+                    },
+                    {
+                        "type": "subs",
+                    },
+                ],
+                "children": [],
+            }
+        ]
+        updated = assign_task.assign_task(
+            tasks,
+            "請\nEmily Ding 給我 edit + 定稿3集大愛真健康，謝謝~",
+        )
+        stage = updated[0]["stages"][1]
+        self.assertEqual(stage["assignedTo"], "Alex Chen")
+        self.assertEqual(stage["stage"], "edit")
+        self.assertEqual(stage["workMinutes"], 120)
+
     def test_assign_task_matches_short_program_name_to_full_task_name(self):
         tasks = [
             {
