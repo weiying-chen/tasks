@@ -205,7 +205,7 @@ class CreateMessageTests(unittest.TestCase):
 
         message = create_message.create_message(
             tasks,
-            msg_type="next-task",
+            msg_type="task-completion",
             task_id="1",
             next_task_name="新的任務",
         )
@@ -227,7 +227,7 @@ class CreateMessageTests(unittest.TestCase):
         ]
         message = create_message.create_message(
             tasks,
-            msg_type="next-task",
+            msg_type="task-completion",
             task_id="1",
             next_task_name="新的任務",
             next_assignee="Alex",
@@ -246,7 +246,7 @@ class CreateMessageTests(unittest.TestCase):
         ]
         message = create_message.create_message(
             tasks,
-            msg_type="next-task",
+            msg_type="task-completion",
             task_id="1",
             next_task_name="人文講堂（測試）",
         )
@@ -264,7 +264,7 @@ class CreateMessageTests(unittest.TestCase):
         ]
         message = create_message.create_message(
             tasks,
-            msg_type="next-task",
+            msg_type="task-completion",
             task_id="1",
             next_task_name="精舍日常（測試）",
         )
@@ -281,9 +281,9 @@ class CreateMessageTests(unittest.TestCase):
             }
         ]
         with self.assertRaises(ValueError):
-            create_message.create_message(tasks, msg_type="next-task", next_task_name="新的任務")
+            create_message.create_message(tasks, msg_type="task-completion", next_task_name="新的任務")
         with self.assertRaises(ValueError):
-            create_message.create_message(tasks, msg_type="next-task", task_id="1")
+            create_message.create_message(tasks, msg_type="task-completion", task_id="1")
 
     def test_subs_summary_message_uses_parenthesized_episode_titles(self):
         tasks = [
@@ -303,7 +303,7 @@ class CreateMessageTests(unittest.TestCase):
             }
         ]
 
-        message = create_message.create_message(tasks, msg_type="subs-summary")
+        message = create_message.create_message(tasks, msg_type="task-assignment")
         self.assertEqual(
             message,
             "請@Shawn翻譯三集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈），"
@@ -329,7 +329,7 @@ class CreateMessageTests(unittest.TestCase):
         ]
 
         with self.assertRaises(ValueError):
-            create_message.create_message(tasks, msg_type="subs-summary")
+            create_message.create_message(tasks, msg_type="task-assignment")
 
 
 if __name__ == "__main__":

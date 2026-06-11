@@ -208,7 +208,7 @@ def resolve_next_task_assignee(next_task_name: str, fallback_assignee: str | Non
         return str(fallback_assignee or "").strip()
 
 
-def parse_subs_summary_task_name(task_name: str) -> tuple[str, str, list[str]]:
+def parse_task_assignment_task_name(task_name: str) -> tuple[str, str, list[str]]:
     match = re.match(
         r"^\s*(?P<count>\d+|[零一二三四五六七八九十百千兩]+)\s*集\s*"
         r"(?P<program>.+?)\s*[（(](?P<episodes>.+?)[）)]\s*$",
@@ -243,19 +243,19 @@ def format_small_chinese_number(value: int) -> str:
     return str(value)
 
 
-def format_subs_summary_message(task: dict) -> str:
+def format_task_assignment_message(task: dict) -> str:
     task_name = str(task.get("name") or "").strip()
     assigned_to = str(get_task_assigned_to(task) or "").strip()
     work_minutes = get_task_work_minutes(task)
     content_seconds = get_task_content_seconds(task)
     if not task_name or not assigned_to:
-        raise ValueError("Missing required fields for subs-summary message.")
+        raise ValueError("Missing required fields for task-assignment message.")
     if not isinstance(work_minutes, int) or work_minutes <= 0:
-        raise ValueError("Missing required work minutes for subs-summary message.")
+        raise ValueError("Missing required work minutes for task-assignment message.")
     if not isinstance(content_seconds, int) or content_seconds < 0:
-        raise ValueError("Missing required content seconds for subs-summary message.")
+        raise ValueError("Missing required content seconds for task-assignment message.")
 
-    count_text, program_name, episodes = parse_subs_summary_task_name(task_name)
+    count_text, program_name, episodes = parse_task_assignment_task_name(task_name)
     if count_text.isdigit():
         count_display = format_small_chinese_number(int(count_text))
     else:
@@ -274,7 +274,7 @@ def format_next_task_message(finished_task: dict, next_task_name: str, next_assi
     fallback_assignee = str(finished_task.get("assignedBy") or "").strip()
     assignee = str(next_assignee or "").strip() or resolve_next_task_assignee(next_task_name, fallback_assignee)
     if not completed_task or not next_task_name or not assignee:
-        raise ValueError("Missing required fields for next-task message.")
+        raise ValueError("Missing required fields for task-completion message.")
 
     start = final_deadline_local(finished_task)
     return (
@@ -295,18 +295,18 @@ def create_message(
     if msg_type == "deadline-extension":
         task = get_target_task(tasks, task_id)
         return format_deadline_extension_message(task, now_local=now_local)
-    if msg_type == "next-task":
+    if msg_type == "task-completion":
         if not task_id:
-            raise ValueError("--task-id is required for next-task message.")
+            raise ValueError("--task-id is required for task-completion message.")
         name = str(next_task_name or "").strip()
         if not name:
-            raise ValueError("--next-task-name is required for next-task message.")
+            raise ValueError("--next-task-name is required for task-completion message.")
         finished_task = get_target_task(tasks, task_id)
         assignee = str(next_assignee or "").strip() or None
         return format_next_task_message(finished_task, name, assignee)
-    if msg_type == "subs-summary":
+    if msg_type == "task-assignment":
         task = get_target_task(tasks, task_id)
-        return format_subs_summary_message(task)
+        return format_task_assignment_message(task)
     raise ValueError(f"Unsupported message type: {msg_type}")
 
 
@@ -315,8 +315,8 @@ def main():
     parser.add_argument("-i", "--infile", default="tasks.json", help="input JSON path")
     parser.add_argument("--type", required=True, help="message type, e.g. deadline-extension")
     parser.add_argument("--task-id", help="specific task id; default is latest top-level task")
-    parser.add_argument("--next-task-name", help="next task name text for next-task message")
-    parser.add_argument("--next-assignee", help="assignee to ask for next-task deadline")
+    parser.add_argument("--next-task-name", help="next task name text for task-completion message")
+    parser.add_argument("--next-assignee", help="assignee to ask for task-completion deadline")
     args = parser.parse_args()
 
     in_path = Path(args.infile)

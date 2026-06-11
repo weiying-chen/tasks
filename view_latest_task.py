@@ -19,7 +19,7 @@ from task_stages import (
     get_task_type,
     get_task_work_minutes,
 )
-from create_message import parse_subs_summary_task_name
+from create_message import parse_task_assignment_task_name
 from task_titles import extract_subs_task_name
 from work_time import add_work_minutes, next_work_start
 
@@ -149,7 +149,7 @@ def build_deadline_message_command(script_dir: str, infile: str, task_id: str) -
     ]
 
 
-def build_next_task_message_command(
+def build_task_completion_message_command(
     script_dir: str,
     infile: str,
     finished_task_id: str,
@@ -162,7 +162,7 @@ def build_next_task_message_command(
         "-i",
         infile,
         "--type",
-        "next-task",
+        "task-completion",
         "--task-id",
         finished_task_id,
         "--next-task-name",
@@ -173,14 +173,14 @@ def build_next_task_message_command(
     return cmd
 
 
-def build_subs_summary_message_command(script_dir: str, infile: str, task_id: str) -> list[str]:
+def build_task_assignment_message_command(script_dir: str, infile: str, task_id: str) -> list[str]:
     return [
         "python3",
         f"{script_dir}/create_message.py",
         "-i",
         infile,
         "--type",
-        "subs-summary",
+        "task-assignment",
         "--task-id",
         task_id,
     ]
@@ -217,17 +217,18 @@ def build_notes_target_options(latest_task: dict) -> list[tuple[str, str]]:
 def build_message_target_options(latest_task: dict | None = None) -> list[tuple[str, str]]:
     options = [
         ("deadline-extension", "Deadline extension message"),
-        ("next-task", "Task completion message"),
+        ("task-completion", "Task completion message"),
     ]
     if isinstance(latest_task, dict):
         task_name = str(latest_task.get("name") or "").strip()
-        if task_name:
+        assigned_to = str(get_task_assigned_to(latest_task) or "").strip()
+        if task_name and assigned_to:
             try:
-                parse_subs_summary_task_name(task_name)
+                parse_task_assignment_task_name(task_name)
             except ValueError:
                 pass
             else:
-                options.append(("subs-summary", "Task assignment message"))
+                options.append(("task-assignment", "Task assignment message"))
     return options
 
 
@@ -767,8 +768,8 @@ def main():
                                 copy_proc.stdin.close()
                             status = color(DEADLINE_MESSAGE_COPIED_STATUS, GREEN)
                             status_until = time.time() + STATUS_TTL_SECONDS
-                        elif picked_kind == "subs-summary":
-                            msg_cmd = build_subs_summary_message_command(script_dir, str(in_path.resolve()), latest_id)
+                        elif picked_kind == "task-assignment":
+                            msg_cmd = build_task_assignment_message_command(script_dir, str(in_path.resolve()), latest_id)
                             msg_proc = subprocess.run(msg_cmd, capture_output=True, text=True)
                             if msg_proc.returncode != 0:
                                 msg = (msg_proc.stderr or msg_proc.stdout or "Message generation failed").strip()
@@ -802,7 +803,7 @@ def main():
                                 status = color("Error: Clipboard is empty.", RED)
                                 status_until = time.time() + STATUS_TTL_SECONDS
                                 continue
-                            msg_cmd = build_next_task_message_command(
+                            msg_cmd = build_task_completion_message_command(
                                 script_dir,
                                 str(in_path.resolve()),
                                 latest_id,

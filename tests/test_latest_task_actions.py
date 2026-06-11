@@ -122,13 +122,35 @@ class LatestTaskActionsTests(unittest.TestCase):
             view_latest_task.build_message_target_options(latest),
             [
                 ("deadline-extension", "Deadline extension message"),
-                ("next-task", "Task completion message"),
-                ("subs-summary", "Task assignment message"),
+                ("task-completion", "Task completion message"),
+                ("task-assignment", "Task assignment message"),
             ],
         )
 
-    def test_build_subs_summary_message_command(self):
-        cmd = view_latest_task.build_subs_summary_message_command("/tmp", "/tmp/tasks.json", "9")
+    def test_build_message_target_options_hides_task_assignment_when_unassigned(self):
+        latest = {
+            "id": "1",
+            "name": "3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈）",
+            "assignedBy": "Emily Ding",
+            "stages": [
+                {
+                    "type": "subs",
+                    "workMinutes": 364,
+                    "contentSeconds": 364,
+                }
+            ],
+            "children": [],
+        }
+        self.assertEqual(
+            view_latest_task.build_message_target_options(latest),
+            [
+                ("deadline-extension", "Deadline extension message"),
+                ("task-completion", "Task completion message"),
+            ],
+        )
+
+    def test_build_task_assignment_message_command(self):
+        cmd = view_latest_task.build_task_assignment_message_command("/tmp", "/tmp/tasks.json", "9")
         self.assertEqual(
             cmd,
             [
@@ -137,7 +159,7 @@ class LatestTaskActionsTests(unittest.TestCase):
                 "-i",
                 "/tmp/tasks.json",
                 "--type",
-                "subs-summary",
+                "task-assignment",
                 "--task-id",
                 "9",
             ],
@@ -176,8 +198,8 @@ class LatestTaskActionsTests(unittest.TestCase):
             ],
         )
 
-    def test_build_next_task_message_command(self):
-        cmd = view_latest_task.build_next_task_message_command("/tmp", "/tmp/tasks.json", "9", "new task", "Alex")
+    def test_build_task_completion_message_command(self):
+        cmd = view_latest_task.build_task_completion_message_command("/tmp", "/tmp/tasks.json", "9", "new task", "Alex")
         self.assertEqual(
             cmd,
             [
@@ -186,7 +208,7 @@ class LatestTaskActionsTests(unittest.TestCase):
                 "-i",
                 "/tmp/tasks.json",
                 "--type",
-                "next-task",
+                "task-completion",
                 "--task-id",
                 "9",
                 "--next-task-name",
