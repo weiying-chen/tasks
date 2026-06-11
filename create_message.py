@@ -9,6 +9,7 @@ from task_deadline import require_task_deadline_local
 from task_stages import (
     get_task_assigned_to,
     get_task_content_seconds,
+    get_task_stage,
     get_task_start_at,
     get_task_type,
     get_task_work_minutes,
@@ -274,6 +275,13 @@ def format_small_chinese_number(value: int) -> str:
     return str(value)
 
 
+def task_assignment_action_text(task: dict) -> str:
+    stage = str(get_task_stage(task) or "").strip().lower()
+    if stage == "edit":
+        return "edit + 定稿"
+    return "翻譯"
+
+
 def format_task_assignment_message(task: dict) -> str:
     task_name = str(task.get("name") or "").strip()
     assigned_to = str(get_task_assigned_to(task) or "").strip()
@@ -287,15 +295,17 @@ def format_task_assignment_message(task: dict) -> str:
         raise ValueError("Missing required content seconds for task-assignment message.")
 
     count_text, program_name, episodes = parse_task_assignment_task_name(task_name)
+    action_text = task_assignment_action_text(task)
+    action_prefix = action_text if action_text == "翻譯" else f" {action_text}"
     if count_text.isdigit():
         count_display = format_small_chinese_number(int(count_text))
     else:
         count_display = count_text
     episode_text = " + ".join(episodes)
     return (
-        f"請{format_mention(assigned_to)}翻譯{count_display}集{program_name}（{episode_text}），"
+        f"請{format_mention(assigned_to)}{action_prefix}{count_display}集{program_name}（{episode_text}），"
         f"片長共{format_content_duration_for_message(content_seconds)}，"
-        f"預計翻譯{format_duration_for_summary_message(work_minutes)}，"
+        f"預計{action_prefix}{format_duration_for_summary_message(work_minutes)}，"
         "deadline等手上工作完成後再給，謝謝~"
     )
 

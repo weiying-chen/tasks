@@ -310,6 +310,32 @@ class CreateMessageTests(unittest.TestCase):
             "片長共6分04秒，預計翻譯6時04分，deadline等手上工作完成後再給，謝謝~",
         )
 
+    def test_subs_summary_message_uses_edit_wording_for_edit_stage(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈）",
+                "assignedBy": "Emily Ding",
+                "stages": [
+                    {
+                        "type": "subs",
+                        "stage": "edit",
+                        "assignedTo": "Shawn",
+                        "workMinutes": 182,
+                        "contentSeconds": 364,
+                    }
+                ],
+                "children": [],
+            }
+        ]
+
+        message = create_message.create_message(tasks, msg_type="task-assignment")
+        self.assertEqual(
+            message,
+            "請@Shawn edit + 定稿三集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈），"
+            "片長共6分04秒，預計 edit + 定稿3時02分，deadline等手上工作完成後再給，謝謝~",
+        )
+
     def test_subs_summary_message_requires_parenthesized_episode_titles(self):
         tasks = [
             {
