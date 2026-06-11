@@ -43,6 +43,7 @@ STATUS_TTL_SECONDS = 4.0
 DEADLINE_MESSAGE_COPIED_STATUS = "Success: Deadline extension message copied to clipboard"
 NEXT_TASK_MESSAGE_COPIED_STATUS = "Success: Next task message copied to clipboard"
 SUBS_SUMMARY_MESSAGE_COPIED_STATUS = "Success: Task assignment message copied to clipboard"
+CONFIRM_DEADLINE_EXTENSION_STATUS = "Success: Confirm deadline extension checked"
 
 
 def fmt_work(minutes: int | None) -> str:
@@ -190,7 +191,7 @@ def build_task_assignment_message_command(script_dir: str, infile: str, task_id:
     ]
 
 
-def build_confirm_deadline_status(task: dict, clipboard_text: str, now_local: datetime | None = None) -> str:
+def build_confirm_deadline_extension_status(task: dict, clipboard_text: str, now_local: datetime | None = None) -> str:
     if now_local is None:
         now_local = datetime.now(TZ_TAIPEI)
     text = clipboard_text.strip()
@@ -199,7 +200,7 @@ def build_confirm_deadline_status(task: dict, clipboard_text: str, now_local: da
     _, provided_deadline = parse_deadline_transition_message(text, year=now_local.year)
     computed_deadline = final_deadline_local(task)
     if provided_deadline == computed_deadline:
-        return f"Success: Confirmed deadline matches computed deadline ({format_message_date(computed_deadline)})."
+        return f"{CONFIRM_DEADLINE_EXTENSION_STATUS} ({format_message_date(computed_deadline)})."
     return (
         f"Warning: Coworker deadline differs (provided {format_message_date(provided_deadline)}, "
         f"computed {format_message_date(computed_deadline)})."
@@ -490,7 +491,7 @@ def build_task_view(
         + color(' | ', MAGENTA)
         + color('add ', MAGENTA) + color('n', GREEN) + color('otes', MAGENTA)
         + color(' | ', MAGENTA)
-        + color('confirm ', MAGENTA) + color('d', GREEN) + color('eadline', MAGENTA)
+        + color('confirm ', MAGENTA) + color('d', GREEN) + color('eadline extension', MAGENTA)
         + color(' | ', MAGENTA)
         + color('toggle ', MAGENTA) + color('v', GREEN) + color('iew notes', MAGENTA)
         + color(' | ', MAGENTA)
@@ -743,12 +744,12 @@ def main():
                             check=True,
                         )
                         clipboard_text = clipboard_proc.stdout
-                        message = build_confirm_deadline_status(selected_task, clipboard_text)
+                        message = build_confirm_deadline_extension_status(selected_task, clipboard_text)
                         status_color = YELLOW if message.startswith("Warning:") else GREEN
                         status = color(message, status_color)
                         status_until = time.time() + STATUS_TTL_SECONDS
                     except Exception as exc:
-                        status = color(f"Error: Deadline confirmation failed: {exc}", RED)
+                        status = color(f"Error: Confirm deadline extension failed: {exc}", RED)
                         status_until = time.time() + STATUS_TTL_SECONDS
                 if ch == b"m":
                     try:

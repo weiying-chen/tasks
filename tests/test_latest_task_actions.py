@@ -219,7 +219,7 @@ class LatestTaskActionsTests(unittest.TestCase):
             ],
         )
 
-    def test_build_confirm_deadline_status_warns_on_mismatch(self):
+    def test_build_confirm_deadline_extension_status_warns_on_mismatch(self):
         task = {
             "id": "1",
             "name": "三集大愛醫生館",
@@ -240,7 +240,7 @@ class LatestTaskActionsTests(unittest.TestCase):
             "新聞英文與配音 1時35分\n\n"
             "三集大愛醫生館 deadline 由 6/10（三）09:40，延後至6/10（三）11:15，再請 Alex Chen方便時幫我確認，謝謝。"
         )
-        status = view_latest_task.build_confirm_deadline_status(
+        status = view_latest_task.build_confirm_deadline_extension_status(
             task,
             clipboard_text,
             now_local=datetime(2026, 6, 10, 10, 0, tzinfo=timezone(timedelta(hours=8))),

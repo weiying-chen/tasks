@@ -166,7 +166,7 @@ class LatestTaskViewTests(unittest.TestCase):
         out = self.strip_ansi(view_latest_task.build_latest_view(tasks))
         lines = out.splitlines()
         actions_idx = lines.index(
-            "Actions: create task | set assignee | add subtasks | add notes | confirm deadline | toggle view notes | copy message | quit"
+            "Actions: create task | set assignee | add subtasks | add notes | confirm deadline extension | toggle view notes | copy message | quit"
         )
         self.assertEqual(lines[actions_idx - 1], "")
         self.assertNotEqual(lines[actions_idx - 2], "")
@@ -186,7 +186,7 @@ class LatestTaskViewTests(unittest.TestCase):
         self.assertRegex(out, r"\x1b\[35mset \x1b\[0m\x1b\[32ma\x1b\[0m\x1b\[35mssignee")
         self.assertRegex(out, r"\x1b\[35madd \x1b\[0m\x1b\[32ms\x1b\[0m\x1b\[35mubtasks")
         self.assertRegex(out, r"\x1b\[35madd \x1b\[0m\x1b\[32mn\x1b\[0m\x1b\[35motes")
-        self.assertRegex(out, r"\x1b\[35mconfirm \x1b\[0m\x1b\[32md\x1b\[0m\x1b\[35meadline")
+        self.assertRegex(out, r"\x1b\[35mconfirm \x1b\[0m\x1b\[32md\x1b\[0m\x1b\[35meadline extension")
         self.assertRegex(out, r"\x1b\[35mtoggle \x1b\[0m\x1b\[32mv\x1b\[0m\x1b\[35miew notes")
         self.assertRegex(out, r"\x1b\[35mcopy \x1b\[0m\x1b\[32mm\x1b\[0m\x1b\[35message")
 
