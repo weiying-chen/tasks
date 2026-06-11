@@ -179,7 +179,7 @@ def format_deadline_extension_message(task: dict, now_local: datetime | None = N
         lines.append("")
 
     prefix = f"{assignment}，" if assignment else ""
-    assignee_text = f"，請@{assignee}幫我確認" if assignee else ""
+    assignee_text = f"，請{format_mention(assignee)}幫我確認" if assignee else ""
     lines.append(
         f"{prefix}deadline由{format_message_date(previous)}，"
         f"{transition_text}{format_message_date(next_deadline)}{assignee_text}，謝謝。"
@@ -279,7 +279,7 @@ def format_next_task_message(finished_task: dict, next_task_name: str, next_assi
     start = final_deadline_local(finished_task)
     return (
         f"已完成{completed_task}，接下來會開始翻譯{next_task_name}，"
-        f"再麻煩@{assignee}便時幫忙設deadline，"
+        f"再麻煩{format_mention(assignee)}便時幫忙設deadline，"
         f"從{format_message_date(start)}起算，謝謝。"
     )
 
