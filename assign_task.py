@@ -8,6 +8,9 @@ from task_stages import normalize_stages
 from text_to_json import normalize_task_shape, normalize_tasks_json
 
 DEFAULT_SELF_ASSIGNEE = "Alex Chen"
+ASSIGNEE_WORK_RATES = {
+    "Emily": 1.0,
+}
 
 
 def normalize_task_name_for_match(name: str) -> str:
@@ -29,6 +32,24 @@ def normalize_program_name_for_match(name: str) -> str:
 
 def strip_assignment_tail(name: str) -> str:
     return re.sub(r"\s*[，,。!！~～]?\s*謝謝\s*[~～]?\s*$", "", name).strip()
+
+
+def normalize_assignee_key(name: str) -> str:
+    return re.sub(r"\s+", " ", str(name or "").strip().lstrip("@"))
+
+
+def get_assignee_work_rate(name: str) -> float:
+    return ASSIGNEE_WORK_RATES.get(normalize_assignee_key(name), 1.0)
+
+
+def populate_assignee_work_minutes(stage: dict, assigned_to: str) -> None:
+    content_seconds = stage.get("contentSeconds")
+    if not isinstance(content_seconds, int) or content_seconds <= 0:
+        return
+    if isinstance(stage.get("workMinutes"), int) and stage["workMinutes"] > 0:
+        return
+    rate = get_assignee_work_rate(assigned_to)
+    stage["workMinutes"] = int(round(content_seconds * rate))
 
 
 def parse_assignment_message(text: str) -> dict[str, str]:
@@ -118,6 +139,7 @@ def assign_task(tasks: list[dict], text: str) -> list[dict]:
     task["assignedBy"] = parsed["assignedBy"]
     stage["assignedTo"] = parsed["assignedTo"]
     stage["stage"] = parsed["stage"]
+    populate_assignee_work_minutes(stage, parsed["assignedTo"])
     return tasks
 
 

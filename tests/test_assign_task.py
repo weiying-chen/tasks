@@ -4,6 +4,28 @@ import assign_task
 
 
 class AssignTaskTests(unittest.TestCase):
+    def test_assign_task_sets_work_minutes_from_content_seconds(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "3集我的阿公阿媽做慈濟",
+                "assignedBy": "Emily",
+                "stages": [
+                    {
+                        "type": "subs",
+                        "contentSeconds": 364,
+                    }
+                ],
+                "children": [],
+            }
+        ]
+        updated = assign_task.assign_task(
+            tasks,
+            "Emily Ding 請 Emily 翻譯3集我的阿公阿媽做慈濟，謝謝~",
+        )
+        stage = updated[0]["stages"][0]
+        self.assertEqual(stage["workMinutes"], 364)
+
     def test_parse_translate_assignment_message(self):
         parsed = assign_task.parse_assignment_message(
             "Emily Ding 請 Alex Chen 翻譯3集我的阿公阿媽做慈濟，謝謝~"
