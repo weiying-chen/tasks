@@ -26,6 +26,29 @@ class AssignTaskTests(unittest.TestCase):
         stage = updated[0]["stages"][0]
         self.assertEqual(stage["workMinutes"], 364)
 
+    def test_assign_task_keeps_existing_work_minutes(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "3集我的阿公阿媽做慈濟",
+                "assignedBy": "Emily",
+                "stages": [
+                    {
+                        "type": "subs",
+                        "workMinutes": 222,
+                        "contentSeconds": 364,
+                    }
+                ],
+                "children": [],
+            }
+        ]
+        updated = assign_task.assign_task(
+            tasks,
+            "Emily Ding 請 Emily 翻譯3集我的阿公阿媽做慈濟，謝謝~",
+        )
+        stage = updated[0]["stages"][0]
+        self.assertEqual(stage["workMinutes"], 222)
+
     def test_parse_translate_assignment_message(self):
         parsed = assign_task.parse_assignment_message(
             "Emily Ding 請 Alex Chen 翻譯3集我的阿公阿媽做慈濟，謝謝~"

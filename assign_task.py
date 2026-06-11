@@ -68,6 +68,10 @@ def find_translate_reference_minutes(task: dict) -> int | None:
 
 
 def populate_stage_work_minutes(task: dict, stage: dict, assigned_to: str, stage_label: str) -> None:
+    existing_minutes = stage.get("workMinutes")
+    if isinstance(existing_minutes, int) and existing_minutes > 0:
+        return
+
     stage_label = stage_label.strip().lower()
     if stage_label == "edit":
         base_minutes = find_translate_reference_minutes(task)
