@@ -336,6 +336,60 @@ class CreateMessageTests(unittest.TestCase):
             "片長共6分04秒，預計edit + 定稿3時02分，deadline等手上工作完成後再給，謝謝~",
         )
 
+    def test_subs_initiation_message_uses_translate_wording(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈）",
+                "assignedBy": "Emily Ding",
+                "stages": [
+                    {
+                        "type": "subs",
+                        "stage": "translate",
+                        "assignedTo": "Shawn",
+                        "startAt": "2026-06-09T03:35:00Z",
+                        "workMinutes": 364,
+                        "contentSeconds": 364,
+                    }
+                ],
+                "children": [],
+            }
+        ]
+
+        message = create_message.create_message(tasks, msg_type="task-initiation")
+        self.assertEqual(
+            message,
+            "接下來我會開始翻譯3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈），"
+            "deadline從6/9（二）11:35起算，再麻煩@Emily Ding方便時幫我設deadline，謝謝。",
+        )
+
+    def test_subs_initiation_message_uses_edit_wording(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "3集大愛醫生館（杯弓蛇影 乳房腫瘤 + 鬼門關走一遭~冠心病 + 住輸尿管）",
+                "assignedBy": "Alex Chen",
+                "stages": [
+                    {
+                        "type": "subs",
+                        "stage": "edit",
+                        "assignedTo": "Shawn",
+                        "startAt": "2026-06-02T05:32:00Z",
+                        "workMinutes": 182,
+                        "contentSeconds": 364,
+                    }
+                ],
+                "children": [],
+            }
+        ]
+
+        message = create_message.create_message(tasks, msg_type="task-initiation")
+        self.assertEqual(
+            message,
+            "我要接著審3集大愛醫生館（杯弓蛇影 乳房腫瘤 + 鬼門關走一遭~冠心病 + 住輸尿管），"
+            "請@Alex Chen再給我deadline，deadline請由6/2（二）13:32開始算，謝謝。",
+        )
+
     def test_subs_summary_message_requires_parenthesized_episode_titles(self):
         tasks = [
             {

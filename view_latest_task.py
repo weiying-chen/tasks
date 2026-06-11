@@ -15,6 +15,7 @@ from task_deadline import task_base_created_local, task_deadline_local
 from task_stages import (
     get_task_assigned_to,
     get_task_stage,
+    get_task_start_at,
     get_task_type,
     get_task_work_minutes,
 )
@@ -44,6 +45,7 @@ DEADLINE_MESSAGE_COPIED_STATUS = "Success: Deadline extension message copied to 
 NEXT_TASK_MESSAGE_COPIED_STATUS = "Success: Next task message copied to clipboard"
 SUBS_SUMMARY_MESSAGE_COPIED_STATUS = "Success: Task assignment message copied to clipboard"
 CONFIRM_DEADLINE_EXTENSION_STATUS = "Success: Confirm deadline extension checked"
+TASK_INITIATION_MESSAGE_COPIED_STATUS = "Success: Task initiation message copied to clipboard"
 
 
 def fmt_work(minutes: int | None) -> str:
@@ -191,6 +193,19 @@ def build_task_assignment_message_command(script_dir: str, infile: str, task_id:
     ]
 
 
+def build_task_initiation_message_command(script_dir: str, infile: str, task_id: str) -> list[str]:
+    return [
+        "python3",
+        f"{script_dir}/create_message.py",
+        "-i",
+        infile,
+        "--type",
+        "task-initiation",
+        "--task-id",
+        task_id,
+    ]
+
+
 def build_confirm_deadline_extension_status(task: dict, clipboard_text: str, now_local: datetime | None = None) -> str:
     if now_local is None:
         now_local = datetime.now(TZ_TAIPEI)
@@ -242,7 +257,10 @@ def build_message_target_options(latest_task: dict | None = None) -> list[tuple[
     ]
     if isinstance(latest_task, dict):
         task_name = str(latest_task.get("name") or "").strip()
+        start_at = str(get_task_start_at(latest_task) or "").strip()
         assigned_to = str(get_task_assigned_to(latest_task) or "").strip()
+        if start_at:
+            options.append(("task-initiation", "Task initiation message"))
         if task_name and assigned_to:
             try:
                 parse_task_assignment_task_name(task_name)
@@ -802,6 +820,29 @@ def main():
                                 copy_proc.stdin.write(message_text)
                                 copy_proc.stdin.close()
                             status = color(DEADLINE_MESSAGE_COPIED_STATUS, GREEN)
+                            status_until = time.time() + STATUS_TTL_SECONDS
+                        elif picked_kind == "task-initiation":
+                            msg_cmd = build_task_initiation_message_command(script_dir, str(in_path.resolve()), latest_id)
+                            msg_proc = subprocess.run(msg_cmd, capture_output=True, text=True)
+                            if msg_proc.returncode != 0:
+                                msg = (msg_proc.stderr or msg_proc.stdout or "Message generation failed").strip()
+                                status = color(f"Error: {msg}", RED)
+                                status_until = time.time() + STATUS_TTL_SECONDS
+                                continue
+                            message_text = msg_proc.stdout.strip()
+                            if not message_text:
+                                status = color("Error: Generated message is empty.", RED)
+                                status_until = time.time() + STATUS_TTL_SECONDS
+                                continue
+                            copy_proc = subprocess.Popen(
+                                ["wl-copy"],
+                                stdin=subprocess.PIPE,
+                                text=True,
+                            )
+                            if copy_proc.stdin:
+                                copy_proc.stdin.write(message_text)
+                                copy_proc.stdin.close()
+                            status = color(TASK_INITIATION_MESSAGE_COPIED_STATUS, GREEN)
                             status_until = time.time() + STATUS_TTL_SECONDS
                         elif picked_kind == "task-assignment":
                             msg_cmd = build_task_assignment_message_command(script_dir, str(in_path.resolve()), latest_id)

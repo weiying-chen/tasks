@@ -15,6 +15,10 @@ class LatestTaskActionsTests(unittest.TestCase):
             view_latest_task.NEXT_TASK_MESSAGE_COPIED_STATUS,
             "Success: Next task message copied to clipboard",
         )
+        self.assertEqual(
+            view_latest_task.TASK_INITIATION_MESSAGE_COPIED_STATUS,
+            "Success: Task initiation message copied to clipboard",
+        )
 
     def test_find_latest_task_id(self):
         tasks = [
@@ -128,6 +132,32 @@ class LatestTaskActionsTests(unittest.TestCase):
             ],
         )
 
+    def test_build_message_target_options_includes_task_initiation_when_start_at_exists(self):
+        latest = {
+            "id": "1",
+            "name": "3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈）",
+            "assignedBy": "Emily Ding",
+            "stages": [
+                {
+                    "type": "subs",
+                    "assignedTo": "Alex Chen",
+                    "startAt": "2026-06-09T03:35:00Z",
+                    "workMinutes": 364,
+                    "contentSeconds": 364,
+                }
+            ],
+            "children": [],
+        }
+        self.assertEqual(
+            view_latest_task.build_message_target_options(latest),
+            [
+                ("deadline-extension", "Deadline extension message"),
+                ("task-completion", "Task completion message"),
+                ("task-initiation", "Task initiation message"),
+                ("task-assignment", "Task assignment message"),
+            ],
+        )
+
     def test_build_message_target_options_hides_task_assignment_when_unassigned(self):
         latest = {
             "id": "1",
@@ -161,6 +191,22 @@ class LatestTaskActionsTests(unittest.TestCase):
                 "/tmp/tasks.json",
                 "--type",
                 "task-assignment",
+                "--task-id",
+                "9",
+            ],
+        )
+
+    def test_build_task_initiation_message_command(self):
+        cmd = view_latest_task.build_task_initiation_message_command("/tmp", "/tmp/tasks.json", "9")
+        self.assertEqual(
+            cmd,
+            [
+                "python3",
+                "/tmp/create_message.py",
+                "-i",
+                "/tmp/tasks.json",
+                "--type",
+                "task-initiation",
                 "--task-id",
                 "9",
             ],

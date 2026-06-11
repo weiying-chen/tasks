@@ -282,6 +282,13 @@ def task_assignment_action_text(task: dict) -> str:
     return "翻譯"
 
 
+def task_initiation_action_text(task: dict) -> str:
+    stage = str(get_task_stage(task) or "").strip().lower()
+    if stage == "edit":
+        return "我要接著審"
+    return "接下來我會開始翻譯"
+
+
 def format_task_assignment_message(task: dict) -> str:
     task_name = str(task.get("name") or "").strip()
     assigned_to = str(get_task_assigned_to(task) or "").strip()
@@ -307,6 +314,27 @@ def format_task_assignment_message(task: dict) -> str:
         f"預計{action_text}{format_duration_for_summary_message(work_minutes)}，"
         "deadline等手上工作完成後再給，謝謝~"
     )
+
+
+def format_task_initiation_message(task: dict) -> str:
+    task_name = str(task.get("name") or "").strip()
+    start_at = str(get_task_start_at(task) or "").strip()
+    if not task_name:
+        raise ValueError("Missing required task name for task-initiation message.")
+    if not start_at:
+        raise ValueError("Missing required startAt for task-initiation message.")
+
+    assignee = str(task.get("assignedBy") or task.get("assignedTo") or "").strip()
+    mention = format_mention(assignee)
+    start_text = format_message_date(to_local(start_at))
+    action_text = task_initiation_action_text(task)
+
+    if action_text == "我要接著審":
+        ask_text = f"請{mention}再給我deadline，" if mention else ""
+        return f"{action_text}{task_name}，{ask_text}deadline請由{start_text}開始算，謝謝。"
+
+    ask_text = f"，再麻煩{mention}方便時幫我設deadline" if mention else ""
+    return f"{action_text}{task_name}，deadline從{start_text}起算{ask_text}，謝謝。"
 
 
 def format_next_task_message(finished_task: dict, next_task_name: str, next_assignee: str | None = None) -> str:
@@ -347,6 +375,9 @@ def create_message(
     if msg_type == "task-assignment":
         task = get_target_task(tasks, task_id)
         return format_task_assignment_message(task)
+    if msg_type == "task-initiation":
+        task = get_target_task(tasks, task_id)
+        return format_task_initiation_message(task)
     raise ValueError(f"Unsupported message type: {msg_type}")
 
 
