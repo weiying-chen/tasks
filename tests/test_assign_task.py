@@ -177,6 +177,21 @@ class AssignTaskTests(unittest.TestCase):
         self.assertEqual(stage["stage"], "edit")
         self.assertNotIn("status", stage)
 
+    def test_assign_task_does_not_match_partial_prefix_only(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "3集大愛醫生館（杯弓蛇影 乳房腫瘤 + 鬼門關走一遭~冠心病 + 住輸尿管）",
+                "stages": [{"type": "subs"}],
+                "children": [],
+            }
+        ]
+        with self.assertRaisesRegex(ValueError, "No matching top-level task"):
+            assign_task.assign_task(
+                tasks,
+                "Alex Chen 請 張牧軒 Shawn edit+定稿 3 集大愛醫生，謝謝~",
+            )
+
     def test_assign_task_errors_when_no_match(self):
         tasks = [
             {
