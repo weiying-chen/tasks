@@ -303,13 +303,14 @@ def format_task_assignment_message(task: dict) -> str:
 
     count_text, program_name, episodes = parse_task_assignment_task_name(task_name)
     action_text = task_assignment_action_text(task)
+    action_prefix = action_text if action_text == "翻譯" else f" {action_text}"
     if count_text.isdigit():
         count_display = format_small_chinese_number(int(count_text))
     else:
         count_display = count_text
     episode_text = " + ".join(episodes)
     return (
-        f"請{format_mention(assigned_to)}{action_text}{count_display}集{program_name}（{episode_text}），"
+        f"請{format_mention(assigned_to)}{action_prefix}{count_display}集{program_name}（{episode_text}），"
         f"片長共{format_content_duration_for_message(content_seconds)}，"
         f"預計{action_text}{format_duration_for_summary_message(work_minutes)}，"
         "deadline等手上工作完成後再給，謝謝~"
