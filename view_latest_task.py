@@ -19,6 +19,7 @@ from task_stages import (
     get_task_type,
     get_task_work_minutes,
 )
+from create_message import parse_subs_summary_task_name
 from task_titles import extract_subs_task_name
 from work_time import add_work_minutes, next_work_start
 
@@ -37,6 +38,7 @@ MAGENTA = '\x1b[35m'  # ANSI magenta (matches repo-sync DIRTY)
 STATUS_TTL_SECONDS = 4.0
 DEADLINE_MESSAGE_COPIED_STATUS = "Success: Deadline extension message copied to clipboard"
 NEXT_TASK_MESSAGE_COPIED_STATUS = "Success: Next task message copied to clipboard"
+SUBS_SUMMARY_MESSAGE_COPIED_STATUS = "Success: Task assignment message copied to clipboard"
 
 
 def fmt_work(minutes: int | None) -> str:
@@ -171,6 +173,19 @@ def build_next_task_message_command(
     return cmd
 
 
+def build_subs_summary_message_command(script_dir: str, infile: str, task_id: str) -> list[str]:
+    return [
+        "python3",
+        f"{script_dir}/create_message.py",
+        "-i",
+        infile,
+        "--type",
+        "subs-summary",
+        "--task-id",
+        task_id,
+    ]
+
+
 def parse_next_task_clipboard_payload(clipboard_text: str) -> tuple[str | None, str]:
     text = clipboard_text.strip()
     if not text:
@@ -199,11 +214,21 @@ def build_notes_target_options(latest_task: dict) -> list[tuple[str, str]]:
     return options
 
 
-def build_message_target_options() -> list[tuple[str, str]]:
-    return [
+def build_message_target_options(latest_task: dict | None = None) -> list[tuple[str, str]]:
+    options = [
         ("deadline-extension", "Deadline extension message"),
         ("next-task", "Task completion message"),
     ]
+    if isinstance(latest_task, dict):
+        task_name = str(latest_task.get("name") or "").strip()
+        if task_name:
+            try:
+                parse_subs_summary_task_name(task_name)
+            except ValueError:
+                pass
+            else:
+                options.append(("subs-summary", "Task assignment message"))
+    return options
 
 
 def choose_numbered_option(
@@ -700,7 +725,7 @@ def main():
                             status = color("Error: No selected task id found.", RED)
                             status_until = time.time() + STATUS_TTL_SECONDS
                             continue
-                        msg_options = build_message_target_options()
+                        msg_options = build_message_target_options(selected_task)
                         pick_idx, pick_err, should_quit = choose_numbered_option(
                             stdin_fd=stdin_fd,
                             render_once_fn=render_once,
@@ -741,6 +766,29 @@ def main():
                                 copy_proc.stdin.write(message_text)
                                 copy_proc.stdin.close()
                             status = color(DEADLINE_MESSAGE_COPIED_STATUS, GREEN)
+                            status_until = time.time() + STATUS_TTL_SECONDS
+                        elif picked_kind == "subs-summary":
+                            msg_cmd = build_subs_summary_message_command(script_dir, str(in_path.resolve()), latest_id)
+                            msg_proc = subprocess.run(msg_cmd, capture_output=True, text=True)
+                            if msg_proc.returncode != 0:
+                                msg = (msg_proc.stderr or msg_proc.stdout or "Message generation failed").strip()
+                                status = color(f"Error: {msg}", RED)
+                                status_until = time.time() + STATUS_TTL_SECONDS
+                                continue
+                            message_text = msg_proc.stdout.strip()
+                            if not message_text:
+                                status = color("Error: Generated message is empty.", RED)
+                                status_until = time.time() + STATUS_TTL_SECONDS
+                                continue
+                            copy_proc = subprocess.Popen(
+                                ["wl-copy"],
+                                stdin=subprocess.PIPE,
+                                text=True,
+                            )
+                            if copy_proc.stdin:
+                                copy_proc.stdin.write(message_text)
+                                copy_proc.stdin.close()
+                            status = color(SUBS_SUMMARY_MESSAGE_COPIED_STATUS, GREEN)
                             status_until = time.time() + STATUS_TTL_SECONDS
                         else:
                             clipboard_proc = subprocess.run(

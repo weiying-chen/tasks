@@ -1,11 +1,18 @@
 #!/usr/bin/env python3
 import argparse
 import json
+import re
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
 from task_deadline import require_task_deadline_local
-from task_stages import get_task_start_at, get_task_type, get_task_work_minutes
+from task_stages import (
+    get_task_assigned_to,
+    get_task_content_seconds,
+    get_task_start_at,
+    get_task_type,
+    get_task_work_minutes,
+)
 from text_to_json import resolve_subs_assigned_by
 from work_time import add_work_minutes
 
@@ -33,6 +40,30 @@ def format_duration_for_message(total_minutes: int) -> str:
     if hours > 0:
         return f"{hours}時"
     return f"{minutes}分"
+
+
+def format_duration_for_summary_message(total_minutes: int) -> str:
+    hours = total_minutes // 60
+    minutes = total_minutes % 60
+    if hours > 0 and minutes > 0:
+        return f"{hours}時{minutes:02d}分"
+    if hours > 0:
+        return f"{hours}時"
+    return f"{minutes}分"
+
+
+def format_content_duration_for_message(total_seconds: int) -> str:
+    minutes, seconds = divmod(total_seconds, 60)
+    return f"{minutes}分{seconds:02d}秒"
+
+
+def format_mention(name: str) -> str:
+    value = str(name or "").strip()
+    if not value:
+        return ""
+    if value.startswith("@"):
+        return value
+    return f"@{value}"
 
 
 def normalize_tasks(data):
@@ -177,6 +208,67 @@ def resolve_next_task_assignee(next_task_name: str, fallback_assignee: str | Non
         return str(fallback_assignee or "").strip()
 
 
+def parse_subs_summary_task_name(task_name: str) -> tuple[str, str, list[str]]:
+    match = re.match(
+        r"^\s*(?P<count>\d+|[零一二三四五六七八九十百千兩]+)\s*集\s*"
+        r"(?P<program>.+?)\s*[（(](?P<episodes>.+?)[）)]\s*$",
+        task_name,
+    )
+    if not match:
+        raise ValueError("Task name does not include parenthesized episode titles.")
+
+    count = match.group("count").strip()
+    program = match.group("program").strip()
+    episodes_text = match.group("episodes").strip()
+    episodes = [part.strip() for part in re.split(r"\s*[+＋]\s*", episodes_text) if part.strip()]
+    if not program or not episodes:
+        raise ValueError("Task name does not include parenthesized episode titles.")
+    return count, program, episodes
+
+
+def format_small_chinese_number(value: int) -> str:
+    digits = "零一二三四五六七八九"
+    if value < 0:
+        raise ValueError("Negative counts are not supported.")
+    if value < 10:
+        return digits[value]
+    if value < 20:
+        return "十" if value == 10 else f"十{digits[value - 10]}"
+    if value < 100:
+        tens, ones = divmod(value, 10)
+        out = f"{digits[tens]}十"
+        if ones:
+            out += digits[ones]
+        return out
+    return str(value)
+
+
+def format_subs_summary_message(task: dict) -> str:
+    task_name = str(task.get("name") or "").strip()
+    assigned_to = str(get_task_assigned_to(task) or "").strip()
+    work_minutes = get_task_work_minutes(task)
+    content_seconds = get_task_content_seconds(task)
+    if not task_name or not assigned_to:
+        raise ValueError("Missing required fields for subs-summary message.")
+    if not isinstance(work_minutes, int) or work_minutes <= 0:
+        raise ValueError("Missing required work minutes for subs-summary message.")
+    if not isinstance(content_seconds, int) or content_seconds < 0:
+        raise ValueError("Missing required content seconds for subs-summary message.")
+
+    count_text, program_name, episodes = parse_subs_summary_task_name(task_name)
+    if count_text.isdigit():
+        count_display = format_small_chinese_number(int(count_text))
+    else:
+        count_display = count_text
+    episode_text = " + ".join(episodes)
+    return (
+        f"請{format_mention(assigned_to)}翻譯{count_display}集{program_name}（{episode_text}），"
+        f"片長共{format_content_duration_for_message(content_seconds)}，"
+        f"預計翻譯{format_duration_for_summary_message(work_minutes)}，"
+        "deadline等手上工作完成後再給，謝謝~"
+    )
+
+
 def format_next_task_message(finished_task: dict, next_task_name: str, next_assignee: str | None = None) -> str:
     completed_task = str(finished_task.get("name") or "").strip()
     fallback_assignee = str(finished_task.get("assignedBy") or "").strip()
@@ -212,6 +304,9 @@ def create_message(
         finished_task = get_target_task(tasks, task_id)
         assignee = str(next_assignee or "").strip() or None
         return format_next_task_message(finished_task, name, assignee)
+    if msg_type == "subs-summary":
+        task = get_target_task(tasks, task_id)
+        return format_subs_summary_message(task)
     raise ValueError(f"Unsupported message type: {msg_type}")
 
 

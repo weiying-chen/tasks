@@ -104,11 +104,42 @@ class LatestTaskActionsTests(unittest.TestCase):
         )
 
     def test_build_message_target_options(self):
+        latest = {
+            "id": "1",
+            "name": "3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈）",
+            "assignedBy": "Emily Ding",
+            "stages": [
+                {
+                    "type": "subs",
+                    "assignedTo": "Alex Chen",
+                    "workMinutes": 364,
+                    "contentSeconds": 364,
+                }
+            ],
+            "children": [],
+        }
         self.assertEqual(
-            view_latest_task.build_message_target_options(),
+            view_latest_task.build_message_target_options(latest),
             [
                 ("deadline-extension", "Deadline extension message"),
                 ("next-task", "Task completion message"),
+                ("subs-summary", "Task assignment message"),
+            ],
+        )
+
+    def test_build_subs_summary_message_command(self):
+        cmd = view_latest_task.build_subs_summary_message_command("/tmp", "/tmp/tasks.json", "9")
+        self.assertEqual(
+            cmd,
+            [
+                "python3",
+                "/tmp/create_message.py",
+                "-i",
+                "/tmp/tasks.json",
+                "--type",
+                "subs-summary",
+                "--task-id",
+                "9",
             ],
         )
 
