@@ -24,6 +24,9 @@ TYPE_LABELS = {
     "news": "英文新聞+錄音",
     "posts": "小編文",
 }
+TASK_ASSIGNMENT_DEADLINE_SELF_SERVICE_ASSIGNEES = {
+    "Elijah Salie",
+}
 
 
 def to_local(iso_str: str) -> datetime:
@@ -66,6 +69,14 @@ def format_mention(name: str) -> str:
     if value.startswith("@"):
         return value
     return f"@{value}"
+
+
+def normalize_person_name(name: str) -> str:
+    return re.sub(r"\s+", " ", str(name or "").strip().lstrip("@"))
+
+
+def should_include_task_assignment_deadline(assigned_to: str) -> bool:
+    return normalize_person_name(assigned_to) not in TASK_ASSIGNMENT_DEADLINE_SELF_SERVICE_ASSIGNEES
 
 
 def parse_message_datetime(md: str, hm: str, year: int) -> datetime:
@@ -323,7 +334,9 @@ def format_task_assignment_message(task: dict) -> str:
         if isinstance(translate_minutes, int) and translate_minutes > 0:
             message += f"翻譯工時{format_duration_for_summary_message(translate_minutes)}，"
         message += f"預計製作{format_duration_for_summary_message(work_minutes)}，"
-    return message + "deadline等手上工作完成後再給，謝謝~"
+    if should_include_task_assignment_deadline(assigned_to):
+        return message + "deadline等手上工作完成後再給，謝謝~"
+    return message + "謝謝~"
 
 
 def format_task_initiation_message(task: dict) -> str:
