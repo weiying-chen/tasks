@@ -80,3 +80,28 @@ def get_task_content_seconds(task: dict) -> int | None:
     value = active_stage(task).get("contentSeconds")
     return value if isinstance(value, int) else None
 
+
+def _stage_label(stage: dict) -> str:
+    value = stage.get("stage")
+    if isinstance(value, str) and value.strip():
+        return value.strip().lower()
+    value = stage.get("type")
+    if isinstance(value, str) and value.strip():
+        return value.strip().lower()
+    return ""
+
+
+def get_previous_stage_work_minutes(task: dict, stage_label: str) -> int | None:
+    target = stage_label.strip().lower()
+    if not target:
+        return None
+    stages = normalize_stages(task)
+    for stage in reversed(stages):
+        if not isinstance(stage, dict):
+            continue
+        if _stage_label(stage) != target:
+            continue
+        value = stage.get("workMinutes")
+        if isinstance(value, int) and value > 0:
+            return value
+    return None

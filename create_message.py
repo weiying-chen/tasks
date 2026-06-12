@@ -9,6 +9,7 @@ from task_deadline import require_task_deadline_local
 from task_stages import (
     get_task_assigned_to,
     get_task_content_seconds,
+    get_previous_stage_work_minutes,
     get_task_stage,
     get_task_start_at,
     get_task_type,
@@ -309,12 +310,20 @@ def format_task_assignment_message(task: dict) -> str:
     else:
         count_display = count_text
     episode_text = " + ".join(episodes)
-    return (
+    message = (
         f"請{format_mention(assigned_to)}{action_prefix}{count_display}集{program_name}（{episode_text}），"
         f"片長共{format_content_duration_for_message(content_seconds)}，"
-        f"預計{action_text}{format_duration_for_summary_message(work_minutes)}，"
-        "deadline等手上工作完成後再給，謝謝~"
     )
+    if action_text == "翻譯":
+        message += f"預計翻譯{format_duration_for_summary_message(work_minutes)}，"
+    else:
+        translate_minutes = get_previous_stage_work_minutes(task, "translate")
+        if translate_minutes is None and isinstance(work_minutes, int) and work_minutes > 0:
+            translate_minutes = work_minutes * 2
+        if isinstance(translate_minutes, int) and translate_minutes > 0:
+            message += f"翻譯工時{format_duration_for_summary_message(translate_minutes)}，"
+        message += f"預計製作{format_duration_for_summary_message(work_minutes)}，"
+    return message + "deadline等手上工作完成後再給，謝謝~"
 
 
 def format_task_initiation_message(task: dict) -> str:

@@ -319,10 +319,17 @@ class CreateMessageTests(unittest.TestCase):
                 "stages": [
                     {
                         "type": "subs",
+                        "stage": "translate",
+                        "assignedTo": "Emily Ding",
+                        "workMinutes": 333,
+                        "contentSeconds": 333,
+                    },
+                    {
+                        "type": "subs",
                         "stage": "edit",
                         "assignedTo": "Shawn",
-                        "workMinutes": 182,
-                        "contentSeconds": 364,
+                        "workMinutes": 166,
+                        "contentSeconds": 333,
                     }
                 ],
                 "children": [],
@@ -333,7 +340,7 @@ class CreateMessageTests(unittest.TestCase):
         self.assertEqual(
             message,
             "請@Shawn edit + 定稿三集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈），"
-            "片長共6分04秒，預計edit + 定稿3時02分，deadline等手上工作完成後再給，謝謝~",
+            "片長共5分33秒，翻譯工時5時33分，預計製作2時46分，deadline等手上工作完成後再給，謝謝~",
         )
 
     def test_subs_initiation_message_uses_translate_wording(self):

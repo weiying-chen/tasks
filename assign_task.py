@@ -4,7 +4,7 @@ import json
 import re
 from pathlib import Path
 
-from task_stages import normalize_stages
+from task_stages import get_previous_stage_work_minutes, normalize_stages
 from text_to_json import normalize_task_shape, normalize_tasks_json
 
 DEFAULT_SELF_ASSIGNEE = "Alex Chen"
@@ -42,31 +42,6 @@ def get_assignee_work_rate(name: str) -> float:
     return ASSIGNEE_WORK_RATES.get(normalize_assignee_key(name), 1.0)
 
 
-def get_stage_label(stage: dict) -> str:
-    stage_value = stage.get("stage")
-    if isinstance(stage_value, str) and stage_value.strip():
-        return stage_value.strip().lower()
-    type_value = stage.get("type")
-    if isinstance(type_value, str) and type_value.strip():
-        return type_value.strip().lower()
-    return ""
-
-
-def find_translate_reference_minutes(task: dict) -> int | None:
-    stages = task.get("stages")
-    if not isinstance(stages, list):
-        return None
-    for stage in reversed(stages):
-        if not isinstance(stage, dict):
-            continue
-        if get_stage_label(stage) != "translate":
-            continue
-        minutes = stage.get("workMinutes")
-        if isinstance(minutes, int) and minutes > 0:
-            return minutes
-    return None
-
-
 def populate_stage_work_minutes(task: dict, stage: dict, assigned_to: str, stage_label: str) -> None:
     existing_minutes = stage.get("workMinutes")
     if isinstance(existing_minutes, int) and existing_minutes > 0:
@@ -74,7 +49,7 @@ def populate_stage_work_minutes(task: dict, stage: dict, assigned_to: str, stage
 
     stage_label = stage_label.strip().lower()
     if stage_label == "edit":
-        base_minutes = find_translate_reference_minutes(task)
+        base_minutes = get_previous_stage_work_minutes(task, "translate")
         if base_minutes is None:
             return
         stage["workMinutes"] = max(1, int(round(base_minutes / 2)))
