@@ -177,7 +177,7 @@ class TextToJsonTests(unittest.TestCase):
         parsed = text_to_json.parse_source_text(text, [], 2026)
         task = parsed[0]
         stage = normalize_stages(task)[0]
-        self.assertEqual(task["assignedBy"], "張牧軒")
+        self.assertEqual(task["assignedBy"], "Shawn")
         self.assertEqual(task["name"], "慈濟的故事(臺北的第二個家 、感念臺北因緣 、講藥師經結緣)")
         self.assertEqual(get_task_content_seconds(task), 1488)
         self.assertEqual(get_task_work_minutes(task), 1191)
