@@ -1,3 +1,5 @@
 tasks.md
 __pycache__/
 task*.json
+!tasks.json
+!tasks_coworkers.json

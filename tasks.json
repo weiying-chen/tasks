@@ -1,0 +1,473 @@
+[
+  {
+    "id": "10",
+    "name": "人文講堂 (安靜是種超能力 - 張瀞仁) 4 個短版",
+    "stages": [
+      {
+        "assignedTo": "Alex",
+        "startAt": "2026-05-22T00:22:00Z",
+        "workMinutes": 912,
+        "contentSeconds": 1140
+      }
+    ],
+    "notes": [
+      "Replaced \"introverts\" with \"introversion\" because the discussion focuses on the personality trait rather than introverted people themselves.",
+      "Noted that similar thumbnail selections were repetitive and that a single image would be sufficient to illustrate the point.",
+      "Replaced \"past handling\" with \"history\" because it is the more natural and idiomatic English expression in this context.",
+      "Removed \"beforehand\" because \"prepared\" already implies advance preparation.",
+      "Replaced \"unnecessary communication\" with \"communication problems\" because it more accurately reflects 溝通上的困擾.",
+      "Reworked the sentence as \"It's the same with introverts\" because \"Introverts are the same\" sounds unnatural in English.",
+      "Changed the description of Japanese cultural norms to the present tense because it refers to ongoing cultural characteristics rather than past events.",
+      "Reworked the wording to better convey the speaker's eagerness to learn, which was understated in the original translation."
+    ],
+    "children": [],
+    "sourceText": "人文講堂 (安靜是種超能力 - 張瀞仁) 4 個短版\n5/22（五）08:22\n19分\n15時12分"
+  },
+  {
+    "id": "11",
+    "name": "大愛學漢醫 (吃出肺活力 — 肺癌照護 | 莊佳穎 | 大愛學漢醫 | 20220823)",
+    "assignedBy": "Syharn Shen",
+    "stages": [
+      {
+        "assignedTo": "Alex",
+        "startAt": "2026-05-26T07:04:00Z",
+        "workMinutes": 576,
+        "contentSeconds": 720
+      }
+    ],
+    "notes": [
+      "Updated the YouTube title to include the program name and replaced em dashes with hyphens.",
+      "Added support or a translator's note when translating 肺腺癌 as \"lung cancer.\"",
+      "Standardized doctor supers and shortened them to improve readability.",
+      "Reworked chapter titles based on segment content rather than literal translation.",
+      "Verified whether 小細胞 was a medical term and removed the overly casual \"tiny cells.\"",
+      "Used \"XXX\" instead of transcribing Chinese dialogue when no Chinese subtitles were shown on screen.",
+      "Expanded an overly compressed explanation about TCM and targeted therapy."
+    ],
+    "children": [],
+    "sourceText": "大愛學漢醫 (吃出肺活力 — 肺癌照護 | 莊佳穎 | 大愛學漢醫 | 20220823)\n5/26（二）15:04\n12分\n9小時36分"
+  },
+  {
+    "id": "14",
+    "name": "人文講堂 (送一份專業的禮物 職涯發光 - 方植永) 6 個短版",
+    "assignedBy": "Evelyn",
+    "stages": [
+      {
+        "type": "subs",
+        "startAt": "2026-05-28T03:40:00Z",
+        "deadline": "2026-06-01T03:40:00Z",
+        "workMinutes": 960,
+        "contentSeconds": 1200
+      }
+    ],
+    "notes": [
+      "Do not split established terms across subtitle lines. For example, \"behavioral psychology\" is a complete term and should be kept together whenever possible.",
+      "\"That's why they were hired\" may imply that they were hired because of their ability to collaborate. The Chinese meaning is that they were hired because each person brings their own professional expertise to the team. Consider revising accordingly.",
+      "The translation in this section is essentially the same as the previous paragraph and does not match the source content here. If this was an accidental copy/paste or misplacement, please double-check and avoid similar issues in the future.",
+      "Unless it is clear that the speaker previously lived in Taiwan, avoid using \"move back to Taiwan.\" \"Move to Taiwan\" is the safer and more accurate choice.",
+      "There is an English phrase spoken in the video that does not appear in the Chinese transcript. Consider inserting a placeholder (e.g., \"XXX\") so the subtitle team knows on-screen text is needed here. This also avoids the awkwardness of the host already saying the English term and then having it translated again immediately afterward."
+    ],
+    "children": [
+      {
+        "id": "15",
+        "name": "墨西哥浴佛併",
+        "stages": [
+          {
+            "type": "news",
+            "startAt": "2026-06-01T00:28:58.413922Z",
+            "workMinutes": 180,
+            "contentSeconds": 11760
+          }
+        ],
+        "children": [],
+        "sourceText": "Alex Chen: 墨西哥浴佛併 3:16"
+      },
+      {
+        "id": "16",
+        "name": "勤拭心鏡度有緣",
+        "stages": [
+          {
+            "type": "posts",
+            "startAt": "2026-06-01T00:29:44.640583Z",
+            "workMinutes": 50
+          }
+        ],
+        "notes": [
+          "Soften characterizations to make people sound more relatable and less judgmental.",
+          "Use Venerable Master Cheng Yen's specific wording whenever possible instead of abstract summaries."
+        ],
+        "children": [],
+        "sourceText": "1.\talex\n5/22勤拭心鏡度有緣\nhttps://www.daai.tv/master/life-wisdom/P90230267?more=true"
+      },
+      {
+        "id": "17",
+        "name": "學覺菩薩從善法",
+        "stages": [
+          {
+            "type": "posts",
+            "startAt": "2026-06-01T00:29:44.640583Z",
+            "workMinutes": 50
+          }
+        ],
+        "notes": [
+          "Reworked the summary to use a more neutral and open-ended description because the original wording felt too Tzu Chi-specific.",
+          "Added #JingSiAphorisms and #靜思語 because they were a central part of the story."
+        ],
+        "children": [],
+        "sourceText": "2.\talex\n5/23學覺菩薩從善法\nhttps://www.daai.tv/master/life-wisdom/P90230268?more=true"
+      },
+      {
+        "id": "18",
+        "name": "悉達多校創佳績",
+        "stages": [
+          {
+            "type": "news",
+            "startAt": "2026-06-01T00:35:55.341064Z",
+            "workMinutes": 130,
+            "contentSeconds": 7860
+          }
+        ],
+        "children": [],
+        "sourceText": "Alex Chen: 悉達多校創佳績 2:11"
+      },
+      {
+        "id": "19",
+        "name": "貝克斯菲爾德義診",
+        "stages": [
+          {
+            "type": "news",
+            "startAt": "2026-06-02T01:00:00Z",
+            "workMinutes": 120,
+            "contentSeconds": 7560
+          }
+        ],
+        "children": [],
+        "sourceText": "Alex Chen: 貝克斯菲爾德義診 2:06"
+      }
+    ],
+    "sourceText": "請 Alex Chen 翻譯人文講堂 (送一份專業的禮物 職涯發光 - 方植永) 6 個短版, 長度20分, 預計做16時(2天), 從5/28（四）11:40起算，deadline 6/1(一)11:40，謝謝！"
+  },
+  {
+    "id": "22",
+    "name": "3集我的阿公阿媽做慈濟",
+    "assignedBy": "Emily",
+    "stages": [
+      {
+        "type": "subs",
+        "startAt": "2026-06-02T05:30:00Z",
+        "deadline": "2026-06-03T03:45:00Z",
+        "workMinutes": 432,
+        "contentSeconds": 540
+      }
+    ],
+    "notes": [
+      "Added the year when referencing the Kaohsiung gas explosions because the Chinese super included it and the extra context improved clarity.",
+      "Corrected the duplicated \"with\" in \"go with with her.\"",
+      "Replaced \"it\" with \"them\" because it more naturally referred to \"what everyone needs.\"",
+      "Reworked the Lunar New Year section so the two parts flowed together more naturally and explicitly translated 大掃除.",
+      "Revised \"listened and respected others\" because \"listen\" felt incomplete without an object.",
+      "Revised the empathy line to better reflect 同理心是怎麼養成 rather than the broader idea of where empathy comes from.",
+      "Added the year to the introduction and revised the Chinese description to include 阿媽 in keeping with the program title.",
+      "Updated the thumbnail selection to include both the grandmother and granddaughter, following the series convention.",
+      "Corrected AI-generated Chinese subtitle errors and standardized 阿媽 usage throughout the episode.",
+      "Updated the title and introduction to include both featured grandparents because both appeared in the episode and previous episodes followed the same format.",
+      "Replaced \"my grandparents\" with \"Grandpa and Grandma\" to better match the child's voice and the source wording.",
+      "Replaced \"manual workers\" with a more natural expression because it sounded too stiff and formal.",
+      "Reinterpreted the hospital reference using Tzu Chi context, the video visuals, and the reference to Master Cheng Yen rather than translating it as a generic reference to monks and nuns.",
+      "Reformatted the line to distinguish the two speakers because both lines of dialogue appeared in the same subtitle.",
+      "Replaced \"taken me to Tzu Chi\" with a clearer expression because the original wording sounded abstract and overly literal.",
+      "Standardized the nickname format to \"A-xuan\" based on previous files.",
+      "Reworked the recovery and vaccine donation section so the two parts connected more smoothly.",
+      "Clarified what was \"worth it\" because the original \"it\" was ambiguous.",
+      "Updated the thumbnail selection to include both the grandparent and grandchild as the main subjects.",
+      "Removed \"So\" because there was already a pause between this section and the previous one, making the transition sound smoother without it.",
+      "Removed the period from the super because supers do not usually end with periods, especially when they are not complete sentences.",
+      "Reworked the cheating line so it sounded like a reprimand after cheating had already happened, and restored \"給我滾回家\" to match the on-screen drama footage.",
+      "Restored \"你看著我啦\" because it matched the visual action and helped show Grandma's personality and younger spirit.",
+      "Reworked the question sequence to match the video, where the first two lines were directed at the child and the third line was directed at the volunteer.",
+      "Restored \"caring\" and \"repeated questions,\" and added a note for Zilin to keep the subtitle on screen because the English sentence continued into the next subtitle.",
+      "Restored the detail that the person was not her daughter and included her years of legal work; also corrected the Chinese subtitle error in 當法務是多年.",
+      "Reworked the closing lines to make them more connected, complete, and warm.",
+      "Revised the English introduction to describe Zheng Li-hua as a teacher rather than a woman, shifted the focus from generic volunteer work to her personality and character, and removed the unsupported 阿媽 reference from the Chinese introduction."
+    ],
+    "children": [
+      {
+        "id": "23",
+        "name": "瓜捐課桌椅",
+        "stages": [
+          {
+            "type": "news",
+            "startAt": "2026-06-03T01:00:00Z",
+            "workMinutes": 90,
+            "contentSeconds": 5280
+          }
+        ],
+        "children": [],
+        "sourceText": "Alex Chen: 瓜捐課桌椅 1:28"
+      }
+    ],
+    "sourceText": "接下來請 Alex Chen 翻譯3集我的阿公阿媽做慈濟，片長合計9分，預計做7 時 12 分，從6/2（二）13:30起算，deadline 為 6/3（三）11:45，謝謝 ~"
+  },
+  {
+    "id": "24",
+    "name": "人文講堂 (親密搶奪：人性與法律的修煉 - 李永然) 6 個短版",
+    "assignedBy": "Evelyn",
+    "stages": [
+      {
+        "type": "subs",
+        "startAt": "2026-06-03T06:15:00Z",
+        "deadline": "2026-06-05T07:03:00Z",
+        "workMinutes": 1008,
+        "contentSeconds": 1260
+      }
+    ],
+    "notes": [
+      "Replaced the colon construction with a more natural sentence structure because the original phrasing felt unnecessarily formal for a simple statement.",
+      "Expanded the translation to include the speaker's reference to personal case-handling experience because there was sufficient subtitle time and the information adds important context.",
+      "Removed \"Second\" because short-form videos are often viewed independently, making the ordinal reference feel abrupt and potentially confusing.",
+      "Replaced \"inheritance shares\" with \"compulsory inheritance shares\" because 特留分 is a specific legal concept in Taiwanese law and should not be translated as a general inheritance term.",
+      "Used the official legal terminology for the five forms of wills based on the English translation of Taiwan's Civil Code.",
+      "Reworked the sentence to focus on the law's strict formatting requirements because the original translation introduced meaning that was not explicitly stated in the source text.",
+      "Specified the Insurance Act and Article 112 because there was sufficient subtitle time and legal references should be translated as precisely as possible."
+    ],
+    "children": [
+      {
+        "id": "25",
+        "name": "伊姆斯動工完整",
+        "stages": [
+          {
+            "type": "news",
+            "startAt": "2026-06-04T00:20:06.279114Z",
+            "deadline": "2026-06-04T03:20:06.279114Z",
+            "workMinutes": 180,
+            "contentSeconds": 13260
+          }
+        ],
+        "children": [],
+        "sourceText": "Alex Chen: 伊姆斯動工完整 3:41"
+      },
+      {
+        "id": "26",
+        "name": "多明尼加義診",
+        "stages": [
+          {
+            "type": "news",
+            "startAt": "2026-06-05T00:21:05.627096Z",
+            "workMinutes": 80,
+            "contentSeconds": 4440
+          }
+        ],
+        "children": [],
+        "sourceText": "Alex Chen: 多明尼加義診 1:14"
+      },
+      {
+        "id": "27",
+        "name": "爾灣人文揚名",
+        "stages": [
+          {
+            "type": "news",
+            "startAt": "2026-06-05T00:21:05.627096Z",
+            "workMinutes": 100,
+            "contentSeconds": 6300
+          }
+        ],
+        "children": [],
+        "sourceText": "Alex Chen: 爾灣人文揚名1:45"
+      },
+      {
+        "id": "28",
+        "name": "運轉法輪入人群",
+        "stages": [
+          {
+            "type": "posts",
+            "startAt": "2026-06-08T00:33:21.074037Z",
+            "workMinutes": 50
+          }
+        ],
+        "notes": [
+          "Used Wu Hong-tai's story as the hook, but added some of the 愛心店 and helping-others message so the intro better reflected the overall theme."
+        ],
+        "children": [],
+        "sourceText": "2.\talex\n5/30運轉法輪入人群\nhttps://www.daai.tv/master/life-wisdom/P90230275?more=true"
+      },
+      {
+        "id": "29",
+        "name": "慈航普度募愛心",
+        "stages": [
+          {
+            "type": "posts",
+            "startAt": "2026-06-08T00:33:21.074037Z",
+            "workMinutes": 50
+          }
+        ],
+        "notes": [
+          "Expanded the Cambodia-focused intro to include the India stories and better reflect the episode's overall theme of helping others through small daily acts of giving."
+        ],
+        "children": [],
+        "sourceText": "4.\talex\n6/1慈航普度募愛心\nhttps://www.daai.tv/master/life-wisdom/P90230277?more=true"
+      }
+    ],
+    "sourceText": "請 Alex Chen 翻譯人文講堂 (親密搶奪：人性與法律的修煉 - 李永然) 6 個短版, 長度21分, 預計做16時48分(2天48分), 從6/3（三）14:15起算，deadline 6/5(五)15:03，謝謝！"
+  },
+  {
+    "id": "30",
+    "name": "大愛學漢醫 (排氣不停 中醫有解)",
+    "assignedBy": "Syharn Shen",
+    "stages": [
+      {
+        "type": "subs",
+        "startAt": "2026-06-08T06:43:00Z",
+        "deadline": "2026-06-09T08:20:00Z",
+        "workMinutes": 576,
+        "contentSeconds": 720
+      }
+    ],
+    "children": [
+      {
+        "id": "31",
+        "name": "莫三食材捐醫院",
+        "stages": [
+          {
+            "type": "news",
+            "startAt": "2026-06-09T00:43:09.844887Z",
+            "workMinutes": 70,
+            "contentSeconds": 3960
+          }
+        ],
+        "children": [],
+        "sourceText": "Alex Chen: 莫三食材捐醫院 1:06"
+      }
+    ],
+    "sourceText": "請 Alex Chen 翻譯大愛學漢醫 (排氣不停 中醫有解)，片長12分，預計做9小時36分，從6/8 (一) 14:43起算，deadline為6/9 (二) 16:20 ，謝謝~"
+  },
+  {
+    "id": "32",
+    "name": "人文講堂 (其實你胖得很冤枉 - 陳欣湄) 4個短版",
+    "assignedBy": "Evelyn",
+    "stages": [
+      {
+        "type": "subs",
+        "startAt": "2026-06-10T00:30:00Z",
+        "deadline": "2026-06-12T00:30:00Z",
+        "workMinutes": 960,
+        "contentSeconds": 1200
+      }
+    ],
+    "children": [
+      {
+        "id": "33",
+        "name": "核桃環保工藝",
+        "stages": [
+          {
+            "type": "news",
+            "startAt": "2026-06-10T00:35:56.744907Z",
+            "workMinutes": 110,
+            "contentSeconds": 6720
+          }
+        ],
+        "children": [],
+        "sourceText": "Alex Chen: 核桃環保工藝 1:52"
+      },
+      {
+        "id": "34",
+        "name": "印度5月慈善日",
+        "stages": [
+          {
+            "type": "news",
+            "startAt": "2026-06-11T00:23:56.375068Z",
+            "workMinutes": 90,
+            "contentSeconds": 4980
+          }
+        ],
+        "children": [],
+        "sourceText": "Alex Chen: 印度5月慈善日 1:23"
+      },
+      {
+        "id": "35",
+        "name": "麻坡撿跑行動",
+        "stages": [
+          {
+            "type": "news",
+            "startAt": "2026-06-12T00:50:54.084062Z",
+            "workMinutes": 130,
+            "contentSeconds": 7980
+          }
+        ],
+        "children": [],
+        "sourceText": "Alex Chen: 麻坡撿跑行動 2:13"
+      }
+    ],
+    "sourceText": "請 Alex Chen 翻譯人文講堂 (其實你胖得很冤枉 - 陳欣湄) 4個短版,  長度20分, 預計翻譯16時(2天), 從6/10（三）08:30起算, deadline 為6/12(五)8:30, 謝謝！"
+  },
+  {
+    "id": "36",
+    "name": "慈濟的故事(臺北的第二個家 、感念臺北因緣 、講藥師經結緣)",
+    "assignedBy": "張牧軒",
+    "stages": [
+      {
+        "type": "subs",
+        "startAt": "2026-06-12T07:00:00Z",
+        "deadline": "2026-06-17T01:51:00Z",
+        "workMinutes": 1191,
+        "contentSeconds": 1488
+      }
+    ],
+    "children": [
+      {
+        "id": "37",
+        "name": "愛善傳承締祥和",
+        "stages": [
+          {
+            "type": "posts",
+            "startAt": "2026-06-15T00:37:33.690622Z",
+            "workMinutes": 50
+          }
+        ],
+        "children": [],
+        "sourceText": "1.\talex\n6/5愛善傳承締祥和\nhttps://www.daai.tv/master/life-wisdom/P90230281?more=true"
+      },
+      {
+        "id": "38",
+        "name": "愛滿地慈少畢典",
+        "stages": [
+          {
+            "type": "news",
+            "startAt": "2026-06-15T01:14:59.857631Z",
+            "workMinutes": 130,
+            "contentSeconds": 7920
+          }
+        ],
+        "children": [],
+        "sourceText": "Alex Chen: 愛滿地慈少畢典 2:12"
+      },
+      {
+        "id": "39",
+        "name": "守護花東聚善能",
+        "stages": [
+          {
+            "type": "posts",
+            "startAt": "2026-06-15T05:04:14.893326Z",
+            "workMinutes": 50
+          }
+        ],
+        "children": [],
+        "sourceText": "7.\talex\n6/11守護花東聚善能\nhttps://www.daai.tv/master/life-wisdom/P90230287?more=true"
+      },
+      {
+        "id": "40",
+        "name": "賴索托冬令",
+        "stages": [
+          {
+            "type": "news",
+            "startAt": "2026-06-15T05:23:34.580528Z",
+            "workMinutes": 130,
+            "contentSeconds": 7860
+          }
+        ],
+        "children": [],
+        "sourceText": "Alex Chen: 賴索托冬令 2:11 (請寫完小編文再開始做)"
+      }
+    ],
+    "sourceText": "Alex Chen接下來請Alex翻譯 慈濟的故事(臺北的第二個家 、感念臺北因緣 、講藥師經結緣)，長24分48秒，預計做19小時51分，由6/12（五）15:00起算，deadline為6/17(三) 9:51，謝謝。"
+  }
+]
