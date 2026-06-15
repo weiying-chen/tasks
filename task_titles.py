@@ -1,14 +1,6 @@
 import re
 
-
-SUBS_PROGRAM_DEFAULT_ASSIGNEE = {
-    "人文講堂": "Evelyn",
-    "慈濟的故事": "Shawn",
-    "精舍日常": "張牧軒",
-    "大愛真健康": "Emily",
-    "大愛學漢醫": "Syharn Shen",
-    "我的阿公阿媽做慈濟": "Emily",
-}
+from task_assigned_by import SUBS_ASSIGNED_BY
 
 
 def format_program_selection_title(text: str) -> str | None:
@@ -33,7 +25,7 @@ def format_program_selection_title(text: str) -> str | None:
 def mapped_program_name(name: str) -> str | None:
     if "節目部選" not in name:
         return None
-    for program in SUBS_PROGRAM_DEFAULT_ASSIGNEE:
+    for program in SUBS_ASSIGNED_BY:
         if program in name:
             return program
     return None

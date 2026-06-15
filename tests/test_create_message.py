@@ -268,7 +268,7 @@ class CreateMessageTests(unittest.TestCase):
             task_id="1",
             next_task_name="精舍日常（測試）",
         )
-        self.assertIn("再麻煩@張牧軒便時幫忙設deadline", message)
+        self.assertIn("再麻煩@張牧軒 Shawn便時幫忙設deadline", message)
 
     def test_next_task_message_uses_mapping_for_citizens_story(self):
         tasks = [
@@ -286,7 +286,7 @@ class CreateMessageTests(unittest.TestCase):
             task_id="1",
             next_task_name="慈濟的故事(臺北的第二個家 、感念臺北因緣 、講藥師經結緣 )",
         )
-        self.assertIn("再麻煩@Shawn便時幫忙設deadline", message)
+        self.assertIn("再麻煩@張牧軒 Shawn便時幫忙設deadline", message)
 
     def test_next_task_message_requires_task_id_and_next_name(self):
         tasks = [

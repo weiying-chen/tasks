@@ -1,5 +1,6 @@
 import unittest
 
+from task_assigned_by import SUBS_ASSIGNED_BY
 import text_to_json
 from task_stages import get_task_content_seconds, get_task_type, get_task_work_minutes, normalize_stages
 
@@ -89,7 +90,7 @@ class TextToJsonTests(unittest.TestCase):
             "預計翻譯5時45分，從4/28（二）16:10起算，deadline為4/29(三) 10:00，謝謝！"
         )
         parsed = text_to_json.parse_source_text(text, [], 2026)
-        self.assertEqual(parsed[0]["assignedBy"], "張牧軒")
+        self.assertEqual(parsed[0]["assignedBy"], "張牧軒 Shawn")
 
     def test_subs_program_assignee_preserves_leading_episode_count(self):
         text = (
@@ -97,7 +98,7 @@ class TextToJsonTests(unittest.TestCase):
             "預計翻譯5時45分，從4/28（二）16:10起算，deadline為4/29(三) 10:00，謝謝！"
         )
         parsed = text_to_json.parse_source_text(text, [], 2026)
-        self.assertEqual(parsed[0]["assignedBy"], "Emily")
+        self.assertEqual(parsed[0]["assignedBy"], "Emily Ding")
         self.assertEqual(parsed[0]["name"], "3集我的阿公阿媽做慈濟")
 
     def test_parse_source_text_subs_accepts_total_content_duration(self):
@@ -107,7 +108,7 @@ class TextToJsonTests(unittest.TestCase):
         )
         parsed = text_to_json.parse_source_text(text, [], 2026)
         task = parsed[0]
-        self.assertEqual(task["assignedBy"], "Emily")
+        self.assertEqual(task["assignedBy"], "Emily Ding")
         self.assertEqual(get_task_content_seconds(task), 540)
         self.assertEqual(get_task_work_minutes(task), 432)
         self.assertEqual(normalize_stages(task)[0]["deadline"], "2026-06-03T03:45:00Z")
@@ -122,7 +123,7 @@ class TextToJsonTests(unittest.TestCase):
         self.assertEqual(len(parsed), 1)
         task = parsed[0]
         self.assertEqual(get_task_type(task), "subs")
-        self.assertEqual(task["assignedBy"], "張牧軒")
+        self.assertEqual(task["assignedBy"], "張牧軒 Shawn")
         self.assertEqual(get_task_work_minutes(task), 504)
         self.assertEqual(get_task_content_seconds(task), 629)
 
@@ -189,7 +190,7 @@ class TextToJsonTests(unittest.TestCase):
         parsed = text_to_json.parse_source_text(text, [], 2026)
         task = parsed[0]
         stage = normalize_stages(task)[0]
-        self.assertEqual(task["assignedBy"], "Shawn")
+        self.assertEqual(task["assignedBy"], "張牧軒 Shawn")
         self.assertEqual(task["name"], "慈濟的故事(臺北的第二個家 、感念臺北因緣 、講藥師經結緣)")
         self.assertEqual(get_task_content_seconds(task), 1488)
         self.assertEqual(get_task_work_minutes(task), 1191)
@@ -207,6 +208,36 @@ class TextToJsonTests(unittest.TestCase):
         self.assertEqual(
             task.get("__warning__", ""),
             "Warning: PM deadline differs; keeping PM deadline (PM: 2026-06-01 Mon 10:40, computed: 2026-06-01 Mon 11:40).",
+        )
+
+    def test_parse_source_text_subs_supports_daai_doctor_owner(self):
+        text = (
+            "請Emily Ding翻譯三集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈），"
+            "片長共6分04秒，預計翻譯6時04分，deadline等手上工作完成後再給，謝謝~"
+        )
+        parsed = text_to_json.parse_source_text(text, [], 2026)
+        task = parsed[0]
+        self.assertEqual(task["assignedBy"], "Alex Chen")
+        self.assertEqual(
+            task["name"],
+            "三集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈）",
+        )
+        self.assertEqual(get_task_content_seconds(task), 364)
+        self.assertEqual(get_task_work_minutes(task), 364)
+        self.assertNotIn("deadline", normalize_stages(task)[0])
+
+    def test_subs_assigned_by_is_grouped_by_assigned_by(self):
+        self.assertEqual(
+            list(SUBS_ASSIGNED_BY.items()),
+            [
+                ("大愛醫生館", "Alex Chen"),
+                ("大愛真健康", "Emily Ding"),
+                ("我的阿公阿媽做慈濟", "Emily Ding"),
+                ("人文講堂", "Evelyn"),
+                ("大愛學漢醫", "Syharn Shen"),
+                ("慈濟的故事", "張牧軒 Shawn"),
+                ("精舍日常", "張牧軒 Shawn"),
+            ],
         )
 
     def test_parse_source_text_custom_minutes_format(self):

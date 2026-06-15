@@ -8,7 +8,8 @@ from pathlib import Path
 from work_time import add_work_minutes, next_work_start
 from task_deadline import deadlines_match
 from task_stages import get_task_work_minutes, normalize_stages
-from task_titles import SUBS_PROGRAM_DEFAULT_ASSIGNEE, extract_subs_task_name
+from task_assigned_by import SUBS_ASSIGNED_BY
+from task_titles import extract_subs_task_name
 from work_time_adjustments import adjusted_child_minutes
 
 TZ_TAIPEI = timezone(timedelta(hours=8))
@@ -46,7 +47,7 @@ def extract_subs_program_name(subs_name: str) -> str:
 
 def resolve_subs_assigned_by(subs_name: str) -> str:
     program = extract_subs_program_name(subs_name)
-    expected_assignee = SUBS_PROGRAM_DEFAULT_ASSIGNEE.get(program)
+    expected_assignee = SUBS_ASSIGNED_BY.get(program)
     if expected_assignee is None:
         raise ValueError(f"No assignedBy mapping for subs program '{program}'")
     return expected_assignee
