@@ -47,6 +47,18 @@ class TextToJsonTests(unittest.TestCase):
         self.assertEqual(get_task_work_minutes(tasks[0]), 125)
         self.assertEqual(get_task_type(tasks[0]), "news")
 
+    def test_parse_news_accepts_trailing_parenthetical_note(self):
+        text = (
+            "6/19\n\n"
+            "Alex Chen: 賴索托冬令 2:11 (請寫完小編文再開始做)\n"
+        )
+        tasks = text_to_json.parse_news_input(text, 2026, "Alex Chen")
+        self.assertEqual(len(tasks), 1)
+        self.assertEqual(tasks[0]["name"], "賴索托冬令")
+        self.assertEqual(get_task_content_seconds(tasks[0]), 131 * 60)
+        self.assertEqual(get_task_work_minutes(tasks[0]), 151)
+        self.assertEqual(get_task_type(tasks[0]), "news")
+
     def test_parse_source_text_uses_posts_before_subs(self):
         text = (
             "4. alex\n"
