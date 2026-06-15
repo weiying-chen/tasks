@@ -58,7 +58,7 @@ def parse_subs_input(text: str, year: int, task_id: str):
         raise ValueError("Cannot parse name")
     assigned_by = resolve_subs_assigned_by(name)
 
-    content_match = must_match(text, r"(?:長度|片長)\s*(?:共|合計)?\s*(\d+)\s*分(?:\s*(\d+)\s*秒)?", "content duration")
+    content_match = must_match(text, r"(?:長度|片長|長)\s*(?:共|合計)?\s*(\d+)\s*分(?:\s*(\d+)\s*秒)?", "content duration")
     content_minutes = int(content_match.group(1))
     content_seconds_extra = int(content_match.group(2) or 0)
     content_seconds = content_minutes * 60 + content_seconds_extra

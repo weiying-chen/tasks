@@ -169,6 +169,21 @@ class TextToJsonTests(unittest.TestCase):
         self.assertEqual(stage["startAt"], "2026-06-08T06:43:00Z")
         self.assertEqual(stage["deadline"], "2026-06-09T08:20:00Z")
 
+    def test_parse_source_text_subs_supports_tzu_chi_story_mapping(self):
+        text = (
+            "Alex Chen接下來請Alex翻譯 慈濟的故事(臺北的第二個家 、感念臺北因緣 、講藥師經結緣)，"
+            "長24分48秒，預計做19小時51分，由6/12（五）15:00起算，deadline為6/17(三) 9:51，謝謝。"
+        )
+        parsed = text_to_json.parse_source_text(text, [], 2026)
+        task = parsed[0]
+        stage = normalize_stages(task)[0]
+        self.assertEqual(task["assignedBy"], "張牧軒")
+        self.assertEqual(task["name"], "慈濟的故事(臺北的第二個家 、感念臺北因緣 、講藥師經結緣)")
+        self.assertEqual(get_task_content_seconds(task), 1488)
+        self.assertEqual(get_task_work_minutes(task), 1191)
+        self.assertEqual(stage["startAt"], "2026-06-12T07:00:00Z")
+        self.assertEqual(stage["deadline"], "2026-06-17T01:51:00Z")
+
     def test_parse_source_text_subs_uses_pm_deadline_when_pm_differs(self):
         text = (
             "翻譯人文講堂 (送一份專業的禮物 職涯發光 - 方植永) 6 個短版, 長度20分, "
