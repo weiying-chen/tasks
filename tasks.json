@@ -322,6 +322,23 @@
         "contentSeconds": 720
       }
     ],
+    "notes": [
+      "Removed the unnecessary \"(TCM)\" abbreviation from the introduction because the term only appears once and does not need to be abbreviated.",
+      "Reworked the description of burping and passing gas to make the direction of qi flow clearer and avoid ambiguous wording.",
+      "Expanded the translation to reflect the speaker's description of the expression as elegant and revised the tense to present because the classical text is still extant.",
+      "Added a note to verify the meaning of 氣機失暢 and restored the reference to autonomic nervous system imbalance because it is mentioned again later.",
+      "Revised the wording to refer specifically to passing gas rather than using the broader term \"excessive gas.\"",
+      "Corrected capitalization by lowercasing \"preserving\" and \"leaven\" where they are not part of a title.",
+      "Replaced vague wording with clearer descriptions of the symptoms and patient experience.",
+      "Reworked the treatment description to avoid the awkward literal phrasing \"improving damp-heat.\"",
+      "Adjusted the subtitle segmentation to better match the pacing and emphasis of the original speech.",
+      "Restored the detail that the patient regularly attended business and social engagements because it was omitted from the translation.",
+      "Revised the wording to avoid implying the symptoms occurred specifically during business dinners when the Chinese expresses a broader idea.",
+      "Clarified that if business entertaining is unavoidable, regular herbal maintenance is recommended.",
+      "Expanded the subtitles to make better use of the available time and restored the detail that belching may be quiet rather than loud.",
+      "Restructured the subtitles to follow the video's scene transition and separate the previous conclusion from the start of the new topic.",
+      "Recommended translating the on-screen super around 08:55 by briefly summarizing the prescribed remedies instead of leaving the section untranslated."
+    ],
     "children": [
       {
         "id": "31",
