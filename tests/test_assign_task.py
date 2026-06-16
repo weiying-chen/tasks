@@ -9,7 +9,7 @@ class AssignTaskTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "3集我的阿公阿媽做慈濟",
-                "assigner": "Emily",
+                "assigner": "Emily Ding",
                 "stages": [
                     {
                         "type": "subs",
@@ -21,17 +21,22 @@ class AssignTaskTests(unittest.TestCase):
         ]
         updated = assign_task.assign_task(
             tasks,
-            "Emily Ding 請 Emily 翻譯3集我的阿公阿媽做慈濟，謝謝~",
+            "Emily Ding 請 Emily Ding 翻譯3集我的阿公阿媽做慈濟，謝謝~",
         )
         stage = updated[0]["stages"][0]
         self.assertEqual(stage["workMinutes"], 364)
+
+    def test_assignee_work_rate_uses_full_name(self):
+        self.assertIn("Emily Ding", assign_task.TRANSLATION_WORK_RATE_BY_ASSIGNEE)
+        self.assertNotIn("Emily", assign_task.TRANSLATION_WORK_RATE_BY_ASSIGNEE)
+        self.assertEqual(assign_task.get_assignee_work_rate("Emily Ding"), 1.0)
 
     def test_assign_task_keeps_existing_work_minutes(self):
         tasks = [
             {
                 "id": "1",
                 "name": "3集我的阿公阿媽做慈濟",
-                "assigner": "Emily",
+                "assigner": "Emily Ding",
                 "stages": [
                     {
                         "type": "subs",
@@ -44,7 +49,7 @@ class AssignTaskTests(unittest.TestCase):
         ]
         updated = assign_task.assign_task(
             tasks,
-            "Emily Ding 請 Emily 翻譯3集我的阿公阿媽做慈濟，謝謝~",
+            "Emily Ding 請 Emily Ding 翻譯3集我的阿公阿媽做慈濟，謝謝~",
         )
         stage = updated[0]["stages"][0]
         self.assertEqual(stage["workMinutes"], 222)
@@ -96,7 +101,7 @@ class AssignTaskTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "3集我的阿公阿媽做慈濟",
-                "assigner": "Emily",
+                "assigner": "Emily Ding",
                 "stages": [
                     {
                         "type": "subs",
@@ -124,7 +129,7 @@ class AssignTaskTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "3集大愛真健康",
-                "assigner": "Emily",
+                "assigner": "Emily Ding",
                 "stages": [
                     {
                         "type": "subs",
@@ -150,12 +155,12 @@ class AssignTaskTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "3集大愛真健康",
-                "assigner": "Emily",
+                "assigner": "Emily Ding",
                 "stages": [
                     {
                         "type": "subs",
                         "stage": "translate",
-                        "assignee": "Emily",
+                        "assignee": "Emily Ding",
                         "workMinutes": 240,
                         "contentSeconds": 480,
                     },

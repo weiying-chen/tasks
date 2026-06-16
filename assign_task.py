@@ -9,7 +9,7 @@ from text_to_json import normalize_task_shape, normalize_tasks_json
 
 DEFAULT_SELF_ASSIGNEE = "Alex Chen"
 TRANSLATION_WORK_RATE_BY_ASSIGNEE = {
-    "Emily": 1.0,
+    "Emily Ding": 1.0,
 }
 
 
