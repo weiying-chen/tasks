@@ -1,4 +1,4 @@
-SUBS_ASSIGNED_BY = {
+SUBS_PROGRAM_ASSIGNERS = {
     "大愛醫生館": "Alex Chen",
     "大愛真健康": "Emily Ding",
     "我的阿公阿媽做慈濟": "Emily Ding",

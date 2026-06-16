@@ -7,7 +7,7 @@ from pathlib import Path
 
 from task_deadline import require_task_deadline_local
 from task_stages import (
-    get_task_assigned_to,
+    get_task_assignee,
     get_task_content_seconds,
     get_previous_stage_work_minutes,
     get_task_stage,
@@ -15,7 +15,7 @@ from task_stages import (
     get_task_type,
     get_task_work_minutes,
 )
-from text_to_json import resolve_subs_assigned_by
+from text_to_json import resolve_subs_assigner
 from work_time import add_work_minutes
 
 TZ_TAIPEI = timezone(timedelta(hours=8))
@@ -24,7 +24,7 @@ TYPE_LABELS = {
     "news": "英文新聞+錄音",
     "posts": "小編文",
 }
-TASK_ASSIGNMENT_DEADLINE_SELF_SERVICE_ASSIGNEES = {
+NO_DEADLINE_REQUEST_ASSIGNEES = {
     "Elijah Salie",
 }
 
@@ -75,8 +75,8 @@ def normalize_person_name(name: str) -> str:
     return re.sub(r"\s+", " ", str(name or "").strip().lstrip("@"))
 
 
-def should_include_task_assignment_deadline(assigned_to: str) -> bool:
-    return normalize_person_name(assigned_to) not in TASK_ASSIGNMENT_DEADLINE_SELF_SERVICE_ASSIGNEES
+def should_include_task_assignment_deadline(assignee: str) -> bool:
+    return normalize_person_name(assignee) not in NO_DEADLINE_REQUEST_ASSIGNEES
 
 
 def parse_message_datetime(md: str, hm: str, year: int) -> datetime:
@@ -202,7 +202,7 @@ def format_deadline_extension_message(task: dict, now_local: datetime | None = N
     if now_local is None:
         now_local = datetime.now(TZ_TAIPEI)
     assignment = str(task.get("name") or "").strip()
-    assignee = str(task.get("assignedBy") or "").strip()
+    assigner = str(task.get("assigner") or "").strip()
     assignments = aggregate_children(task, only_local_date=now_local.date())
     today_minutes = sum(minutes for _, minutes in assignments)
     if today_minutes <= 0:
@@ -223,10 +223,10 @@ def format_deadline_extension_message(task: dict, now_local: datetime | None = N
         lines.append("")
 
     prefix = f"{assignment}，" if assignment else ""
-    assignee_text = f"，請{format_mention(assignee)}幫我確認" if assignee else ""
+    assigner_text = f"，請{format_mention(assigner)}幫我確認" if assigner else ""
     lines.append(
         f"{prefix}deadline由{format_message_date(previous)}，"
-        f"{transition_text}{format_message_date(next_deadline)}{assignee_text}，謝謝。"
+        f"{transition_text}{format_message_date(next_deadline)}{assigner_text}，謝謝。"
     )
     return "\n".join(lines)
 
@@ -245,11 +245,11 @@ def final_deadline_local(task: dict) -> datetime:
     return final_deadline
 
 
-def resolve_next_task_assignee(next_task_name: str, fallback_assignee: str | None = None) -> str:
+def resolve_next_task_assigner(next_task_name: str, fallback_assigner: str | None = None) -> str:
     try:
-        return resolve_subs_assigned_by(next_task_name)
+        return resolve_subs_assigner(next_task_name)
     except ValueError:
-        return str(fallback_assignee or "").strip()
+        return str(fallback_assigner or "").strip()
 
 
 def parse_task_assignment_task_name(task_name: str) -> tuple[str, str, list[str]]:
@@ -303,10 +303,10 @@ def task_initiation_action_text(task: dict) -> str:
 
 def format_task_assignment_message(task: dict) -> str:
     task_name = str(task.get("name") or "").strip()
-    assigned_to = str(get_task_assigned_to(task) or "").strip()
+    assignee = str(get_task_assignee(task) or "").strip()
     work_minutes = get_task_work_minutes(task)
     content_seconds = get_task_content_seconds(task)
-    if not task_name or not assigned_to:
+    if not task_name or not assignee:
         raise ValueError("Missing required fields for task-assignment message.")
     if not isinstance(work_minutes, int) or work_minutes <= 0:
         raise ValueError("Missing required work minutes for task-assignment message.")
@@ -322,7 +322,7 @@ def format_task_assignment_message(task: dict) -> str:
         count_display = count_text
     episode_text = " + ".join(episodes)
     message = (
-        f"請{format_mention(assigned_to)}{action_prefix}{count_display}集{program_name}（{episode_text}），"
+        f"請{format_mention(assignee)}{action_prefix}{count_display}集{program_name}（{episode_text}），"
         f"片長共{format_content_duration_for_message(content_seconds)}，"
     )
     if action_text == "翻譯":
@@ -334,7 +334,7 @@ def format_task_assignment_message(task: dict) -> str:
         if isinstance(translate_minutes, int) and translate_minutes > 0:
             message += f"翻譯工時{format_duration_for_summary_message(translate_minutes)}，"
         message += f"預計製作{format_duration_for_summary_message(work_minutes)}，"
-    if should_include_task_assignment_deadline(assigned_to):
+    if should_include_task_assignment_deadline(assignee):
         return message + "deadline等手上工作完成後再給，謝謝~"
     return message + "謝謝~"
 
@@ -347,8 +347,8 @@ def format_task_initiation_message(task: dict) -> str:
     if not start_at:
         raise ValueError("Missing required startAt for task-initiation message.")
 
-    assignee = str(task.get("assignedBy") or task.get("assignedTo") or "").strip()
-    mention = format_mention(assignee)
+    assigner = str(task.get("assigner") or get_task_assignee(task) or "").strip()
+    mention = format_mention(assigner)
     start_text = format_message_date(to_local(start_at))
     action_text = task_initiation_action_text(task)
 
@@ -360,17 +360,17 @@ def format_task_initiation_message(task: dict) -> str:
     return f"{action_text}{task_name}，deadline從{start_text}起算{ask_text}，謝謝。"
 
 
-def format_next_task_message(finished_task: dict, next_task_name: str, next_assignee: str | None = None) -> str:
+def format_next_task_message(finished_task: dict, next_task_name: str, next_assigner: str | None = None) -> str:
     completed_task = str(finished_task.get("name") or "").strip()
-    fallback_assignee = str(finished_task.get("assignedBy") or "").strip()
-    assignee = str(next_assignee or "").strip() or resolve_next_task_assignee(next_task_name, fallback_assignee)
-    if not completed_task or not next_task_name or not assignee:
+    fallback_assigner = str(finished_task.get("assigner") or "").strip()
+    assigner = str(next_assigner or "").strip() or resolve_next_task_assigner(next_task_name, fallback_assigner)
+    if not completed_task or not next_task_name or not assigner:
         raise ValueError("Missing required fields for task-completion message.")
 
     start = final_deadline_local(finished_task)
     return (
         f"已完成{completed_task}，接下來會開始翻譯{next_task_name}，"
-        f"再麻煩{format_mention(assignee)}便時幫忙設deadline，"
+        f"再麻煩{format_mention(assigner)}便時幫忙設deadline，"
         f"從{format_message_date(start)}起算，謝謝。"
     )
 
@@ -380,7 +380,7 @@ def create_message(
     msg_type: str,
     task_id: str | None = None,
     next_task_name: str | None = None,
-    next_assignee: str | None = None,
+    next_assigner: str | None = None,
     now_local: datetime | None = None,
 ) -> str:
     if msg_type == "deadline-extension":
@@ -393,8 +393,8 @@ def create_message(
         if not name:
             raise ValueError("--next-task-name is required for task-completion message.")
         finished_task = get_target_task(tasks, task_id)
-        assignee = str(next_assignee or "").strip() or None
-        return format_next_task_message(finished_task, name, assignee)
+        assigner = str(next_assigner or "").strip() or None
+        return format_next_task_message(finished_task, name, assigner)
     if msg_type == "task-assignment":
         task = get_target_task(tasks, task_id)
         return format_task_assignment_message(task)
@@ -410,7 +410,7 @@ def main():
     parser.add_argument("--type", required=True, help="message type, e.g. deadline-extension")
     parser.add_argument("--task-id", help="specific task id; default is latest top-level task")
     parser.add_argument("--next-task-name", help="next task name text for task-completion message")
-    parser.add_argument("--next-assignee", help="assignee to ask for task-completion deadline")
+    parser.add_argument("--next-assigner", help="assigner to ask for task-completion deadline")
     args = parser.parse_args()
 
     in_path = Path(args.infile)
@@ -422,7 +422,7 @@ def main():
             msg_type=args.type,
             task_id=args.task_id,
             next_task_name=args.next_task_name,
-            next_assignee=args.next_assignee,
+            next_assigner=args.next_assigner,
         )
     except ValueError as exc:
         raise SystemExit(str(exc)) from exc

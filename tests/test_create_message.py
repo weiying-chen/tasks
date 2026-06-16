@@ -14,7 +14,7 @@ class CreateMessageTests(unittest.TestCase):
         task = {
             "id": "1",
             "name": "Task",
-            "assignedBy": "Evelyn",
+            "assigner": "Evelyn",
             "deadline": "2026-05-15T02:16:00Z",
             "children": [
                 {"id": "3", "name": "英文新聞+錄音", "workMinutes": 120, "children": []},
@@ -49,7 +49,7 @@ class CreateMessageTests(unittest.TestCase):
             {
                 "id": "2",
                 "name": "人文講堂 (個人品牌的密碼 - 丁菱娟) 4 個短版",
-                "assignedBy": "Evelyn",
+                "assigner": "Evelyn",
                 "startAt": "2026-05-13T00:40:00Z",
                 "deadline": "2026-05-15T02:16:00Z",
                 "workMinutes": 1056,
@@ -74,7 +74,7 @@ class CreateMessageTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "Only task",
-                "assignedBy": "Evelyn",
+                "assigner": "Evelyn",
                 "startAt": "2026-05-13T00:40:00Z",
                 "deadline": "2026-05-15T02:16:00Z",
                 "workMinutes": 1056,
@@ -90,7 +90,7 @@ class CreateMessageTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "Task",
-                "assignedBy": "Evelyn",
+                "assigner": "Evelyn",
                 "startAt": "2026-05-13T00:40:00Z",
                 "deadline": "2026-05-15T02:16:00Z",
                 "workMinutes": 1056,
@@ -108,7 +108,7 @@ class CreateMessageTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "Task",
-                "assignedBy": "Evelyn",
+                "assigner": "Evelyn",
                 "startAt": "2026-05-13T00:40:00Z",
                 "deadline": "2026-05-15T02:16:00Z",
                 "workMinutes": 1056,
@@ -125,7 +125,7 @@ class CreateMessageTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "Task",
-                "assignedBy": "Evelyn",
+                "assigner": "Evelyn",
                 "startAt": "2026-05-13T00:40:00Z",
                 "deadline": "2026-05-15T02:16:00Z",
                 "workMinutes": 1056,
@@ -162,7 +162,7 @@ class CreateMessageTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "Task",
-                "assignedBy": "Evelyn",
+                "assigner": "Evelyn",
                 "deadline": "2026-05-27T08:40:00Z",  # 16:40 local
                 "children": [
                     {
@@ -195,7 +195,7 @@ class CreateMessageTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "目前完成任務",
-                "assignedBy": "Evelyn",
+                "assigner": "Evelyn",
                 "deadline": "2026-05-14T02:00:00Z",  # 10:00 local
                 "children": [
                     {"id": "2", "name": "其他事", "workMinutes": 60, "children": []},
@@ -215,12 +215,12 @@ class CreateMessageTests(unittest.TestCase):
             "從5/14（四）11:00起算，謝謝。",
         )
 
-    def test_next_task_message_uses_explicit_next_assignee(self):
+    def test_next_task_message_uses_explicit_next_assigner(self):
         tasks = [
             {
                 "id": "1",
                 "name": "目前完成任務",
-                "assignedBy": "Evelyn",
+                "assigner": "Evelyn",
                 "deadline": "2026-05-14T02:00:00Z",
                 "children": [],
             }
@@ -230,7 +230,7 @@ class CreateMessageTests(unittest.TestCase):
             msg_type="task-completion",
             task_id="1",
             next_task_name="新的任務",
-            next_assignee="Alex",
+            next_assigner="Alex",
         )
         self.assertIn("再麻煩@Alex便時幫忙設deadline", message)
 
@@ -239,7 +239,7 @@ class CreateMessageTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "目前完成任務",
-                "assignedBy": "Evelyn",
+                "assigner": "Evelyn",
                 "deadline": "2026-05-14T02:00:00Z",
                 "children": [],
             }
@@ -257,7 +257,7 @@ class CreateMessageTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "目前完成任務",
-                "assignedBy": "Syharn Shen",
+                "assigner": "Syharn Shen",
                 "deadline": "2026-05-14T02:00:00Z",
                 "children": [],
             }
@@ -275,7 +275,7 @@ class CreateMessageTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "目前完成任務",
-                "assignedBy": "Evelyn",
+                "assigner": "Evelyn",
                 "deadline": "2026-05-14T02:00:00Z",
                 "children": [],
             }
@@ -293,7 +293,7 @@ class CreateMessageTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "目前完成任務",
-                "assignedBy": "Evelyn",
+                "assigner": "Evelyn",
                 "deadline": "2026-05-14T02:00:00Z",
                 "children": [],
             }
@@ -308,11 +308,11 @@ class CreateMessageTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈）",
-                "assignedBy": "Emily Ding",
+                "assigner": "Emily Ding",
                 "stages": [
                     {
                         "type": "subs",
-                        "assignedTo": "Shawn",
+                        "assignee": "Shawn",
                         "workMinutes": 364,
                         "contentSeconds": 364,
                     }
@@ -333,19 +333,19 @@ class CreateMessageTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈）",
-                "assignedBy": "Emily Ding",
+                "assigner": "Emily Ding",
                 "stages": [
                     {
                         "type": "subs",
                         "stage": "translate",
-                        "assignedTo": "Emily Ding",
+                        "assignee": "Emily Ding",
                         "workMinutes": 333,
                         "contentSeconds": 333,
                     },
                     {
                         "type": "subs",
                         "stage": "edit",
-                        "assignedTo": "Shawn",
+                        "assignee": "Shawn",
                         "workMinutes": 166,
                         "contentSeconds": 333,
                     }
@@ -366,19 +366,19 @@ class CreateMessageTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈）",
-                "assignedBy": "Emily Ding",
+                "assigner": "Emily Ding",
                 "stages": [
                     {
                         "type": "subs",
                         "stage": "translate",
-                        "assignedTo": "Emily Ding",
+                        "assignee": "Emily Ding",
                         "workMinutes": 364,
                         "contentSeconds": 364,
                     },
                     {
                         "type": "subs",
                         "stage": "edit",
-                        "assignedTo": "Elijah Salie",
+                        "assignee": "Elijah Salie",
                         "workMinutes": 182,
                         "contentSeconds": 364,
                     },
@@ -399,12 +399,12 @@ class CreateMessageTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈）",
-                "assignedBy": "Emily Ding",
+                "assigner": "Emily Ding",
                 "stages": [
                     {
                         "type": "subs",
                         "stage": "translate",
-                        "assignedTo": "Shawn",
+                        "assignee": "Shawn",
                         "startAt": "2026-06-09T03:35:00Z",
                         "workMinutes": 364,
                         "contentSeconds": 364,
@@ -426,12 +426,12 @@ class CreateMessageTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "3集大愛醫生館（杯弓蛇影 乳房腫瘤 + 鬼門關走一遭~冠心病 + 住輸尿管）",
-                "assignedBy": "Alex Chen",
+                "assigner": "Alex Chen",
                 "stages": [
                     {
                         "type": "subs",
                         "stage": "edit",
-                        "assignedTo": "Shawn",
+                        "assignee": "Shawn",
                         "startAt": "2026-06-02T05:32:00Z",
                         "workMinutes": 182,
                         "contentSeconds": 364,
@@ -453,11 +453,11 @@ class CreateMessageTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "3集大愛醫生館",
-                "assignedBy": "Emily Ding",
+                "assigner": "Emily Ding",
                 "stages": [
                     {
                         "type": "subs",
-                        "assignedTo": "Alex Chen",
+                        "assignee": "Alex Chen",
                         "workMinutes": 364,
                         "contentSeconds": 364,
                     }

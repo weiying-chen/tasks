@@ -23,7 +23,7 @@ class LatestTaskViewTests(unittest.TestCase):
                     {
                         "type": "subs",
                         "stage": "translate",
-                        "assignedTo": "Alex",
+                        "assignee": "Alex",
                         "startAt": "2026-05-13T00:40:00Z",
                         "workMinutes": 1056,
                     }
@@ -36,7 +36,7 @@ class LatestTaskViewTests(unittest.TestCase):
                         "stages": [
                             {
                                 "type": "news",
-                                "assignedTo": "Alex",
+                                "assignee": "Alex",
                                 "startAt": "2026-05-13T01:00:00Z",
                                 "workMinutes": 134,
                             }
@@ -52,7 +52,7 @@ class LatestTaskViewTests(unittest.TestCase):
         self.assertIn("View task", out)
         self.assertIn("Name: New Parent", out)
         self.assertIn("Stage: translate", out)
-        self.assertIn("Assigned to: Alex", out)
+        self.assertIn("Assignee: Alex", out)
         self.assertIn("Subtasks", out)
         self.assertIn("Notes (1)", out)
         self.assertIn('• "上肢" referred to arms rather than upper body.', out)

@@ -2,7 +2,7 @@
   {
     "id": "1",
     "name": "三集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈）",
-    "assignedBy": "Alex Chen",
+    "assigner": "Alex Chen",
     "stages": [
       {
         "type": "subs",

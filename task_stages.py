@@ -6,7 +6,7 @@ from typing import Any
 STAGE_FIELD_NAMES = (
     "type",
     "stage",
-    "assignedTo",
+    "assignee",
     "startAt",
     "deadline",
     "workMinutes",
@@ -56,8 +56,8 @@ def get_task_stage(task: dict) -> str | None:
     return value if isinstance(value, str) else None
 
 
-def get_task_assigned_to(task: dict) -> str | None:
-    value = active_stage(task).get("assignedTo")
+def get_task_assignee(task: dict) -> str | None:
+    value = active_stage(task).get("assignee")
     return value if isinstance(value, str) else None
 
 

@@ -13,7 +13,7 @@ from pathlib import Path
 
 from task_deadline import task_base_created_local, task_deadline_local
 from task_stages import (
-    get_task_assigned_to,
+    get_task_assignee,
     get_task_stage,
     get_task_start_at,
     get_task_type,
@@ -161,7 +161,7 @@ def build_task_completion_message_command(
     infile: str,
     finished_task_id: str,
     next_task_name: str,
-    next_assignee: str | None = None,
+    next_assigner: str | None = None,
 ) -> list[str]:
     cmd = [
         "python3",
@@ -175,8 +175,8 @@ def build_task_completion_message_command(
         "--next-task-name",
         next_task_name,
     ]
-    if next_assignee:
-        cmd.extend(["--next-assignee", next_assignee])
+    if next_assigner:
+        cmd.extend(["--next-assigner", next_assigner])
     return cmd
 
 
@@ -258,10 +258,10 @@ def build_message_target_options(latest_task: dict | None = None) -> list[tuple[
     if isinstance(latest_task, dict):
         task_name = str(latest_task.get("name") or "").strip()
         start_at = str(get_task_start_at(latest_task) or "").strip()
-        assigned_to = str(get_task_assigned_to(latest_task) or "").strip()
-        if start_at and assigned_to:
+        assignee = str(get_task_assignee(latest_task) or "").strip()
+        if start_at and assignee:
             options.append(("task-initiation", "Task initiation message"))
-        if task_name and assigned_to:
+        if task_name and assignee:
             try:
                 parse_task_assignment_task_name(task_name)
             except ValueError:
@@ -408,7 +408,7 @@ def render_task_block(lines: list[str], task: dict, now_local: datetime, level: 
     work_minutes = get_task_work_minutes(task)
     task_type = get_task_type(task)
     task_stage = get_task_stage(task)
-    assigned_to = get_task_assigned_to(task)
+    assignee = get_task_assignee(task)
 
     name = task.get("name") or "(Untitled)"
 
@@ -418,8 +418,8 @@ def render_task_block(lines: list[str], task: dict, now_local: datetime, level: 
             lines.append(f'Type: {task_type}')
         if isinstance(task_stage, str) and task_stage.strip():
             lines.append(f'Stage: {task_stage}')
-        if isinstance(assigned_to, str) and assigned_to.strip():
-            lines.append(f'Assigned to: {assigned_to}')
+        if isinstance(assignee, str) and assignee.strip():
+            lines.append(f'Assignee: {assignee}')
         lines.append(f'Work time: {fmt_work(work_minutes)}')
         lines.append(f'Deadline: {color(to_display(deadline) if deadline else "-", YELLOW)}')
         notes = clean_notes(task)
@@ -434,8 +434,8 @@ def render_task_block(lines: list[str], task: dict, now_local: datetime, level: 
             lines.append(f'Type: {task_type}')
         if isinstance(task_stage, str) and task_stage.strip():
             lines.append(f'Stage: {task_stage}')
-        if isinstance(assigned_to, str) and assigned_to.strip():
-            lines.append(f'Assigned to: {assigned_to}')
+        if isinstance(assignee, str) and assignee.strip():
+            lines.append(f'Assignee: {assignee}')
         lines.append(f'Start: {to_display(created)}')
         lines.append(f'Work time: {fmt_work(work_minutes)}')
 
@@ -874,7 +874,7 @@ def main():
                                 text=True,
                                 check=True,
                             )
-                            next_assignee, next_task_name = parse_next_task_clipboard_payload(clipboard_proc.stdout)
+                            next_assigner, next_task_name = parse_next_task_clipboard_payload(clipboard_proc.stdout)
                             if not next_task_name:
                                 status = color("Error: Clipboard is empty.", RED)
                                 status_until = time.time() + STATUS_TTL_SECONDS
@@ -884,7 +884,7 @@ def main():
                                 str(in_path.resolve()),
                                 latest_id,
                                 next_task_name,
-                                next_assignee,
+                                next_assigner,
                             )
                             msg_proc = subprocess.run(msg_cmd, capture_output=True, text=True)
                             if msg_proc.returncode != 0:

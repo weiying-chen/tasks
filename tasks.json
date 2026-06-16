@@ -4,7 +4,7 @@
     "name": "人文講堂 (安靜是種超能力 - 張瀞仁) 4 個短版",
     "stages": [
       {
-        "assignedTo": "Alex",
+        "assignee": "Alex",
         "startAt": "2026-05-22T00:22:00Z",
         "workMinutes": 912,
         "contentSeconds": 1140
@@ -26,10 +26,10 @@
   {
     "id": "11",
     "name": "大愛學漢醫 (吃出肺活力 — 肺癌照護 | 莊佳穎 | 大愛學漢醫 | 20220823)",
-    "assignedBy": "Syharn Shen",
+    "assigner": "Syharn Shen",
     "stages": [
       {
-        "assignedTo": "Alex",
+        "assignee": "Alex",
         "startAt": "2026-05-26T07:04:00Z",
         "workMinutes": 576,
         "contentSeconds": 720
@@ -50,7 +50,7 @@
   {
     "id": "14",
     "name": "人文講堂 (送一份專業的禮物 職涯發光 - 方植永) 6 個短版",
-    "assignedBy": "Evelyn",
+    "assigner": "Evelyn",
     "stages": [
       {
         "type": "subs",
@@ -150,7 +150,7 @@
   {
     "id": "22",
     "name": "3集我的阿公阿媽做慈濟",
-    "assignedBy": "Emily",
+    "assigner": "Emily",
     "stages": [
       {
         "type": "subs",
@@ -211,7 +211,7 @@
   {
     "id": "24",
     "name": "人文講堂 (親密搶奪：人性與法律的修煉 - 李永然) 6 個短版",
-    "assignedBy": "Evelyn",
+    "assigner": "Evelyn",
     "stages": [
       {
         "type": "subs",
@@ -312,7 +312,7 @@
   {
     "id": "30",
     "name": "大愛學漢醫 (排氣不停 中醫有解)",
-    "assignedBy": "Syharn Shen",
+    "assigner": "Syharn Shen",
     "stages": [
       {
         "type": "subs",
@@ -343,7 +343,7 @@
   {
     "id": "32",
     "name": "人文講堂 (其實你胖得很冤枉 - 陳欣湄) 4個短版",
-    "assignedBy": "Evelyn",
+    "assigner": "Evelyn",
     "stages": [
       {
         "type": "subs",
@@ -402,7 +402,7 @@
   {
     "id": "36",
     "name": "慈濟的故事(臺北的第二個家 、感念臺北因緣 、講藥師經結緣)",
-    "assignedBy": "張牧軒",
+    "assigner": "張牧軒",
     "stages": [
       {
         "type": "subs",
@@ -437,6 +437,10 @@
             "contentSeconds": 7920
           }
         ],
+        "notes": [
+          "Adjusted the conclusion to emphasize the longstanding bond between the Master and Lin's mother, framing the story as an example of members of the Dharma family caring for one another.",
+          "Remember to include the closing phrase \"Let's take a listen\" at the end."
+        ],
         "children": [],
         "sourceText": "Alex Chen: 愛滿地慈少畢典 2:12"
       },
@@ -449,6 +453,9 @@
             "startAt": "2026-06-15T05:04:14.893326Z",
             "workMinutes": 50
           }
+        ],
+        "notes": [
+          "Added background information identifying Dr. Hsu Ren-jun as director of the Cancer Center at Hualien Tzu Chi Hospital."
         ],
         "children": [],
         "sourceText": "7.\talex\n6/11守護花東聚善能\nhttps://www.daai.tv/master/life-wisdom/P90230287?more=true"

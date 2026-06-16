@@ -8,7 +8,7 @@ from pathlib import Path
 from work_time import add_work_minutes, next_work_start
 from task_deadline import deadlines_match
 from task_stages import get_task_work_minutes, normalize_stages
-from task_assigned_by import SUBS_ASSIGNED_BY
+from subs_assigners import SUBS_PROGRAM_ASSIGNERS
 from task_titles import extract_subs_task_name
 from work_time_adjustments import adjusted_child_minutes
 
@@ -45,19 +45,19 @@ def extract_subs_program_name(subs_name: str) -> str:
     return program
 
 
-def resolve_subs_assigned_by(subs_name: str) -> str:
+def resolve_subs_assigner(subs_name: str) -> str:
     program = extract_subs_program_name(subs_name)
-    expected_assignee = SUBS_ASSIGNED_BY.get(program)
-    if expected_assignee is None:
-        raise ValueError(f"No assignedBy mapping for subs program '{program}'")
-    return expected_assignee
+    assigner = SUBS_PROGRAM_ASSIGNERS.get(program)
+    if assigner is None:
+        raise ValueError(f"No assigner mapping for subs program '{program}'")
+    return assigner
 
 
 def parse_subs_input(text: str, year: int, task_id: str):
     name = extract_subs_task_name(text)
     if not name:
         raise ValueError("Cannot parse name")
-    assigned_by = resolve_subs_assigned_by(name)
+    assigner = resolve_subs_assigner(name)
 
     content_match = must_match(text, r"(?:長度|片長|長)\s*(?:共|合計)?\s*(\d+)\s*分(?:\s*(\d+)\s*秒)?", "content duration")
     content_minutes = int(content_match.group(1))
@@ -98,7 +98,7 @@ def parse_subs_input(text: str, year: int, task_id: str):
     task = {
         "id": task_id,
         "name": name,
-        "assignedBy": assigned_by,
+        "assigner": assigner,
         "stages": [stage],
         "children": [],
         "sourceText": text,
@@ -409,9 +409,9 @@ def normalize_task_shape(task):
         "id": str(task.get("id", "")),
         "name": task.get("name", ""),
     }
-    assigned_by = task.get("assignedBy")
-    if isinstance(assigned_by, str):
-        normalized["assignedBy"] = assigned_by
+    assigner = task.get("assigner")
+    if isinstance(assigner, str):
+        normalized["assigner"] = assigner
     if isinstance(task.get("createdDate"), str):
         normalized["createdDate"] = task["createdDate"]
     if isinstance(task.get("deadlineDate"), str):
@@ -510,7 +510,7 @@ def main():
             warning = item.pop("__warning__", None)
             if isinstance(warning, str) and warning.strip():
                 print(f"{YELLOW}{warning}{RESET}")
-            item.pop("assignedBy", None)
+            item.pop("assigner", None)
             item.pop("owner", None)
             apply_child_work_rule(item)
             inserted = insert_under_parent(tasks, args.parent_id, item)

@@ -8,7 +8,7 @@ from task_stages import get_previous_stage_work_minutes, normalize_stages
 from text_to_json import normalize_task_shape, normalize_tasks_json
 
 DEFAULT_SELF_ASSIGNEE = "Alex Chen"
-ASSIGNEE_WORK_RATES = {
+TRANSLATION_WORK_RATE_BY_ASSIGNEE = {
     "Emily": 1.0,
 }
 
@@ -39,10 +39,10 @@ def normalize_assignee_key(name: str) -> str:
 
 
 def get_assignee_work_rate(name: str) -> float:
-    return ASSIGNEE_WORK_RATES.get(normalize_assignee_key(name), 1.0)
+    return TRANSLATION_WORK_RATE_BY_ASSIGNEE.get(normalize_assignee_key(name), 1.0)
 
 
-def populate_stage_work_minutes(task: dict, stage: dict, assigned_to: str, stage_label: str) -> None:
+def populate_stage_work_minutes(task: dict, stage: dict, assignee: str, stage_label: str) -> None:
     existing_minutes = stage.get("workMinutes")
     if isinstance(existing_minutes, int) and existing_minutes > 0:
         return
@@ -58,7 +58,7 @@ def populate_stage_work_minutes(task: dict, stage: dict, assigned_to: str, stage
     content_seconds = stage.get("contentSeconds")
     if not isinstance(content_seconds, int) or content_seconds <= 0:
         return
-    rate = get_assignee_work_rate(assigned_to)
+    rate = get_assignee_work_rate(assignee)
     stage["workMinutes"] = int(round(content_seconds * rate))
 
 
@@ -66,33 +66,33 @@ def parse_assignment_message(text: str) -> dict[str, str]:
     stripped = text.strip()
     patterns: list[tuple[str, str, str | None]] = [
         (
-            r"^\s*(?P<assignedBy>.+?)\s*請\s*(?P<assignedTo>.+?)\s*edit\s*\+\s*定稿\s*(?P<name>.+?)\s*$",
+            r"^\s*(?P<assigner>.+?)\s*請\s*(?P<assignee>.+?)\s*edit\s*\+\s*定稿\s*(?P<name>.+?)\s*$",
             "edit",
             None,
         ),
         (
-            r"^\s*請\s*(?P<assignedBy>.+?)\s*給我\s*edit\s*\+\s*定稿\s*(?P<name>.+?)\s*$",
+            r"^\s*請\s*(?P<assigner>.+?)\s*給我\s*edit\s*\+\s*定稿\s*(?P<name>.+?)\s*$",
             "edit",
             DEFAULT_SELF_ASSIGNEE,
         ),
         (
-            r"^\s*(?P<assignedBy>.+?)\s*[.。．]?\s*請\s*(?P<assignedTo>.+?)\s*翻譯\s*(?P<name>.+?)\s*$",
+            r"^\s*(?P<assigner>.+?)\s*[.。．]?\s*請\s*(?P<assignee>.+?)\s*翻譯\s*(?P<name>.+?)\s*$",
             "translate",
             None,
         ),
     ]
 
-    for pattern, stage, default_assigned_to in patterns:
+    for pattern, stage, default_assignee in patterns:
         match = re.match(pattern, stripped, flags=re.I | re.S)
         if not match:
             continue
         parsed = {key: value.strip() for key, value in match.groupdict().items() if value is not None}
-        parsed["assignedBy"] = re.sub(r"\s*[.。．]\s*$", "", parsed["assignedBy"]).strip()
-        parsed["assignedTo"] = parsed.get("assignedTo", default_assigned_to or "").strip()
+        parsed["assigner"] = re.sub(r"\s*[.。．]\s*$", "", parsed["assigner"]).strip()
+        parsed["assignee"] = parsed.get("assignee", default_assignee or "").strip()
         parsed["name"] = strip_assignment_tail(parsed["name"])
         parsed["stage"] = stage
-        if not parsed["assignedTo"]:
-            raise ValueError("Cannot parse assignedTo")
+        if not parsed["assignee"]:
+            raise ValueError("Cannot parse assignee")
         return parsed
 
     raise ValueError("Cannot parse assignment message")
@@ -145,9 +145,9 @@ def assign_task(tasks: list[dict], text: str) -> list[dict]:
 
     task = matched[0]
     stage = ensure_mutable_active_stage(task)
-    task["assignedBy"] = parsed["assignedBy"]
-    stage["assignedTo"] = parsed["assignedTo"]
-    populate_stage_work_minutes(task, stage, parsed["assignedTo"], parsed["stage"])
+    task["assigner"] = parsed["assigner"]
+    stage["assignee"] = parsed["assignee"]
+    populate_stage_work_minutes(task, stage, parsed["assignee"], parsed["stage"])
     stage["stage"] = parsed["stage"]
     return tasks
 

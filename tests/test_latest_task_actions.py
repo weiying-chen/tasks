@@ -112,11 +112,11 @@ class LatestTaskActionsTests(unittest.TestCase):
         latest = {
             "id": "1",
             "name": "3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈）",
-            "assignedBy": "Emily Ding",
+            "assigner": "Emily Ding",
             "stages": [
                 {
                     "type": "subs",
-                    "assignedTo": "Alex Chen",
+                    "assignee": "Alex Chen",
                     "workMinutes": 364,
                     "contentSeconds": 364,
                 }
@@ -136,11 +136,11 @@ class LatestTaskActionsTests(unittest.TestCase):
         latest = {
             "id": "1",
             "name": "3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈）",
-            "assignedBy": "Emily Ding",
+            "assigner": "Emily Ding",
             "stages": [
                 {
                     "type": "subs",
-                    "assignedTo": "Alex Chen",
+                    "assignee": "Alex Chen",
                     "startAt": "2026-06-09T03:35:00Z",
                     "workMinutes": 364,
                     "contentSeconds": 364,
@@ -162,7 +162,7 @@ class LatestTaskActionsTests(unittest.TestCase):
         latest = {
             "id": "1",
             "name": "3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈）",
-            "assignedBy": "Emily Ding",
+            "assigner": "Emily Ding",
             "stages": [
                 {
                     "type": "subs",
@@ -184,7 +184,7 @@ class LatestTaskActionsTests(unittest.TestCase):
         latest = {
             "id": "1",
             "name": "3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈）",
-            "assignedBy": "Emily Ding",
+            "assigner": "Emily Ding",
             "stages": [
                 {
                     "type": "subs",
@@ -241,7 +241,7 @@ class LatestTaskActionsTests(unittest.TestCase):
             "stages": [
                 {
                     "type": "translate",
-                    "assignedTo": "Alex",
+                    "assignee": "Alex",
                     "startAt": "2026-06-02T05:40:00Z",
                     "deadline": "2026-06-03T03:40:00Z",
                     "workMinutes": 960,
@@ -283,7 +283,7 @@ class LatestTaskActionsTests(unittest.TestCase):
                 "9",
                 "--next-task-name",
                 "new task",
-                "--next-assignee",
+                "--next-assigner",
                 "Alex",
             ],
         )

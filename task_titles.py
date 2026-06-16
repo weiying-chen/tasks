@@ -1,6 +1,6 @@
 import re
 
-from task_assigned_by import SUBS_ASSIGNED_BY
+from subs_assigners import SUBS_PROGRAM_ASSIGNERS
 
 
 def format_program_selection_title(text: str) -> str | None:
@@ -25,7 +25,7 @@ def format_program_selection_title(text: str) -> str | None:
 def mapped_program_name(name: str) -> str | None:
     if "節目部選" not in name:
         return None
-    for program in SUBS_ASSIGNED_BY:
+    for program in SUBS_PROGRAM_ASSIGNERS:
         if program in name:
             return program
     return None

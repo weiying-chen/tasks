@@ -9,7 +9,7 @@ class AssignTaskTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "3集我的阿公阿媽做慈濟",
-                "assignedBy": "Emily",
+                "assigner": "Emily",
                 "stages": [
                     {
                         "type": "subs",
@@ -31,7 +31,7 @@ class AssignTaskTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "3集我的阿公阿媽做慈濟",
-                "assignedBy": "Emily",
+                "assigner": "Emily",
                 "stages": [
                     {
                         "type": "subs",
@@ -56,8 +56,8 @@ class AssignTaskTests(unittest.TestCase):
         self.assertEqual(
             parsed,
             {
-                "assignedBy": "Emily Ding",
-                "assignedTo": "Alex Chen",
+                "assigner": "Emily Ding",
+                "assignee": "Alex Chen",
                 "stage": "translate",
                 "name": "3集我的阿公阿媽做慈濟",
             },
@@ -70,8 +70,8 @@ class AssignTaskTests(unittest.TestCase):
         self.assertEqual(
             parsed,
             {
-                "assignedBy": "Evelyn",
-                "assignedTo": "Alex Chen",
+                "assigner": "Evelyn",
+                "assignee": "Alex Chen",
                 "stage": "translate",
                 "name": "人文講堂 (人文講堂 親密搶奪：人性與法律的修煉 - 李永然 6)",
             },
@@ -84,8 +84,8 @@ class AssignTaskTests(unittest.TestCase):
         self.assertEqual(
             parsed,
             {
-                "assignedBy": "Emily Ding",
-                "assignedTo": "Alex Chen",
+                "assigner": "Emily Ding",
+                "assignee": "Alex Chen",
                 "stage": "edit",
                 "name": "3集大愛真健康",
             },
@@ -96,7 +96,7 @@ class AssignTaskTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "3集我的阿公阿媽做慈濟",
-                "assignedBy": "Emily",
+                "assigner": "Emily",
                 "stages": [
                     {
                         "type": "subs",
@@ -114,8 +114,8 @@ class AssignTaskTests(unittest.TestCase):
             "Emily Ding 請 Alex Chen 翻譯3集我的阿公阿媽做慈濟，謝謝~",
         )
         stage = updated[0]["stages"][0]
-        self.assertEqual(updated[0]["assignedBy"], "Emily Ding")
-        self.assertEqual(stage["assignedTo"], "Alex Chen")
+        self.assertEqual(updated[0]["assigner"], "Emily Ding")
+        self.assertEqual(stage["assignee"], "Alex Chen")
         self.assertEqual(stage["stage"], "translate")
         self.assertNotIn("status", stage)
 
@@ -124,7 +124,7 @@ class AssignTaskTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "3集大愛真健康",
-                "assignedBy": "Emily",
+                "assigner": "Emily",
                 "stages": [
                     {
                         "type": "subs",
@@ -140,8 +140,8 @@ class AssignTaskTests(unittest.TestCase):
             "請\nEmily Ding 給我 edit + 定稿3集大愛真健康，謝謝~",
         )
         stage = updated[0]["stages"][0]
-        self.assertEqual(updated[0]["assignedBy"], "Emily Ding")
-        self.assertEqual(stage["assignedTo"], "Alex Chen")
+        self.assertEqual(updated[0]["assigner"], "Emily Ding")
+        self.assertEqual(stage["assignee"], "Alex Chen")
         self.assertEqual(stage["stage"], "edit")
         self.assertNotIn("status", stage)
 
@@ -150,12 +150,12 @@ class AssignTaskTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "3集大愛真健康",
-                "assignedBy": "Emily",
+                "assigner": "Emily",
                 "stages": [
                     {
                         "type": "subs",
                         "stage": "translate",
-                        "assignedTo": "Emily",
+                        "assignee": "Emily",
                         "workMinutes": 240,
                         "contentSeconds": 480,
                     },
@@ -171,7 +171,7 @@ class AssignTaskTests(unittest.TestCase):
             "請\nEmily Ding 給我 edit + 定稿3集大愛真健康，謝謝~",
         )
         stage = updated[0]["stages"][1]
-        self.assertEqual(stage["assignedTo"], "Alex Chen")
+        self.assertEqual(stage["assignee"], "Alex Chen")
         self.assertEqual(stage["stage"], "edit")
         self.assertEqual(stage["workMinutes"], 120)
 
@@ -180,7 +180,7 @@ class AssignTaskTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "3集大愛醫生館（杯弓蛇影 乳房腫瘤 + 鬼門關走一遭~冠心病 + 住輸尿管）",
-                "assignedBy": "Alex Chen",
+                "assigner": "Alex Chen",
                 "stages": [
                     {
                         "type": "subs",
@@ -196,7 +196,7 @@ class AssignTaskTests(unittest.TestCase):
             "Alex Chen 請 張牧軒 Shawn edit+定稿 3 集大愛醫生館，謝謝~",
         )
         stage = updated[0]["stages"][0]
-        self.assertEqual(stage["assignedTo"], "張牧軒 Shawn")
+        self.assertEqual(stage["assignee"], "張牧軒 Shawn")
         self.assertEqual(stage["stage"], "edit")
         self.assertNotIn("status", stage)
 

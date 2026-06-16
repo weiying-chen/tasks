@@ -1,6 +1,6 @@
 import unittest
 
-from task_assigned_by import SUBS_ASSIGNED_BY
+from subs_assigners import SUBS_PROGRAM_ASSIGNERS
 import text_to_json
 from task_stages import get_task_content_seconds, get_task_type, get_task_work_minutes, normalize_stages
 
@@ -20,7 +20,7 @@ class TextToJsonTests(unittest.TestCase):
         self.assertEqual(tasks[0]["name"], "無私大愛結好緣")
         self.assertEqual(get_task_work_minutes(tasks[0]), 60)
         self.assertEqual(get_task_type(tasks[0]), "posts")
-        self.assertNotIn("assignedBy", tasks[0])
+        self.assertNotIn("assigner", tasks[0])
 
     def test_parse_news_only_keeps_alex_chen(self):
         text = (
@@ -80,25 +80,25 @@ class TextToJsonTests(unittest.TestCase):
         self.assertEqual(len(parsed), 1)
         task = parsed[0]
         self.assertEqual(task["id"], "1")
-        self.assertEqual(task["assignedBy"], "Evelyn")
+        self.assertEqual(task["assigner"], "Evelyn")
         self.assertEqual(get_task_content_seconds(task), 1380)
         self.assertEqual(get_task_type(task), "subs")
 
-    def test_subs_program_assignee_uses_mapping_only(self):
+    def test_subs_program_assigner_uses_mapping_only(self):
         text = (
             "請 Someone 翻譯3集精舍日常(淳師父09 如律如儀) 3 個短版, 長度7分, "
             "預計翻譯5時45分，從4/28（二）16:10起算，deadline為4/29(三) 10:00，謝謝！"
         )
         parsed = text_to_json.parse_source_text(text, [], 2026)
-        self.assertEqual(parsed[0]["assignedBy"], "張牧軒 Shawn")
+        self.assertEqual(parsed[0]["assigner"], "張牧軒 Shawn")
 
-    def test_subs_program_assignee_preserves_leading_episode_count(self):
+    def test_subs_program_assigner_preserves_leading_episode_count(self):
         text = (
             "請 Someone 翻譯3集我的阿公阿媽做慈濟, 長度7分, "
             "預計翻譯5時45分，從4/28（二）16:10起算，deadline為4/29(三) 10:00，謝謝！"
         )
         parsed = text_to_json.parse_source_text(text, [], 2026)
-        self.assertEqual(parsed[0]["assignedBy"], "Emily Ding")
+        self.assertEqual(parsed[0]["assigner"], "Emily Ding")
         self.assertEqual(parsed[0]["name"], "3集我的阿公阿媽做慈濟")
 
     def test_parse_source_text_subs_accepts_total_content_duration(self):
@@ -108,7 +108,7 @@ class TextToJsonTests(unittest.TestCase):
         )
         parsed = text_to_json.parse_source_text(text, [], 2026)
         task = parsed[0]
-        self.assertEqual(task["assignedBy"], "Emily Ding")
+        self.assertEqual(task["assigner"], "Emily Ding")
         self.assertEqual(get_task_content_seconds(task), 540)
         self.assertEqual(get_task_work_minutes(task), 432)
         self.assertEqual(normalize_stages(task)[0]["deadline"], "2026-06-03T03:45:00Z")
@@ -123,7 +123,7 @@ class TextToJsonTests(unittest.TestCase):
         self.assertEqual(len(parsed), 1)
         task = parsed[0]
         self.assertEqual(get_task_type(task), "subs")
-        self.assertEqual(task["assignedBy"], "張牧軒 Shawn")
+        self.assertEqual(task["assigner"], "張牧軒 Shawn")
         self.assertEqual(get_task_work_minutes(task), 504)
         self.assertEqual(get_task_content_seconds(task), 629)
 
@@ -136,7 +136,7 @@ class TextToJsonTests(unittest.TestCase):
         self.assertEqual(len(parsed), 1)
         task = parsed[0]
         self.assertEqual(get_task_type(task), "subs")
-        self.assertEqual(task["assignedBy"], "Evelyn")
+        self.assertEqual(task["assigner"], "Evelyn")
         self.assertEqual(get_task_work_minutes(task), 960)
         self.assertIn("6 個短版", task["name"])
 
@@ -150,7 +150,7 @@ class TextToJsonTests(unittest.TestCase):
         parsed = text_to_json.parse_source_text(text, [], 2026)
         task = parsed[0]
         self.assertEqual(task["name"], "大愛學漢醫 (排氣不停 中醫有解)")
-        self.assertEqual(task["assignedBy"], "Syharn Shen")
+        self.assertEqual(task["assigner"], "Syharn Shen")
         self.assertEqual(get_task_work_minutes(task), 576)
         self.assertEqual(get_task_content_seconds(task), 720)
         self.assertNotIn("deadline", normalize_stages(task)[0])
@@ -169,7 +169,7 @@ class TextToJsonTests(unittest.TestCase):
         text = "請 Alex Chen 翻譯以下節目部選的大愛學漢醫，片長12分，預計做9小時36分，謝謝："
         parsed = text_to_json.parse_source_text(text, [], 2026)
         self.assertEqual(parsed[0]["name"], "大愛學漢醫")
-        self.assertEqual(parsed[0]["assignedBy"], "Syharn Shen")
+        self.assertEqual(parsed[0]["assigner"], "Syharn Shen")
 
     def test_parse_source_text_subs_accepts_spaced_weekday_parentheses(self):
         text = (
@@ -190,7 +190,7 @@ class TextToJsonTests(unittest.TestCase):
         parsed = text_to_json.parse_source_text(text, [], 2026)
         task = parsed[0]
         stage = normalize_stages(task)[0]
-        self.assertEqual(task["assignedBy"], "張牧軒 Shawn")
+        self.assertEqual(task["assigner"], "張牧軒 Shawn")
         self.assertEqual(task["name"], "慈濟的故事(臺北的第二個家 、感念臺北因緣 、講藥師經結緣)")
         self.assertEqual(get_task_content_seconds(task), 1488)
         self.assertEqual(get_task_work_minutes(task), 1191)
@@ -217,7 +217,7 @@ class TextToJsonTests(unittest.TestCase):
         )
         parsed = text_to_json.parse_source_text(text, [], 2026)
         task = parsed[0]
-        self.assertEqual(task["assignedBy"], "Alex Chen")
+        self.assertEqual(task["assigner"], "Alex Chen")
         self.assertEqual(
             task["name"],
             "三集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈）",
@@ -226,9 +226,9 @@ class TextToJsonTests(unittest.TestCase):
         self.assertEqual(get_task_work_minutes(task), 364)
         self.assertNotIn("deadline", normalize_stages(task)[0])
 
-    def test_subs_assigned_by_is_grouped_by_assigned_by(self):
+    def test_subs_assigner_is_grouped_by_assigner(self):
         self.assertEqual(
-            list(SUBS_ASSIGNED_BY.items()),
+            list(SUBS_PROGRAM_ASSIGNERS.items()),
             [
                 ("大愛醫生館", "Alex Chen"),
                 ("大愛真健康", "Emily Ding"),
@@ -304,24 +304,32 @@ class TextToJsonTests(unittest.TestCase):
         self.assertTrue(inserted)
         self.assertEqual(tasks[1]["notes"], ["note 1", "note 2"])
 
-    def test_normalize_task_shape_moves_assigned_to_into_stages(self):
+    def test_normalize_task_shape_moves_assignee_into_stages(self):
         task = {
             "id": "1",
             "name": "Parent",
-            "assignedBy": "Evelyn",
-            "assignedTo": "Alex",
+            "assigner": "Evelyn",
+            "assignee": "Alex",
             "children": [],
         }
         normalized = text_to_json.normalize_task_shape(task)
-        self.assertEqual(normalized["assignedBy"], "Evelyn")
-        self.assertEqual(normalized["stages"], [{"assignedTo": "Alex"}])
+        self.assertEqual(
+            normalized,
+            {
+                "id": "1",
+                "name": "Parent",
+                "assigner": "Evelyn",
+                "stages": [{"assignee": "Alex"}],
+                "children": [],
+            },
+        )
 
     def test_normalize_task_shape_moves_flat_fields_into_stages(self):
         task = {
             "id": "1",
             "name": "Parent",
             "type": "subs",
-            "assignedTo": "Alex",
+            "assignee": "Alex",
             "startAt": "2026-06-02T05:40:00Z",
             "deadline": "2026-06-03T03:40:00Z",
             "workMinutes": 960,
@@ -330,7 +338,7 @@ class TextToJsonTests(unittest.TestCase):
         }
         normalized = text_to_json.normalize_task_shape(task)
         self.assertNotIn("type", normalized)
-        self.assertNotIn("assignedTo", normalized)
+        self.assertNotIn("assignee", normalized)
         self.assertNotIn("startAt", normalized)
         self.assertNotIn("deadline", normalized)
         self.assertNotIn("workMinutes", normalized)
@@ -340,7 +348,7 @@ class TextToJsonTests(unittest.TestCase):
             [
                 {
                     "type": "subs",
-                    "assignedTo": "Alex",
+                    "assignee": "Alex",
                     "startAt": "2026-06-02T05:40:00Z",
                     "deadline": "2026-06-03T03:40:00Z",
                     "workMinutes": 960,
