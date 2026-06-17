@@ -370,6 +370,13 @@
         "contentSeconds": 1200
       }
     ],
+    "notes": [
+      "Expanded the clinic-experience line to preserve the setup before the question about calories.",
+      "Clarified the pronoun by naming the body as what cannot express discomfort directly.",
+      "Clarified that UTIs improved after chronic inflammation was managed, avoiding the ambiguous reference to \"it.\"",
+      "Reflected 各種運動 by describing varied exercise rather than generic exercise.",
+      "Revised the inflammation wording to say the body becomes more inflamed instead of using a more literal buildup description."
+    ],
     "children": [
       {
         "id": "33",
