@@ -108,7 +108,7 @@ class LatestTaskActionsTests(unittest.TestCase):
             ],
         )
 
-    def test_build_message_target_options(self):
+    def test_build_message_target_options_for_personal_tasks(self):
         latest = {
             "id": "1",
             "name": "3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈）",
@@ -124,15 +124,14 @@ class LatestTaskActionsTests(unittest.TestCase):
             "children": [],
         }
         self.assertEqual(
-            view_latest_task.build_message_target_options(latest),
+            view_latest_task.build_message_target_options(latest, input_file="/tmp/tasks.json"),
             [
                 ("deadline-extension", "Deadline extension message"),
                 ("task-completion", "Task completion message"),
-                ("task-assignment", "Task assignment message"),
             ],
         )
 
-    def test_build_message_target_options_includes_task_initiation_when_start_at_exists(self):
+    def test_build_message_target_options_for_coworker_tasks(self):
         latest = {
             "id": "1",
             "name": "3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈）",
@@ -142,6 +141,7 @@ class LatestTaskActionsTests(unittest.TestCase):
                     "type": "subs",
                     "assignee": "Alex Chen",
                     "startAt": "2026-06-09T03:35:00Z",
+                    "deadline": "2026-06-10T01:40:00Z",
                     "workMinutes": 364,
                     "contentSeconds": 364,
                 }
@@ -149,16 +149,14 @@ class LatestTaskActionsTests(unittest.TestCase):
             "children": [],
         }
         self.assertEqual(
-            view_latest_task.build_message_target_options(latest),
+            view_latest_task.build_message_target_options(latest, input_file="/tmp/tasks_coworkers.json"),
             [
-                ("deadline-extension", "Deadline extension message"),
-                ("task-completion", "Task completion message"),
                 ("task-initiation", "Task initiation message"),
                 ("task-assignment", "Task assignment message"),
             ],
         )
 
-    def test_build_message_target_options_hides_task_assignment_when_unassigned(self):
+    def test_build_message_target_options_hides_task_assignment_when_unassigned_in_coworker_mode(self):
         latest = {
             "id": "1",
             "name": "3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈）",
@@ -173,14 +171,11 @@ class LatestTaskActionsTests(unittest.TestCase):
             "children": [],
         }
         self.assertEqual(
-            view_latest_task.build_message_target_options(latest),
-            [
-                ("deadline-extension", "Deadline extension message"),
-                ("task-completion", "Task completion message"),
-            ],
+            view_latest_task.build_message_target_options(latest, input_file="/tmp/tasks_coworkers.json"),
+            [],
         )
 
-    def test_build_message_target_options_hides_task_initiation_when_unassigned(self):
+    def test_build_message_target_options_hides_task_initiation_when_start_missing_in_coworker_mode(self):
         latest = {
             "id": "1",
             "name": "3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈）",
@@ -196,11 +191,8 @@ class LatestTaskActionsTests(unittest.TestCase):
             "children": [],
         }
         self.assertEqual(
-            view_latest_task.build_message_target_options(latest),
-            [
-                ("deadline-extension", "Deadline extension message"),
-                ("task-completion", "Task completion message"),
-            ],
+            view_latest_task.build_message_target_options(latest, input_file="/tmp/tasks_coworkers.json"),
+            [],
         )
 
     def test_build_task_assignment_message_command(self):

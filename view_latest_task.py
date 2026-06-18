@@ -49,6 +49,10 @@ SUBS_SUMMARY_MESSAGE_COPIED_STATUS = "Success: Task assignment message copied to
 CONFIRM_DEADLINE_EXTENSION_STATUS = "Success: Confirm deadline extension checked"
 TASK_INITIATION_MESSAGE_COPIED_STATUS = "Success: Task initiation message copied to clipboard"
 
+PERSONAL_ACTIONS = ("t", "s", "n", "v", "q")
+COWORKER_ACTIONS = ("a", "d", "q")
+ALL_ACTIONS = ("t", "a", "s", "n", "d", "v", "m", "q")
+
 
 def fmt_work(minutes: int | None) -> str:
     if not isinstance(minutes, int):
@@ -60,6 +64,42 @@ def fmt_work(minutes: int | None) -> str:
     if h > 0:
         return f'{h}h'
     return f'{m}m'
+
+
+def detect_action_mode(input_file: str | None = None) -> str:
+    filename = Path(str(input_file or "tasks.json")).name
+    if filename == "tasks_coworkers.json":
+        return "coworker"
+    if filename == "tasks.json":
+        return "personal"
+    return "all"
+
+
+def allowed_actions_for_mode(mode: str) -> tuple[str, ...]:
+    if mode == "coworker":
+        return COWORKER_ACTIONS
+    if mode == "personal":
+        return PERSONAL_ACTIONS
+    return ALL_ACTIONS
+
+
+def build_actions_line(input_file: str | None = None, selected_task: dict | None = None) -> str:
+    mode = detect_action_mode(input_file)
+    allowed = set(allowed_actions_for_mode(mode))
+    if build_message_target_options(selected_task, input_file=input_file):
+        allowed.add("m")
+    labels = {
+        "t": color('create ', MAGENTA) + color('t', GREEN) + color('ask', MAGENTA),
+        "a": color('set ', MAGENTA) + color('a', GREEN) + color('ssignee', MAGENTA),
+        "s": color('add ', MAGENTA) + color('s', GREEN) + color('ubtasks', MAGENTA),
+        "n": color('add ', MAGENTA) + color('n', GREEN) + color('otes', MAGENTA),
+        "d": color('confirm ', MAGENTA) + color('d', GREEN) + color('eadline extension', MAGENTA),
+        "v": color('toggle ', MAGENTA) + color('v', GREEN) + color('iew notes', MAGENTA),
+        "m": color('copy ', MAGENTA) + color('m', GREEN) + color('essage', MAGENTA),
+        "q": color('q', GREEN) + color('uit', MAGENTA),
+    }
+    order = [key for key in ALL_ACTIONS if key in allowed]
+    return color('Actions: ', MAGENTA) + color(' | ', MAGENTA).join(labels[key] for key in order)
 
 
 def to_local(iso_str: str) -> datetime:
@@ -316,18 +356,23 @@ def build_notes_target_options(latest_task: dict) -> list[tuple[str, str]]:
     return options
 
 
-def build_message_target_options(latest_task: dict | None = None) -> list[tuple[str, str]]:
-    options = [
-        ("deadline-extension", "Deadline extension message"),
-        ("task-completion", "Task completion message"),
-    ]
+def build_message_target_options(latest_task: dict | None = None, input_file: str | None = None) -> list[tuple[str, str]]:
+    mode = detect_action_mode(input_file)
+    options: list[tuple[str, str]] = []
+    if mode != "coworker":
+        options.extend(
+            [
+                ("deadline-extension", "Deadline extension message"),
+                ("task-completion", "Task completion message"),
+            ]
+        )
     if isinstance(latest_task, dict):
         task_name = str(latest_task.get("name") or "").strip()
         start_at = str(get_task_start_at(latest_task) or "").strip()
         assignee = str(get_task_assignee(latest_task) or "").strip()
-        if start_at and assignee:
+        if mode == "coworker" and start_at and assignee and task_deadline_local(latest_task) is not None:
             options.append(("task-initiation", "Task initiation message"))
-        if task_name and assignee:
+        if mode == "coworker" and task_name and assignee:
             try:
                 parse_task_assignment_task_name(task_name)
             except ValueError:
@@ -545,6 +590,7 @@ def build_task_view(
     now_local: datetime | None = None,
     status: str = "",
     show_subtask_notes: bool = False,
+    input_file: str | None = None,
 ) -> str:
     if now_local is None:
         now_local = datetime.now(TZ_TAIPEI)
@@ -566,24 +612,7 @@ def build_task_view(
         lines.append(status)
     if not lines or lines[-1] != '':
         lines.append('')
-    lines.append(
-        color('Actions: ', MAGENTA)
-        + color('create ', MAGENTA) + color('t', GREEN) + color('ask', MAGENTA)
-        + color(' | ', MAGENTA)
-        + color('set ', MAGENTA) + color('a', GREEN) + color('ssignee', MAGENTA)
-        + color(' | ', MAGENTA)
-        + color('add ', MAGENTA) + color('s', GREEN) + color('ubtasks', MAGENTA)
-        + color(' | ', MAGENTA)
-        + color('add ', MAGENTA) + color('n', GREEN) + color('otes', MAGENTA)
-        + color(' | ', MAGENTA)
-        + color('confirm ', MAGENTA) + color('d', GREEN) + color('eadline extension', MAGENTA)
-        + color(' | ', MAGENTA)
-        + color('toggle ', MAGENTA) + color('v', GREEN) + color('iew notes', MAGENTA)
-        + color(' | ', MAGENTA)
-        + color('copy ', MAGENTA) + color('m', GREEN) + color('essage', MAGENTA)
-        + color(' | ', MAGENTA)
-        + color('q', GREEN) + color('uit', MAGENTA)
-    )
+    lines.append(build_actions_line(input_file, selected_task=selected))
     return '\n'.join(lines).rstrip() + '\n'
 
 
@@ -592,8 +621,15 @@ def build_latest_view(
     now_local: datetime | None = None,
     status: str = "",
     show_subtask_notes: bool = False,
+    input_file: str | None = None,
 ) -> str:
-    return build_task_view(tasks, now_local=now_local, status=status, show_subtask_notes=show_subtask_notes)
+    return build_task_view(
+        tasks,
+        now_local=now_local,
+        status=status,
+        show_subtask_notes=show_subtask_notes,
+        input_file=input_file,
+    )
 
 
 def resolve_input_path(input_file: str | None = None, fake_script: Path | None = None) -> Path:
@@ -618,11 +654,18 @@ def main():
 
     show_notes = False
     input_file = str(in_path.resolve())
+    base_allowed_actions = set(allowed_actions_for_mode(detect_action_mode(input_file)))
 
     def render_once(status: str = ""):
         data = json.loads(in_path.read_text(encoding='utf-8'))
         tasks = normalize_tasks(data)
-        return build_task_view(tasks, task_id=args.id, status=status, show_subtask_notes=show_notes)
+        return build_task_view(
+            tasks,
+            task_id=args.id,
+            status=status,
+            show_subtask_notes=show_notes,
+            input_file=input_file,
+        )
 
     if args.once:
         print(render_once(), end='')
@@ -653,7 +696,7 @@ def main():
                 ch = os.read(stdin_fd, 1)
                 if ch == b"q":
                     break
-                if ch == b"t":
+                if ch == b"t" and "t" in base_allowed_actions:
                     try:
                         add_proc = subprocess.run(
                             build_add_task_command(script_dir, input_file),
@@ -676,7 +719,7 @@ def main():
                     except Exception as exc:
                         status = color(f"Error: Add failed: {exc}", RED)
                         status_until = time.time() + STATUS_TTL_SECONDS
-                if ch == b"a":
+                if ch == b"a" and "a" in base_allowed_actions:
                     try:
                         clipboard_proc = subprocess.run(
                             ["wl-paste"],
@@ -707,7 +750,7 @@ def main():
                     except Exception as exc:
                         status = color(f"Error: Assign failed: {exc}", RED)
                         status_until = time.time() + STATUS_TTL_SECONDS
-                if ch == b"s":
+                if ch == b"s" and "s" in base_allowed_actions:
                     try:
                         data = json.loads(in_path.read_text(encoding='utf-8'))
                         tasks = normalize_tasks(data)
@@ -746,7 +789,7 @@ def main():
                     except Exception as exc:
                         status = color(f"Error: Add failed: {exc}", RED)
                         status_until = time.time() + STATUS_TTL_SECONDS
-                if ch == b"n":
+                if ch == b"n" and "n" in base_allowed_actions:
                     try:
                         data = json.loads(in_path.read_text(encoding='utf-8'))
                         tasks = normalize_tasks(data)
@@ -811,9 +854,9 @@ def main():
                     except Exception as exc:
                         status = color(f"Error: Add failed: {exc}", RED)
                         status_until = time.time() + STATUS_TTL_SECONDS
-                if ch == b"v":
+                if ch == b"v" and "v" in base_allowed_actions:
                     show_notes = not show_notes
-                if ch == b"d":
+                if ch == b"d" and "d" in base_allowed_actions:
                     try:
                         data = json.loads(in_path.read_text(encoding='utf-8'))
                         tasks = normalize_tasks(data)
@@ -865,7 +908,9 @@ def main():
                             status = color("Error: No selected task id found.", RED)
                             status_until = time.time() + STATUS_TTL_SECONDS
                             continue
-                        msg_options = build_message_target_options(selected_task)
+                        msg_options = build_message_target_options(selected_task, input_file=input_file)
+                        if not msg_options:
+                            continue
                         pick_idx, pick_err, should_quit = choose_numbered_option(
                             stdin_fd=stdin_fd,
                             render_once_fn=render_once,

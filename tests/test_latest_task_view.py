@@ -166,12 +166,12 @@ class LatestTaskViewTests(unittest.TestCase):
         out = self.strip_ansi(view_latest_task.build_latest_view(tasks))
         lines = out.splitlines()
         actions_idx = lines.index(
-            "Actions: create task | set assignee | add subtasks | add notes | confirm deadline extension | toggle view notes | copy message | quit"
+            "Actions: create task | add subtasks | add notes | toggle view notes | copy message | quit"
         )
         self.assertEqual(lines[actions_idx - 1], "")
         self.assertNotEqual(lines[actions_idx - 2], "")
 
-    def test_actions_highlight_expected_shortcuts(self):
+    def test_personal_actions_highlight_expected_shortcuts(self):
         tasks = [
             {
                 "id": "1",
@@ -183,12 +183,65 @@ class LatestTaskViewTests(unittest.TestCase):
         ]
         out = view_latest_task.build_latest_view(tasks)
         self.assertRegex(out, r"\x1b\[35mcreate \x1b\[0m\x1b\[32mt\x1b\[0m\x1b\[35mask")
-        self.assertRegex(out, r"\x1b\[35mset \x1b\[0m\x1b\[32ma\x1b\[0m\x1b\[35mssignee")
         self.assertRegex(out, r"\x1b\[35madd \x1b\[0m\x1b\[32ms\x1b\[0m\x1b\[35mubtasks")
         self.assertRegex(out, r"\x1b\[35madd \x1b\[0m\x1b\[32mn\x1b\[0m\x1b\[35motes")
-        self.assertRegex(out, r"\x1b\[35mconfirm \x1b\[0m\x1b\[32md\x1b\[0m\x1b\[35meadline extension")
         self.assertRegex(out, r"\x1b\[35mtoggle \x1b\[0m\x1b\[32mv\x1b\[0m\x1b\[35miew notes")
         self.assertRegex(out, r"\x1b\[35mcopy \x1b\[0m\x1b\[32mm\x1b\[0m\x1b\[35message")
+        self.assertNotRegex(out, r"\x1b\[35mset \x1b\[0m\x1b\[32ma\x1b\[0m\x1b\[35mssignee")
+        self.assertNotRegex(out, r"\x1b\[35mconfirm \x1b\[0m\x1b\[32md\x1b\[0m\x1b\[35meadline extension")
+
+    def test_coworker_actions_highlight_expected_shortcuts(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "Only",
+                "startAt": "2026-05-13T00:40:00Z",
+                "workMinutes": 120,
+                "children": [],
+            }
+        ]
+        out = view_latest_task.build_latest_view(tasks, input_file="/tmp/tasks_coworkers.json")
+        self.assertRegex(out, r"\x1b\[35mset \x1b\[0m\x1b\[32ma\x1b\[0m\x1b\[35mssignee")
+        self.assertRegex(out, r"\x1b\[35mconfirm \x1b\[0m\x1b\[32md\x1b\[0m\x1b\[35meadline extension")
+        self.assertNotRegex(out, r"\x1b\[35madd \x1b\[0m\x1b\[32mn\x1b\[0m\x1b\[35motes")
+        self.assertNotRegex(out, r"\x1b\[35mtoggle \x1b\[0m\x1b\[32mv\x1b\[0m\x1b\[35miew notes")
+        self.assertNotRegex(out, r"\x1b\[35mcreate \x1b\[0m\x1b\[32mt\x1b\[0m\x1b\[35mask")
+        self.assertNotRegex(out, r"\x1b\[35madd \x1b\[0m\x1b\[32ms\x1b\[0m\x1b\[35mubtasks")
+
+    def test_coworker_actions_include_copy_message_when_message_exists(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈）",
+                "assigner": "Emily Ding",
+                "stages": [
+                    {
+                        "type": "subs",
+                        "assignee": "Shawn",
+                        "startAt": "2026-06-09T03:35:00Z",
+                        "deadline": "2026-06-10T01:40:00Z",
+                        "workMinutes": 364,
+                        "contentSeconds": 364,
+                    }
+                ],
+                "children": [],
+            }
+        ]
+        out = view_latest_task.build_latest_view(tasks, input_file="/tmp/tasks_coworkers.json")
+        self.assertRegex(out, r"\x1b\[35mcopy \x1b\[0m\x1b\[32mm\x1b\[0m\x1b\[35message")
+
+    def test_coworker_actions_hide_copy_message_when_no_message_exists(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "Only",
+                "startAt": "2026-05-13T00:40:00Z",
+                "workMinutes": 120,
+                "children": [],
+            }
+        ]
+        out = view_latest_task.build_latest_view(tasks, input_file="/tmp/tasks_coworkers.json")
+        self.assertNotRegex(out, r"\x1b\[35mcopy \x1b\[0m\x1b\[32mm\x1b\[0m\x1b\[35message")
 
     def test_no_consecutive_empty_lines_with_message_status(self):
         tasks = [
