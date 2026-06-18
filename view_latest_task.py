@@ -487,7 +487,8 @@ def render_task_block(lines: list[str], task: dict, now_local: datetime, level: 
         if isinstance(assignee, str) and assignee.strip():
             lines.append(f'Assignee: {assignee}')
         lines.append(f'Work time: {fmt_work(work_minutes)}')
-        lines.append(f'Deadline: {color(to_display(deadline) if deadline else "-", YELLOW)}')
+        if task_type != "custom":
+            lines.append(f'Deadline: {color(to_display(deadline) if deadline else "-", YELLOW)}')
         notes = clean_notes(task)
         render_notes_block(lines, f'Notes ({len(notes)})', notes, show_subtask_notes)
         if not lines or lines[-1] != '':

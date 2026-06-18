@@ -251,6 +251,35 @@ class LatestTaskViewTests(unittest.TestCase):
         out = self.strip_ansi(view_latest_task.build_latest_view(tasks))
         self.assertIn("Extended deadline: 2026-05-13 Wed 11:00", out)
 
+    def test_custom_subtask_hides_deadline_line(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "Parent",
+                "startAt": "2026-06-19T00:00:00Z",
+                "deadline": "2026-06-10T01:40:00Z",
+                "workMinutes": 364,
+                "children": [
+                    {
+                        "id": "2",
+                        "name": "新聞英文與配音",
+                        "stages": [
+                            {
+                                "type": "custom",
+                                "workMinutes": 95,
+                            }
+                        ],
+                        "children": [],
+                    }
+                ],
+            }
+        ]
+        out = self.strip_ansi(view_latest_task.build_latest_view(tasks))
+        self.assertIn("Name: 新聞英文與配音", out)
+        self.assertIn("Type: custom", out)
+        self.assertIn("Work time: 1h 35m", out)
+        self.assertNotIn("Deadline: 2026-06-19 Fri 09:35", out)
+
     def test_child_blocks_have_single_blank_line_separator(self):
         tasks = [
             {
