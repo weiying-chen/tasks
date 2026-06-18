@@ -300,9 +300,36 @@ class LatestTaskActionsTests(unittest.TestCase):
                     "contentSeconds": 120,
                 }
             ],
-            "children": [
-                {"id": "2", "name": "新聞英文與配音", "workMinutes": 120, "children": []},
+            "children": [],
+        }
+        clipboard_text = (
+            "因deadline 已至，我先加時間 做其他事時間是 2時\n\n"
+            "新聞英文與配音 2時\n\n"
+            "三集大愛醫生館 deadline 由 6/10（三）09:40，延後至6/10（三）11:15，再請 Alex Chen方便時幫我確認，謝謝。"
+        )
+        status = view_latest_task.build_confirm_deadline_extension_status(
+            task,
+            clipboard_text,
+            now_local=datetime(2026, 6, 10, 10, 0, tzinfo=timezone(timedelta(hours=8))),
+        )
+        self.assertEqual(
+            status,
+            "Warning: Coworker deadline differs (provided 6/10（三）11:15, computed 6/10（三）11:40).",
+        )
+
+    def test_build_confirm_deadline_extension_status_reports_success_on_match(self):
+        task = {
+            "id": "1",
+            "name": "三集大愛醫生館",
+            "stages": [
+                {
+                    "type": "subs",
+                    "deadline": "2026-06-10T01:40:00Z",
+                    "workMinutes": 120,
+                    "contentSeconds": 120,
+                }
             ],
+            "children": [],
         }
         clipboard_text = (
             "因deadline 已至，我先加時間 做其他事時間是 1時35分\n\n"
@@ -316,8 +343,86 @@ class LatestTaskActionsTests(unittest.TestCase):
         )
         self.assertEqual(
             status,
-            "Warning: Coworker deadline differs (provided 6/10（三）11:15, computed 6/10（三）11:40).",
+            "Success: Confirm deadline extension checked (6/10（三）11:15).",
         )
+
+    def test_extract_deadline_extension_subtasks(self):
+        clipboard_text = (
+            "因deadline 已至，我先加時間 做其他事時間是 1時35分\n\n"
+            "新聞英文與配音 1時35分\n\n"
+            "三集大愛醫生館 deadline 由 6/10（三）09:40，延後至6/10（三）11:15，再請 Alex Chen方便時幫我確認，謝謝。"
+        )
+        self.assertEqual(
+            view_latest_task.extract_deadline_extension_subtasks(clipboard_text),
+            [("新聞英文與配音", 95)],
+        )
+
+    def test_ingest_deadline_extension_subtasks_adds_child(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "三集大愛醫生館",
+                "stages": [
+                    {
+                        "type": "subs",
+                        "deadline": "2026-06-10T01:40:00Z",
+                        "workMinutes": 364,
+                        "contentSeconds": 364,
+                    }
+                ],
+                "children": [],
+            }
+        ]
+        clipboard_text = (
+            "因deadline 已至，我先加時間 做其他事時間是 1時35分\n\n"
+            "新聞英文與配音 1時35分\n\n"
+            "三集大愛醫生館 deadline 由 6/10（三）09:40，延後至6/10（三）11:15，再請 Alex Chen方便時幫我確認，謝謝。"
+        )
+        inserted = view_latest_task.ingest_deadline_extension_subtasks(tasks, "1", clipboard_text)
+        self.assertEqual(inserted, 1)
+        self.assertEqual(
+            tasks[0]["children"],
+            [
+                {
+                    "id": "2",
+                    "name": "新聞英文與配音",
+                    "stages": [{"type": "custom", "workMinutes": 95}],
+                    "children": [],
+                }
+            ],
+        )
+
+    def test_ingest_deadline_extension_subtasks_is_idempotent_for_same_message(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "三集大愛醫生館",
+                "stages": [
+                    {
+                        "type": "subs",
+                        "deadline": "2026-06-10T01:40:00Z",
+                        "workMinutes": 364,
+                        "contentSeconds": 364,
+                    }
+                ],
+                "children": [
+                    {
+                        "id": "2",
+                        "name": "新聞英文與配音",
+                        "stages": [{"type": "custom", "workMinutes": 95}],
+                        "children": [],
+                    }
+                ],
+            }
+        ]
+        clipboard_text = (
+            "因deadline 已至，我先加時間 做其他事時間是 1時35分\n\n"
+            "新聞英文與配音 1時35分\n\n"
+            "三集大愛醫生館 deadline 由 6/10（三）09:40，延後至6/10（三）11:15，再請 Alex Chen方便時幫我確認，謝謝。"
+        )
+        inserted = view_latest_task.ingest_deadline_extension_subtasks(tasks, "1", clipboard_text)
+        self.assertEqual(inserted, 0)
+        self.assertEqual(len(tasks[0]["children"]), 1)
 
     def test_parse_next_task_clipboard_payload_plain_name(self):
         assignee, name = view_latest_task.parse_next_task_clipboard_payload("Alex | 新任務")

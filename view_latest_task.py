@@ -2,6 +2,7 @@
 import argparse
 import json
 import os
+import re
 import select
 import subprocess
 import sys
@@ -25,6 +26,7 @@ from create_message import (
     parse_deadline_transition_message,
     parse_task_assignment_task_name,
 )
+from text_to_json import next_numeric_task_id, normalize_task_shape
 from task_titles import extract_subs_task_name
 from work_time import add_work_minutes, next_work_start
 
@@ -212,14 +214,78 @@ def build_confirm_deadline_extension_status(task: dict, clipboard_text: str, now
     text = clipboard_text.strip()
     if not text:
         raise ValueError("Clipboard is empty.")
-    _, provided_deadline = parse_deadline_transition_message(text, year=now_local.year)
+    old_deadline, provided_deadline = parse_deadline_transition_message(text, year=now_local.year)
     computed_deadline = final_deadline_local(task)
+    parsed_extension_minutes = parse_deadline_extension_work_minutes(text)
+    if old_deadline is not None and parsed_extension_minutes > 0:
+        computed_deadline = add_work_minutes(old_deadline, parsed_extension_minutes)
     if provided_deadline == computed_deadline:
         return f"{CONFIRM_DEADLINE_EXTENSION_STATUS} ({format_message_date(computed_deadline)})."
     return (
         f"Warning: Coworker deadline differs (provided {format_message_date(provided_deadline)}, "
         f"computed {format_message_date(computed_deadline)})."
     )
+
+
+def extract_deadline_extension_subtasks(text: str) -> list[tuple[str, int]]:
+    subtasks: list[tuple[str, int]] = []
+    for raw_line in text.splitlines():
+        line = raw_line.strip()
+        if not line:
+            continue
+        if "deadline" in line.lower():
+            continue
+        if "做其他事時間是" in line:
+            continue
+        match = re.match(r"^(.+?)\s+((?:(\d+)時(?:(\d+)分)?)|(?:(\d+)分))$", line)
+        if not match:
+            continue
+        name = match.group(1).strip()
+        hours = int(match.group(3) or 0)
+        minutes = int(match.group(4) or match.group(5) or 0)
+        total_minutes = hours * 60 + minutes
+        if name and total_minutes > 0:
+            subtasks.append((name, total_minutes))
+    return subtasks
+
+
+def parse_deadline_extension_work_minutes(text: str) -> int:
+    return sum(minutes for _, minutes in extract_deadline_extension_subtasks(text))
+
+
+def ingest_deadline_extension_subtasks(tasks: list[dict], parent_id: str, clipboard_text: str) -> int:
+    parent = find_task_by_id(tasks, parent_id)
+    if not isinstance(parent, dict):
+        raise ValueError(f"Task id not found: {parent_id}")
+
+    children = parent.get("children")
+    if not isinstance(children, list):
+        children = []
+        parent["children"] = children
+
+    existing_pairs = set()
+    for child in children:
+        if not isinstance(child, dict):
+            continue
+        name = str(child.get("name") or "").strip()
+        minutes = get_task_work_minutes(child)
+        if name and isinstance(minutes, int) and minutes > 0:
+            existing_pairs.add((name, minutes))
+
+    inserted = 0
+    for name, minutes in extract_deadline_extension_subtasks(clipboard_text):
+        if (name, minutes) in existing_pairs:
+            continue
+        child = {
+            "id": next_numeric_task_id(tasks),
+            "name": name,
+            "stages": [{"type": "custom", "workMinutes": minutes}],
+            "children": [],
+        }
+        children.append(child)
+        existing_pairs.add((name, minutes))
+        inserted += 1
+    return inserted
 
 
 def parse_next_task_clipboard_payload(clipboard_text: str) -> tuple[str | None, str]:
@@ -762,6 +828,25 @@ def main():
                             check=True,
                         )
                         clipboard_text = clipboard_proc.stdout
+                        selected_id = str(selected_task.get("id") or "").strip()
+                        if not selected_id:
+                            status = color("Error: No selected task id found.", RED)
+                            status_until = time.time() + STATUS_TTL_SECONDS
+                            continue
+                        inserted_count = ingest_deadline_extension_subtasks(tasks, selected_id, clipboard_text)
+                        if inserted_count > 0:
+                            normalized_tasks = [normalize_task_shape(task) for task in tasks if isinstance(task, dict)]
+                            in_path.write_text(
+                                json.dumps(normalized_tasks, ensure_ascii=False, indent=2) + "\n",
+                                encoding="utf-8",
+                            )
+                            data = json.loads(in_path.read_text(encoding='utf-8'))
+                            tasks = normalize_tasks(data)
+                            selected_task = get_view_task(tasks, task_id=args.id)
+                            if not isinstance(selected_task, dict):
+                                status = color("Error: Selected task is invalid.", RED)
+                                status_until = time.time() + STATUS_TTL_SECONDS
+                                continue
                         message = build_confirm_deadline_extension_status(selected_task, clipboard_text)
                         status_color = YELLOW if message.startswith("Warning:") else GREEN
                         status = color(message, status_color)
