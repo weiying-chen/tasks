@@ -529,5 +529,21 @@
     ],
     "children": [],
     "sourceText": "請 Alex Chen 翻譯3集日日有新知，預計做7小時12分鐘，從6/18(四) 08:41開始算，deadline為6/18 (四)16:53，謝謝~"
+  },
+  {
+    "id": "43",
+    "name": "心靈講座(在不確定中走出確定 - 童子賢) 4 個短版",
+    "assigner": "Evelyn",
+    "stages": [
+      {
+        "type": "subs",
+        "startAt": "2026-06-18T08:53:00Z",
+        "deadline": "2026-06-25T03:53:00Z",
+        "workMinutes": 1680,
+        "contentSeconds": 2100
+      }
+    ],
+    "children": [],
+    "sourceText": "請 Alex Chen 翻譯 心靈講座(在不確定中走出確定 - 童子賢) 4 個短版, 長度35分, 預計翻譯28時(3天4時), 從6/18（四）16:53起算, deadline 為6/25(四)11:53, 謝謝！"
   }
 ]
