@@ -59,20 +59,25 @@ def parse_subs_input(text: str, year: int, task_id: str):
         raise ValueError("Cannot parse name")
     assigner = resolve_subs_assigner(name)
 
-    content_match = must_match(text, r"(?:長度|片長|長)\s*(?:共|合計)?\s*(\d+)\s*分(?:\s*(\d+)\s*秒)?", "content duration")
-    content_minutes = int(content_match.group(1))
-    content_seconds_extra = int(content_match.group(2) or 0)
-    content_seconds = content_minutes * 60 + content_seconds_extra
+    content_seconds = None
+    content_match = re.search(
+        r"(?:長度|片長|長)\s*(?:共|合計)?\s*(\d+)\s*(?:分(?:鐘)?|分鐘)(?:\s*(\d+)\s*秒)?",
+        text,
+    )
+    if content_match:
+        content_minutes = int(content_match.group(1))
+        content_seconds_extra = int(content_match.group(2) or 0)
+        content_seconds = content_minutes * 60 + content_seconds_extra
 
     work = must_match(
         text,
-        r"預計(?:翻譯|做)\s*(\d+)\s*(?:時|小時)(?:\s*(\d+)\s*分)?(?:\s*[（(][^）)]*[）)])?",
+        r"預計(?:翻譯|做)\s*(\d+)\s*(?:時|小時)(?:\s*(\d+)\s*(?:分|分鐘))?(?:\s*[（(][^）)]*[）)])?",
         "work time",
     )
     work_minutes = int(work.group(1)) * 60 + int(work.group(2) or 0)
 
     start = re.search(
-        r"(?:從|由)\s*(\d{1,2}/\d{1,2})\s*(?:[（(][^）)]*[）)])?\s*(\d{1,2}:\d{2})\s*起算",
+        r"(?:從|由)\s*(\d{1,2}/\d{1,2})\s*(?:[（(][^）)]*[）)])?\s*(\d{1,2}:\d{2})\s*(?:起算|開始算)",
         text,
     )
     dl = re.search(
@@ -88,8 +93,9 @@ def parse_subs_input(text: str, year: int, task_id: str):
     stage = {
         "type": "subs",
         "workMinutes": work_minutes,
-        "contentSeconds": content_seconds,
     }
+    if isinstance(content_seconds, int):
+        stage["contentSeconds"] = content_seconds
     if start and dl:
         created_at = parse_datetime(start.group(1), start.group(2), year)
         pm_deadline = parse_datetime(dl.group(1), dl.group(2), year)

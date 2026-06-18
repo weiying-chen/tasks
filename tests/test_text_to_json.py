@@ -92,6 +92,14 @@ class TextToJsonTests(unittest.TestCase):
         parsed = text_to_json.parse_source_text(text, [], 2026)
         self.assertEqual(parsed[0]["assigner"], "張牧軒 Shawn")
 
+    def test_subs_program_assigner_maps_daily_news_to_elijah(self):
+        text = (
+            "請 Someone 翻譯3集日日有新知（今天也要學新知），片長10分，"
+            "預計做1時，從6/18（四）08:41起算，deadline為6/18（四）09:41，謝謝！"
+        )
+        parsed = text_to_json.parse_source_text(text, [], 2026)
+        self.assertEqual(parsed[0]["assigner"], "Elijah Salie")
+
     def test_subs_program_assigner_preserves_leading_episode_count(self):
         text = (
             "請 Someone 翻譯3集我的阿公阿媽做慈濟, 長度7分, "
@@ -112,6 +120,18 @@ class TextToJsonTests(unittest.TestCase):
         self.assertEqual(get_task_content_seconds(task), 540)
         self.assertEqual(get_task_work_minutes(task), 432)
         self.assertEqual(normalize_stages(task)[0]["deadline"], "2026-06-03T03:45:00Z")
+
+    def test_parse_source_text_subs_accepts_minutes_suffix_and_start_alias(self):
+        text = (
+            "請 Alex Chen 翻譯3集日日有新知，預計做7小時12分鐘，"
+            "從6/18(四) 08:41開始算，deadline為6/18 (四)16:53，謝謝~"
+        )
+        parsed = text_to_json.parse_source_text(text, [], 2026)
+        task = parsed[0]
+        self.assertEqual(task["assigner"], "Elijah Salie")
+        self.assertEqual(get_task_work_minutes(task), 432)
+        self.assertEqual(normalize_stages(task)[0]["startAt"], "2026-06-18T00:41:00Z")
+        self.assertEqual(normalize_stages(task)[0]["deadline"], "2026-06-18T08:53:00Z")
 
     def test_parse_source_text_subs_alt_format(self):
         text = (
@@ -234,7 +254,10 @@ class TextToJsonTests(unittest.TestCase):
                 ("大愛真健康", "Emily Ding"),
                 ("我的阿公阿媽做慈濟", "Emily Ding"),
                 ("人文講堂", "Evelyn"),
+                ("心靈講座", "Evelyn"),
                 ("大愛學漢醫", "Syharn Shen"),
+                ("日日有新知", "Elijah Salie"),
+                ("集日日有新知", "Elijah Salie"),
                 ("慈濟的故事", "張牧軒 Shawn"),
                 ("精舍日常", "張牧軒 Shawn"),
             ],

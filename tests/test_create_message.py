@@ -270,6 +270,24 @@ class CreateMessageTests(unittest.TestCase):
         )
         self.assertIn("再麻煩@張牧軒 Shawn便時幫忙設deadline", message)
 
+    def test_next_task_message_uses_mapping_for_spiritual_talk(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "3集日日有新知 (如何讓蘋果更耐旱＋現代人都驚嘆的2500年前宇宙觀＋少睡多讀成績好?)",
+                "assigner": "Elijah Salie",
+                "deadline": "2026-06-18T08:53:00Z",
+                "children": [],
+            }
+        ]
+        message = create_message.create_message(
+            tasks,
+            msg_type="task-completion",
+            task_id="1",
+            next_task_name="心靈講座(在不確定中走出確定 - 童子賢) 4 個短版",
+        )
+        self.assertIn("再麻煩@Evelyn便時幫忙設deadline", message)
+
     def test_next_task_message_uses_mapping_for_citizens_story(self):
         tasks = [
             {

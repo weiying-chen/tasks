@@ -3,7 +3,10 @@ SUBS_PROGRAM_ASSIGNERS = {
     "大愛真健康": "Emily Ding",
     "我的阿公阿媽做慈濟": "Emily Ding",
     "人文講堂": "Evelyn",
+    "心靈講座": "Evelyn",
     "大愛學漢醫": "Syharn Shen",
+    "日日有新知": "Elijah Salie",
+    "集日日有新知": "Elijah Salie",
     "慈濟的故事": "張牧軒 Shawn",
     "精舍日常": "張牧軒 Shawn",
 }
