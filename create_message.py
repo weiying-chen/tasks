@@ -5,7 +5,7 @@ import re
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
-from task_deadline import require_task_deadline_local
+from task_deadline import require_task_deadline_local, task_deadline_local
 from task_stages import (
     get_task_assignee,
     get_task_content_seconds,
@@ -294,13 +294,6 @@ def task_assignment_action_text(task: dict) -> str:
     return "翻譯"
 
 
-def task_initiation_action_text(task: dict) -> str:
-    stage = str(get_task_stage(task) or "").strip().lower()
-    if stage == "edit":
-        return "我要接著審"
-    return "接下來我會開始翻譯"
-
-
 def format_task_assignment_message(task: dict) -> str:
     task_name = str(task.get("name") or "").strip()
     assignee = str(get_task_assignee(task) or "").strip()
@@ -341,23 +334,41 @@ def format_task_assignment_message(task: dict) -> str:
 
 def format_task_initiation_message(task: dict) -> str:
     task_name = str(task.get("name") or "").strip()
+    assignee = str(get_task_assignee(task) or "").strip()
     start_at = str(get_task_start_at(task) or "").strip()
-    if not task_name:
-        raise ValueError("Missing required task name for task-initiation message.")
+    work_minutes = get_task_work_minutes(task)
+    content_seconds = get_task_content_seconds(task)
+    deadline_local = task_deadline_local(task)
+    if not task_name or not assignee:
+        raise ValueError("Missing required fields for task-initiation message.")
     if not start_at:
         raise ValueError("Missing required startAt for task-initiation message.")
+    if not isinstance(work_minutes, int) or work_minutes <= 0:
+        raise ValueError("Missing required work minutes for task-initiation message.")
+    if not isinstance(content_seconds, int) or content_seconds < 0:
+        raise ValueError("Missing required content seconds for task-initiation message.")
+    if deadline_local is None:
+        raise ValueError("Missing required deadline for task-initiation message.")
 
-    assigner = str(task.get("assigner") or get_task_assignee(task) or "").strip()
-    mention = format_mention(assigner)
+    count_text, program_name, episodes = parse_task_assignment_task_name(task_name)
     start_text = format_message_date(to_local(start_at))
-    action_text = task_initiation_action_text(task)
-
-    if action_text == "我要接著審":
-        ask_text = f"請{mention}再給我deadline，" if mention else ""
-        return f"{action_text}{task_name}，{ask_text}deadline請由{start_text}開始算，謝謝。"
-
-    ask_text = f"，再麻煩{mention}方便時幫我設deadline" if mention else ""
-    return f"{action_text}{task_name}，deadline從{start_text}起算{ask_text}，謝謝。"
+    deadline_text = format_message_date(deadline_local)
+    action_text = task_assignment_action_text(task)
+    action_prefix = action_text if action_text == "翻譯" else f" {action_text}"
+    if count_text.isdigit():
+        count_display = format_small_chinese_number(int(count_text))
+    else:
+        count_display = count_text
+    episode_text = " + ".join(episodes)
+    message = (
+        f"請{format_mention(assignee)}{action_prefix}{count_display}集{program_name}（{episode_text}），"
+        f"片長共{format_content_duration_for_message(content_seconds)}，"
+    )
+    if action_text == "翻譯":
+        message += f"預計做{format_duration_for_summary_message(work_minutes)}，"
+    else:
+        message += f"預計製作{format_duration_for_summary_message(work_minutes)}，"
+    return message + f"從{start_text}起算，deadline {deadline_text}，謝謝！"
 
 
 def format_next_task_message(finished_task: dict, next_task_name: str, next_assigner: str | None = None) -> str:

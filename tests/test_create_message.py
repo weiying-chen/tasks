@@ -424,6 +424,7 @@ class CreateMessageTests(unittest.TestCase):
                         "stage": "translate",
                         "assignee": "Shawn",
                         "startAt": "2026-06-09T03:35:00Z",
+                        "deadline": "2026-06-10T01:40:00Z",
                         "workMinutes": 364,
                         "contentSeconds": 364,
                     }
@@ -435,8 +436,8 @@ class CreateMessageTests(unittest.TestCase):
         message = create_message.create_message(tasks, msg_type="task-initiation")
         self.assertEqual(
             message,
-            "接下來我會開始翻譯3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈），"
-            "deadline從6/9（二）11:35起算，再麻煩@Emily Ding方便時幫我設deadline，謝謝。",
+            "請@Shawn翻譯三集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈），"
+            "片長共6分04秒，預計做6時04分，從6/9（二）11:35起算，deadline 6/10（三）09:40，謝謝！",
         )
 
     def test_subs_initiation_message_uses_edit_wording(self):
@@ -451,8 +452,9 @@ class CreateMessageTests(unittest.TestCase):
                         "stage": "edit",
                         "assignee": "Shawn",
                         "startAt": "2026-06-02T05:32:00Z",
-                        "workMinutes": 182,
-                        "contentSeconds": 364,
+                        "deadline": "2026-06-02T08:18:00Z",
+                        "workMinutes": 166,
+                        "contentSeconds": 333,
                     }
                 ],
                 "children": [],
@@ -462,8 +464,8 @@ class CreateMessageTests(unittest.TestCase):
         message = create_message.create_message(tasks, msg_type="task-initiation")
         self.assertEqual(
             message,
-            "我要接著審3集大愛醫生館（杯弓蛇影 乳房腫瘤 + 鬼門關走一遭~冠心病 + 住輸尿管），"
-            "請@Alex Chen再給我deadline，deadline請由6/2（二）13:32開始算，謝謝。",
+            "請@Shawn edit + 定稿三集大愛醫生館（杯弓蛇影 乳房腫瘤 + 鬼門關走一遭~冠心病 + 住輸尿管），"
+            "片長共5分33秒，預計製作2時46分，從6/2（二）13:32起算，deadline 6/2（二）16:18，謝謝！",
         )
 
     def test_subs_summary_message_requires_parenthesized_episode_titles(self):
