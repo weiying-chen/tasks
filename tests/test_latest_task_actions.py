@@ -174,8 +174,8 @@ class LatestTaskActionsTests(unittest.TestCase):
         self.assertEqual(
             view_latest_task.build_message_target_options(latest, input_file="/tmp/tasks_coworkers.json"),
             [
-                ("task-initiation", "Task initiation message"),
                 ("task-assignment", "Task assignment message"),
+                ("task-initiation", "Task initiation message"),
             ],
         )
 

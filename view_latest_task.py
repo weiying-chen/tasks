@@ -379,8 +379,6 @@ def build_message_target_options(latest_task: dict | None = None, input_file: st
         task_name = str(latest_task.get("name") or "").strip()
         start_at = str(get_task_start_at(latest_task) or "").strip()
         assignee = str(get_task_assignee(latest_task) or "").strip()
-        if mode == "coworker" and start_at and assignee and task_deadline_local(latest_task) is not None:
-            options.append(("task-initiation", "Task initiation message"))
         if mode == "coworker" and task_name and assignee:
             try:
                 parse_task_assignment_task_name(task_name)
@@ -388,6 +386,8 @@ def build_message_target_options(latest_task: dict | None = None, input_file: st
                 pass
             else:
                 options.append(("task-assignment", "Task assignment message"))
+        if mode == "coworker" and start_at and assignee and task_deadline_local(latest_task) is not None:
+            options.append(("task-initiation", "Task initiation message"))
     return options
 
 
