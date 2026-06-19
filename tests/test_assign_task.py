@@ -235,6 +235,46 @@ class AssignTaskTests(unittest.TestCase):
                 "Emily Ding 請 Alex Chen 翻譯3集我的阿公阿媽做慈濟，謝謝~",
             )
 
+    def test_parse_task_start_message(self):
+        parsed = assign_task.parse_task_start_message(
+            "已完成翻譯報獎節目，接下來我會開始翻譯大愛醫生館 deadline從6/9 (二) 11:35 起算，再麻煩Alex Chen 方便時幫我設deadline，謝謝。",
+            year=2026,
+        )
+        self.assertEqual(
+            parsed,
+            {
+                "name": "大愛醫生館",
+                "startAt": "2026-06-09T03:35:00Z",
+            },
+        )
+
+    def test_confirm_task_start_sets_start_and_deadline(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈）",
+                "assigner": "Alex Chen",
+                "stages": [
+                    {
+                        "type": "subs",
+                        "stage": "translate",
+                        "assignee": "Emily Ding",
+                        "workMinutes": 364,
+                        "contentSeconds": 364,
+                    }
+                ],
+                "children": [],
+            }
+        ]
+        updated = assign_task.confirm_task_start(
+            tasks,
+            "已完成翻譯報獎節目，接下來我會開始翻譯大愛醫生館 deadline從6/9 (二) 11:35 起算，再麻煩Alex Chen 方便時幫我設deadline，謝謝。",
+            year=2026,
+        )
+        stage = updated[0]["stages"][0]
+        self.assertEqual(stage["startAt"], "2026-06-09T03:35:00Z")
+        self.assertEqual(stage["deadline"], "2026-06-10T01:40:00Z")
+
 
 if __name__ == "__main__":
     unittest.main()

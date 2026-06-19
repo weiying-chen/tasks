@@ -1,11 +1,15 @@
 import unittest
 from unittest import mock
 from datetime import datetime, timezone, timedelta
+import re
 
 import view_latest_task
 
 
 class LatestTaskActionsTests(unittest.TestCase):
+    def strip_ansi(self, text: str) -> str:
+        return re.sub(r"\x1b\[[0-9;]*m", "", text)
+
     def test_copy_success_status_messages(self):
         self.assertEqual(
             view_latest_task.DEADLINE_MESSAGE_COPIED_STATUS,
@@ -88,6 +92,25 @@ class LatestTaskActionsTests(unittest.TestCase):
             cmd,
             ["python3", "/tmp/assign_task.py", "--infile", "/tmp/tasks_coworkers.json", "__CLIPBOARD__"],
         )
+
+    def test_build_confirm_task_start_command(self):
+        cmd = view_latest_task.build_confirm_task_start_command("/tmp", "/tmp/tasks_coworkers.json")
+        self.assertEqual(
+            cmd,
+            [
+                "python3",
+                "/tmp/assign_task.py",
+                "--mode",
+                "task-start",
+                "--infile",
+                "/tmp/tasks_coworkers.json",
+                "__CLIPBOARD__",
+            ],
+        )
+
+    def test_build_actions_line_for_coworker_mode_includes_confirm_task_start(self):
+        line = self.strip_ansi(view_latest_task.build_actions_line(input_file="/tmp/tasks_coworkers.json"))
+        self.assertIn("confirm task start", line)
 
     def test_build_notes_target_options_parent_and_children(self):
         latest = {

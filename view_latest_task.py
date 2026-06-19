@@ -50,8 +50,8 @@ CONFIRM_DEADLINE_EXTENSION_STATUS = "Success: Confirm deadline extension checked
 TASK_INITIATION_MESSAGE_COPIED_STATUS = "Success: Task initiation message copied to clipboard"
 
 PERSONAL_ACTIONS = ("t", "s", "n", "v", "q")
-COWORKER_ACTIONS = ("a", "d", "q")
-ALL_ACTIONS = ("t", "a", "s", "n", "d", "v", "m", "q")
+COWORKER_ACTIONS = ("a", "c", "d", "q")
+ALL_ACTIONS = ("t", "a", "c", "s", "n", "d", "v", "m", "q")
 
 
 def fmt_work(minutes: int | None) -> str:
@@ -91,6 +91,7 @@ def build_actions_line(input_file: str | None = None, selected_task: dict | None
     labels = {
         "t": color('create ', MAGENTA) + color('t', GREEN) + color('ask', MAGENTA),
         "a": color('set ', MAGENTA) + color('a', GREEN) + color('ssignee', MAGENTA),
+        "c": color('c', GREEN) + color('onfirm task start', MAGENTA),
         "s": color('add ', MAGENTA) + color('s', GREEN) + color('ubtasks', MAGENTA),
         "n": color('add ', MAGENTA) + color('n', GREEN) + color('otes', MAGENTA),
         "d": color('confirm ', MAGENTA) + color('d', GREEN) + color('eadline extension', MAGENTA),
@@ -179,6 +180,14 @@ def build_add_task_command(script_dir: str, infile: str | None = None) -> list[s
 
 def build_assign_coworker_command(script_dir: str, infile: str | None = None) -> list[str]:
     cmd = ["python3", f"{script_dir}/assign_task.py"]
+    if infile:
+        cmd.extend(["--infile", infile])
+    cmd.append("__CLIPBOARD__")
+    return cmd
+
+
+def build_confirm_task_start_command(script_dir: str, infile: str | None = None) -> list[str]:
+    cmd = ["python3", f"{script_dir}/assign_task.py", "--mode", "task-start"]
     if infile:
         cmd.extend(["--infile", infile])
     cmd.append("__CLIPBOARD__")
@@ -747,6 +756,37 @@ def main():
                             status_until = 0.0
                     except Exception as exc:
                         status = color(f"Error: Assign failed: {exc}", RED)
+                        status_until = time.time() + STATUS_TTL_SECONDS
+                if ch == b"c" and "c" in base_allowed_actions:
+                    try:
+                        clipboard_proc = subprocess.run(
+                            ["wl-paste"],
+                            capture_output=True,
+                            text=True,
+                            check=True,
+                        )
+                        clipboard_text = clipboard_proc.stdout
+                        if not clipboard_text.strip():
+                            status = color("Error: Clipboard is empty.", RED)
+                            status_until = time.time() + STATUS_TTL_SECONDS
+                            continue
+                        cmd = build_confirm_task_start_command(script_dir, input_file)
+                        cmd[-1] = clipboard_text
+                        start_proc = subprocess.run(
+                            cmd,
+                            capture_output=True,
+                            text=True,
+                            cwd=script_dir,
+                        )
+                        if start_proc.returncode != 0:
+                            msg = (start_proc.stderr or start_proc.stdout or "Confirm task start failed").strip()
+                            status = color(f"Error: {msg}", RED)
+                            status_until = time.time() + STATUS_TTL_SECONDS
+                        else:
+                            status = ""
+                            status_until = 0.0
+                    except Exception as exc:
+                        status = color(f"Error: Confirm task start failed: {exc}", RED)
                         status_until = time.time() + STATUS_TTL_SECONDS
                 if ch == b"s" and "s" in base_allowed_actions:
                     try:
