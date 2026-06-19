@@ -21,7 +21,7 @@ def task_base_created_local(task: dict, now_local: datetime | None = None) -> da
     if isinstance(created_date, str):
         return datetime.fromisoformat(f"{created_date}T09:00:00+08:00")
 
-    return now_local
+    return None
 
 
 def task_deadline_local(task: dict, now_local: datetime | None = None) -> datetime | None:

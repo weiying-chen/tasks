@@ -276,6 +276,27 @@ class LatestTaskViewTests(unittest.TestCase):
         self.assertIn("Deadline: ", out)
         self.assertIn("Work time: 2h", out)
 
+    def test_initial_coworker_task_does_not_show_fake_start_or_deadline(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "三集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈）",
+                "stages": [
+                    {
+                        "type": "subs",
+                        "workMinutes": 364,
+                        "contentSeconds": 364,
+                    }
+                ],
+                "children": [],
+            }
+        ]
+        now_local = datetime(2026, 6, 19, 8, 0, tzinfo=timezone(timedelta(hours=8)))
+        out = self.strip_ansi(view_latest_task.build_latest_view(tasks, now_local, input_file="/tmp/tasks_coworkers.json"))
+        self.assertIn("Start: -", out)
+        self.assertIn("Deadline: -", out)
+        self.assertIn("Work time left: -", out)
+
     def test_work_seconds_between_skips_off_hours(self):
         start = datetime(2026, 5, 13, 16, 0, tzinfo=timezone(timedelta(hours=8)))
         end = datetime(2026, 5, 14, 9, 0, tzinfo=timezone(timedelta(hours=8)))

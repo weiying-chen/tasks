@@ -513,8 +513,8 @@ def render_notes_block(lines: list[str], title: str, notes: list[str], show_note
 
 
 def render_task_block(lines: list[str], task: dict, now_local: datetime, level: int, show_subtask_notes: bool) -> None:
-    created_base = task_base_created_local(task, now_local=now_local) or now_local
-    created = next_work_start(created_base)
+    created_base = task_base_created_local(task)
+    created = next_work_start(created_base) if created_base is not None else None
     deadline = task_deadline_local(task, now_local=now_local)
     work_minutes = get_task_work_minutes(task)
     task_type = get_task_type(task)
@@ -548,7 +548,7 @@ def render_task_block(lines: list[str], task: dict, now_local: datetime, level: 
             lines.append(f'Stage: {task_stage}')
         if isinstance(assignee, str) and assignee.strip():
             lines.append(f'Assignee: {assignee}')
-        lines.append(f'Start: {to_display(created)}')
+        lines.append(f'Start: {to_display(created) if created else "-"}')
         lines.append(f'Work time: {fmt_work(work_minutes)}')
 
         extended = None
@@ -568,9 +568,9 @@ def render_task_block(lines: list[str], task: dict, now_local: datetime, level: 
             countdown = fmt_countdown(now_local, deadline)
             resume_hint = fmt_resume_hint(now_local, deadline)
             lines.append(f'Work time left: {color(countdown, GREEN)}{resume_hint}')
-        lines.append('')
         children = task.get('children')
         if isinstance(children, list) and children:
+            lines.append('')
             lines.append(bold('Subtasks'))
             lines.append('')
 
