@@ -103,6 +103,40 @@ class LatestTaskViewTests(unittest.TestCase):
         self.assertIn("Notes (1)", out)
         self.assertIn("• subtask note", out)
 
+    def test_missing_core_fields_render_hyphen_lines(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "Parent",
+                "workMinutes": 120,
+                "children": [
+                    {
+                        "id": "2",
+                        "name": "Child",
+                        "workMinutes": 30,
+                        "children": [],
+                    }
+                ],
+            }
+        ]
+        out = self.strip_ansi(view_latest_task.build_latest_view(tasks))
+        self.assertIn("Type: -", out)
+        self.assertIn("Stage: -", out)
+        self.assertIn("Assignee: -", out)
+        self.assertIn("Notes: -", out)
+
+    def test_empty_notes_field_has_no_extra_blank_line_when_no_subtasks(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "Parent",
+                "workMinutes": 120,
+                "children": [],
+            }
+        ]
+        out = self.strip_ansi(view_latest_task.build_latest_view(tasks))
+        self.assertIn("Work time left: -\nNotes: -", out)
+
     def test_countdown_line_present(self):
         tasks = [
             {
@@ -385,7 +419,7 @@ class LatestTaskViewTests(unittest.TestCase):
         ]
         out = self.strip_ansi(view_latest_task.build_latest_view(tasks))
         self.assertIn(
-            "Deadline: 2026-05-13 Wed 10:00\n\nName: Child B",
+            "Deadline: 2026-05-13 Wed 10:00\nNotes: -\n\nName: Child B",
             out,
         )
 

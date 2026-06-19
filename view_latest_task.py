@@ -503,6 +503,8 @@ def clean_notes(task: dict) -> list[str]:
 
 def render_notes_block(lines: list[str], title: str, notes: list[str], show_notes: bool) -> None:
     if not notes:
+        if title == "Notes":
+            lines.append("Notes: -")
         return
     lines.append(title)
     lines.append('')
@@ -525,29 +527,23 @@ def render_task_block(lines: list[str], task: dict, now_local: datetime, level: 
 
     if level > 2:
         lines.append(f'Name: {name}')
-        if isinstance(task_type, str) and task_type.strip():
-            lines.append(f'Type: {task_type}')
-        if isinstance(task_stage, str) and task_stage.strip():
-            lines.append(f'Stage: {task_stage}')
-        if isinstance(assignee, str) and assignee.strip():
-            lines.append(f'Assignee: {assignee}')
+        lines.append(f'Type: {task_type if isinstance(task_type, str) and task_type.strip() else "-"}')
+        lines.append(f'Stage: {task_stage if isinstance(task_stage, str) and task_stage.strip() else "-"}')
+        lines.append(f'Assignee: {assignee if isinstance(assignee, str) and assignee.strip() else "-"}')
         lines.append(f'Work time: {fmt_work(work_minutes)}')
         if task_type != "custom":
             lines.append(f'Deadline: {color(to_display(deadline) if deadline else "-", YELLOW)}')
         notes = clean_notes(task)
-        render_notes_block(lines, f'Notes ({len(notes)})', notes, show_subtask_notes)
+        render_notes_block(lines, "Notes" if not notes else f'Notes ({len(notes)})', notes, show_subtask_notes)
         if not lines or lines[-1] != '':
             lines.append('')
     else:
         lines.append(bold('View task'))
         lines.append('')
         lines.append(f'Name: {name}')
-        if isinstance(task_type, str) and task_type.strip():
-            lines.append(f'Type: {task_type}')
-        if isinstance(task_stage, str) and task_stage.strip():
-            lines.append(f'Stage: {task_stage}')
-        if isinstance(assignee, str) and assignee.strip():
-            lines.append(f'Assignee: {assignee}')
+        lines.append(f'Type: {task_type if isinstance(task_type, str) and task_type.strip() else "-"}')
+        lines.append(f'Stage: {task_stage if isinstance(task_stage, str) and task_stage.strip() else "-"}')
+        lines.append(f'Assignee: {assignee if isinstance(assignee, str) and assignee.strip() else "-"}')
         lines.append(f'Start: {to_display(created) if created else "-"}')
         lines.append(f'Work time: {fmt_work(work_minutes)}')
 
@@ -581,7 +577,9 @@ def render_task_block(lines: list[str], task: dict, now_local: datetime, level: 
                     render_task_block(lines, child, now_local, level + 1, show_subtask_notes)
 
         notes = clean_notes(task)
-        render_notes_block(lines, bold(f'Notes ({len(notes)})'), notes, True)
+        if notes and (not lines or lines[-1] != ''):
+            lines.append('')
+        render_notes_block(lines, "Notes" if not notes else bold(f'Notes ({len(notes)})'), notes, True)
 
 
 def build_task_view(
