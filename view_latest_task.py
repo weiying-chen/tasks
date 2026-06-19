@@ -523,7 +523,14 @@ def render_notes_block(lines: list[str], title: str, notes: list[str], show_note
         lines.append('')
 
 
-def render_task_block(lines: list[str], task: dict, now_local: datetime, level: int, show_subtask_notes: bool) -> None:
+def render_task_block(
+    lines: list[str],
+    task: dict,
+    now_local: datetime,
+    level: int,
+    show_subtask_notes: bool,
+    show_notes: bool,
+) -> None:
     created_base = task_base_created_local(task)
     created = next_work_start(created_base) if created_base is not None else None
     deadline = task_deadline_local(task, now_local=now_local)
@@ -542,8 +549,9 @@ def render_task_block(lines: list[str], task: dict, now_local: datetime, level: 
         lines.append(f'Work time: {fmt_work(work_minutes)}')
         if task_type != "custom":
             lines.append(f'Deadline: {color(to_display(deadline) if deadline else "-", YELLOW)}')
-        notes = clean_notes(task)
-        render_notes_block(lines, "Notes" if not notes else f'Notes ({len(notes)})', notes, show_subtask_notes)
+        if show_notes:
+            notes = clean_notes(task)
+            render_notes_block(lines, "Notes" if not notes else f'Notes ({len(notes)})', notes, show_subtask_notes)
         if not lines or lines[-1] != '':
             lines.append('')
     else:
@@ -583,12 +591,20 @@ def render_task_block(lines: list[str], task: dict, now_local: datetime, level: 
         if isinstance(children, list):
             for child in children:
                 if isinstance(child, dict):
-                    render_task_block(lines, child, now_local, level + 1, show_subtask_notes)
+                    render_task_block(
+                        lines,
+                        child,
+                        now_local,
+                        level + 1,
+                        show_subtask_notes,
+                        show_notes,
+                    )
 
-        notes = clean_notes(task)
-        if notes and (not lines or lines[-1] != ''):
-            lines.append('')
-        render_notes_block(lines, "Notes" if not notes else bold(f'Notes ({len(notes)})'), notes, True)
+        if show_notes:
+            notes = clean_notes(task)
+            if notes and (not lines or lines[-1] != ''):
+                lines.append('')
+            render_notes_block(lines, "Notes" if not notes else bold(f'Notes ({len(notes)})'), notes, True)
 
 
 def build_task_view(
@@ -612,7 +628,15 @@ def build_task_view(
         lines.append(color('Selected task is invalid', YELLOW))
         return '\n'.join(lines) + '\n'
 
-    render_task_block(lines, selected, now_local, 2, show_subtask_notes)
+    show_notes = detect_action_mode(input_file) != "coworker"
+    render_task_block(
+        lines,
+        selected,
+        now_local,
+        2,
+        show_subtask_notes,
+        show_notes,
+    )
     if status:
         if not lines or lines[-1] != '':
             lines.append('')
