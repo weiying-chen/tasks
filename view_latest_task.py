@@ -91,7 +91,7 @@ def build_actions_line(input_file: str | None = None, selected_task: dict | None
     labels = {
         "t": color('create ', MAGENTA) + color('t', GREEN) + color('ask', MAGENTA),
         "a": color('set ', MAGENTA) + color('a', GREEN) + color('ssignee', MAGENTA),
-        "c": color('c', GREEN) + color('onfirm task start', MAGENTA),
+        "c": color('set start time', MAGENTA) + color(' (c)', GREEN),
         "s": color('add ', MAGENTA) + color('s', GREEN) + color('ubtasks', MAGENTA),
         "n": color('add ', MAGENTA) + color('n', GREEN) + color('otes', MAGENTA),
         "d": color('confirm ', MAGENTA) + color('d', GREEN) + color('eadline extension', MAGENTA),
@@ -563,7 +563,7 @@ def render_task_block(
         lines.append(f'Type: {task_type if isinstance(task_type, str) and task_type.strip() else "-"}')
         lines.append(f'Stage: {task_stage if isinstance(task_stage, str) and task_stage.strip() else "-"}')
         lines.append(f'Assignee: {assignee if isinstance(assignee, str) and assignee.strip() else "-"}')
-        lines.append(f'Start: {to_display(created) if created else "-"}')
+        lines.append(f'Start time: {to_display(created) if created else "-"}')
         lines.append(f'Work time: {fmt_work(work_minutes)}')
 
         extended = None
@@ -808,14 +808,14 @@ def main():
                             cwd=script_dir,
                         )
                         if start_proc.returncode != 0:
-                            msg = (start_proc.stderr or start_proc.stdout or "Confirm task start failed").strip()
+                            msg = (start_proc.stderr or start_proc.stdout or "Set start time failed").strip()
                             status = color(f"Error: {msg}", RED)
                             status_until = time.time() + STATUS_TTL_SECONDS
                         else:
                             status = ""
                             status_until = 0.0
                     except Exception as exc:
-                        status = color(f"Error: Confirm task start failed: {exc}", RED)
+                        status = color(f"Error: Set start time failed: {exc}", RED)
                         status_until = time.time() + STATUS_TTL_SECONDS
                 if ch == b"s" and "s" in base_allowed_actions:
                     try:
