@@ -50,8 +50,8 @@ CONFIRM_DEADLINE_EXTENSION_STATUS = "Success: Confirm deadline extension checked
 TASK_INITIATION_MESSAGE_COPIED_STATUS = "Success: Task initiation message copied to clipboard"
 
 PERSONAL_ACTIONS = ("t", "s", "n", "v", "q")
-COWORKER_ACTIONS = ("a", "c", "d", "q")
-ALL_ACTIONS = ("t", "a", "c", "s", "n", "d", "v", "m", "q")
+COWORKER_ACTIONS = ("a", "s", "d", "q")
+ALL_ACTIONS = ("t", "a", "s", "n", "d", "v", "m", "q")
 
 
 def fmt_work(minutes: int | None) -> str:
@@ -92,7 +92,11 @@ def build_actions_line(input_file: str | None = None, selected_task: dict | None
         "t": color('create ', MAGENTA) + color('t', GREEN) + color('ask', MAGENTA),
         "a": color('set ', MAGENTA) + color('a', GREEN) + color('ssignee', MAGENTA),
         "c": color('set start time', MAGENTA) + color(' (c)', GREEN),
-        "s": color('add ', MAGENTA) + color('s', GREEN) + color('ubtasks', MAGENTA),
+        "s": (
+            color('set ', MAGENTA) + color('s', GREEN) + color('tart time', MAGENTA)
+            if mode == "coworker"
+            else color('add ', MAGENTA) + color('s', GREEN) + color('ubtasks', MAGENTA)
+        ),
         "n": color('add ', MAGENTA) + color('n', GREEN) + color('otes', MAGENTA),
         "d": color('confirm ', MAGENTA) + color('d', GREEN) + color('eadline extension', MAGENTA),
         "v": color('toggle ', MAGENTA) + color('v', GREEN) + color('iew notes', MAGENTA),
@@ -852,7 +856,7 @@ def main():
                     except Exception as exc:
                         status = color(f"Error: Assign failed: {exc}", RED)
                         status_until = time.time() + STATUS_TTL_SECONDS
-                if ch == b"c" and "c" in base_allowed_actions:
+                if ch == b"s" and detect_action_mode(input_file) == "coworker" and "s" in base_allowed_actions:
                     try:
                         data = json.loads(in_path.read_text(encoding='utf-8'))
                         tasks = normalize_tasks(data)
@@ -884,7 +888,7 @@ def main():
                     except Exception as exc:
                         status = color(f"Error: Set start time failed: {exc}", RED)
                         status_until = time.time() + STATUS_TTL_SECONDS
-                if ch == b"s" and "s" in base_allowed_actions:
+                if ch == b"s" and detect_action_mode(input_file) != "coworker" and "s" in base_allowed_actions:
                     try:
                         data = json.loads(in_path.read_text(encoding='utf-8'))
                         tasks = normalize_tasks(data)

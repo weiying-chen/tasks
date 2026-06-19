@@ -236,6 +236,7 @@ class LatestTaskViewTests(unittest.TestCase):
         ]
         out = view_latest_task.build_latest_view(tasks, input_file="/tmp/tasks_coworkers.json")
         self.assertRegex(out, r"\x1b\[35mset \x1b\[0m\x1b\[32ma\x1b\[0m\x1b\[35mssignee")
+        self.assertRegex(out, r"\x1b\[35mset \x1b\[0m\x1b\[32ms\x1b\[0m\x1b\[35mtart time")
         self.assertRegex(out, r"\x1b\[35mconfirm \x1b\[0m\x1b\[32md\x1b\[0m\x1b\[35meadline extension")
         self.assertNotRegex(out, r"\x1b\[35madd \x1b\[0m\x1b\[32mn\x1b\[0m\x1b\[35motes")
         self.assertNotRegex(out, r"\x1b\[35mtoggle \x1b\[0m\x1b\[32mv\x1b\[0m\x1b\[35miew notes")
