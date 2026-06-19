@@ -270,23 +270,6 @@ def parse_task_assignment_task_name(task_name: str) -> tuple[str, str, list[str]
     return count, program, episodes
 
 
-def format_small_chinese_number(value: int) -> str:
-    digits = "零一二三四五六七八九"
-    if value < 0:
-        raise ValueError("Negative counts are not supported.")
-    if value < 10:
-        return digits[value]
-    if value < 20:
-        return "十" if value == 10 else f"十{digits[value - 10]}"
-    if value < 100:
-        tens, ones = divmod(value, 10)
-        out = f"{digits[tens]}十"
-        if ones:
-            out += digits[ones]
-        return out
-    return str(value)
-
-
 def task_assignment_action_text(task: dict) -> str:
     stage = str(get_task_stage(task) or "").strip().lower()
     if stage == "edit":
@@ -309,13 +292,9 @@ def format_task_assignment_message(task: dict) -> str:
     count_text, program_name, episodes = parse_task_assignment_task_name(task_name)
     action_text = task_assignment_action_text(task)
     action_prefix = action_text if action_text == "翻譯" else f" {action_text}"
-    if count_text.isdigit():
-        count_display = format_small_chinese_number(int(count_text))
-    else:
-        count_display = count_text
     episode_text = " + ".join(episodes)
     message = (
-        f"請{format_mention(assignee)}{action_prefix}{count_display}集{program_name}（{episode_text}），"
+        f"請{format_mention(assignee)}{action_prefix}{count_text}集{program_name}（{episode_text}），"
         f"片長共{format_content_duration_for_message(content_seconds)}，"
     )
     if action_text == "翻譯":
@@ -355,13 +334,9 @@ def format_task_initiation_message(task: dict) -> str:
     deadline_text = format_message_date(deadline_local)
     action_text = task_assignment_action_text(task)
     action_prefix = action_text if action_text == "翻譯" else f" {action_text}"
-    if count_text.isdigit():
-        count_display = format_small_chinese_number(int(count_text))
-    else:
-        count_display = count_text
     episode_text = " + ".join(episodes)
     message = (
-        f"請{format_mention(assignee)}{action_prefix}{count_display}集{program_name}（{episode_text}），"
+        f"請{format_mention(assignee)}{action_prefix}{count_text}集{program_name}（{episode_text}），"
         f"片長共{format_content_duration_for_message(content_seconds)}，"
     )
     if action_text == "翻譯":
