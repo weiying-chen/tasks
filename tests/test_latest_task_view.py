@@ -242,7 +242,7 @@ class LatestTaskViewTests(unittest.TestCase):
         self.assertNotRegex(out, r"\x1b\[35mcreate \x1b\[0m\x1b\[32mt\x1b\[0m\x1b\[35mask")
         self.assertNotRegex(out, r"\x1b\[35madd \x1b\[0m\x1b\[32ms\x1b\[0m\x1b\[35mubtasks")
 
-    def test_coworker_actions_include_copy_message_when_message_exists(self):
+    def test_coworker_actions_do_not_include_copy_message_when_message_exists(self):
         tasks = [
             {
                 "id": "1",
@@ -262,7 +262,7 @@ class LatestTaskViewTests(unittest.TestCase):
             }
         ]
         out = view_latest_task.build_latest_view(tasks, input_file="/tmp/tasks_coworkers.json")
-        self.assertRegex(out, r"\x1b\[35mcopy \x1b\[0m\x1b\[32mm\x1b\[0m\x1b\[35message")
+        self.assertNotRegex(out, r"\x1b\[35mcopy \x1b\[0m\x1b\[32mm\x1b\[0m\x1b\[35message")
 
     def test_coworker_actions_hide_copy_message_when_no_message_exists(self):
         tasks = [

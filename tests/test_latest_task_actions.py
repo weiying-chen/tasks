@@ -250,6 +250,38 @@ class LatestTaskActionsTests(unittest.TestCase):
             ],
         )
 
+    @mock.patch("view_latest_task.copy_to_clipboard")
+    @mock.patch("view_latest_task.subprocess.run")
+    def test_assign_coworker_and_copy_message_returns_assignment_status(self, run_mock, copy_mock):
+        run_mock.side_effect = [
+            mock.Mock(returncode=0, stdout="Assigned coworker in tasks.json", stderr=""),
+            mock.Mock(returncode=0, stdout="assignment message", stderr=""),
+        ]
+        status = view_latest_task.assign_coworker_and_copy_message(
+            "/tmp",
+            "/tmp/tasks_coworkers.json",
+            "9",
+            "clipboard text",
+        )
+        self.assertEqual(status, view_latest_task.SUBS_SUMMARY_MESSAGE_COPIED_STATUS)
+        copy_mock.assert_called_once_with("assignment message")
+
+    @mock.patch("view_latest_task.copy_to_clipboard")
+    @mock.patch("view_latest_task.subprocess.run")
+    def test_set_task_start_and_copy_message_returns_initiation_status(self, run_mock, copy_mock):
+        run_mock.side_effect = [
+            mock.Mock(returncode=0, stdout="Confirmed coworker task start in tasks.json", stderr=""),
+            mock.Mock(returncode=0, stdout="task initiation message", stderr=""),
+        ]
+        status = view_latest_task.set_task_start_and_copy_message(
+            "/tmp",
+            "/tmp/tasks_coworkers.json",
+            "9",
+            "clipboard text",
+        )
+        self.assertEqual(status, view_latest_task.TASK_INITIATION_MESSAGE_COPIED_STATUS)
+        copy_mock.assert_called_once_with("task initiation message")
+
     def test_stage_accessors_use_active_stage(self):
         task = {
             "name": "Parent",

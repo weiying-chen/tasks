@@ -86,7 +86,7 @@ def allowed_actions_for_mode(mode: str) -> tuple[str, ...]:
 def build_actions_line(input_file: str | None = None, selected_task: dict | None = None) -> str:
     mode = detect_action_mode(input_file)
     allowed = set(allowed_actions_for_mode(mode))
-    if build_message_target_options(selected_task, input_file=input_file):
+    if mode != "coworker" and build_message_target_options(selected_task, input_file=input_file):
         allowed.add("m")
     labels = {
         "t": color('create ', MAGENTA) + color('t', GREEN) + color('ask', MAGENTA),
@@ -255,6 +255,71 @@ def build_task_initiation_message_command(script_dir: str, infile: str, task_id:
         "--task-id",
         task_id,
     ]
+
+
+def copy_to_clipboard(text: str) -> None:
+    copy_proc = subprocess.Popen(
+        ["wl-copy"],
+        stdin=subprocess.PIPE,
+        text=True,
+    )
+    if copy_proc.stdin:
+        copy_proc.stdin.write(text)
+        copy_proc.stdin.close()
+
+
+def assign_coworker_and_copy_message(
+    script_dir: str,
+    infile: str,
+    task_id: str,
+    clipboard_text: str,
+) -> str:
+    cmd = build_assign_coworker_command(script_dir, infile)
+    cmd[-1] = clipboard_text
+    assign_proc = subprocess.run(
+        cmd,
+        capture_output=True,
+        text=True,
+        cwd=script_dir,
+    )
+    if assign_proc.returncode != 0:
+        raise RuntimeError((assign_proc.stderr or assign_proc.stdout or "Assign failed").strip())
+    msg_cmd = build_task_assignment_message_command(script_dir, infile, task_id)
+    msg_proc = subprocess.run(msg_cmd, capture_output=True, text=True)
+    if msg_proc.returncode != 0:
+        raise RuntimeError((msg_proc.stderr or msg_proc.stdout or "Message generation failed").strip())
+    message_text = msg_proc.stdout.strip()
+    if not message_text:
+        raise RuntimeError("Generated message is empty.")
+    copy_to_clipboard(message_text)
+    return SUBS_SUMMARY_MESSAGE_COPIED_STATUS
+
+
+def set_task_start_and_copy_message(
+    script_dir: str,
+    infile: str,
+    task_id: str,
+    clipboard_text: str,
+) -> str:
+    cmd = build_confirm_task_start_command(script_dir, infile)
+    cmd[-1] = clipboard_text
+    start_proc = subprocess.run(
+        cmd,
+        capture_output=True,
+        text=True,
+        cwd=script_dir,
+    )
+    if start_proc.returncode != 0:
+        raise RuntimeError((start_proc.stderr or start_proc.stdout or "Set start time failed").strip())
+    msg_cmd = build_task_initiation_message_command(script_dir, infile, task_id)
+    msg_proc = subprocess.run(msg_cmd, capture_output=True, text=True)
+    if msg_proc.returncode != 0:
+        raise RuntimeError((msg_proc.stderr or msg_proc.stdout or "Message generation failed").strip())
+    message_text = msg_proc.stdout.strip()
+    if not message_text:
+        raise RuntimeError("Generated message is empty.")
+    copy_to_clipboard(message_text)
+    return TASK_INITIATION_MESSAGE_COPIED_STATUS
 
 
 def build_confirm_deadline_extension_status(task: dict, clipboard_text: str, now_local: datetime | None = None) -> str:
@@ -757,6 +822,14 @@ def main():
                         status_until = time.time() + STATUS_TTL_SECONDS
                 if ch == b"a" and "a" in base_allowed_actions:
                     try:
+                        data = json.loads(in_path.read_text(encoding='utf-8'))
+                        tasks = normalize_tasks(data)
+                        selected_task = get_view_task(tasks, task_id=args.id)
+                        selected_id = str(selected_task.get("id") or "").strip() if isinstance(selected_task, dict) else ""
+                        if not selected_id:
+                            status = color("Error: No selected task id found.", RED)
+                            status_until = time.time() + STATUS_TTL_SECONDS
+                            continue
                         clipboard_proc = subprocess.run(
                             ["wl-paste"],
                             capture_output=True,
@@ -768,26 +841,27 @@ def main():
                             status = color("Error: Clipboard is empty.", RED)
                             status_until = time.time() + STATUS_TTL_SECONDS
                             continue
-                        cmd = build_assign_coworker_command(script_dir, input_file)
-                        cmd[-1] = clipboard_text
-                        assign_proc = subprocess.run(
-                            cmd,
-                            capture_output=True,
-                            text=True,
-                            cwd=script_dir,
+                        copied_status = assign_coworker_and_copy_message(
+                            script_dir,
+                            str(in_path.resolve()),
+                            selected_id,
+                            clipboard_text,
                         )
-                        if assign_proc.returncode != 0:
-                            msg = (assign_proc.stderr or assign_proc.stdout or "Assign failed").strip()
-                            status = color(f"Error: {msg}", RED)
-                            status_until = time.time() + STATUS_TTL_SECONDS
-                        else:
-                            status = ""
-                            status_until = 0.0
+                        status = color(copied_status, GREEN)
+                        status_until = time.time() + STATUS_TTL_SECONDS
                     except Exception as exc:
                         status = color(f"Error: Assign failed: {exc}", RED)
                         status_until = time.time() + STATUS_TTL_SECONDS
                 if ch == b"c" and "c" in base_allowed_actions:
                     try:
+                        data = json.loads(in_path.read_text(encoding='utf-8'))
+                        tasks = normalize_tasks(data)
+                        selected_task = get_view_task(tasks, task_id=args.id)
+                        selected_id = str(selected_task.get("id") or "").strip() if isinstance(selected_task, dict) else ""
+                        if not selected_id:
+                            status = color("Error: No selected task id found.", RED)
+                            status_until = time.time() + STATUS_TTL_SECONDS
+                            continue
                         clipboard_proc = subprocess.run(
                             ["wl-paste"],
                             capture_output=True,
@@ -799,21 +873,14 @@ def main():
                             status = color("Error: Clipboard is empty.", RED)
                             status_until = time.time() + STATUS_TTL_SECONDS
                             continue
-                        cmd = build_confirm_task_start_command(script_dir, input_file)
-                        cmd[-1] = clipboard_text
-                        start_proc = subprocess.run(
-                            cmd,
-                            capture_output=True,
-                            text=True,
-                            cwd=script_dir,
+                        copied_status = set_task_start_and_copy_message(
+                            script_dir,
+                            str(in_path.resolve()),
+                            selected_id,
+                            clipboard_text,
                         )
-                        if start_proc.returncode != 0:
-                            msg = (start_proc.stderr or start_proc.stdout or "Set start time failed").strip()
-                            status = color(f"Error: {msg}", RED)
-                            status_until = time.time() + STATUS_TTL_SECONDS
-                        else:
-                            status = ""
-                            status_until = 0.0
+                        status = color(copied_status, GREEN)
+                        status_until = time.time() + STATUS_TTL_SECONDS
                     except Exception as exc:
                         status = color(f"Error: Set start time failed: {exc}", RED)
                         status_until = time.time() + STATUS_TTL_SECONDS
