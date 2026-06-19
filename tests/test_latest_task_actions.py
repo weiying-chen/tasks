@@ -149,8 +149,8 @@ class LatestTaskActionsTests(unittest.TestCase):
         self.assertEqual(
             view_latest_task.build_message_target_options(latest, input_file="/tmp/tasks.json"),
             [
-                ("task-completion", "Task completion message"),
                 ("deadline-extension", "Deadline extension message"),
+                ("task-completion", "Task completion message"),
             ],
         )
 
