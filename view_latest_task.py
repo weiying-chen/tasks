@@ -530,6 +530,7 @@ def render_task_block(
     level: int,
     show_subtask_notes: bool,
     show_notes: bool,
+    show_subtask_assignment_fields: bool,
 ) -> None:
     created_base = task_base_created_local(task)
     created = next_work_start(created_base) if created_base is not None else None
@@ -544,8 +545,9 @@ def render_task_block(
     if level > 2:
         lines.append(f'Name: {name}')
         lines.append(f'Type: {task_type if isinstance(task_type, str) and task_type.strip() else "-"}')
-        lines.append(f'Stage: {task_stage if isinstance(task_stage, str) and task_stage.strip() else "-"}')
-        lines.append(f'Assignee: {assignee if isinstance(assignee, str) and assignee.strip() else "-"}')
+        if show_subtask_assignment_fields:
+            lines.append(f'Stage: {task_stage if isinstance(task_stage, str) and task_stage.strip() else "-"}')
+            lines.append(f'Assignee: {assignee if isinstance(assignee, str) and assignee.strip() else "-"}')
         lines.append(f'Work time: {fmt_work(work_minutes)}')
         if task_type != "custom":
             lines.append(f'Deadline: {color(to_display(deadline) if deadline else "-", YELLOW)}')
@@ -598,6 +600,7 @@ def render_task_block(
                         level + 1,
                         show_subtask_notes,
                         show_notes,
+                        show_subtask_assignment_fields,
                     )
 
         if show_notes:
@@ -629,6 +632,7 @@ def build_task_view(
         return '\n'.join(lines) + '\n'
 
     show_notes = detect_action_mode(input_file) != "coworker"
+    show_subtask_assignment_fields = detect_action_mode(input_file) != "coworker"
     render_task_block(
         lines,
         selected,
@@ -636,6 +640,7 @@ def build_task_view(
         2,
         show_subtask_notes,
         show_notes,
+        show_subtask_assignment_fields,
     )
     if status:
         if not lines or lines[-1] != '':

@@ -361,6 +361,38 @@ class LatestTaskViewTests(unittest.TestCase):
         out = self.strip_ansi(view_latest_task.build_latest_view(tasks, input_file="/tmp/tasks_coworkers.json"))
         self.assertNotIn("Notes: -", out)
 
+    def test_coworker_view_hides_stage_and_assignee_for_subtasks(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈）",
+                "stages": [
+                    {
+                        "type": "subs",
+                        "workMinutes": 364,
+                        "contentSeconds": 364,
+                    }
+                ],
+                "children": [
+                    {
+                        "id": "2",
+                        "name": "新聞英文與配音",
+                        "stages": [
+                            {
+                                "type": "custom",
+                                "workMinutes": 95,
+                            }
+                        ],
+                        "children": [],
+                    }
+                ],
+            }
+        ]
+        out = self.strip_ansi(view_latest_task.build_latest_view(tasks, input_file="/tmp/tasks_coworkers.json"))
+        self.assertIn("Name: 新聞英文與配音", out)
+        self.assertNotIn("Name: 新聞英文與配音\nType: custom\nStage:", out)
+        self.assertNotIn("Assignee:", out.split("Subtasks", 1)[1])
+
     def test_work_seconds_between_skips_off_hours(self):
         start = datetime(2026, 5, 13, 16, 0, tzinfo=timezone(timedelta(hours=8)))
         end = datetime(2026, 5, 14, 9, 0, tzinfo=timezone(timedelta(hours=8)))
