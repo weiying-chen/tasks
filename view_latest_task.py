@@ -371,8 +371,8 @@ def build_message_target_options(latest_task: dict | None = None, input_file: st
     if mode != "coworker":
         options.extend(
             [
-                ("deadline-extension", "Deadline extension message"),
                 ("task-completion", "Task completion message"),
+                ("deadline-extension", "Deadline extension message"),
             ]
         )
     if isinstance(latest_task, dict):
