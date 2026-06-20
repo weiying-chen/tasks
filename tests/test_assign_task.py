@@ -121,7 +121,7 @@ class AssignTaskTests(unittest.TestCase):
         stage = updated[0]["stages"][0]
         self.assertEqual(updated[0]["assigner"], "Emily Ding")
         self.assertEqual(stage["assignee"], "Alex Chen")
-        self.assertEqual(stage["stage"], "translate")
+        self.assertEqual(stage["name"], "translate")
         self.assertNotIn("status", stage)
 
     def test_assign_edit_task_updates_matching_stage(self):
@@ -147,7 +147,7 @@ class AssignTaskTests(unittest.TestCase):
         stage = updated[0]["stages"][0]
         self.assertEqual(updated[0]["assigner"], "Emily Ding")
         self.assertEqual(stage["assignee"], "Alex Chen")
-        self.assertEqual(stage["stage"], "edit")
+        self.assertEqual(stage["name"], "edit")
         self.assertNotIn("status", stage)
 
     def test_assign_edit_task_sets_half_of_translate_minutes(self):
@@ -177,7 +177,7 @@ class AssignTaskTests(unittest.TestCase):
         )
         stage = updated[0]["stages"][1]
         self.assertEqual(stage["assignee"], "Alex Chen")
-        self.assertEqual(stage["stage"], "edit")
+        self.assertEqual(stage["name"], "edit")
         self.assertEqual(stage["workMinutes"], 120)
 
     def test_assign_task_matches_short_program_name_to_full_task_name(self):
@@ -202,7 +202,7 @@ class AssignTaskTests(unittest.TestCase):
         )
         stage = updated[0]["stages"][0]
         self.assertEqual(stage["assignee"], "張牧軒 Shawn")
-        self.assertEqual(stage["stage"], "edit")
+        self.assertEqual(stage["name"], "edit")
         self.assertNotIn("status", stage)
 
     def test_assign_task_does_not_match_partial_prefix_only(self):

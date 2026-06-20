@@ -53,7 +53,6 @@
     "assigner": "Evelyn",
     "stages": [
       {
-        "type": "subs",
         "startAt": "2026-05-28T03:40:00Z",
         "deadline": "2026-06-01T03:40:00Z",
         "workMinutes": 960,
@@ -73,21 +72,20 @@
         "name": "墨西哥浴佛併",
         "stages": [
           {
-            "type": "news",
             "startAt": "2026-06-01T00:28:58.413922Z",
             "workMinutes": 180,
             "contentSeconds": 11760
           }
         ],
         "children": [],
-        "sourceText": "Alex Chen: 墨西哥浴佛併 3:16"
+        "sourceText": "Alex Chen: 墨西哥浴佛併 3:16",
+        "type": "news"
       },
       {
         "id": "16",
         "name": "勤拭心鏡度有緣",
         "stages": [
           {
-            "type": "posts",
             "startAt": "2026-06-01T00:29:44.640583Z",
             "workMinutes": 50
           }
@@ -97,14 +95,14 @@
           "Use Venerable Master Cheng Yen's specific wording whenever possible instead of abstract summaries."
         ],
         "children": [],
-        "sourceText": "1.\talex\n5/22勤拭心鏡度有緣\nhttps://www.daai.tv/master/life-wisdom/P90230267?more=true"
+        "sourceText": "1.\talex\n5/22勤拭心鏡度有緣\nhttps://www.daai.tv/master/life-wisdom/P90230267?more=true",
+        "type": "posts"
       },
       {
         "id": "17",
         "name": "學覺菩薩從善法",
         "stages": [
           {
-            "type": "posts",
             "startAt": "2026-06-01T00:29:44.640583Z",
             "workMinutes": 50
           }
@@ -114,38 +112,40 @@
           "Added #JingSiAphorisms and #靜思語 because they were a central part of the story."
         ],
         "children": [],
-        "sourceText": "2.\talex\n5/23學覺菩薩從善法\nhttps://www.daai.tv/master/life-wisdom/P90230268?more=true"
+        "sourceText": "2.\talex\n5/23學覺菩薩從善法\nhttps://www.daai.tv/master/life-wisdom/P90230268?more=true",
+        "type": "posts"
       },
       {
         "id": "18",
         "name": "悉達多校創佳績",
         "stages": [
           {
-            "type": "news",
             "startAt": "2026-06-01T00:35:55.341064Z",
             "workMinutes": 130,
             "contentSeconds": 7860
           }
         ],
         "children": [],
-        "sourceText": "Alex Chen: 悉達多校創佳績 2:11"
+        "sourceText": "Alex Chen: 悉達多校創佳績 2:11",
+        "type": "news"
       },
       {
         "id": "19",
         "name": "貝克斯菲爾德義診",
         "stages": [
           {
-            "type": "news",
             "startAt": "2026-06-02T01:00:00Z",
             "workMinutes": 120,
             "contentSeconds": 7560
           }
         ],
         "children": [],
-        "sourceText": "Alex Chen: 貝克斯菲爾德義診 2:06"
+        "sourceText": "Alex Chen: 貝克斯菲爾德義診 2:06",
+        "type": "news"
       }
     ],
-    "sourceText": "請 Alex Chen 翻譯人文講堂 (送一份專業的禮物 職涯發光 - 方植永) 6 個短版, 長度20分, 預計做16時(2天), 從5/28（四）11:40起算，deadline 6/1(一)11:40，謝謝！"
+    "sourceText": "請 Alex Chen 翻譯人文講堂 (送一份專業的禮物 職涯發光 - 方植永) 6 個短版, 長度20分, 預計做16時(2天), 從5/28（四）11:40起算，deadline 6/1(一)11:40，謝謝！",
+    "type": "subs"
   },
   {
     "id": "22",
@@ -153,7 +153,6 @@
     "assigner": "Emily Ding",
     "stages": [
       {
-        "type": "subs",
         "startAt": "2026-06-02T05:30:00Z",
         "deadline": "2026-06-03T03:45:00Z",
         "workMinutes": 432,
@@ -196,17 +195,18 @@
         "name": "瓜捐課桌椅",
         "stages": [
           {
-            "type": "news",
             "startAt": "2026-06-03T01:00:00Z",
             "workMinutes": 90,
             "contentSeconds": 5280
           }
         ],
         "children": [],
-        "sourceText": "Alex Chen: 瓜捐課桌椅 1:28"
+        "sourceText": "Alex Chen: 瓜捐課桌椅 1:28",
+        "type": "news"
       }
     ],
-    "sourceText": "接下來請 Alex Chen 翻譯3集我的阿公阿媽做慈濟，片長合計9分，預計做7 時 12 分，從6/2（二）13:30起算，deadline 為 6/3（三）11:45，謝謝 ~"
+    "sourceText": "接下來請 Alex Chen 翻譯3集我的阿公阿媽做慈濟，片長合計9分，預計做7 時 12 分，從6/2（二）13:30起算，deadline 為 6/3（三）11:45，謝謝 ~",
+    "type": "subs"
   },
   {
     "id": "24",
@@ -214,7 +214,6 @@
     "assigner": "Evelyn",
     "stages": [
       {
-        "type": "subs",
         "startAt": "2026-06-03T06:15:00Z",
         "deadline": "2026-06-05T07:03:00Z",
         "workMinutes": 1008,
@@ -236,7 +235,6 @@
         "name": "伊姆斯動工完整",
         "stages": [
           {
-            "type": "news",
             "startAt": "2026-06-04T00:20:06.279114Z",
             "deadline": "2026-06-04T03:20:06.279114Z",
             "workMinutes": 180,
@@ -244,42 +242,42 @@
           }
         ],
         "children": [],
-        "sourceText": "Alex Chen: 伊姆斯動工完整 3:41"
+        "sourceText": "Alex Chen: 伊姆斯動工完整 3:41",
+        "type": "news"
       },
       {
         "id": "26",
         "name": "多明尼加義診",
         "stages": [
           {
-            "type": "news",
             "startAt": "2026-06-05T00:21:05.627096Z",
             "workMinutes": 80,
             "contentSeconds": 4440
           }
         ],
         "children": [],
-        "sourceText": "Alex Chen: 多明尼加義診 1:14"
+        "sourceText": "Alex Chen: 多明尼加義診 1:14",
+        "type": "news"
       },
       {
         "id": "27",
         "name": "爾灣人文揚名",
         "stages": [
           {
-            "type": "news",
             "startAt": "2026-06-05T00:21:05.627096Z",
             "workMinutes": 100,
             "contentSeconds": 6300
           }
         ],
         "children": [],
-        "sourceText": "Alex Chen: 爾灣人文揚名1:45"
+        "sourceText": "Alex Chen: 爾灣人文揚名1:45",
+        "type": "news"
       },
       {
         "id": "28",
         "name": "運轉法輪入人群",
         "stages": [
           {
-            "type": "posts",
             "startAt": "2026-06-08T00:33:21.074037Z",
             "workMinutes": 50
           }
@@ -288,14 +286,14 @@
           "Used Wu Hong-tai's story as the hook, but added some of the 愛心店 and helping-others message so the intro better reflected the overall theme."
         ],
         "children": [],
-        "sourceText": "2.\talex\n5/30運轉法輪入人群\nhttps://www.daai.tv/master/life-wisdom/P90230275?more=true"
+        "sourceText": "2.\talex\n5/30運轉法輪入人群\nhttps://www.daai.tv/master/life-wisdom/P90230275?more=true",
+        "type": "posts"
       },
       {
         "id": "29",
         "name": "慈航普度募愛心",
         "stages": [
           {
-            "type": "posts",
             "startAt": "2026-06-08T00:33:21.074037Z",
             "workMinutes": 50
           }
@@ -304,10 +302,12 @@
           "Expanded the Cambodia-focused intro to include the India stories and better reflect the episode's overall theme of helping others through small daily acts of giving."
         ],
         "children": [],
-        "sourceText": "4.\talex\n6/1慈航普度募愛心\nhttps://www.daai.tv/master/life-wisdom/P90230277?more=true"
+        "sourceText": "4.\talex\n6/1慈航普度募愛心\nhttps://www.daai.tv/master/life-wisdom/P90230277?more=true",
+        "type": "posts"
       }
     ],
-    "sourceText": "請 Alex Chen 翻譯人文講堂 (親密搶奪：人性與法律的修煉 - 李永然) 6 個短版, 長度21分, 預計做16時48分(2天48分), 從6/3（三）14:15起算，deadline 6/5(五)15:03，謝謝！"
+    "sourceText": "請 Alex Chen 翻譯人文講堂 (親密搶奪：人性與法律的修煉 - 李永然) 6 個短版, 長度21分, 預計做16時48分(2天48分), 從6/3（三）14:15起算，deadline 6/5(五)15:03，謝謝！",
+    "type": "subs"
   },
   {
     "id": "30",
@@ -315,7 +315,6 @@
     "assigner": "Syharn Shen",
     "stages": [
       {
-        "type": "subs",
         "startAt": "2026-06-08T06:43:00Z",
         "deadline": "2026-06-09T08:20:00Z",
         "workMinutes": 576,
@@ -345,17 +344,18 @@
         "name": "莫三食材捐醫院",
         "stages": [
           {
-            "type": "news",
             "startAt": "2026-06-09T00:43:09.844887Z",
             "workMinutes": 70,
             "contentSeconds": 3960
           }
         ],
         "children": [],
-        "sourceText": "Alex Chen: 莫三食材捐醫院 1:06"
+        "sourceText": "Alex Chen: 莫三食材捐醫院 1:06",
+        "type": "news"
       }
     ],
-    "sourceText": "請 Alex Chen 翻譯大愛學漢醫 (排氣不停 中醫有解)，片長12分，預計做9小時36分，從6/8 (一) 14:43起算，deadline為6/9 (二) 16:20 ，謝謝~"
+    "sourceText": "請 Alex Chen 翻譯大愛學漢醫 (排氣不停 中醫有解)，片長12分，預計做9小時36分，從6/8 (一) 14:43起算，deadline為6/9 (二) 16:20 ，謝謝~",
+    "type": "subs"
   },
   {
     "id": "32",
@@ -363,7 +363,6 @@
     "assigner": "Evelyn",
     "stages": [
       {
-        "type": "subs",
         "startAt": "2026-06-10T00:30:00Z",
         "deadline": "2026-06-12T00:30:00Z",
         "workMinutes": 960,
@@ -383,45 +382,46 @@
         "name": "核桃環保工藝",
         "stages": [
           {
-            "type": "news",
             "startAt": "2026-06-10T00:35:56.744907Z",
             "workMinutes": 110,
             "contentSeconds": 6720
           }
         ],
         "children": [],
-        "sourceText": "Alex Chen: 核桃環保工藝 1:52"
+        "sourceText": "Alex Chen: 核桃環保工藝 1:52",
+        "type": "news"
       },
       {
         "id": "34",
         "name": "印度5月慈善日",
         "stages": [
           {
-            "type": "news",
             "startAt": "2026-06-11T00:23:56.375068Z",
             "workMinutes": 90,
             "contentSeconds": 4980
           }
         ],
         "children": [],
-        "sourceText": "Alex Chen: 印度5月慈善日 1:23"
+        "sourceText": "Alex Chen: 印度5月慈善日 1:23",
+        "type": "news"
       },
       {
         "id": "35",
         "name": "麻坡撿跑行動",
         "stages": [
           {
-            "type": "news",
             "startAt": "2026-06-12T00:50:54.084062Z",
             "workMinutes": 130,
             "contentSeconds": 7980
           }
         ],
         "children": [],
-        "sourceText": "Alex Chen: 麻坡撿跑行動 2:13"
+        "sourceText": "Alex Chen: 麻坡撿跑行動 2:13",
+        "type": "news"
       }
     ],
-    "sourceText": "請 Alex Chen 翻譯人文講堂 (其實你胖得很冤枉 - 陳欣湄) 4個短版,  長度20分, 預計翻譯16時(2天), 從6/10（三）08:30起算, deadline 為6/12(五)8:30, 謝謝！"
+    "sourceText": "請 Alex Chen 翻譯人文講堂 (其實你胖得很冤枉 - 陳欣湄) 4個短版,  長度20分, 預計翻譯16時(2天), 從6/10（三）08:30起算, deadline 為6/12(五)8:30, 謝謝！",
+    "type": "subs"
   },
   {
     "id": "36",
@@ -429,7 +429,6 @@
     "assigner": "張牧軒",
     "stages": [
       {
-        "type": "subs",
         "startAt": "2026-06-12T07:00:00Z",
         "deadline": "2026-06-17T01:51:00Z",
         "workMinutes": 1191,
@@ -442,20 +441,19 @@
         "name": "愛善傳承締祥和",
         "stages": [
           {
-            "type": "posts",
             "startAt": "2026-06-15T00:37:33.690622Z",
             "workMinutes": 50
           }
         ],
         "children": [],
-        "sourceText": "1.\talex\n6/5愛善傳承締祥和\nhttps://www.daai.tv/master/life-wisdom/P90230281?more=true"
+        "sourceText": "1.\talex\n6/5愛善傳承締祥和\nhttps://www.daai.tv/master/life-wisdom/P90230281?more=true",
+        "type": "posts"
       },
       {
         "id": "38",
         "name": "愛滿地慈少畢典",
         "stages": [
           {
-            "type": "news",
             "startAt": "2026-06-15T01:14:59.857631Z",
             "workMinutes": 130,
             "contentSeconds": 7920
@@ -466,14 +464,14 @@
           "Remember to include the closing phrase \"Let's take a listen\" at the end."
         ],
         "children": [],
-        "sourceText": "Alex Chen: 愛滿地慈少畢典 2:12"
+        "sourceText": "Alex Chen: 愛滿地慈少畢典 2:12",
+        "type": "news"
       },
       {
         "id": "39",
         "name": "守護花東聚善能",
         "stages": [
           {
-            "type": "posts",
             "startAt": "2026-06-15T05:04:14.893326Z",
             "workMinutes": 50
           }
@@ -482,38 +480,40 @@
           "Added background information identifying Dr. Hsu Ren-jun as director of the Cancer Center at Hualien Tzu Chi Hospital."
         ],
         "children": [],
-        "sourceText": "7.\talex\n6/11守護花東聚善能\nhttps://www.daai.tv/master/life-wisdom/P90230287?more=true"
+        "sourceText": "7.\talex\n6/11守護花東聚善能\nhttps://www.daai.tv/master/life-wisdom/P90230287?more=true",
+        "type": "posts"
       },
       {
         "id": "40",
         "name": "賴索托冬令",
         "stages": [
           {
-            "type": "news",
             "startAt": "2026-06-15T05:23:34.580528Z",
             "workMinutes": 130,
             "contentSeconds": 7860
           }
         ],
         "children": [],
-        "sourceText": "Alex Chen: 賴索托冬令 2:11 (請寫完小編文再開始做)"
+        "sourceText": "Alex Chen: 賴索托冬令 2:11 (請寫完小編文再開始做)",
+        "type": "news"
       },
       {
         "id": "41",
         "name": "瓜照顧戶複查",
         "stages": [
           {
-            "type": "news",
             "startAt": "2026-06-17T00:26:09.159580Z",
             "workMinutes": 50,
             "contentSeconds": 2520
           }
         ],
         "children": [],
-        "sourceText": "Alex Chen: 瓜照顧戶複查 0:42"
+        "sourceText": "Alex Chen: 瓜照顧戶複查 0:42",
+        "type": "news"
       }
     ],
-    "sourceText": "Alex Chen接下來請Alex翻譯 慈濟的故事(臺北的第二個家 、感念臺北因緣 、講藥師經結緣)，長24分48秒，預計做19小時51分，由6/12（五）15:00起算，deadline為6/17(三) 9:51，謝謝。"
+    "sourceText": "Alex Chen接下來請Alex翻譯 慈濟的故事(臺北的第二個家 、感念臺北因緣 、講藥師經結緣)，長24分48秒，預計做19小時51分，由6/12（五）15:00起算，deadline為6/17(三) 9:51，謝謝。",
+    "type": "subs"
   },
   {
     "id": "42",
@@ -521,14 +521,14 @@
     "assigner": "Elijah Salie",
     "stages": [
       {
-        "type": "subs",
         "startAt": "2026-06-18T00:41:00Z",
         "deadline": "2026-06-18T08:53:00Z",
         "workMinutes": 432
       }
     ],
     "children": [],
-    "sourceText": "請 Alex Chen 翻譯3集日日有新知，預計做7小時12分鐘，從6/18(四) 08:41開始算，deadline為6/18 (四)16:53，謝謝~"
+    "sourceText": "請 Alex Chen 翻譯3集日日有新知，預計做7小時12分鐘，從6/18(四) 08:41開始算，deadline為6/18 (四)16:53，謝謝~",
+    "type": "subs"
   },
   {
     "id": "43",
@@ -536,7 +536,6 @@
     "assigner": "Evelyn",
     "stages": [
       {
-        "type": "subs",
         "startAt": "2026-06-18T08:53:00Z",
         "deadline": "2026-06-25T03:53:00Z",
         "workMinutes": 1680,
@@ -544,6 +543,7 @@
       }
     ],
     "children": [],
-    "sourceText": "請 Alex Chen 翻譯 心靈講座(在不確定中走出確定 - 童子賢) 4 個短版, 長度35分, 預計翻譯28時(3天4時), 從6/18（四）16:53起算, deadline 為6/25(四)11:53, 謝謝！"
+    "sourceText": "請 Alex Chen 翻譯 心靈講座(在不確定中走出確定 - 童子賢) 4 個短版, 長度35分, 預計翻譯28時(3天4時), 從6/18（四）16:53起算, deadline 為6/25(四)11:53, 謝謝！",
+    "type": "subs"
   }
 ]

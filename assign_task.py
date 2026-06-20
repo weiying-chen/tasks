@@ -152,7 +152,7 @@ def assign_task(tasks: list[dict], text: str) -> list[dict]:
     task["assigner"] = parsed["assigner"]
     stage["assignee"] = parsed["assignee"]
     populate_stage_work_minutes(task, stage, parsed["assignee"], parsed["stage"])
-    stage["stage"] = parsed["stage"]
+    stage["name"] = parsed["stage"]
     return tasks
 
 

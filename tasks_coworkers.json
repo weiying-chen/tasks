@@ -1,16 +1,32 @@
 [
   {
     "id": "1",
-    "name": "三集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈）",
+    "name": "3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈）",
     "assigner": "Alex Chen",
     "stages": [
       {
-        "type": "subs",
+        "assignee": "張牧軒 Shawn",
+        "startAt": "2026-06-09T03:35:00Z",
+        "deadline": "2026-06-10T01:40:00Z",
         "workMinutes": 364,
-        "contentSeconds": 364
+        "contentSeconds": 364,
+        "name": "edit"
       }
     ],
-    "children": [],
-    "sourceText": "請Emily Ding翻譯三集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈），片長共6分04秒，預計翻譯6時04分，deadline等手上工作完成後再給，謝謝~"
+    "children": [
+      {
+        "id": "2",
+        "name": "新聞英文與配音",
+        "stages": [
+          {
+            "workMinutes": 95
+          }
+        ],
+        "children": [],
+        "type": "custom"
+      }
+    ],
+    "sourceText": "請Emily Ding翻譯三集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈），片長共6分04秒，預計翻譯6時04分，deadline等手上工作完成後再給，謝謝~",
+    "type": "subs"
   }
 ]

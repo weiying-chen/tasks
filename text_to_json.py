@@ -91,7 +91,6 @@ def parse_subs_input(text: str, year: int, task_id: str):
         raise ValueError("Cannot parse start time")
 
     stage = {
-        "type": "subs",
         "workMinutes": work_minutes,
     }
     if isinstance(content_seconds, int):
@@ -104,6 +103,7 @@ def parse_subs_input(text: str, year: int, task_id: str):
     task = {
         "id": task_id,
         "name": name,
+        "type": "subs",
         "assigner": assigner,
         "stages": [stage],
         "children": [],
@@ -162,9 +162,9 @@ def parse_news_input(text: str, year: int, owner_filter: str):
         work_minutes = original_minutes + 20
         task = {
             "name": name,
+            "type": "news",
             "stages": [
                 {
-                    "type": "news",
                     "startAt": now_iso,
                     "workMinutes": work_minutes,
                     "contentSeconds": original_minutes * 60,
@@ -224,9 +224,9 @@ def parse_posts_input(text: str, owner_filter: str):
 
         task = {
             "name": name,
+            "type": "posts",
             "stages": [
                 {
-                    "type": "posts",
                     "startAt": now_iso,
                     "workMinutes": default_work_minutes,
                 }
@@ -255,9 +255,9 @@ def parse_simple_duration_input(text: str):
             if name and 0 <= minutes < 60:
                 return {
                     "name": name,
+                    "type": "custom",
                     "stages": [
                         {
-                            "type": "custom",
                             "startAt": now_iso,
                             "workMinutes": hours * 60 + minutes,
                         }
@@ -273,9 +273,9 @@ def parse_simple_duration_input(text: str):
             if name and minutes > 0:
                 return {
                     "name": name,
+                    "type": "custom",
                     "stages": [
                         {
-                            "type": "custom",
                             "startAt": now_iso,
                             "workMinutes": minutes,
                         }
@@ -415,6 +415,19 @@ def normalize_task_shape(task):
         "id": str(task.get("id", "")),
         "name": task.get("name", ""),
     }
+    task_type = task.get("type")
+    if not isinstance(task_type, str):
+        stages_raw = task.get("stages")
+        if isinstance(stages_raw, list):
+            for stage_raw in stages_raw:
+                if not isinstance(stage_raw, dict):
+                    continue
+                legacy_type = stage_raw.get("type")
+                if isinstance(legacy_type, str) and legacy_type.strip():
+                    task_type = legacy_type
+                    break
+    if isinstance(task_type, str):
+        normalized["type"] = task_type
     assigner = task.get("assigner")
     if isinstance(assigner, str):
         normalized["assigner"] = assigner
