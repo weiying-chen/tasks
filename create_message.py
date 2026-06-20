@@ -149,6 +149,36 @@ def get_target_task(tasks: list[dict], task_id: str | None) -> dict:
 
 
 def aggregate_children(task: dict, only_local_date=None) -> list[tuple[str, int]]:
+    stage_extensions = []
+    stages = task.get("stages")
+    if isinstance(stages, list) and stages:
+        active_stage = stages[-1]
+        if isinstance(active_stage, dict):
+            raw_extensions = active_stage.get("extensions")
+            if isinstance(raw_extensions, list):
+                stage_extensions = [item for item in raw_extensions if isinstance(item, dict)]
+    if stage_extensions:
+        totals: dict[str, int] = {}
+        ordered_labels: list[str] = []
+        for item in stage_extensions:
+            if only_local_date is not None:
+                extension_created = item.get("startAt")
+                if isinstance(extension_created, str):
+                    if to_local(extension_created).date() != only_local_date:
+                        continue
+            item_type = str(item.get("type") or "").strip().lower()
+            label = TYPE_LABELS.get(item_type)
+            if not label:
+                label = str(item.get("name") or "").strip()
+            minutes = item.get("workMinutes")
+            if not label or not isinstance(minutes, int) or minutes <= 0:
+                continue
+            if label not in totals:
+                ordered_labels.append(label)
+                totals[label] = 0
+            totals[label] += minutes
+        return [(label, totals[label]) for label in ordered_labels]
+
     totals: dict[str, int] = {}
     ordered_labels: list[str] = []
     children = task.get("children")
@@ -180,6 +210,24 @@ def aggregate_children(task: dict, only_local_date=None) -> list[tuple[str, int]
 
 def total_child_minutes(task: dict, only_local_date=None) -> int:
     total = 0
+    stages = task.get("stages")
+    if isinstance(stages, list) and stages:
+        active_stage = stages[-1]
+        if isinstance(active_stage, dict):
+            raw_extensions = active_stage.get("extensions")
+            if isinstance(raw_extensions, list):
+                for item in raw_extensions:
+                    if not isinstance(item, dict):
+                        continue
+                    if only_local_date is not None:
+                        extension_created = item.get("startAt")
+                        if isinstance(extension_created, str) and to_local(extension_created).date() != only_local_date:
+                            continue
+                    minutes = item.get("workMinutes")
+                    if isinstance(minutes, int) and minutes > 0:
+                        total += minutes
+                if total > 0 or raw_extensions:
+                    return total
     children = task.get("children")
     if not isinstance(children, list):
         return 0

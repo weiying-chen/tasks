@@ -404,7 +404,7 @@ class LatestTaskActionsTests(unittest.TestCase):
             [("新聞英文與配音", 95)],
         )
 
-    def test_ingest_deadline_extension_subtasks_adds_child(self):
+    def test_ingest_deadline_extension_subtasks_adds_stage_extensions(self):
         tasks = [
             {
                 "id": "1",
@@ -428,13 +428,11 @@ class LatestTaskActionsTests(unittest.TestCase):
         inserted = view_latest_task.ingest_deadline_extension_subtasks(tasks, "1", clipboard_text)
         self.assertEqual(inserted, 1)
         self.assertEqual(
-            tasks[0]["children"],
+            tasks[0]["stages"][0]["extensions"],
             [
                 {
-                    "id": "2",
                     "name": "新聞英文與配音",
-                    "stages": [{"type": "custom", "workMinutes": 95}],
-                    "children": [],
+                    "workMinutes": 95,
                 }
             ],
         )
@@ -450,16 +448,15 @@ class LatestTaskActionsTests(unittest.TestCase):
                         "deadline": "2026-06-10T01:40:00Z",
                         "workMinutes": 364,
                         "contentSeconds": 364,
+                        "extensions": [
+                            {
+                                "name": "新聞英文與配音",
+                                "workMinutes": 95,
+                            }
+                        ],
                     }
                 ],
-                "children": [
-                    {
-                        "id": "2",
-                        "name": "新聞英文與配音",
-                        "stages": [{"type": "custom", "workMinutes": 95}],
-                        "children": [],
-                    }
-                ],
+                "children": [],
             }
         ]
         clipboard_text = (
@@ -469,7 +466,7 @@ class LatestTaskActionsTests(unittest.TestCase):
         )
         inserted = view_latest_task.ingest_deadline_extension_subtasks(tasks, "1", clipboard_text)
         self.assertEqual(inserted, 0)
-        self.assertEqual(len(tasks[0]["children"]), 1)
+        self.assertEqual(len(tasks[0]["stages"][0]["extensions"]), 1)
 
     def test_parse_next_task_clipboard_payload_plain_name(self):
         assignee, name = view_latest_task.parse_next_task_clipboard_payload("Alex | 新任務")

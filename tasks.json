@@ -57,7 +57,55 @@
         "startAt": "2026-05-28T03:40:00Z",
         "deadline": "2026-06-01T03:40:00Z",
         "workMinutes": 960,
-        "contentSeconds": 1200
+        "contentSeconds": 1200,
+        "extensions": [
+          {
+            "name": "墨西哥浴佛併",
+            "type": "news",
+            "startAt": "2026-06-01T00:28:58.413922Z",
+            "workMinutes": 180,
+            "contentSeconds": 11760,
+            "sourceText": "Alex Chen: 墨西哥浴佛併 3:16"
+          },
+          {
+            "name": "勤拭心鏡度有緣",
+            "type": "posts",
+            "startAt": "2026-06-01T00:29:44.640583Z",
+            "workMinutes": 50,
+            "sourceText": "1.\talex\n5/22勤拭心鏡度有緣\nhttps://www.daai.tv/master/life-wisdom/P90230267?more=true",
+            "notes": [
+              "Soften characterizations to make people sound more relatable and less judgmental.",
+              "Use Venerable Master Cheng Yen's specific wording whenever possible instead of abstract summaries."
+            ]
+          },
+          {
+            "name": "學覺菩薩從善法",
+            "type": "posts",
+            "startAt": "2026-06-01T00:29:44.640583Z",
+            "workMinutes": 50,
+            "sourceText": "2.\talex\n5/23學覺菩薩從善法\nhttps://www.daai.tv/master/life-wisdom/P90230268?more=true",
+            "notes": [
+              "Reworked the summary to use a more neutral and open-ended description because the original wording felt too Tzu Chi-specific.",
+              "Added #JingSiAphorisms and #靜思語 because they were a central part of the story."
+            ]
+          },
+          {
+            "name": "悉達多校創佳績",
+            "type": "news",
+            "startAt": "2026-06-01T00:35:55.341064Z",
+            "workMinutes": 130,
+            "contentSeconds": 7860,
+            "sourceText": "Alex Chen: 悉達多校創佳績 2:11"
+          },
+          {
+            "name": "貝克斯菲爾德義診",
+            "type": "news",
+            "startAt": "2026-06-02T01:00:00Z",
+            "workMinutes": 120,
+            "contentSeconds": 7560,
+            "sourceText": "Alex Chen: 貝克斯菲爾德義診 2:06"
+          }
+        ]
       }
     ],
     "notes": [
@@ -67,84 +115,7 @@
       "Unless it is clear that the speaker previously lived in Taiwan, avoid using \"move back to Taiwan.\" \"Move to Taiwan\" is the safer and more accurate choice.",
       "There is an English phrase spoken in the video that does not appear in the Chinese transcript. Consider inserting a placeholder (e.g., \"XXX\") so the subtitle team knows on-screen text is needed here. This also avoids the awkwardness of the host already saying the English term and then having it translated again immediately afterward."
     ],
-    "children": [
-      {
-        "id": "15",
-        "name": "墨西哥浴佛併",
-        "type": "news",
-        "stages": [
-          {
-            "startAt": "2026-06-01T00:28:58.413922Z",
-            "workMinutes": 180,
-            "contentSeconds": 11760
-          }
-        ],
-        "children": [],
-        "sourceText": "Alex Chen: 墨西哥浴佛併 3:16"
-      },
-      {
-        "id": "16",
-        "name": "勤拭心鏡度有緣",
-        "type": "posts",
-        "stages": [
-          {
-            "startAt": "2026-06-01T00:29:44.640583Z",
-            "workMinutes": 50
-          }
-        ],
-        "notes": [
-          "Soften characterizations to make people sound more relatable and less judgmental.",
-          "Use Venerable Master Cheng Yen's specific wording whenever possible instead of abstract summaries."
-        ],
-        "children": [],
-        "sourceText": "1.\talex\n5/22勤拭心鏡度有緣\nhttps://www.daai.tv/master/life-wisdom/P90230267?more=true"
-      },
-      {
-        "id": "17",
-        "name": "學覺菩薩從善法",
-        "type": "posts",
-        "stages": [
-          {
-            "startAt": "2026-06-01T00:29:44.640583Z",
-            "workMinutes": 50
-          }
-        ],
-        "notes": [
-          "Reworked the summary to use a more neutral and open-ended description because the original wording felt too Tzu Chi-specific.",
-          "Added #JingSiAphorisms and #靜思語 because they were a central part of the story."
-        ],
-        "children": [],
-        "sourceText": "2.\talex\n5/23學覺菩薩從善法\nhttps://www.daai.tv/master/life-wisdom/P90230268?more=true"
-      },
-      {
-        "id": "18",
-        "name": "悉達多校創佳績",
-        "type": "news",
-        "stages": [
-          {
-            "startAt": "2026-06-01T00:35:55.341064Z",
-            "workMinutes": 130,
-            "contentSeconds": 7860
-          }
-        ],
-        "children": [],
-        "sourceText": "Alex Chen: 悉達多校創佳績 2:11"
-      },
-      {
-        "id": "19",
-        "name": "貝克斯菲爾德義診",
-        "type": "news",
-        "stages": [
-          {
-            "startAt": "2026-06-02T01:00:00Z",
-            "workMinutes": 120,
-            "contentSeconds": 7560
-          }
-        ],
-        "children": [],
-        "sourceText": "Alex Chen: 貝克斯菲爾德義診 2:06"
-      }
-    ],
+    "children": [],
     "sourceText": "請 Alex Chen 翻譯人文講堂 (送一份專業的禮物 職涯發光 - 方植永) 6 個短版, 長度20分, 預計做16時(2天), 從5/28（四）11:40起算，deadline 6/1(一)11:40，謝謝！"
   },
   {
@@ -157,7 +128,17 @@
         "startAt": "2026-06-02T05:30:00Z",
         "deadline": "2026-06-03T03:45:00Z",
         "workMinutes": 432,
-        "contentSeconds": 540
+        "contentSeconds": 540,
+        "extensions": [
+          {
+            "name": "瓜捐課桌椅",
+            "type": "news",
+            "startAt": "2026-06-03T01:00:00Z",
+            "workMinutes": 90,
+            "contentSeconds": 5280,
+            "sourceText": "Alex Chen: 瓜捐課桌椅 1:28"
+          }
+        ]
       }
     ],
     "notes": [
@@ -190,22 +171,7 @@
       "Reworked the closing lines to make them more connected, complete, and warm.",
       "Revised the English introduction to describe Zheng Li-hua as a teacher rather than a woman, shifted the focus from generic volunteer work to her personality and character, and removed the unsupported 阿媽 reference from the Chinese introduction."
     ],
-    "children": [
-      {
-        "id": "23",
-        "name": "瓜捐課桌椅",
-        "type": "news",
-        "stages": [
-          {
-            "startAt": "2026-06-03T01:00:00Z",
-            "workMinutes": 90,
-            "contentSeconds": 5280
-          }
-        ],
-        "children": [],
-        "sourceText": "Alex Chen: 瓜捐課桌椅 1:28"
-      }
-    ],
+    "children": [],
     "sourceText": "接下來請 Alex Chen 翻譯3集我的阿公阿媽做慈濟，片長合計9分，預計做7 時 12 分，從6/2（二）13:30起算，deadline 為 6/3（三）11:45，謝謝 ~"
   },
   {
@@ -218,7 +184,54 @@
         "startAt": "2026-06-03T06:15:00Z",
         "deadline": "2026-06-05T07:03:00Z",
         "workMinutes": 1008,
-        "contentSeconds": 1260
+        "contentSeconds": 1260,
+        "extensions": [
+          {
+            "name": "伊姆斯動工完整",
+            "type": "news",
+            "startAt": "2026-06-04T00:20:06.279114Z",
+            "deadline": "2026-06-04T03:20:06.279114Z",
+            "workMinutes": 180,
+            "contentSeconds": 13260,
+            "sourceText": "Alex Chen: 伊姆斯動工完整 3:41"
+          },
+          {
+            "name": "多明尼加義診",
+            "type": "news",
+            "startAt": "2026-06-05T00:21:05.627096Z",
+            "workMinutes": 80,
+            "contentSeconds": 4440,
+            "sourceText": "Alex Chen: 多明尼加義診 1:14"
+          },
+          {
+            "name": "爾灣人文揚名",
+            "type": "news",
+            "startAt": "2026-06-05T00:21:05.627096Z",
+            "workMinutes": 100,
+            "contentSeconds": 6300,
+            "sourceText": "Alex Chen: 爾灣人文揚名1:45"
+          },
+          {
+            "name": "運轉法輪入人群",
+            "type": "posts",
+            "startAt": "2026-06-08T00:33:21.074037Z",
+            "workMinutes": 50,
+            "sourceText": "2.\talex\n5/30運轉法輪入人群\nhttps://www.daai.tv/master/life-wisdom/P90230275?more=true",
+            "notes": [
+              "Used Wu Hong-tai's story as the hook, but added some of the 愛心店 and helping-others message so the intro better reflected the overall theme."
+            ]
+          },
+          {
+            "name": "慈航普度募愛心",
+            "type": "posts",
+            "startAt": "2026-06-08T00:33:21.074037Z",
+            "workMinutes": 50,
+            "sourceText": "4.\talex\n6/1慈航普度募愛心\nhttps://www.daai.tv/master/life-wisdom/P90230277?more=true",
+            "notes": [
+              "Expanded the Cambodia-focused intro to include the India stories and better reflect the episode's overall theme of helping others through small daily acts of giving."
+            ]
+          }
+        ]
       }
     ],
     "notes": [
@@ -230,83 +243,7 @@
       "Reworked the sentence to focus on the law's strict formatting requirements because the original translation introduced meaning that was not explicitly stated in the source text.",
       "Specified the Insurance Act and Article 112 because there was sufficient subtitle time and legal references should be translated as precisely as possible."
     ],
-    "children": [
-      {
-        "id": "25",
-        "name": "伊姆斯動工完整",
-        "type": "news",
-        "stages": [
-          {
-            "startAt": "2026-06-04T00:20:06.279114Z",
-            "deadline": "2026-06-04T03:20:06.279114Z",
-            "workMinutes": 180,
-            "contentSeconds": 13260
-          }
-        ],
-        "children": [],
-        "sourceText": "Alex Chen: 伊姆斯動工完整 3:41"
-      },
-      {
-        "id": "26",
-        "name": "多明尼加義診",
-        "type": "news",
-        "stages": [
-          {
-            "startAt": "2026-06-05T00:21:05.627096Z",
-            "workMinutes": 80,
-            "contentSeconds": 4440
-          }
-        ],
-        "children": [],
-        "sourceText": "Alex Chen: 多明尼加義診 1:14"
-      },
-      {
-        "id": "27",
-        "name": "爾灣人文揚名",
-        "type": "news",
-        "stages": [
-          {
-            "startAt": "2026-06-05T00:21:05.627096Z",
-            "workMinutes": 100,
-            "contentSeconds": 6300
-          }
-        ],
-        "children": [],
-        "sourceText": "Alex Chen: 爾灣人文揚名1:45"
-      },
-      {
-        "id": "28",
-        "name": "運轉法輪入人群",
-        "type": "posts",
-        "stages": [
-          {
-            "startAt": "2026-06-08T00:33:21.074037Z",
-            "workMinutes": 50
-          }
-        ],
-        "notes": [
-          "Used Wu Hong-tai's story as the hook, but added some of the 愛心店 and helping-others message so the intro better reflected the overall theme."
-        ],
-        "children": [],
-        "sourceText": "2.\talex\n5/30運轉法輪入人群\nhttps://www.daai.tv/master/life-wisdom/P90230275?more=true"
-      },
-      {
-        "id": "29",
-        "name": "慈航普度募愛心",
-        "type": "posts",
-        "stages": [
-          {
-            "startAt": "2026-06-08T00:33:21.074037Z",
-            "workMinutes": 50
-          }
-        ],
-        "notes": [
-          "Expanded the Cambodia-focused intro to include the India stories and better reflect the episode's overall theme of helping others through small daily acts of giving."
-        ],
-        "children": [],
-        "sourceText": "4.\talex\n6/1慈航普度募愛心\nhttps://www.daai.tv/master/life-wisdom/P90230277?more=true"
-      }
-    ],
+    "children": [],
     "sourceText": "請 Alex Chen 翻譯人文講堂 (親密搶奪：人性與法律的修煉 - 李永然) 6 個短版, 長度21分, 預計做16時48分(2天48分), 從6/3（三）14:15起算，deadline 6/5(五)15:03，謝謝！"
   },
   {
@@ -319,7 +256,17 @@
         "startAt": "2026-06-08T06:43:00Z",
         "deadline": "2026-06-09T08:20:00Z",
         "workMinutes": 576,
-        "contentSeconds": 720
+        "contentSeconds": 720,
+        "extensions": [
+          {
+            "name": "莫三食材捐醫院",
+            "type": "news",
+            "startAt": "2026-06-09T00:43:09.844887Z",
+            "workMinutes": 70,
+            "contentSeconds": 3960,
+            "sourceText": "Alex Chen: 莫三食材捐醫院 1:06"
+          }
+        ]
       }
     ],
     "notes": [
@@ -339,22 +286,7 @@
       "Restructured the subtitles to follow the video's scene transition and separate the previous conclusion from the start of the new topic.",
       "Recommended translating the on-screen super around 08:55 by briefly summarizing the prescribed remedies instead of leaving the section untranslated."
     ],
-    "children": [
-      {
-        "id": "31",
-        "name": "莫三食材捐醫院",
-        "type": "news",
-        "stages": [
-          {
-            "startAt": "2026-06-09T00:43:09.844887Z",
-            "workMinutes": 70,
-            "contentSeconds": 3960
-          }
-        ],
-        "children": [],
-        "sourceText": "Alex Chen: 莫三食材捐醫院 1:06"
-      }
-    ],
+    "children": [],
     "sourceText": "請 Alex Chen 翻譯大愛學漢醫 (排氣不停 中醫有解)，片長12分，預計做9小時36分，從6/8 (一) 14:43起算，deadline為6/9 (二) 16:20 ，謝謝~"
   },
   {
@@ -367,7 +299,33 @@
         "startAt": "2026-06-10T00:30:00Z",
         "deadline": "2026-06-12T00:30:00Z",
         "workMinutes": 960,
-        "contentSeconds": 1200
+        "contentSeconds": 1200,
+        "extensions": [
+          {
+            "name": "核桃環保工藝",
+            "type": "news",
+            "startAt": "2026-06-10T00:35:56.744907Z",
+            "workMinutes": 110,
+            "contentSeconds": 6720,
+            "sourceText": "Alex Chen: 核桃環保工藝 1:52"
+          },
+          {
+            "name": "印度5月慈善日",
+            "type": "news",
+            "startAt": "2026-06-11T00:23:56.375068Z",
+            "workMinutes": 90,
+            "contentSeconds": 4980,
+            "sourceText": "Alex Chen: 印度5月慈善日 1:23"
+          },
+          {
+            "name": "麻坡撿跑行動",
+            "type": "news",
+            "startAt": "2026-06-12T00:50:54.084062Z",
+            "workMinutes": 130,
+            "contentSeconds": 7980,
+            "sourceText": "Alex Chen: 麻坡撿跑行動 2:13"
+          }
+        ]
       }
     ],
     "notes": [
@@ -377,50 +335,7 @@
       "Reflected 各種運動 by describing varied exercise rather than generic exercise.",
       "Revised the inflammation wording to say the body becomes more inflamed instead of using a more literal buildup description."
     ],
-    "children": [
-      {
-        "id": "33",
-        "name": "核桃環保工藝",
-        "type": "news",
-        "stages": [
-          {
-            "startAt": "2026-06-10T00:35:56.744907Z",
-            "workMinutes": 110,
-            "contentSeconds": 6720
-          }
-        ],
-        "children": [],
-        "sourceText": "Alex Chen: 核桃環保工藝 1:52"
-      },
-      {
-        "id": "34",
-        "name": "印度5月慈善日",
-        "type": "news",
-        "stages": [
-          {
-            "startAt": "2026-06-11T00:23:56.375068Z",
-            "workMinutes": 90,
-            "contentSeconds": 4980
-          }
-        ],
-        "children": [],
-        "sourceText": "Alex Chen: 印度5月慈善日 1:23"
-      },
-      {
-        "id": "35",
-        "name": "麻坡撿跑行動",
-        "type": "news",
-        "stages": [
-          {
-            "startAt": "2026-06-12T00:50:54.084062Z",
-            "workMinutes": 130,
-            "contentSeconds": 7980
-          }
-        ],
-        "children": [],
-        "sourceText": "Alex Chen: 麻坡撿跑行動 2:13"
-      }
-    ],
+    "children": [],
     "sourceText": "請 Alex Chen 翻譯人文講堂 (其實你胖得很冤枉 - 陳欣湄) 4個短版,  長度20分, 預計翻譯16時(2天), 從6/10（三）08:30起算, deadline 為6/12(五)8:30, 謝謝！"
   },
   {
@@ -433,86 +348,57 @@
         "startAt": "2026-06-12T07:00:00Z",
         "deadline": "2026-06-17T01:51:00Z",
         "workMinutes": 1191,
-        "contentSeconds": 1488
-      }
-    ],
-    "children": [
-      {
-        "id": "37",
-        "name": "愛善傳承締祥和",
-        "type": "posts",
-        "stages": [
+        "contentSeconds": 1488,
+        "extensions": [
           {
+            "name": "愛善傳承締祥和",
+            "type": "posts",
             "startAt": "2026-06-15T00:37:33.690622Z",
-            "workMinutes": 50
-          }
-        ],
-        "children": [],
-        "sourceText": "1.\talex\n6/5愛善傳承締祥和\nhttps://www.daai.tv/master/life-wisdom/P90230281?more=true"
-      },
-      {
-        "id": "38",
-        "name": "愛滿地慈少畢典",
-        "type": "news",
-        "stages": [
+            "workMinutes": 50,
+            "sourceText": "1.\talex\n6/5愛善傳承締祥和\nhttps://www.daai.tv/master/life-wisdom/P90230281?more=true"
+          },
           {
+            "name": "愛滿地慈少畢典",
+            "type": "news",
             "startAt": "2026-06-15T01:14:59.857631Z",
             "workMinutes": 130,
-            "contentSeconds": 7920
-          }
-        ],
-        "notes": [
-          "Adjusted the conclusion to emphasize the longstanding bond between the Master and Lin's mother, framing the story as an example of members of the Dharma family caring for one another.",
-          "Remember to include the closing phrase \"Let's take a listen\" at the end."
-        ],
-        "children": [],
-        "sourceText": "Alex Chen: 愛滿地慈少畢典 2:12"
-      },
-      {
-        "id": "39",
-        "name": "守護花東聚善能",
-        "type": "posts",
-        "stages": [
+            "contentSeconds": 7920,
+            "sourceText": "Alex Chen: 愛滿地慈少畢典 2:12",
+            "notes": [
+              "Adjusted the conclusion to emphasize the longstanding bond between the Master and Lin's mother, framing the story as an example of members of the Dharma family caring for one another.",
+              "Remember to include the closing phrase \"Let's take a listen\" at the end."
+            ]
+          },
           {
+            "name": "守護花東聚善能",
+            "type": "posts",
             "startAt": "2026-06-15T05:04:14.893326Z",
-            "workMinutes": 50
-          }
-        ],
-        "notes": [
-          "Added background information identifying Dr. Hsu Ren-jun as director of the Cancer Center at Hualien Tzu Chi Hospital."
-        ],
-        "children": [],
-        "sourceText": "7.\talex\n6/11守護花東聚善能\nhttps://www.daai.tv/master/life-wisdom/P90230287?more=true"
-      },
-      {
-        "id": "40",
-        "name": "賴索托冬令",
-        "type": "news",
-        "stages": [
+            "workMinutes": 50,
+            "sourceText": "7.\talex\n6/11守護花東聚善能\nhttps://www.daai.tv/master/life-wisdom/P90230287?more=true",
+            "notes": [
+              "Added background information identifying Dr. Hsu Ren-jun as director of the Cancer Center at Hualien Tzu Chi Hospital."
+            ]
+          },
           {
+            "name": "賴索托冬令",
+            "type": "news",
             "startAt": "2026-06-15T05:23:34.580528Z",
             "workMinutes": 130,
-            "contentSeconds": 7860
-          }
-        ],
-        "children": [],
-        "sourceText": "Alex Chen: 賴索托冬令 2:11 (請寫完小編文再開始做)"
-      },
-      {
-        "id": "41",
-        "name": "瓜照顧戶複查",
-        "type": "news",
-        "stages": [
+            "contentSeconds": 7860,
+            "sourceText": "Alex Chen: 賴索托冬令 2:11 (請寫完小編文再開始做)"
+          },
           {
+            "name": "瓜照顧戶複查",
+            "type": "news",
             "startAt": "2026-06-17T00:26:09.159580Z",
             "workMinutes": 50,
-            "contentSeconds": 2520
+            "contentSeconds": 2520,
+            "sourceText": "Alex Chen: 瓜照顧戶複查 0:42"
           }
-        ],
-        "children": [],
-        "sourceText": "Alex Chen: 瓜照顧戶複查 0:42"
+        ]
       }
     ],
+    "children": [],
     "sourceText": "Alex Chen接下來請Alex翻譯 慈濟的故事(臺北的第二個家 、感念臺北因緣 、講藥師經結緣)，長24分48秒，預計做19小時51分，由6/12（五）15:00起算，deadline為6/17(三) 9:51，謝謝。"
   },
   {

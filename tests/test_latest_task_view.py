@@ -200,7 +200,7 @@ class LatestTaskViewTests(unittest.TestCase):
         out = self.strip_ansi(view_latest_task.build_latest_view(tasks))
         lines = out.splitlines()
         actions_idx = lines.index(
-            "Actions: create task | add subtasks | add notes | toggle view notes | copy message | quit"
+            "Actions: create task | add extensions (s) | add notes | toggle view notes | copy message | quit"
         )
         self.assertEqual(lines[actions_idx - 1], "")
         self.assertNotEqual(lines[actions_idx - 2], "")
@@ -217,7 +217,7 @@ class LatestTaskViewTests(unittest.TestCase):
         ]
         out = view_latest_task.build_latest_view(tasks)
         self.assertRegex(out, r"\x1b\[35mcreate \x1b\[0m\x1b\[32mt\x1b\[0m\x1b\[35mask")
-        self.assertRegex(out, r"\x1b\[35madd \x1b\[0m\x1b\[32ms\x1b\[0m\x1b\[35mubtasks")
+        self.assertRegex(out, r"\x1b\[35madd extensions\x1b\[0m\x1b\[32m \(s\)\x1b\[0m")
         self.assertRegex(out, r"\x1b\[35madd \x1b\[0m\x1b\[32mn\x1b\[0m\x1b\[35motes")
         self.assertRegex(out, r"\x1b\[35mtoggle \x1b\[0m\x1b\[32mv\x1b\[0m\x1b\[35miew notes")
         self.assertRegex(out, r"\x1b\[35mcopy \x1b\[0m\x1b\[32mm\x1b\[0m\x1b\[35message")
@@ -241,7 +241,7 @@ class LatestTaskViewTests(unittest.TestCase):
         self.assertNotRegex(out, r"\x1b\[35madd \x1b\[0m\x1b\[32mn\x1b\[0m\x1b\[35motes")
         self.assertNotRegex(out, r"\x1b\[35mtoggle \x1b\[0m\x1b\[32mv\x1b\[0m\x1b\[35miew notes")
         self.assertNotRegex(out, r"\x1b\[35mcreate \x1b\[0m\x1b\[32mt\x1b\[0m\x1b\[35mask")
-        self.assertNotRegex(out, r"\x1b\[35madd \x1b\[0m\x1b\[32ms\x1b\[0m\x1b\[35mubtasks")
+        self.assertNotRegex(out, r"\x1b\[35madd \x1b\[0m\x1b\[32ms\x1b\[0m\x1b\[35mxtensions")
 
     def test_coworker_actions_do_not_include_copy_message_when_message_exists(self):
         tasks = [
@@ -430,24 +430,22 @@ class LatestTaskViewTests(unittest.TestCase):
                 "startAt": "2026-06-19T00:00:00Z",
                 "deadline": "2026-06-10T01:40:00Z",
                 "workMinutes": 364,
-                "children": [
+                "stages": [
                     {
-                        "id": "2",
-                        "name": "新聞英文與配音",
-                        "stages": [
+                        "extensions": [
                             {
-                                "type": "custom",
+                                "name": "新聞英文與配音",
                                 "workMinutes": 95,
                             }
-                        ],
-                        "children": [],
+                        ]
                     }
                 ],
+                "children": [],
             }
         ]
         out = self.strip_ansi(view_latest_task.build_latest_view(tasks))
+        self.assertIn("Extensions", out)
         self.assertIn("Name: 新聞英文與配音", out)
-        self.assertIn("Type: custom", out)
         self.assertIn("Work time: 1h 35m", out)
         self.assertNotIn("Deadline: 2026-06-19 Fri 09:35", out)
 

@@ -389,6 +389,62 @@ def insert_under_parent(tasks, parent_id, new_task):
     return False
 
 
+def active_stage_for_parent(task: dict) -> dict:
+    stages = task.get("stages")
+    if not isinstance(stages, list) or not stages:
+        stages = normalize_stages(task)
+        task["stages"] = stages
+    if not stages:
+        stage = {}
+        task["stages"] = [stage]
+        return stage
+    return stages[-1]
+
+
+def extension_from_task(task: dict) -> dict:
+    extension = {
+        "name": str(task.get("name") or "").strip(),
+    }
+    task_type = task.get("type")
+    if isinstance(task_type, str) and task_type.strip():
+        extension["type"] = task_type
+    stage = normalize_stages(task)[-1] if normalize_stages(task) else {}
+    for field in ("assignee", "startAt", "deadline", "workMinutes", "contentSeconds"):
+        value = stage.get(field)
+        if isinstance(value, str):
+            if value.strip():
+                extension[field] = value
+        elif isinstance(value, int):
+            extension[field] = value
+    notes = task.get("notes")
+    if isinstance(notes, list):
+        normalized_notes = [note for note in notes if isinstance(note, str) and note.strip()]
+        if normalized_notes:
+            extension["notes"] = normalized_notes
+    source_text = task.get("sourceText")
+    if isinstance(source_text, str) and source_text.strip():
+        extension["sourceText"] = source_text
+    return extension
+
+
+def append_extensions_under_parent(tasks, parent_id, new_items: list[dict]) -> bool:
+    for task in tasks:
+        if task.get("id") == parent_id:
+            stage = active_stage_for_parent(task)
+            existing = stage.get("extensions")
+            if not isinstance(existing, list):
+                existing = []
+                stage["extensions"] = existing
+            for item in new_items:
+                if isinstance(item, dict):
+                    existing.append(extension_from_task(item))
+            return True
+        children = task.get("children")
+        if isinstance(children, list) and append_extensions_under_parent(children, parent_id, new_items):
+            return True
+    return False
+
+
 def append_notes_under_parent(tasks, parent_id, notes: list[str]) -> bool:
     for task in tasks:
         if task.get("id") == parent_id:
@@ -532,7 +588,7 @@ def main():
             item.pop("assigner", None)
             item.pop("owner", None)
             apply_child_work_rule(item)
-            inserted = insert_under_parent(tasks, args.parent_id, item)
+            inserted = append_extensions_under_parent(tasks, args.parent_id, [item])
             if not inserted:
                 raise ValueError(f"Parent id not found: {args.parent_id}")
     else:
@@ -545,7 +601,7 @@ def main():
     normalized_tasks = [normalize_task_shape(task) for task in tasks if isinstance(task, dict)]
     out_path.write_text(json.dumps(normalized_tasks, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     if args.parent_id:
-        print(f"Inserted {len(new_items)} task(s) under {args.parent_id} in tasks.json")
+        print(f"Inserted {len(new_items)} extension(s) under {args.parent_id} in tasks.json")
     else:
         print(f"Appended {len(new_items)} task(s) to tasks.json")
 

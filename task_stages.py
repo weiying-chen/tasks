@@ -12,6 +12,17 @@ STAGE_FIELD_NAMES = (
     "contentSeconds",
 )
 
+EXTENSION_FIELD_NAMES = (
+    "name",
+    "type",
+    "assignee",
+    "startAt",
+    "deadline",
+    "workMinutes",
+    "contentSeconds",
+    "sourceText",
+)
+
 
 def _normalized_stage(stage: dict) -> dict:
     normalized: dict[str, Any] = {}
@@ -25,6 +36,29 @@ def _normalized_stage(stage: dict) -> dict:
     legacy_name = stage.get("stage")
     if "name" not in normalized and isinstance(legacy_name, str) and legacy_name.strip():
         normalized["name"] = legacy_name
+    extensions = stage.get("extensions")
+    if isinstance(extensions, list):
+        normalized_extensions = [_normalized_extension(item) for item in extensions if isinstance(item, dict)]
+        normalized_extensions = [item for item in normalized_extensions if item]
+        if normalized_extensions:
+            normalized["extensions"] = normalized_extensions
+    return normalized
+
+
+def _normalized_extension(item: dict) -> dict:
+    normalized: dict[str, Any] = {}
+    for field in EXTENSION_FIELD_NAMES:
+        value = item.get(field)
+        if isinstance(value, str):
+            if value.strip():
+                normalized[field] = value
+        elif isinstance(value, int):
+            normalized[field] = value
+    notes = item.get("notes")
+    if isinstance(notes, list):
+        normalized_notes = [note for note in notes if isinstance(note, str) and note.strip()]
+        if normalized_notes:
+            normalized["notes"] = normalized_notes
     return normalized
 
 

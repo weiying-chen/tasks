@@ -95,7 +95,7 @@ def build_actions_line(input_file: str | None = None, selected_task: dict | None
         "s": (
             color('set ', MAGENTA) + color('s', GREEN) + color('tart time', MAGENTA)
             if mode == "coworker"
-            else color('add ', MAGENTA) + color('s', GREEN) + color('ubtasks', MAGENTA)
+            else color('add extensions', MAGENTA) + color(' (s)', GREEN)
         ),
         "n": color('add ', MAGENTA) + color('n', GREEN) + color('otes', MAGENTA),
         "d": color('confirm ', MAGENTA) + color('d', GREEN) + color('eadline extension', MAGENTA),
@@ -375,18 +375,23 @@ def ingest_deadline_extension_subtasks(tasks: list[dict], parent_id: str, clipbo
     parent = find_task_by_id(tasks, parent_id)
     if not isinstance(parent, dict):
         raise ValueError(f"Task id not found: {parent_id}")
-
-    children = parent.get("children")
-    if not isinstance(children, list):
-        children = []
-        parent["children"] = children
+    stages = parent.get("stages")
+    if not isinstance(stages, list) or not stages:
+        raise ValueError("Task has no active stage.")
+    active_stage = stages[-1]
+    if not isinstance(active_stage, dict):
+        raise ValueError("Task has no active stage.")
+    extensions = active_stage.get("extensions")
+    if not isinstance(extensions, list):
+        extensions = []
+        active_stage["extensions"] = extensions
 
     existing_pairs = set()
-    for child in children:
-        if not isinstance(child, dict):
+    for item in extensions:
+        if not isinstance(item, dict):
             continue
-        name = str(child.get("name") or "").strip()
-        minutes = get_task_work_minutes(child)
+        name = str(item.get("name") or "").strip()
+        minutes = item.get("workMinutes")
         if name and isinstance(minutes, int) and minutes > 0:
             existing_pairs.add((name, minutes))
 
@@ -394,13 +399,11 @@ def ingest_deadline_extension_subtasks(tasks: list[dict], parent_id: str, clipbo
     for name, minutes in extract_deadline_extension_subtasks(clipboard_text):
         if (name, minutes) in existing_pairs:
             continue
-        child = {
-            "id": next_numeric_task_id(tasks),
+        extension = {
             "name": name,
-            "stages": [{"type": "custom", "workMinutes": minutes}],
-            "children": [],
+            "workMinutes": minutes,
         }
-        children.append(child)
+        extensions.append(extension)
         existing_pairs.add((name, minutes))
         inserted += 1
     return inserted
@@ -490,8 +493,26 @@ def choose_numbered_option(
     return pick - 1, None, False
 
 
+def stage_extension_items(task: dict) -> list[dict]:
+    stages = task.get("stages")
+    if isinstance(stages, list) and stages:
+        active_stage = stages[-1]
+        if isinstance(active_stage, dict):
+            extensions = active_stage.get("extensions")
+            if isinstance(extensions, list):
+                return [item for item in extensions if isinstance(item, dict)]
+    return []
+
+
 def child_total_minutes(task: dict) -> int:
     total = 0
+    extensions = stage_extension_items(task)
+    if extensions:
+        for item in extensions:
+            minutes = item.get("workMinutes")
+            if isinstance(minutes, int) and minutes > 0:
+                total += minutes
+        return total
     children = task.get('children')
     if not isinstance(children, list):
         return 0
@@ -502,6 +523,17 @@ def child_total_minutes(task: dict) -> int:
         if isinstance(base_child_minutes, int) and base_child_minutes > 0:
             total += base_child_minutes
     return total
+
+
+def render_extension_block(lines: list[str], item: dict) -> None:
+    name = str(item.get("name") or "(Untitled)").strip()
+    lines.append(f"Name: {name}")
+    task_type = str(item.get("type") or "").strip()
+    if task_type:
+        lines.append(f"Type: {task_type}")
+    minutes = item.get("workMinutes")
+    lines.append(f"Work time: {fmt_work(minutes if isinstance(minutes, int) else None)}")
+    lines.append("")
 
 
 def fmt_countdown(now_local: datetime, target: datetime | None) -> str:
@@ -652,7 +684,14 @@ def render_task_block(
             countdown = fmt_countdown(now_local, deadline)
             resume_hint = fmt_resume_hint(now_local, deadline)
             lines.append(f'Work time left: {color(countdown, GREEN)}{resume_hint}')
+        extension_items = stage_extension_items(task)
         children = task.get('children')
+        if extension_items:
+            lines.append('')
+            lines.append(bold('Extensions'))
+            lines.append('')
+            for item in extension_items:
+                render_extension_block(lines, item)
         if isinstance(children, list) and children:
             lines.append('')
             lines.append(bold('Subtasks'))
