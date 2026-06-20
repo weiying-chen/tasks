@@ -658,7 +658,7 @@ def render_task_block(
         if not lines or lines[-1] != '':
             lines.append('')
     else:
-        lines.append(bold('View task'))
+        lines.append(bold('Task'))
         lines.append('')
         lines.append(f'Name: {name}')
         lines.append(f'Type: {task_type if isinstance(task_type, str) and task_type.strip() else "-"}')
