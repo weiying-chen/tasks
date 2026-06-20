@@ -9,11 +9,11 @@ class AssignTaskTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "3集我的阿公阿媽做慈濟",
+                "type": "subs",
+                "contentSeconds": 364,
                 "assigner": "Emily Ding",
                 "stages": [
                     {
-                        "type": "subs",
-                        "contentSeconds": 364,
                     }
                 ],
                 "children": [],
@@ -36,12 +36,12 @@ class AssignTaskTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "3集我的阿公阿媽做慈濟",
+                "type": "subs",
+                "contentSeconds": 364,
                 "assigner": "Emily Ding",
                 "stages": [
                     {
-                        "type": "subs",
                         "workMinutes": 222,
-                        "contentSeconds": 364,
                     }
                 ],
                 "children": [],
@@ -101,14 +101,14 @@ class AssignTaskTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "3集我的阿公阿媽做慈濟",
+                "type": "subs",
+                "contentSeconds": 600,
                 "assigner": "Emily Ding",
                 "stages": [
                     {
-                        "type": "subs",
                         "startAt": "2026-06-02T01:00:00Z",
                         "deadline": "2026-06-02T05:00:00Z",
                         "workMinutes": 240,
-                        "contentSeconds": 600,
                     }
                 ],
                 "children": [],
@@ -129,12 +129,12 @@ class AssignTaskTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "3集大愛真健康",
+                "type": "subs",
+                "contentSeconds": 480,
                 "assigner": "Emily Ding",
                 "stages": [
                     {
-                        "type": "subs",
                         "workMinutes": 180,
-                        "contentSeconds": 480,
                     }
                 ],
                 "children": [],
@@ -155,17 +155,16 @@ class AssignTaskTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "3集大愛真健康",
+                "type": "subs",
+                "contentSeconds": 480,
                 "assigner": "Emily Ding",
                 "stages": [
                     {
-                        "type": "subs",
                         "stage": "translate",
                         "assignee": "Emily Ding",
                         "workMinutes": 240,
-                        "contentSeconds": 480,
                     },
                     {
-                        "type": "subs",
                     },
                 ],
                 "children": [],
@@ -185,12 +184,12 @@ class AssignTaskTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "3集大愛醫生館（杯弓蛇影 乳房腫瘤 + 鬼門關走一遭~冠心病 + 住輸尿管）",
+                "type": "subs",
+                "contentSeconds": 333,
                 "assigner": "Alex Chen",
                 "stages": [
                     {
-                        "type": "subs",
                         "workMinutes": 333,
-                        "contentSeconds": 333,
                     }
                 ],
                 "children": [],
@@ -211,6 +210,7 @@ class AssignTaskTests(unittest.TestCase):
                 "id": "1",
                 "name": "3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈）",
                 "type": "subs",
+                "contentSeconds": 364,
                 "assigner": "Alex Chen",
                 "stages": [
                     {
@@ -219,7 +219,6 @@ class AssignTaskTests(unittest.TestCase):
                         "startAt": "2026-06-09T03:35:00Z",
                         "deadline": "2026-06-10T01:40:00Z",
                         "workMinutes": 364,
-                        "contentSeconds": 364,
                         "extensions": [
                             {
                                 "name": "新聞英文與配音",
@@ -244,6 +243,7 @@ class AssignTaskTests(unittest.TestCase):
         self.assertIn("extensions", translate_stage)
         self.assertEqual(edit_stage["assignee"], "張牧軒 Shawn")
         self.assertEqual(edit_stage["name"], "edit")
+        self.assertNotIn("contentSeconds", edit_stage)
         self.assertNotIn("extensions", edit_stage)
         self.assertNotIn("startAt", edit_stage)
         self.assertNotIn("deadline", edit_stage)

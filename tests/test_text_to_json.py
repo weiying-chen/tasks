@@ -364,7 +364,7 @@ class TextToJsonTests(unittest.TestCase):
         self.assertNotIn("startAt", normalized)
         self.assertNotIn("deadline", normalized)
         self.assertNotIn("workMinutes", normalized)
-        self.assertNotIn("contentSeconds", normalized)
+        self.assertEqual(normalized["contentSeconds"], 1200)
         self.assertEqual(normalized["type"], "subs")
         self.assertEqual(
             normalized["stages"],
@@ -374,7 +374,36 @@ class TextToJsonTests(unittest.TestCase):
                     "startAt": "2026-06-02T05:40:00Z",
                     "deadline": "2026-06-03T03:40:00Z",
                     "workMinutes": 960,
+                }
+            ],
+        )
+
+    def test_normalize_task_shape_moves_stage_content_seconds_to_task(self):
+        task = {
+            "id": "1",
+            "name": "Parent",
+            "type": "subs",
+            "stages": [
+                {
+                    "assignee": "Alex",
+                    "startAt": "2026-06-02T05:40:00Z",
+                    "deadline": "2026-06-03T03:40:00Z",
+                    "workMinutes": 960,
                     "contentSeconds": 1200,
+                }
+            ],
+            "children": [],
+        }
+        normalized = text_to_json.normalize_task_shape(task)
+        self.assertEqual(normalized["contentSeconds"], 1200)
+        self.assertEqual(
+            normalized["stages"],
+            [
+                {
+                    "assignee": "Alex",
+                    "startAt": "2026-06-02T05:40:00Z",
+                    "deadline": "2026-06-03T03:40:00Z",
+                    "workMinutes": 960,
                 }
             ],
         )

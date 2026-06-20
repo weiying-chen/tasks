@@ -7,7 +7,7 @@ from pathlib import Path
 
 from work_time import add_work_minutes, next_work_start
 from task_deadline import deadlines_match
-from task_stages import get_task_work_minutes, normalize_stages
+from task_stages import get_task_content_seconds, get_task_work_minutes, normalize_stages
 from subs_assigners import SUBS_PROGRAM_ASSIGNERS
 from task_titles import extract_subs_task_name
 from work_time_adjustments import adjusted_child_minutes
@@ -93,8 +93,6 @@ def parse_subs_input(text: str, year: int, task_id: str):
     stage = {
         "workMinutes": work_minutes,
     }
-    if isinstance(content_seconds, int):
-        stage["contentSeconds"] = content_seconds
     if start and dl:
         created_at = parse_datetime(start.group(1), start.group(2), year)
         pm_deadline = parse_datetime(dl.group(1), dl.group(2), year)
@@ -109,6 +107,8 @@ def parse_subs_input(text: str, year: int, task_id: str):
         "children": [],
         "sourceText": text,
     }
+    if isinstance(content_seconds, int):
+        task["contentSeconds"] = content_seconds
 
     if start and dl:
         start_local = next_work_start(to_local(stage["startAt"]))
@@ -163,11 +163,11 @@ def parse_news_input(text: str, year: int, owner_filter: str):
         task = {
             "name": name,
             "type": "news",
+            "contentSeconds": original_minutes * 60,
             "stages": [
                 {
                     "startAt": now_iso,
                     "workMinutes": work_minutes,
-                    "contentSeconds": original_minutes * 60,
                 }
             ],
             "children": [],
@@ -409,13 +409,16 @@ def extension_from_task(task: dict) -> dict:
     if isinstance(task_type, str) and task_type.strip():
         extension["type"] = task_type
     stage = normalize_stages(task)[-1] if normalize_stages(task) else {}
-    for field in ("assignee", "startAt", "deadline", "workMinutes", "contentSeconds"):
+    for field in ("assignee", "startAt", "deadline", "workMinutes"):
         value = stage.get(field)
         if isinstance(value, str):
             if value.strip():
                 extension[field] = value
         elif isinstance(value, int):
             extension[field] = value
+    content_seconds = get_task_content_seconds(task)
+    if isinstance(content_seconds, int):
+        extension["contentSeconds"] = content_seconds
     notes = task.get("notes")
     if isinstance(notes, list):
         normalized_notes = [note for note in notes if isinstance(note, str) and note.strip()]
@@ -484,6 +487,9 @@ def normalize_task_shape(task):
                     break
     if isinstance(task_type, str):
         normalized["type"] = task_type
+    content_seconds = get_task_content_seconds(task)
+    if isinstance(content_seconds, int):
+        normalized["contentSeconds"] = content_seconds
     assigner = task.get("assigner")
     if isinstance(assigner, str):
         normalized["assigner"] = assigner

@@ -6,8 +6,7 @@
       {
         "assignee": "Alex",
         "startAt": "2026-05-22T00:22:00Z",
-        "workMinutes": 912,
-        "contentSeconds": 1140
+        "workMinutes": 912
       }
     ],
     "notes": [
@@ -21,7 +20,8 @@
       "Reworked the wording to better convey the speaker's eagerness to learn, which was understated in the original translation."
     ],
     "children": [],
-    "sourceText": "人文講堂 (安靜是種超能力 - 張瀞仁) 4 個短版\n5/22（五）08:22\n19分\n15時12分"
+    "sourceText": "人文講堂 (安靜是種超能力 - 張瀞仁) 4 個短版\n5/22（五）08:22\n19分\n15時12分",
+    "contentSeconds": 1140
   },
   {
     "id": "11",
@@ -31,8 +31,7 @@
       {
         "assignee": "Alex",
         "startAt": "2026-05-26T07:04:00Z",
-        "workMinutes": 576,
-        "contentSeconds": 720
+        "workMinutes": 576
       }
     ],
     "notes": [
@@ -45,7 +44,8 @@
       "Expanded an overly compressed explanation about TCM and targeted therapy."
     ],
     "children": [],
-    "sourceText": "大愛學漢醫 (吃出肺活力 — 肺癌照護 | 莊佳穎 | 大愛學漢醫 | 20220823)\n5/26（二）15:04\n12分\n9小時36分"
+    "sourceText": "大愛學漢醫 (吃出肺活力 — 肺癌照護 | 莊佳穎 | 大愛學漢醫 | 20220823)\n5/26（二）15:04\n12分\n9小時36分",
+    "contentSeconds": 720
   },
   {
     "id": "14",
@@ -57,7 +57,6 @@
         "startAt": "2026-05-28T03:40:00Z",
         "deadline": "2026-06-01T03:40:00Z",
         "workMinutes": 960,
-        "contentSeconds": 1200,
         "extensions": [
           {
             "name": "墨西哥浴佛併",
@@ -116,7 +115,8 @@
       "There is an English phrase spoken in the video that does not appear in the Chinese transcript. Consider inserting a placeholder (e.g., \"XXX\") so the subtitle team knows on-screen text is needed here. This also avoids the awkwardness of the host already saying the English term and then having it translated again immediately afterward."
     ],
     "children": [],
-    "sourceText": "請 Alex Chen 翻譯人文講堂 (送一份專業的禮物 職涯發光 - 方植永) 6 個短版, 長度20分, 預計做16時(2天), 從5/28（四）11:40起算，deadline 6/1(一)11:40，謝謝！"
+    "sourceText": "請 Alex Chen 翻譯人文講堂 (送一份專業的禮物 職涯發光 - 方植永) 6 個短版, 長度20分, 預計做16時(2天), 從5/28（四）11:40起算，deadline 6/1(一)11:40，謝謝！",
+    "contentSeconds": 1200
   },
   {
     "id": "22",
@@ -128,7 +128,6 @@
         "startAt": "2026-06-02T05:30:00Z",
         "deadline": "2026-06-03T03:45:00Z",
         "workMinutes": 432,
-        "contentSeconds": 540,
         "extensions": [
           {
             "name": "瓜捐課桌椅",
@@ -172,7 +171,8 @@
       "Revised the English introduction to describe Zheng Li-hua as a teacher rather than a woman, shifted the focus from generic volunteer work to her personality and character, and removed the unsupported 阿媽 reference from the Chinese introduction."
     ],
     "children": [],
-    "sourceText": "接下來請 Alex Chen 翻譯3集我的阿公阿媽做慈濟，片長合計9分，預計做7 時 12 分，從6/2（二）13:30起算，deadline 為 6/3（三）11:45，謝謝 ~"
+    "sourceText": "接下來請 Alex Chen 翻譯3集我的阿公阿媽做慈濟，片長合計9分，預計做7 時 12 分，從6/2（二）13:30起算，deadline 為 6/3（三）11:45，謝謝 ~",
+    "contentSeconds": 540
   },
   {
     "id": "24",
@@ -184,7 +184,6 @@
         "startAt": "2026-06-03T06:15:00Z",
         "deadline": "2026-06-05T07:03:00Z",
         "workMinutes": 1008,
-        "contentSeconds": 1260,
         "extensions": [
           {
             "name": "伊姆斯動工完整",
@@ -244,7 +243,8 @@
       "Specified the Insurance Act and Article 112 because there was sufficient subtitle time and legal references should be translated as precisely as possible."
     ],
     "children": [],
-    "sourceText": "請 Alex Chen 翻譯人文講堂 (親密搶奪：人性與法律的修煉 - 李永然) 6 個短版, 長度21分, 預計做16時48分(2天48分), 從6/3（三）14:15起算，deadline 6/5(五)15:03，謝謝！"
+    "sourceText": "請 Alex Chen 翻譯人文講堂 (親密搶奪：人性與法律的修煉 - 李永然) 6 個短版, 長度21分, 預計做16時48分(2天48分), 從6/3（三）14:15起算，deadline 6/5(五)15:03，謝謝！",
+    "contentSeconds": 1260
   },
   {
     "id": "30",
@@ -256,7 +256,6 @@
         "startAt": "2026-06-08T06:43:00Z",
         "deadline": "2026-06-09T08:20:00Z",
         "workMinutes": 576,
-        "contentSeconds": 720,
         "extensions": [
           {
             "name": "莫三食材捐醫院",
@@ -287,7 +286,8 @@
       "Recommended translating the on-screen super around 08:55 by briefly summarizing the prescribed remedies instead of leaving the section untranslated."
     ],
     "children": [],
-    "sourceText": "請 Alex Chen 翻譯大愛學漢醫 (排氣不停 中醫有解)，片長12分，預計做9小時36分，從6/8 (一) 14:43起算，deadline為6/9 (二) 16:20 ，謝謝~"
+    "sourceText": "請 Alex Chen 翻譯大愛學漢醫 (排氣不停 中醫有解)，片長12分，預計做9小時36分，從6/8 (一) 14:43起算，deadline為6/9 (二) 16:20 ，謝謝~",
+    "contentSeconds": 720
   },
   {
     "id": "32",
@@ -299,7 +299,6 @@
         "startAt": "2026-06-10T00:30:00Z",
         "deadline": "2026-06-12T00:30:00Z",
         "workMinutes": 960,
-        "contentSeconds": 1200,
         "extensions": [
           {
             "name": "核桃環保工藝",
@@ -336,7 +335,8 @@
       "Revised the inflammation wording to say the body becomes more inflamed instead of using a more literal buildup description."
     ],
     "children": [],
-    "sourceText": "請 Alex Chen 翻譯人文講堂 (其實你胖得很冤枉 - 陳欣湄) 4個短版,  長度20分, 預計翻譯16時(2天), 從6/10（三）08:30起算, deadline 為6/12(五)8:30, 謝謝！"
+    "sourceText": "請 Alex Chen 翻譯人文講堂 (其實你胖得很冤枉 - 陳欣湄) 4個短版,  長度20分, 預計翻譯16時(2天), 從6/10（三）08:30起算, deadline 為6/12(五)8:30, 謝謝！",
+    "contentSeconds": 1200
   },
   {
     "id": "36",
@@ -348,7 +348,6 @@
         "startAt": "2026-06-12T07:00:00Z",
         "deadline": "2026-06-17T01:51:00Z",
         "workMinutes": 1191,
-        "contentSeconds": 1488,
         "extensions": [
           {
             "name": "愛善傳承締祥和",
@@ -399,7 +398,8 @@
       }
     ],
     "children": [],
-    "sourceText": "Alex Chen接下來請Alex翻譯 慈濟的故事(臺北的第二個家 、感念臺北因緣 、講藥師經結緣)，長24分48秒，預計做19小時51分，由6/12（五）15:00起算，deadline為6/17(三) 9:51，謝謝。"
+    "sourceText": "Alex Chen接下來請Alex翻譯 慈濟的故事(臺北的第二個家 、感念臺北因緣 、講藥師經結緣)，長24分48秒，預計做19小時51分，由6/12（五）15:00起算，deadline為6/17(三) 9:51，謝謝。",
+    "contentSeconds": 1488
   },
   {
     "id": "42",
@@ -425,11 +425,11 @@
       {
         "startAt": "2026-06-18T08:53:00Z",
         "deadline": "2026-06-25T03:53:00Z",
-        "workMinutes": 1680,
-        "contentSeconds": 2100
+        "workMinutes": 1680
       }
     ],
     "children": [],
-    "sourceText": "請 Alex Chen 翻譯 心靈講座(在不確定中走出確定 - 童子賢) 4 個短版, 長度35分, 預計翻譯28時(3天4時), 從6/18（四）16:53起算, deadline 為6/25(四)11:53, 謝謝！"
+    "sourceText": "請 Alex Chen 翻譯 心靈講座(在不確定中走出確定 - 童子賢) 4 個短版, 長度35分, 預計翻譯28時(3天4時), 從6/18（四）16:53起算, deadline 為6/25(四)11:53, 謝謝！",
+    "contentSeconds": 2100
   }
 ]

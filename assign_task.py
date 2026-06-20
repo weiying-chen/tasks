@@ -5,7 +5,7 @@ import re
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
-from task_stages import get_previous_stage_work_minutes, normalize_stages
+from task_stages import get_previous_stage_work_minutes, get_task_content_seconds, normalize_stages
 from text_to_json import normalize_task_shape, normalize_tasks_json, parse_datetime
 from work_time import add_work_minutes, next_work_start
 
@@ -59,7 +59,7 @@ def populate_stage_work_minutes(task: dict, stage: dict, assignee: str, stage_la
         stage["workMinutes"] = max(1, int(round(base_minutes / 2)))
         return
 
-    content_seconds = stage.get("contentSeconds")
+    content_seconds = get_task_content_seconds(task)
     if not isinstance(content_seconds, int) or content_seconds <= 0:
         return
     rate = get_assignee_work_rate(assignee)

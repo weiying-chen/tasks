@@ -9,7 +9,6 @@ STAGE_FIELD_NAMES = (
     "startAt",
     "deadline",
     "workMinutes",
-    "contentSeconds",
 )
 
 EXTENSION_FIELD_NAMES = (
@@ -64,7 +63,7 @@ def _normalized_extension(item: dict) -> dict:
 
 def build_single_stage(task: dict) -> list[dict]:
     stage_source: dict[str, Any] = {}
-    for field in ("assignee", "startAt", "deadline", "workMinutes", "contentSeconds"):
+    for field in ("assignee", "startAt", "deadline", "workMinutes"):
         if field in task:
             stage_source[field] = task[field]
     if "name" not in stage_source and "stage" in task:
@@ -131,7 +130,16 @@ def get_task_work_minutes(task: dict) -> int | None:
 
 
 def get_task_content_seconds(task: dict) -> int | None:
-    value = active_stage(task).get("contentSeconds")
+    value = task.get("contentSeconds")
+    if not isinstance(value, int):
+        raw = task.get("stages")
+        if isinstance(raw, list):
+            for stage in reversed(raw):
+                if not isinstance(stage, dict):
+                    continue
+                value = stage.get("contentSeconds")
+                if isinstance(value, int):
+                    break
     return value if isinstance(value, int) else None
 
 

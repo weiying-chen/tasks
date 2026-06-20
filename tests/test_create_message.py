@@ -326,13 +326,13 @@ class CreateMessageTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈）",
+                "type": "subs",
+                "contentSeconds": 364,
                 "assigner": "Emily Ding",
                 "stages": [
                     {
-                        "type": "subs",
                         "assignee": "Shawn",
                         "workMinutes": 364,
-                        "contentSeconds": 364,
                     }
                 ],
                 "children": [],
@@ -351,21 +351,19 @@ class CreateMessageTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈）",
+                "type": "subs",
+                "contentSeconds": 333,
                 "assigner": "Emily Ding",
                 "stages": [
                     {
-                        "type": "subs",
                         "stage": "translate",
                         "assignee": "Emily Ding",
                         "workMinutes": 333,
-                        "contentSeconds": 333,
                     },
                     {
-                        "type": "subs",
                         "stage": "edit",
                         "assignee": "Shawn",
                         "workMinutes": 166,
-                        "contentSeconds": 333,
                     }
                 ],
                 "children": [],
@@ -384,21 +382,19 @@ class CreateMessageTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈）",
+                "type": "subs",
+                "contentSeconds": 364,
                 "assigner": "Emily Ding",
                 "stages": [
                     {
-                        "type": "subs",
                         "stage": "translate",
                         "assignee": "Emily Ding",
                         "workMinutes": 364,
-                        "contentSeconds": 364,
                     },
                     {
-                        "type": "subs",
                         "stage": "edit",
                         "assignee": "Elijah Salie",
                         "workMinutes": 182,
-                        "contentSeconds": 364,
                     },
                 ],
                 "children": [],
@@ -417,16 +413,16 @@ class CreateMessageTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈）",
+                "type": "subs",
+                "contentSeconds": 364,
                 "assigner": "Emily Ding",
                 "stages": [
                     {
-                        "type": "subs",
                         "stage": "translate",
                         "assignee": "Shawn",
                         "startAt": "2026-06-09T03:35:00Z",
                         "deadline": "2026-06-10T01:40:00Z",
                         "workMinutes": 364,
-                        "contentSeconds": 364,
                     }
                 ],
                 "children": [],
@@ -445,16 +441,16 @@ class CreateMessageTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "3集大愛醫生館（杯弓蛇影 乳房腫瘤 + 鬼門關走一遭~冠心病 + 住輸尿管）",
+                "type": "subs",
+                "contentSeconds": 333,
                 "assigner": "Alex Chen",
                 "stages": [
                     {
-                        "type": "subs",
                         "stage": "edit",
                         "assignee": "Shawn",
                         "startAt": "2026-06-02T05:32:00Z",
                         "deadline": "2026-06-02T08:18:00Z",
                         "workMinutes": 166,
-                        "contentSeconds": 333,
                     }
                 ],
                 "children": [],
@@ -473,13 +469,13 @@ class CreateMessageTests(unittest.TestCase):
             {
                 "id": "1",
                 "name": "3集大愛醫生館",
+                "type": "subs",
+                "contentSeconds": 364,
                 "assigner": "Emily Ding",
                 "stages": [
                     {
-                        "type": "subs",
                         "assignee": "Alex Chen",
                         "workMinutes": 364,
-                        "contentSeconds": 364,
                     }
                 ],
                 "children": [],
