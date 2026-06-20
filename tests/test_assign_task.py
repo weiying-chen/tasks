@@ -205,6 +205,49 @@ class AssignTaskTests(unittest.TestCase):
         self.assertEqual(stage["name"], "edit")
         self.assertNotIn("status", stage)
 
+    def test_assign_edit_task_appends_new_stage_after_translate_stage(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈）",
+                "type": "subs",
+                "assigner": "Alex Chen",
+                "stages": [
+                    {
+                        "name": "translate",
+                        "assignee": "Emily Ding",
+                        "startAt": "2026-06-09T03:35:00Z",
+                        "deadline": "2026-06-10T01:40:00Z",
+                        "workMinutes": 364,
+                        "contentSeconds": 364,
+                        "extensions": [
+                            {
+                                "name": "新聞英文與配音",
+                                "type": "custom",
+                                "workMinutes": 95,
+                            }
+                        ],
+                    }
+                ],
+                "children": [],
+            }
+        ]
+        updated = assign_task.assign_task(
+            tasks,
+            "Alex Chen 請 張牧軒 Shawn edit+定稿 3 集大愛醫生館，謝謝~",
+        )
+        self.assertEqual(len(updated[0]["stages"]), 2)
+        translate_stage = updated[0]["stages"][0]
+        edit_stage = updated[0]["stages"][1]
+        self.assertEqual(translate_stage["assignee"], "Emily Ding")
+        self.assertEqual(translate_stage["name"], "translate")
+        self.assertIn("extensions", translate_stage)
+        self.assertEqual(edit_stage["assignee"], "張牧軒 Shawn")
+        self.assertEqual(edit_stage["name"], "edit")
+        self.assertNotIn("extensions", edit_stage)
+        self.assertNotIn("startAt", edit_stage)
+        self.assertNotIn("deadline", edit_stage)
+
     def test_assign_task_does_not_match_partial_prefix_only(self):
         tasks = [
             {

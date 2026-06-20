@@ -102,7 +102,7 @@ def parse_assignment_message(text: str) -> dict[str, str]:
     raise ValueError("Cannot parse assignment message")
 
 
-def ensure_mutable_active_stage(task: dict) -> dict:
+def get_or_create_current_stage(task: dict) -> dict:
     stages = task.get("stages")
     if not isinstance(stages, list):
         stages = normalize_stages(task)
@@ -119,6 +119,31 @@ def ensure_mutable_active_stage(task: dict) -> dict:
     stage = {}
     stages.append(stage)
     return stage
+
+
+def ensure_mutable_stage_for_assignment(task: dict, stage_name: str) -> dict:
+    stages = task.get("stages")
+    if not isinstance(stages, list):
+        stages = normalize_stages(task)
+        task["stages"] = stages
+    if not stages:
+        stage = {}
+        task["stages"] = [stage]
+        return stage
+
+    for stage in reversed(stages):
+        if not isinstance(stage, dict):
+            continue
+        current_name = str(stage.get("name") or stage.get("stage") or "").strip().lower()
+        if current_name == stage_name.strip().lower():
+            return stage
+        if not current_name:
+            return stage
+        break
+
+    new_stage = {}
+    stages.append(new_stage)
+    return new_stage
 
 
 def find_matching_top_level_tasks(tasks: list[dict], task_name: str) -> list[dict]:
@@ -148,7 +173,7 @@ def assign_task(tasks: list[dict], text: str) -> list[dict]:
         raise ValueError(f"Multiple matching top-level tasks: {parsed['name']}")
 
     task = matched[0]
-    stage = ensure_mutable_active_stage(task)
+    stage = ensure_mutable_stage_for_assignment(task, parsed["stage"])
     task["assigner"] = parsed["assigner"]
     stage["assignee"] = parsed["assignee"]
     populate_stage_work_minutes(task, stage, parsed["assignee"], parsed["stage"])
@@ -188,7 +213,7 @@ def confirm_task_start(tasks: list[dict], text: str, year: int | None = None) ->
         raise ValueError(f"Multiple matching top-level tasks: {parsed['name']}")
 
     task = matched[0]
-    stage = ensure_mutable_active_stage(task)
+    stage = get_or_create_current_stage(task)
     assignee = normalize_assignee_key(stage.get("assignee"))
     if not assignee:
         raise ValueError("Missing assignee for task start confirmation")
