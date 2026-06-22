@@ -421,8 +421,8 @@ def build_notes_target_options(latest_task: dict) -> list[tuple[str, str]]:
     if latest_id:
         options.append((latest_id, latest_name))
     for index, extension in enumerate(stage_extension_items(latest_task)):
-        child_name = str(extension.get("name") or "(Untitled)").strip()
-        options.append((f"{latest_id}::extension::{index}", f"{child_name} (extension)"))
+        extension_name = str(extension.get("name") or "(Untitled)").strip()
+        options.append((f"{latest_id}::extension::{index}", f"{extension_name} (extension)"))
     return options
 
 

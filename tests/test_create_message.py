@@ -151,13 +151,13 @@ class CreateMessageTests(unittest.TestCase):
                         "extensions": [
                             {
                                 "type": "news",
-                                "name": "old child",
+                                "name": "old extension",
                                 "startAt": "2026-05-25T02:00:00Z",
                                 "workMinutes": 60,
                             },
                             {
                                 "type": "posts",
-                                "name": "today child",
+                                "name": "today extension",
                                 "startAt": "2026-05-26T01:00:00Z",
                                 "workMinutes": 50,
                             },
@@ -186,13 +186,13 @@ class CreateMessageTests(unittest.TestCase):
                         "extensions": [
                             {
                                 "type": "news",
-                                "name": "yesterday child",
+                                "name": "yesterday extension",
                                 "startAt": "2026-05-27T02:00:00Z",
                                 "workMinutes": 130,
                             },
                             {
                                 "type": "news",
-                                "name": "today child",
+                                "name": "today extension",
                                 "startAt": "2026-05-28T01:00:00Z",
                                 "workMinutes": 110,
                             },

@@ -34,7 +34,7 @@ class LatestTaskViewTests(unittest.TestCase):
                                 "assignee": "Alex",
                                 "startAt": "2026-05-13T01:00:00Z",
                                 "workMinutes": 134,
-                                "notes": ["child-only note"],
+                                "notes": ["extension-only note"],
                             }
                         ],
                     }
@@ -50,7 +50,7 @@ class LatestTaskViewTests(unittest.TestCase):
         self.assertIn("Extensions", out)
         self.assertIn("Notes (1)", out)
         self.assertIn('• "上肢" referred to arms rather than upper body.', out)
-        self.assertNotIn('• child-only note', out)
+        self.assertNotIn('• extension-only note', out)
         self.assertIn("Child", out)
         self.assertIn("Type: subs", out)
         self.assertIn("Type: news", out)
