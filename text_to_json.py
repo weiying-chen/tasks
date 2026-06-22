@@ -10,7 +10,7 @@ from task_deadline import deadlines_match
 from task_stages import get_task_content_seconds, get_task_work_minutes, normalize_stages
 from subs_assigners import SUBS_PROGRAM_ASSIGNERS
 from task_titles import extract_subs_task_name
-from work_time_adjustments import adjusted_child_minutes
+from work_time_adjustments import adjusted_extension_minutes
 
 TZ_TAIPEI = timezone(timedelta(hours=8))
 RESET = '\x1b[0m'
@@ -104,7 +104,6 @@ def parse_subs_input(text: str, year: int, task_id: str):
         "type": "subs",
         "assigner": assigner,
         "stages": [stage],
-        "children": [],
         "sourceText": text,
     }
     if isinstance(content_seconds, int):
@@ -170,7 +169,6 @@ def parse_news_input(text: str, year: int, owner_filter: str):
                     "workMinutes": work_minutes,
                 }
             ],
-            "children": [],
             "sourceText": raw_line,
         }
         tasks.append(task)
@@ -186,7 +184,7 @@ def strip_leading_md_date(text: str) -> str:
 def parse_posts_input(text: str, owner_filter: str):
     tasks = []
     now_iso = datetime.now(TZ_TAIPEI).astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
-    default_work_minutes = 60  # Raw 1 hour; child factor is applied in view/message rendering
+    default_work_minutes = 60  # Raw 1 hour; extension factor is applied in view/message rendering
 
     lines = [line.rstrip() for line in text.splitlines()]
     i = 0
@@ -231,7 +229,6 @@ def parse_posts_input(text: str, owner_filter: str):
                     "workMinutes": default_work_minutes,
                 }
             ],
-            "children": [],
             "sourceText": "\n".join(source_parts),
         }
         tasks.append(task)
@@ -262,7 +259,6 @@ def parse_simple_duration_input(text: str):
                             "workMinutes": hours * 60 + minutes,
                         }
                     ],
-                    "children": [],
                     "sourceText": raw_line,
                 }
 
@@ -280,7 +276,6 @@ def parse_simple_duration_input(text: str):
                             "workMinutes": minutes,
                         }
                     ],
-                    "children": [],
                     "sourceText": raw_line,
                 }
 
@@ -356,9 +351,6 @@ def owner_matches_filter(owner_value: str, owner_filter: str) -> bool:
 def walk_tasks(tasks):
     for task in tasks:
         yield task
-        children = task.get("children")
-        if isinstance(children, list):
-            yield from walk_tasks(children)
 
 
 def next_numeric_task_id(tasks):
@@ -368,25 +360,6 @@ def next_numeric_task_id(tasks):
         if isinstance(raw_id, str) and raw_id.isdigit():
             max_id = max(max_id, int(raw_id))
     return str(max_id + 1)
-
-
-def ensure_children(task):
-    children = task.get("children")
-    if isinstance(children, list):
-        return children
-    task["children"] = []
-    return task["children"]
-
-
-def insert_under_parent(tasks, parent_id, new_task):
-    for task in tasks:
-        if task.get("id") == parent_id:
-            ensure_children(task).append(new_task)
-            return True
-        children = task.get("children")
-        if isinstance(children, list) and insert_under_parent(children, parent_id, new_task):
-            return True
-    return False
 
 
 def active_stage_for_parent(task: dict) -> dict:
@@ -442,13 +415,31 @@ def append_extensions_under_parent(tasks, parent_id, new_items: list[dict]) -> b
                 if isinstance(item, dict):
                     existing.append(extension_from_task(item))
             return True
-        children = task.get("children")
-        if isinstance(children, list) and append_extensions_under_parent(children, parent_id, new_items):
-            return True
     return False
 
 
 def append_notes_under_parent(tasks, parent_id, notes: list[str]) -> bool:
+    extension_match = re.match(r"^(?P<task_id>.+?)::extension::(?P<index>\d+)$", parent_id)
+    if extension_match:
+        task_id = extension_match.group("task_id")
+        extension_index = int(extension_match.group("index"))
+        for task in tasks:
+            if task.get("id") != task_id:
+                continue
+            stage = active_stage_for_parent(task)
+            extensions = stage.get("extensions")
+            if not isinstance(extensions, list) or not 0 <= extension_index < len(extensions):
+                return False
+            extension = extensions[extension_index]
+            if not isinstance(extension, dict):
+                return False
+            existing_notes = extension.get("notes")
+            if isinstance(existing_notes, list):
+                normalized_existing = [n for n in existing_notes if isinstance(n, str)]
+                extension["notes"] = normalized_existing + notes
+            else:
+                extension["notes"] = notes[:]
+            return True
     for task in tasks:
         if task.get("id") == parent_id:
             existing_notes = task.get("notes")
@@ -458,18 +449,10 @@ def append_notes_under_parent(tasks, parent_id, notes: list[str]) -> bool:
             else:
                 task["notes"] = notes[:]
             return True
-        children = task.get("children")
-        if isinstance(children, list) and append_notes_under_parent(children, parent_id, notes):
-            return True
     return False
 
 
 def normalize_task_shape(task):
-    children_raw = task.get("children")
-    children = []
-    if isinstance(children_raw, list):
-        children = [normalize_task_shape(child) for child in children_raw if isinstance(child, dict)]
-
     normalized = {
         "id": str(task.get("id", "")),
         "name": task.get("name", ""),
@@ -506,15 +489,13 @@ def normalize_task_shape(task):
         if normalized_notes:
             normalized["notes"] = normalized_notes
 
-    normalized["children"] = children
-
     if isinstance(task.get("sourceText"), str):
         normalized["sourceText"] = task["sourceText"]
 
     return normalized
 
 
-def apply_child_work_rule(task: dict) -> None:
+def apply_extension_work_rule(task: dict) -> None:
     stages = task.get("stages")
     if isinstance(stages, list):
         for stage in stages:
@@ -522,17 +503,11 @@ def apply_child_work_rule(task: dict) -> None:
                 continue
             minutes = stage.get("workMinutes")
             if isinstance(minutes, int) and minutes > 0:
-                stage["workMinutes"] = adjusted_child_minutes(minutes)
+                stage["workMinutes"] = adjusted_extension_minutes(minutes)
     else:
         minutes = get_task_work_minutes(task)
         if isinstance(minutes, int) and minutes > 0:
-            task["workMinutes"] = adjusted_child_minutes(minutes)
-
-    children = task.get("children")
-    if isinstance(children, list):
-        for child in children:
-            if isinstance(child, dict):
-                apply_child_work_rule(child)
+            task["workMinutes"] = adjusted_extension_minutes(minutes)
 
 
 def main():
@@ -540,7 +515,7 @@ def main():
     parser.add_argument("-i", "--infile", default="tasks.json", help="input/output JSON path")
     parser.add_argument("text", nargs="?", help="source task text")
     parser.add_argument("--parent-id", help="insert new task under this parent task id")
-    parser.add_argument("--target", choices=["children", "notes"], default="children", help="parent field target when using --parent-id")
+    parser.add_argument("--target", choices=["extensions", "notes"], default="extensions", help="parent field target when using --parent-id")
     parser.add_argument("--debug", action="store_true", help="show full traceback on errors")
     args = parser.parse_args()
 
@@ -593,7 +568,7 @@ def main():
                 print(f"{YELLOW}{warning}{RESET}")
             item.pop("assigner", None)
             item.pop("owner", None)
-            apply_child_work_rule(item)
+            apply_extension_work_rule(item)
             inserted = append_extensions_under_parent(tasks, args.parent_id, [item])
             if not inserted:
                 raise ValueError(f"Parent id not found: {args.parent_id}")

@@ -10,14 +10,18 @@ class CreateMessageTests(unittest.TestCase):
         self.assertEqual(create_message.format_mention("@Evelyn"), "@Evelyn")
         self.assertEqual(create_message.format_mention(""), "")
 
-    def test_deadline_window_local_uses_stored_child_minutes(self):
+    def test_deadline_window_local_uses_stored_extension_minutes(self):
         task = {
             "id": "1",
             "name": "Task",
             "assigner": "Evelyn",
-            "deadline": "2026-05-15T02:16:00Z",
-            "children": [
-                {"id": "3", "name": "英文新聞+錄音", "workMinutes": 120, "children": []},
+            "stages": [
+                {
+                    "deadline": "2026-05-15T02:16:00Z",
+                    "extensions": [
+                        {"name": "英文新聞+錄音", "workMinutes": 120},
+                    ],
+                }
             ],
         }
         previous, next_deadline = create_message.deadline_window_local(task)
@@ -30,9 +34,8 @@ class CreateMessageTests(unittest.TestCase):
             "name": "Task",
             "startAt": "2026-05-26T07:04:00Z",
             "workMinutes": 576,
-            "children": [],
         }
-        previous, next_deadline = create_message.deadline_window_local(task, child_minutes=0)
+        previous, next_deadline = create_message.deadline_window_local(task, extension_minutes=0)
         self.assertEqual(create_message.format_message_date(previous), "5/27（三）16:40")
         self.assertEqual(create_message.format_message_date(next_deadline), "5/27（三）16:40")
 
@@ -44,18 +47,21 @@ class CreateMessageTests(unittest.TestCase):
                 "startAt": "2026-05-01T00:00:00Z",
                 "deadline": "2026-05-02T00:00:00Z",
                 "workMinutes": 60,
-                "children": [],
             },
             {
                 "id": "2",
                 "name": "人文講堂 (個人品牌的密碼 - 丁菱娟) 4 個短版",
                 "assigner": "Evelyn",
-                "startAt": "2026-05-13T00:40:00Z",
-                "deadline": "2026-05-15T02:16:00Z",
-                "workMinutes": 1056,
-                "children": [
-                    {"id": "3", "type": "news", "name": "任意名稱A", "workMinutes": 130, "children": []},
-                    {"id": "4", "type": "posts", "name": "任意名稱B", "workMinutes": 60, "children": []},
+                "stages": [
+                    {
+                        "startAt": "2026-05-13T00:40:00Z",
+                        "deadline": "2026-05-15T02:16:00Z",
+                        "workMinutes": 1056,
+                        "extensions": [
+                            {"type": "news", "name": "任意名稱A", "workMinutes": 130},
+                            {"type": "posts", "name": "任意名稱B", "workMinutes": 60},
+                        ],
+                    }
                 ],
             },
         ]
@@ -75,27 +81,34 @@ class CreateMessageTests(unittest.TestCase):
                 "id": "1",
                 "name": "Only task",
                 "assigner": "Evelyn",
-                "startAt": "2026-05-13T00:40:00Z",
-                "deadline": "2026-05-15T02:16:00Z",
-                "workMinutes": 1056,
-                "children": [],
+                "stages": [
+                    {
+                        "startAt": "2026-05-13T00:40:00Z",
+                        "deadline": "2026-05-15T02:16:00Z",
+                        "workMinutes": 1056,
+                    }
+                ],
             }
         ]
 
         with self.assertRaises(ValueError):
             create_message.create_message(tasks, msg_type="deadline-extension")
 
-    def test_deadline_extension_message_uses_stored_child_minutes(self):
+    def test_deadline_extension_message_uses_stored_extension_minutes(self):
         tasks = [
             {
                 "id": "1",
                 "name": "Task",
                 "assigner": "Evelyn",
-                "startAt": "2026-05-13T00:40:00Z",
-                "deadline": "2026-05-15T02:16:00Z",
-                "workMinutes": 1056,
-                "children": [
-                    {"id": "3", "type": "news", "name": "任意名稱", "workMinutes": 120, "children": []},
+                "stages": [
+                    {
+                        "startAt": "2026-05-13T00:40:00Z",
+                        "deadline": "2026-05-15T02:16:00Z",
+                        "workMinutes": 1056,
+                        "extensions": [
+                            {"type": "news", "name": "任意名稱", "workMinutes": 120},
+                        ],
+                    }
                 ],
             }
         ]
@@ -109,43 +122,47 @@ class CreateMessageTests(unittest.TestCase):
                 "id": "1",
                 "name": "Task",
                 "assigner": "Evelyn",
-                "startAt": "2026-05-13T00:40:00Z",
-                "deadline": "2026-05-15T02:16:00Z",
-                "workMinutes": 1056,
-                "children": [
-                    {"id": "3", "name": "舊資料名稱", "workMinutes": 60, "children": []},
+                "stages": [
+                    {
+                        "startAt": "2026-05-13T00:40:00Z",
+                        "deadline": "2026-05-15T02:16:00Z",
+                        "workMinutes": 1056,
+                        "extensions": [
+                            {"name": "舊資料名稱", "workMinutes": 60},
+                        ],
+                    }
                 ],
             }
         ]
         message = create_message.create_message(tasks, msg_type="deadline-extension")
         self.assertIn("舊資料名稱 1時", message)
 
-    def test_deadline_extension_includes_only_current_workday_children(self):
+    def test_deadline_extension_includes_only_current_workday_extensions(self):
         tasks = [
             {
                 "id": "1",
                 "name": "Task",
                 "assigner": "Evelyn",
-                "startAt": "2026-05-13T00:40:00Z",
-                "deadline": "2026-05-15T02:16:00Z",
-                "workMinutes": 1056,
-                "children": [
+                "stages": [
                     {
-                        "id": "2",
-                        "type": "news",
-                        "name": "old child",
-                        "startAt": "2026-05-25T02:00:00Z",
-                        "workMinutes": 60,
-                        "children": [],
-                    },
-                    {
-                        "id": "3",
-                        "type": "posts",
-                        "name": "today child",
-                        "startAt": "2026-05-26T01:00:00Z",
-                        "workMinutes": 50,
-                        "children": [],
-                    },
+                        "startAt": "2026-05-13T00:40:00Z",
+                        "deadline": "2026-05-15T02:16:00Z",
+                        "workMinutes": 1056,
+                        "extensions": [
+                            {
+                                "type": "news",
+                                "name": "old child",
+                                "startAt": "2026-05-25T02:00:00Z",
+                                "workMinutes": 60,
+                            },
+                            {
+                                "type": "posts",
+                                "name": "today child",
+                                "startAt": "2026-05-26T01:00:00Z",
+                                "workMinutes": 50,
+                            },
+                        ],
+                    }
                 ],
             }
         ]
@@ -163,24 +180,24 @@ class CreateMessageTests(unittest.TestCase):
                 "id": "1",
                 "name": "Task",
                 "assigner": "Evelyn",
-                "deadline": "2026-05-27T08:40:00Z",  # 16:40 local
-                "children": [
+                "stages": [
                     {
-                        "id": "2",
-                        "type": "news",
-                        "name": "yesterday child",
-                        "startAt": "2026-05-27T02:00:00Z",
-                        "workMinutes": 130,
-                        "children": [],
-                    },
-                    {
-                        "id": "3",
-                        "type": "news",
-                        "name": "today child",
-                        "startAt": "2026-05-28T01:00:00Z",
-                        "workMinutes": 110,
-                        "children": [],
-                    },
+                        "deadline": "2026-05-27T08:40:00Z",
+                        "extensions": [
+                            {
+                                "type": "news",
+                                "name": "yesterday child",
+                                "startAt": "2026-05-27T02:00:00Z",
+                                "workMinutes": 130,
+                            },
+                            {
+                                "type": "news",
+                                "name": "today child",
+                                "startAt": "2026-05-28T01:00:00Z",
+                                "workMinutes": 110,
+                            },
+                        ],
+                    }
                 ],
             }
         ]
@@ -196,9 +213,13 @@ class CreateMessageTests(unittest.TestCase):
                 "id": "1",
                 "name": "目前完成任務",
                 "assigner": "Evelyn",
-                "deadline": "2026-05-14T02:00:00Z",  # 10:00 local
-                "children": [
-                    {"id": "2", "name": "其他事", "workMinutes": 60, "children": []},
+                "stages": [
+                    {
+                        "deadline": "2026-05-14T02:00:00Z",
+                        "extensions": [
+                            {"name": "其他事", "workMinutes": 60},
+                        ],
+                    }
                 ],
             }
         ]
@@ -222,7 +243,6 @@ class CreateMessageTests(unittest.TestCase):
                 "name": "目前完成任務",
                 "assigner": "Evelyn",
                 "deadline": "2026-05-14T02:00:00Z",
-                "children": [],
             }
         ]
         message = create_message.create_message(
@@ -241,7 +261,6 @@ class CreateMessageTests(unittest.TestCase):
                 "name": "目前完成任務",
                 "assigner": "Evelyn",
                 "deadline": "2026-05-14T02:00:00Z",
-                "children": [],
             }
         ]
         message = create_message.create_message(
@@ -259,7 +278,6 @@ class CreateMessageTests(unittest.TestCase):
                 "name": "目前完成任務",
                 "assigner": "Syharn Shen",
                 "deadline": "2026-05-14T02:00:00Z",
-                "children": [],
             }
         ]
         message = create_message.create_message(
@@ -277,7 +295,6 @@ class CreateMessageTests(unittest.TestCase):
                 "name": "3集日日有新知 (如何讓蘋果更耐旱＋現代人都驚嘆的2500年前宇宙觀＋少睡多讀成績好?)",
                 "assigner": "Elijah Salie",
                 "deadline": "2026-06-18T08:53:00Z",
-                "children": [],
             }
         ]
         message = create_message.create_message(
@@ -295,7 +312,6 @@ class CreateMessageTests(unittest.TestCase):
                 "name": "目前完成任務",
                 "assigner": "Evelyn",
                 "deadline": "2026-05-14T02:00:00Z",
-                "children": [],
             }
         ]
         message = create_message.create_message(
@@ -313,7 +329,6 @@ class CreateMessageTests(unittest.TestCase):
                 "name": "目前完成任務",
                 "assigner": "Evelyn",
                 "deadline": "2026-05-14T02:00:00Z",
-                "children": [],
             }
         ]
         with self.assertRaises(ValueError):
@@ -335,7 +350,6 @@ class CreateMessageTests(unittest.TestCase):
                         "workMinutes": 364,
                     }
                 ],
-                "children": [],
             }
         ]
 
@@ -366,7 +380,6 @@ class CreateMessageTests(unittest.TestCase):
                         "workMinutes": 166,
                     }
                 ],
-                "children": [],
             }
         ]
 
@@ -397,7 +410,6 @@ class CreateMessageTests(unittest.TestCase):
                         "workMinutes": 182,
                     },
                 ],
-                "children": [],
             }
         ]
 
@@ -425,7 +437,6 @@ class CreateMessageTests(unittest.TestCase):
                         "workMinutes": 364,
                     }
                 ],
-                "children": [],
             }
         ]
 
@@ -453,7 +464,6 @@ class CreateMessageTests(unittest.TestCase):
                         "workMinutes": 166,
                     }
                 ],
-                "children": [],
             }
         ]
 
@@ -478,7 +488,6 @@ class CreateMessageTests(unittest.TestCase):
                         "workMinutes": 364,
                     }
                 ],
-                "children": [],
             }
         ]
 

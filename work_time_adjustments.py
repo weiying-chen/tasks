@@ -14,7 +14,7 @@ def round_minutes_to_step(raw_minutes: float, step: int = 10) -> int:
     return max(step, math.ceil(raw_minutes / step) * step)
 
 
-def adjusted_child_minutes(raw_minutes: int, factor: float = CHILD_WORK_FACTOR) -> int:
+def adjusted_extension_minutes(raw_minutes: int, factor: float = CHILD_WORK_FACTOR) -> int:
     if raw_minutes <= 0:
         return 0
     return round_minutes_to_step(raw_minutes * factor)

@@ -21,7 +21,7 @@ class CliErrorTests(unittest.TestCase):
         script = Path(__file__).resolve().parent.parent / "view_latest_task.py"
         with tempfile.TemporaryDirectory() as temp_dir:
             tasks_path = Path(temp_dir) / "tasks_coworkers.json"
-            tasks_path.write_text('[{"id":"1","name":"Coworker","stages":[{"type":"subs","startAt":"2026-06-02T01:00:00Z","workMinutes":240}],"children":[]}]', encoding="utf-8")
+            tasks_path.write_text('[{"id":"1","name":"Coworker","stages":[{"type":"subs","startAt":"2026-06-02T01:00:00Z","workMinutes":240}]}]', encoding="utf-8")
             proc = subprocess.run(
                 [sys.executable, str(script), "--file", str(tasks_path), "--once"],
                 capture_output=True,
@@ -34,7 +34,7 @@ class CliErrorTests(unittest.TestCase):
         script = Path(__file__).resolve().parent.parent / "view_task.py"
         with tempfile.TemporaryDirectory() as temp_dir:
             tasks_path = Path(temp_dir) / "tasks_coworkers.json"
-            tasks_path.write_text('[{"id":"1","name":"Coworker","stages":[{"type":"subs","startAt":"2026-06-02T01:00:00Z","workMinutes":240}],"children":[]}]', encoding="utf-8")
+            tasks_path.write_text('[{"id":"1","name":"Coworker","stages":[{"type":"subs","startAt":"2026-06-02T01:00:00Z","workMinutes":240}]}]', encoding="utf-8")
             proc = subprocess.run(
                 [sys.executable, str(script), "--file", str(tasks_path), "--once"],
                 capture_output=True,

@@ -122,9 +122,6 @@ def iter_tasks(tasks: list[dict]):
     for task in tasks:
         if isinstance(task, dict):
             yield task
-            children = task.get("children")
-            if isinstance(children, list):
-                yield from iter_tasks(children)
 
 
 def find_task_by_id(tasks: list[dict], task_id: str) -> dict | None:
@@ -148,7 +145,7 @@ def get_target_task(tasks: list[dict], task_id: str | None) -> dict:
     return latest
 
 
-def aggregate_children(task: dict, only_local_date=None) -> list[tuple[str, int]]:
+def aggregate_extensions(task: dict, only_local_date=None) -> list[tuple[str, int]]:
     stage_extensions = []
     stages = task.get("stages")
     if isinstance(stages, list) and stages:
@@ -179,36 +176,10 @@ def aggregate_children(task: dict, only_local_date=None) -> list[tuple[str, int]
             totals[label] += minutes
         return [(label, totals[label]) for label in ordered_labels]
 
-    totals: dict[str, int] = {}
-    ordered_labels: list[str] = []
-    children = task.get("children")
-    if not isinstance(children, list):
-        return []
-
-    for child in children:
-        if not isinstance(child, dict):
-            continue
-        if only_local_date is not None:
-            child_created = get_task_start_at(child)
-            if isinstance(child_created, str):
-                if to_local(child_created).date() != only_local_date:
-                    continue
-        child_type = str(get_task_type(child) or "").strip().lower()
-        label = TYPE_LABELS.get(child_type)
-        if not label:
-            label = str(child.get("name") or "").strip()
-        minutes = get_task_work_minutes(child)
-        if not label or not isinstance(minutes, int) or minutes <= 0:
-            continue
-        if label not in totals:
-            ordered_labels.append(label)
-            totals[label] = 0
-        totals[label] += minutes
-
-    return [(label, totals[label]) for label in ordered_labels]
+    return []
 
 
-def total_child_minutes(task: dict, only_local_date=None) -> int:
+def total_extension_minutes(task: dict, only_local_date=None) -> int:
     total = 0
     stages = task.get("stages")
     if isinstance(stages, list) and stages:
@@ -228,21 +199,6 @@ def total_child_minutes(task: dict, only_local_date=None) -> int:
                         total += minutes
                 if total > 0 or raw_extensions:
                     return total
-    children = task.get("children")
-    if not isinstance(children, list):
-        return 0
-
-    for child in children:
-        if not isinstance(child, dict):
-            continue
-        if only_local_date is not None:
-            child_created = get_task_start_at(child)
-            if isinstance(child_created, str) and to_local(child_created).date() != only_local_date:
-                continue
-        minutes = get_task_work_minutes(child)
-        if isinstance(minutes, int) and minutes > 0:
-            total += minutes
-
     return total
 
 
@@ -251,12 +207,12 @@ def format_deadline_extension_message(task: dict, now_local: datetime | None = N
         now_local = datetime.now(TZ_TAIPEI)
     assignment = str(task.get("name") or "").strip()
     assigner = str(task.get("assigner") or "").strip()
-    assignments = aggregate_children(task, only_local_date=now_local.date())
+    assignments = aggregate_extensions(task, only_local_date=now_local.date())
     today_minutes = sum(minutes for _, minutes in assignments)
     if today_minutes <= 0:
         raise ValueError("Task has no subtasks for current workday.")
-    all_child_minutes = total_child_minutes(task)
-    previous_minutes = max(all_child_minutes - today_minutes, 0)
+    all_extension_minutes = total_extension_minutes(task)
+    previous_minutes = max(all_extension_minutes - today_minutes, 0)
     base_deadline = require_task_deadline_local(task)
     previous = add_work_minutes(base_deadline, previous_minutes) if previous_minutes > 0 else base_deadline
     next_deadline = add_work_minutes(previous, today_minutes)
@@ -279,13 +235,13 @@ def format_deadline_extension_message(task: dict, now_local: datetime | None = N
     return "\n".join(lines)
 
 
-def deadline_window_local(task: dict, child_minutes: int | None = None) -> tuple[datetime, datetime]:
+def deadline_window_local(task: dict, extension_minutes: int | None = None) -> tuple[datetime, datetime]:
     base_deadline = require_task_deadline_local(task)
-    if child_minutes is None:
-        child_minutes = sum(minutes for _, minutes in aggregate_children(task))
-    if child_minutes <= 0:
+    if extension_minutes is None:
+        extension_minutes = sum(minutes for _, minutes in aggregate_extensions(task))
+    if extension_minutes <= 0:
         return base_deadline, base_deadline
-    return base_deadline, add_work_minutes(base_deadline, child_minutes)
+    return base_deadline, add_work_minutes(base_deadline, extension_minutes)
 
 
 def final_deadline_local(task: dict) -> datetime:

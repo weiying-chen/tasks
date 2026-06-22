@@ -26,13 +26,13 @@ class LatestTaskActionsTests(unittest.TestCase):
 
     def test_find_latest_task_id(self):
         tasks = [
-            {"id": "1", "name": "A", "children": []},
-            {"id": "7", "name": "B", "children": []},
+            {"id": "1", "name": "A"},
+            {"id": "7", "name": "B"},
         ]
         self.assertEqual(view_latest_task.find_latest_task_id(tasks), "7")
 
     def test_build_add_to_latest_command(self):
-        cmd = view_latest_task.build_add_to_latest_command("/tmp", "9", "children", "/tmp/tasks_coworkers.json")
+        cmd = view_latest_task.build_add_to_latest_command("/tmp", "9", "extensions", "/tmp/tasks_coworkers.json")
         self.assertEqual(
             cmd,
             [
@@ -43,7 +43,7 @@ class LatestTaskActionsTests(unittest.TestCase):
                 "--parent-id",
                 "9",
                 "--target",
-                "children",
+                "extensions",
                 "__CLIPBOARD__",
             ],
         )
@@ -112,22 +112,19 @@ class LatestTaskActionsTests(unittest.TestCase):
         line = self.strip_ansi(view_latest_task.build_actions_line(input_file="/tmp/tasks_coworkers.json"))
         self.assertIn("set start time", line)
 
-    def test_build_notes_target_options_parent_and_children(self):
+    def test_build_notes_target_options_parent_and_extensions(self):
         latest = {
             "id": "6",
             "name": "Parent",
-            "children": [
-                {"id": "7", "name": "Child A"},
-                {"id": "8", "name": "Child B"},
-            ],
+            "stages": [{"extensions": [{"name": "Child A"}, {"name": "Child B"}]}],
         }
         options = view_latest_task.build_notes_target_options(latest)
         self.assertEqual(
             options,
             [
                 ("6", "Parent"),
-                ("7", "Child A (subtask)"),
-                ("8", "Child B (subtask)"),
+                ("6::extension::0", "Child A (extension)"),
+                ("6::extension::1", "Child B (extension)"),
             ],
         )
 
@@ -144,7 +141,6 @@ class LatestTaskActionsTests(unittest.TestCase):
                     "contentSeconds": 364,
                 }
             ],
-            "children": [],
         }
         self.assertEqual(
             view_latest_task.build_message_target_options(latest, input_file="/tmp/tasks.json"),
@@ -169,7 +165,6 @@ class LatestTaskActionsTests(unittest.TestCase):
                     "contentSeconds": 364,
                 }
             ],
-            "children": [],
         }
         self.assertEqual(
             view_latest_task.build_message_target_options(latest, input_file="/tmp/tasks_coworkers.json"),
@@ -191,7 +186,6 @@ class LatestTaskActionsTests(unittest.TestCase):
                     "contentSeconds": 364,
                 }
             ],
-            "children": [],
         }
         self.assertEqual(
             view_latest_task.build_message_target_options(latest, input_file="/tmp/tasks_coworkers.json"),
@@ -211,7 +205,6 @@ class LatestTaskActionsTests(unittest.TestCase):
                     "contentSeconds": 364,
                 }
             ],
-            "children": [],
         }
         self.assertEqual(
             view_latest_task.build_message_target_options(latest, input_file="/tmp/tasks_coworkers.json"),
@@ -347,7 +340,6 @@ class LatestTaskActionsTests(unittest.TestCase):
                     "contentSeconds": 120,
                 }
             ],
-            "children": [],
         }
         clipboard_text = (
             "因deadline 已至，我先加時間 做其他事時間是 2時\n\n"
@@ -376,7 +368,6 @@ class LatestTaskActionsTests(unittest.TestCase):
                     "contentSeconds": 120,
                 }
             ],
-            "children": [],
         }
         clipboard_text = (
             "因deadline 已至，我先加時間 做其他事時間是 1時35分\n\n"
@@ -417,7 +408,6 @@ class LatestTaskActionsTests(unittest.TestCase):
                         "contentSeconds": 364,
                     }
                 ],
-                "children": [],
             }
         ]
         clipboard_text = (
@@ -456,7 +446,6 @@ class LatestTaskActionsTests(unittest.TestCase):
                         ],
                     }
                 ],
-                "children": [],
             }
         ]
         clipboard_text = (

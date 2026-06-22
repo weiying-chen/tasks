@@ -141,11 +141,6 @@ def find_task_by_id(tasks: list[dict], task_id: str) -> dict | None:
             continue
         if task.get("id") == task_id:
             return task
-        children = task.get("children")
-        if isinstance(children, list):
-            found = find_task_by_id(children, task_id)
-            if found is not None:
-                return found
     return None
 
 
@@ -161,7 +156,7 @@ def get_view_task(tasks: list[dict], task_id: str | None = None) -> dict | None:
 def build_add_to_latest_command(
     script_dir: str,
     parent_id: str,
-    target: str = "children",
+    target: str = "extensions",
     infile: str | None = None,
 ) -> list[str]:
     cmd = ["python3", f"{script_dir}/text_to_json.py"]
@@ -425,15 +420,9 @@ def build_notes_target_options(latest_task: dict) -> list[tuple[str, str]]:
     latest_name = str(latest_task.get("name") or "(Untitled)").strip()
     if latest_id:
         options.append((latest_id, latest_name))
-    children = latest_task.get("children")
-    if isinstance(children, list):
-        for child in children:
-            if not isinstance(child, dict):
-                continue
-            child_id = str(child.get("id") or "").strip()
-            child_name = str(child.get("name") or "(Untitled)").strip()
-            if child_id:
-                options.append((child_id, f"{child_name} (subtask)"))
+    for index, extension in enumerate(stage_extension_items(latest_task)):
+        child_name = str(extension.get("name") or "(Untitled)").strip()
+        options.append((f"{latest_id}::extension::{index}", f"{child_name} (extension)"))
     return options
 
 
@@ -504,7 +493,7 @@ def stage_extension_items(task: dict) -> list[dict]:
     return []
 
 
-def child_total_minutes(task: dict) -> int:
+def extension_total_minutes(task: dict) -> int:
     total = 0
     extensions = stage_extension_items(task)
     if extensions:
@@ -513,26 +502,38 @@ def child_total_minutes(task: dict) -> int:
             if isinstance(minutes, int) and minutes > 0:
                 total += minutes
         return total
-    children = task.get('children')
-    if not isinstance(children, list):
-        return 0
-    for child in children:
-        if not isinstance(child, dict):
-            continue
-        base_child_minutes = get_task_work_minutes(child)
-        if isinstance(base_child_minutes, int) and base_child_minutes > 0:
-            total += base_child_minutes
     return total
 
 
-def render_extension_block(lines: list[str], item: dict) -> None:
+def render_extension_block(
+    lines: list[str],
+    item: dict,
+    now_local: datetime,
+    show_subtask_notes: bool,
+    show_notes: bool,
+    show_subtask_assignment_fields: bool,
+) -> None:
     name = str(item.get("name") or "(Untitled)").strip()
     lines.append(f"Name: {name}")
     task_type = str(item.get("type") or "").strip()
-    if task_type:
-        lines.append(f"Type: {task_type}")
+    lines.append(f"Type: {task_type if task_type else '-'}")
+    if show_subtask_assignment_fields:
+        assignee = str(item.get("assignee") or "").strip()
+        lines.append("Stage: -")
+        lines.append(f"Assignee: {assignee if assignee else '-'}")
+    start_at = item.get("startAt")
+    created = next_work_start(to_local(start_at)) if isinstance(start_at, str) and start_at.strip() else None
+    if show_subtask_assignment_fields:
+        lines.append(f"Start time: {to_display(created) if created else '-'}")
     minutes = item.get("workMinutes")
     lines.append(f"Work time: {fmt_work(minutes if isinstance(minutes, int) else None)}")
+    if task_type != "custom":
+        deadline = to_local(item["deadline"]) if isinstance(item.get("deadline"), str) and item.get("deadline", "").strip() else None
+        lines.append(f"Deadline: {color(to_display(deadline) if deadline else '-', YELLOW)}")
+    if show_notes:
+        notes = item.get("notes")
+        cleaned = [note.strip() for note in notes if isinstance(note, str) and note.strip()] if isinstance(notes, list) else []
+        render_notes_block(lines, "Notes" if not cleaned else f"Notes ({len(cleaned)})", cleaned, show_subtask_notes)
     lines.append("")
 
 
@@ -668,9 +669,9 @@ def render_task_block(
         lines.append(f'Work time: {fmt_work(work_minutes)}')
 
         extended = None
-        child_minutes = child_total_minutes(task)
-        if deadline and child_minutes > 0:
-            extended = add_work_minutes(deadline, child_minutes)
+        extension_minutes = extension_total_minutes(task)
+        if deadline and extension_minutes > 0:
+            extended = add_work_minutes(deadline, extension_minutes)
         if extended:
             lines.append(f'Deadline: {to_display(deadline) if deadline else "-"}')
         else:
@@ -685,31 +686,19 @@ def render_task_block(
             resume_hint = fmt_resume_hint(now_local, deadline)
             lines.append(f'Work time left: {color(countdown, GREEN)}{resume_hint}')
         extension_items = stage_extension_items(task)
-        children = task.get('children')
         if extension_items:
             lines.append('')
             lines.append(bold('Extensions'))
             lines.append('')
             for item in extension_items:
-                render_extension_block(lines, item)
-        if isinstance(children, list) and children:
-            lines.append('')
-            lines.append(bold('Subtasks'))
-            lines.append('')
-
-        children = task.get('children')
-        if isinstance(children, list):
-            for child in children:
-                if isinstance(child, dict):
-                    render_task_block(
-                        lines,
-                        child,
-                        now_local,
-                        level + 1,
-                        show_subtask_notes,
-                        show_notes,
-                        show_subtask_assignment_fields,
-                    )
+                render_extension_block(
+                    lines,
+                    item,
+                    now_local,
+                    show_subtask_notes,
+                    show_notes,
+                    show_subtask_assignment_fields,
+                )
 
         if show_notes:
             notes = clean_notes(task)
@@ -948,7 +937,7 @@ def main():
                             status = color("Error: Clipboard is empty.", RED)
                             status_until = time.time() + STATUS_TTL_SECONDS
                             continue
-                        cmd = build_add_to_latest_command(script_dir, selected_id, "children", input_file)
+                        cmd = build_add_to_latest_command(script_dir, selected_id, "extensions", input_file)
                         cmd[-1] = clipboard_text
                         add_proc = subprocess.run(
                             cmd,

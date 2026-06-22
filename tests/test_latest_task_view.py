@@ -13,12 +13,13 @@ class LatestTaskViewTests(unittest.TestCase):
     def strip_ansi(text: str) -> str:
         return re.sub(r"\x1b\[[0-9;]*m", "", text)
 
-    def test_renders_latest_parent_and_children(self):
+    def test_renders_latest_parent_and_extensions(self):
         tasks = [
-            {"id": "1", "name": "Old", "startAt": "2026-05-01T00:00:00Z", "workMinutes": 60, "children": []},
+            {"id": "1", "name": "Old", "startAt": "2026-05-01T00:00:00Z", "workMinutes": 60},
             {
                 "id": "2",
                 "name": "New Parent",
+                "notes": ['"上肢" referred to arms rather than upper body.'],
                 "stages": [
                     {
                         "type": "subs",
@@ -26,23 +27,16 @@ class LatestTaskViewTests(unittest.TestCase):
                         "assignee": "Alex",
                         "startAt": "2026-05-13T00:40:00Z",
                         "workMinutes": 1056,
-                    }
-                ],
-                "notes": ['"上肢" referred to arms rather than upper body.'],
-                "children": [
-                    {
-                        "id": "3",
-                        "name": "Child",
-                        "stages": [
+                        "extensions": [
                             {
+                                "name": "Child",
                                 "type": "news",
                                 "assignee": "Alex",
                                 "startAt": "2026-05-13T01:00:00Z",
                                 "workMinutes": 134,
+                                "notes": ["child-only note"],
                             }
                         ],
-                        "notes": ["child-only note"],
-                        "children": [],
                     }
                 ],
             },
@@ -53,7 +47,7 @@ class LatestTaskViewTests(unittest.TestCase):
         self.assertIn("Name: New Parent", out)
         self.assertIn("Stage: translate", out)
         self.assertIn("Assignee: Alex", out)
-        self.assertIn("Subtasks", out)
+        self.assertIn("Extensions", out)
         self.assertIn("Notes (1)", out)
         self.assertIn('• "上肢" referred to arms rather than upper body.', out)
         self.assertNotIn('• child-only note', out)
@@ -71,7 +65,6 @@ class LatestTaskViewTests(unittest.TestCase):
                 "startAt": "2026-05-13T00:40:00Z",
                 "workMinutes": 120,
                 "notes": ["first note", "second note"],
-                "children": [],
             }
         ]
         out = self.strip_ansi(view_latest_task.build_latest_view(tasks, show_subtask_notes=True))
@@ -86,15 +79,17 @@ class LatestTaskViewTests(unittest.TestCase):
                 "name": "Parent",
                 "startAt": "2026-05-13T00:40:00Z",
                 "workMinutes": 120,
-                "children": [
+                "stages": [
                     {
-                        "id": "2",
-                        "name": "Child",
-                        "type": "news",
-                        "startAt": "2026-05-13T01:00:00Z",
-                        "workMinutes": 30,
-                        "notes": ["subtask note"],
-                        "children": [],
+                        "extensions": [
+                            {
+                                "name": "Child",
+                                "type": "news",
+                                "startAt": "2026-05-13T01:00:00Z",
+                                "workMinutes": 30,
+                                "notes": ["subtask note"],
+                            }
+                        ]
                     }
                 ],
             }
@@ -109,12 +104,14 @@ class LatestTaskViewTests(unittest.TestCase):
                 "id": "1",
                 "name": "Parent",
                 "workMinutes": 120,
-                "children": [
+                "stages": [
                     {
-                        "id": "2",
-                        "name": "Child",
-                        "workMinutes": 30,
-                        "children": [],
+                        "extensions": [
+                            {
+                                "name": "Child",
+                                "workMinutes": 30,
+                            }
+                        ]
                     }
                 ],
             }
@@ -131,7 +128,6 @@ class LatestTaskViewTests(unittest.TestCase):
                 "id": "1",
                 "name": "Parent",
                 "workMinutes": 120,
-                "children": [],
             }
         ]
         out = self.strip_ansi(view_latest_task.build_latest_view(tasks))
@@ -144,7 +140,6 @@ class LatestTaskViewTests(unittest.TestCase):
                 "name": "Only",
                 "startAt": "2026-05-13T00:40:00Z",
                 "workMinutes": 120,
-                "children": [],
             }
         ]
         now_local = datetime(2026, 5, 13, 10, 0, tzinfo=timezone(timedelta(hours=8)))
@@ -158,7 +153,6 @@ class LatestTaskViewTests(unittest.TestCase):
                 "name": "Only",
                 "startAt": "2026-05-13T05:00:00Z",
                 "workMinutes": 120,
-                "children": [],
             }
         ]
         # 2026-05-13 Wed 12:30 local is lunch break; next work start is 13:00.
@@ -174,7 +168,6 @@ class LatestTaskViewTests(unittest.TestCase):
                 "name": "Only",
                 "startAt": "2026-05-13T00:40:00Z",
                 "workMinutes": 120,
-                "children": [],
             }
         ]
         now_local = datetime(2026, 5, 13, 10, 0, tzinfo=timezone(timedelta(hours=8)))
@@ -194,7 +187,6 @@ class LatestTaskViewTests(unittest.TestCase):
                 "name": "Only",
                 "startAt": "2026-05-13T00:40:00Z",
                 "workMinutes": 120,
-                "children": [],
             }
         ]
         out = self.strip_ansi(view_latest_task.build_latest_view(tasks))
@@ -212,7 +204,6 @@ class LatestTaskViewTests(unittest.TestCase):
                 "name": "Only",
                 "startAt": "2026-05-13T00:40:00Z",
                 "workMinutes": 120,
-                "children": [],
             }
         ]
         out = view_latest_task.build_latest_view(tasks)
@@ -231,7 +222,6 @@ class LatestTaskViewTests(unittest.TestCase):
                 "name": "Only",
                 "startAt": "2026-05-13T00:40:00Z",
                 "workMinutes": 120,
-                "children": [],
             }
         ]
         out = view_latest_task.build_latest_view(tasks, input_file="/tmp/tasks_coworkers.json")
@@ -259,7 +249,6 @@ class LatestTaskViewTests(unittest.TestCase):
                         "contentSeconds": 364,
                     }
                 ],
-                "children": [],
             }
         ]
         out = view_latest_task.build_latest_view(tasks, input_file="/tmp/tasks_coworkers.json")
@@ -272,7 +261,6 @@ class LatestTaskViewTests(unittest.TestCase):
                 "name": "Only",
                 "startAt": "2026-05-13T00:40:00Z",
                 "workMinutes": 120,
-                "children": [],
             }
         ]
         out = view_latest_task.build_latest_view(tasks, input_file="/tmp/tasks_coworkers.json")
@@ -285,7 +273,6 @@ class LatestTaskViewTests(unittest.TestCase):
                 "name": "Only",
                 "startAt": "2026-05-13T00:40:00Z",
                 "workMinutes": 120,
-                "children": [],
             }
         ]
         out = self.strip_ansi(view_latest_task.build_latest_view(tasks, status="Task is missing deadline."))
@@ -300,7 +287,6 @@ class LatestTaskViewTests(unittest.TestCase):
                 "name": "Only",
                 "startAt": "2026-05-13T00:40:00Z",
                 "workMinutes": 120,
-                "children": [],
             }
         ]
         now_local = datetime(2026, 5, 13, 10, 0, tzinfo=timezone(timedelta(hours=8)))
@@ -323,7 +309,6 @@ class LatestTaskViewTests(unittest.TestCase):
                         "contentSeconds": 364,
                     }
                 ],
-                "children": [],
             }
         ]
         now_local = datetime(2026, 6, 19, 8, 0, tzinfo=timezone(timedelta(hours=8)))
@@ -342,19 +327,13 @@ class LatestTaskViewTests(unittest.TestCase):
                         "type": "subs",
                         "workMinutes": 364,
                         "contentSeconds": 364,
-                    }
-                ],
-                "children": [
-                    {
-                        "id": "2",
-                        "name": "新聞英文與配音",
-                        "stages": [
+                        "extensions": [
                             {
+                                "name": "新聞英文與配音",
                                 "type": "custom",
                                 "workMinutes": 95,
                             }
                         ],
-                        "children": [],
                     }
                 ],
             }
@@ -372,19 +351,13 @@ class LatestTaskViewTests(unittest.TestCase):
                         "type": "subs",
                         "workMinutes": 364,
                         "contentSeconds": 364,
-                    }
-                ],
-                "children": [
-                    {
-                        "id": "2",
-                        "name": "新聞英文與配音",
-                        "stages": [
+                        "extensions": [
                             {
+                                "name": "新聞英文與配音",
                                 "type": "custom",
                                 "workMinutes": 95,
                             }
                         ],
-                        "children": [],
                     }
                 ],
             }
@@ -392,7 +365,7 @@ class LatestTaskViewTests(unittest.TestCase):
         out = self.strip_ansi(view_latest_task.build_latest_view(tasks, input_file="/tmp/tasks_coworkers.json"))
         self.assertIn("Name: 新聞英文與配音", out)
         self.assertNotIn("Name: 新聞英文與配音\nType: custom\nStage:", out)
-        self.assertNotIn("Assignee:", out.split("Subtasks", 1)[1])
+        self.assertNotIn("Assignee:", out.split("Extensions", 1)[1])
 
     def test_work_seconds_between_skips_off_hours(self):
         start = datetime(2026, 5, 13, 16, 0, tzinfo=timezone(timedelta(hours=8)))
@@ -400,21 +373,23 @@ class LatestTaskViewTests(unittest.TestCase):
         # Work windows counted: 16:00-17:00 (1h) + 8:00-9:00 (1h) = 2h.
         self.assertEqual(view_latest_task.work_seconds_between(start, end), 2 * 3600)
 
-    def test_extended_deadline_uses_stored_child_minutes(self):
+    def test_extended_deadline_uses_stored_extension_minutes(self):
         tasks = [
             {
                 "id": "1",
                 "name": "Parent",
-                "startAt": "2026-05-13T00:40:00Z",
-                "deadline": "2026-05-13T02:00:00Z",  # 10:00 local
-                "workMinutes": 60,
-                "children": [
+                "stages": [
                     {
-                        "id": "2",
-                        "name": "Child",
-                        "startAt": "2026-05-13T01:00:00Z",
+                        "startAt": "2026-05-13T00:40:00Z",
+                        "deadline": "2026-05-13T02:00:00Z",
                         "workMinutes": 60,
-                        "children": [],
+                        "extensions": [
+                            {
+                                "name": "Child",
+                                "startAt": "2026-05-13T01:00:00Z",
+                                "workMinutes": 60,
+                            }
+                        ]
                     }
                 ],
             }
@@ -440,7 +415,6 @@ class LatestTaskViewTests(unittest.TestCase):
                         ]
                     }
                 ],
-                "children": [],
             }
         ]
         out = self.strip_ansi(view_latest_task.build_latest_view(tasks))
@@ -449,32 +423,32 @@ class LatestTaskViewTests(unittest.TestCase):
         self.assertIn("Work time: 1h 35m", out)
         self.assertNotIn("Deadline: 2026-06-19 Fri 09:35", out)
 
-    def test_child_blocks_have_single_blank_line_separator(self):
+    def test_extension_blocks_have_single_blank_line_separator(self):
         tasks = [
             {
                 "id": "1",
                 "name": "Parent",
                 "startAt": "2026-05-13T00:40:00Z",
                 "workMinutes": 60,
-                "children": [
+                "stages": [
                     {
-                        "id": "2",
-                        "name": "Child A",
-                        "type": "news",
-                        "startAt": "2026-05-13T01:00:00Z",
-                        "workMinutes": 60,
-                        "deadline": "2026-05-13T02:00:00Z",
-                        "children": [],
-                    },
-                    {
-                        "id": "3",
-                        "name": "Child B",
-                        "type": "posts",
-                        "startAt": "2026-05-13T02:00:00Z",
-                        "workMinutes": 30,
-                        "deadline": "2026-05-13T03:00:00Z",
-                        "children": [],
-                    },
+                        "extensions": [
+                            {
+                                "name": "Child A",
+                                "type": "news",
+                                "startAt": "2026-05-13T01:00:00Z",
+                                "workMinutes": 60,
+                                "deadline": "2026-05-13T02:00:00Z",
+                            },
+                            {
+                                "name": "Child B",
+                                "type": "posts",
+                                "startAt": "2026-05-13T02:00:00Z",
+                                "workMinutes": 30,
+                                "deadline": "2026-05-13T03:00:00Z",
+                            },
+                        ]
+                    }
                 ],
             }
         ]
@@ -500,8 +474,8 @@ class LatestTaskViewTests(unittest.TestCase):
 
     def test_build_task_view_can_select_task_by_id(self):
         tasks = [
-            {"id": "1", "name": "Old", "startAt": "2026-05-01T00:00:00Z", "workMinutes": 60, "children": []},
-            {"id": "2", "name": "New", "startAt": "2026-05-13T00:40:00Z", "workMinutes": 120, "children": []},
+            {"id": "1", "name": "Old", "startAt": "2026-05-01T00:00:00Z", "workMinutes": 60},
+            {"id": "2", "name": "New", "startAt": "2026-05-13T00:40:00Z", "workMinutes": 120},
         ]
         out = self.strip_ansi(view_latest_task.build_task_view(tasks, task_id="1"))
         self.assertIn("Name: Old", out)

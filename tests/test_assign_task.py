@@ -16,7 +16,6 @@ class AssignTaskTests(unittest.TestCase):
                     {
                     }
                 ],
-                "children": [],
             }
         ]
         updated = assign_task.assign_task(
@@ -44,7 +43,6 @@ class AssignTaskTests(unittest.TestCase):
                         "workMinutes": 222,
                     }
                 ],
-                "children": [],
             }
         ]
         updated = assign_task.assign_task(
@@ -111,7 +109,6 @@ class AssignTaskTests(unittest.TestCase):
                         "workMinutes": 240,
                     }
                 ],
-                "children": [],
             }
         ]
         updated = assign_task.assign_task(
@@ -137,7 +134,6 @@ class AssignTaskTests(unittest.TestCase):
                         "workMinutes": 180,
                     }
                 ],
-                "children": [],
             }
         ]
         updated = assign_task.assign_task(
@@ -167,7 +163,6 @@ class AssignTaskTests(unittest.TestCase):
                     {
                     },
                 ],
-                "children": [],
             }
         ]
         updated = assign_task.assign_task(
@@ -192,7 +187,6 @@ class AssignTaskTests(unittest.TestCase):
                         "workMinutes": 333,
                     }
                 ],
-                "children": [],
             }
         ]
         updated = assign_task.assign_task(
@@ -228,7 +222,6 @@ class AssignTaskTests(unittest.TestCase):
                         ],
                     }
                 ],
-                "children": [],
             }
         ]
         updated = assign_task.assign_task(
@@ -254,7 +247,6 @@ class AssignTaskTests(unittest.TestCase):
                 "id": "1",
                 "name": "3集大愛醫生館（杯弓蛇影 乳房腫瘤 + 鬼門關走一遭~冠心病 + 住輸尿管）",
                 "stages": [{"type": "subs"}],
-                "children": [],
             }
         ]
         with self.assertRaisesRegex(ValueError, "No matching top-level task"):
@@ -269,7 +261,6 @@ class AssignTaskTests(unittest.TestCase):
                 "id": "1",
                 "name": "別的任務",
                 "stages": [{"type": "subs"}],
-                "children": [],
             }
         ]
         with self.assertRaisesRegex(ValueError, "No matching top-level task"):
@@ -306,7 +297,6 @@ class AssignTaskTests(unittest.TestCase):
                         "contentSeconds": 364,
                     }
                 ],
-                "children": [],
             }
         ]
         updated = assign_task.confirm_task_start(

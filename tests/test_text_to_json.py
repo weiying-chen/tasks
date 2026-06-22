@@ -66,7 +66,7 @@ class TextToJsonTests(unittest.TestCase):
             "4/26無私大愛結好緣\n"
             "https://www.daai.tv/master/life-wisdom/P90230241?more=true\n"
         )
-        parsed = text_to_json.parse_source_text(text, [{"id": "1", "name": "root", "children": []}], 2026)
+        parsed = text_to_json.parse_source_text(text, [{"id": "1", "name": "root"}], 2026)
         self.assertEqual(len(parsed), 1)
         self.assertEqual(parsed[0]["id"], "2")
         self.assertEqual(parsed[0]["name"], "無私大愛結好緣")
@@ -266,7 +266,7 @@ class TextToJsonTests(unittest.TestCase):
     def test_parse_source_text_custom_minutes_format(self):
         parsed = text_to_json.parse_source_text(
             "開會 50分",
-            [{"id": "1", "name": "root", "children": []}],
+            [{"id": "1", "name": "root"}],
             2026,
         )
         self.assertEqual(len(parsed), 1)
@@ -279,7 +279,7 @@ class TextToJsonTests(unittest.TestCase):
     def test_parse_source_text_custom_hours_minutes_format(self):
         parsed = text_to_json.parse_source_text(
             "開會 1時20分",
-            [{"id": "1", "name": "root", "children": []}],
+            [{"id": "1", "name": "root"}],
             2026,
         )
         self.assertEqual(len(parsed), 1)
@@ -288,20 +288,19 @@ class TextToJsonTests(unittest.TestCase):
         self.assertEqual(task["name"], "開會")
         self.assertEqual(get_task_work_minutes(task), 80)
 
-    def test_apply_child_work_rule_adjusts_inserted_child_minutes(self):
+    def test_apply_extension_work_rule_adjusts_inserted_extension_minutes(self):
         task = {
             "id": "3",
-            "name": "child",
+            "name": "extension",
             "stages": [{"workMinutes": 60}],
-            "children": [],
         }
-        text_to_json.apply_child_work_rule(task)
+        text_to_json.apply_extension_work_rule(task)
         self.assertEqual(get_task_work_minutes(task), 50)
 
     def test_news_1h45_stores_1h40_after_bonus_and_factor(self):
         parsed = text_to_json.parse_source_text("Alex Chen: 測試新聞 1:45", [], 2026)
         task = parsed[0]
-        text_to_json.apply_child_work_rule(task)
+        text_to_json.apply_extension_work_rule(task)
         self.assertEqual(get_task_work_minutes(task), 100)
 
     def test_parse_notes_input_bullet_list(self):
@@ -320,12 +319,31 @@ class TextToJsonTests(unittest.TestCase):
 
     def test_append_notes_under_parent(self):
         tasks = [
-            {"id": "1", "name": "A", "children": []},
-            {"id": "2", "name": "B", "children": []},
+            {"id": "1", "name": "A"},
+            {"id": "2", "name": "B"},
         ]
         inserted = text_to_json.append_notes_under_parent(tasks, "2", ["note 1", "note 2"])
         self.assertTrue(inserted)
         self.assertEqual(tasks[1]["notes"], ["note 1", "note 2"])
+
+    def test_append_notes_under_extension_target(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "A",
+                "stages": [
+                    {
+                        "extensions": [
+                            {"name": "Ext A", "workMinutes": 50},
+                            {"name": "Ext B", "workMinutes": 60},
+                        ]
+                    }
+                ],
+            }
+        ]
+        inserted = text_to_json.append_notes_under_parent(tasks, "1::extension::1", ["note 1"])
+        self.assertTrue(inserted)
+        self.assertEqual(tasks[0]["stages"][0]["extensions"][1]["notes"], ["note 1"])
 
     def test_normalize_task_shape_moves_assignee_into_stages(self):
         task = {
@@ -333,7 +351,6 @@ class TextToJsonTests(unittest.TestCase):
             "name": "Parent",
             "assigner": "Evelyn",
             "assignee": "Alex",
-            "children": [],
         }
         normalized = text_to_json.normalize_task_shape(task)
         self.assertEqual(
@@ -343,7 +360,6 @@ class TextToJsonTests(unittest.TestCase):
                 "name": "Parent",
                 "assigner": "Evelyn",
                 "stages": [{"assignee": "Alex"}],
-                "children": [],
             },
         )
 
@@ -357,7 +373,6 @@ class TextToJsonTests(unittest.TestCase):
             "deadline": "2026-06-03T03:40:00Z",
             "workMinutes": 960,
             "contentSeconds": 1200,
-            "children": [],
         }
         normalized = text_to_json.normalize_task_shape(task)
         self.assertNotIn("assignee", normalized)
@@ -392,7 +407,6 @@ class TextToJsonTests(unittest.TestCase):
                     "contentSeconds": 1200,
                 }
             ],
-            "children": [],
         }
         normalized = text_to_json.normalize_task_shape(task)
         self.assertEqual(normalized["contentSeconds"], 1200)

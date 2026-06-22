@@ -56,15 +56,16 @@ def parse_base_deadline_local(task: dict) -> datetime | None:
     return None
 
 
-def sum_immediate_children_work_minutes(task: dict, factor: float) -> int:
+def sum_immediate_extension_work_minutes(task: dict, factor: float) -> int:
     total = 0
-    children = task.get('children')
-    if not isinstance(children, list):
+    stage = active_stage(task)
+    extensions = stage.get('extensions')
+    if not isinstance(extensions, list):
         return 0
-    for child in children:
+    for child in extensions:
         if not isinstance(child, dict):
             continue
-        minutes = get_task_work_minutes(child)
+        minutes = child.get('workMinutes')
         if isinstance(minutes, int) and minutes > 0:
             total += round_minutes_to_step(minutes)
     return total
@@ -118,18 +119,41 @@ def render_task(lines: list[str], task: dict, level: int, factor: float, now_loc
     lines.append(f"- Start: {created_display}")
     lines.append(f"- Deadline: {deadline_display}")
     base_deadline_local = parse_base_deadline_local(task)
-    child_minutes = sum_immediate_children_work_minutes(task, factor)
+    child_minutes = sum_immediate_extension_work_minutes(task, factor)
     if base_deadline_local and child_minutes > 0:
         extended = add_work_minutes(base_deadline_local, child_minutes)
         lines.append(f"- Extended deadline: {extended.strftime('%Y-%m-%d %a %H:%M')}")
     lines.append(f'- Work time: {fmt_work(child_rounded_minutes)}')
     lines.append('')
 
-    children = task.get('children')
-    if isinstance(children, list):
-        for child in children:
-            if isinstance(child, dict):
-                render_task(lines, child, level + 1, factor, now_local)
+    extensions = stage.get('extensions')
+    if isinstance(extensions, list):
+        for child in extensions:
+            if not isinstance(child, dict):
+                continue
+            extension_name = child.get('name') or '(Untitled)'
+            extension_minutes = child.get('workMinutes')
+            child_created_iso = child.get('startAt')
+            child_created_local = (
+                datetime.fromisoformat(child_created_iso.replace('Z', '+00:00')).astimezone(TZ_TAIPEI)
+                if isinstance(child_created_iso, str)
+                else None
+            )
+            child_created_display = next_work_start(child_created_local).strftime('%Y-%m-%d %a %H:%M') if child_created_local else '-'
+            child_deadline_iso = child.get('deadline')
+            child_deadline_local = (
+                datetime.fromisoformat(child_deadline_iso.replace('Z', '+00:00')).astimezone(TZ_TAIPEI)
+                if isinstance(child_deadline_iso, str)
+                else None
+            )
+            if child_deadline_local is None and isinstance(extension_minutes, int) and child_created_local is not None:
+                child_deadline_local = add_work_minutes(next_work_start(child_created_local), round_minutes_to_step(extension_minutes))
+            lines.append(f"{'#' * min(6, level + 1)} {extension_name}")
+            lines.append('')
+            lines.append(f"- Start: {child_created_display}")
+            lines.append(f"- Deadline: {child_deadline_local.strftime('%Y-%m-%d %a %H:%M') if child_deadline_local else '-'}")
+            lines.append(f"- Work time: {fmt_work(round_minutes_to_step(extension_minutes) if isinstance(extension_minutes, int) else None)}")
+            lines.append('')
 
 
 def render(tasks: list[dict], factor: float, limit: int) -> str:
