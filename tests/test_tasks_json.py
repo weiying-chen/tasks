@@ -4,11 +4,11 @@ from pathlib import Path
 
 
 class TasksJsonTests(unittest.TestCase):
-    def test_last_task_subtask_work_minutes_is_thirty(self):
+    def test_last_task_first_extension_work_minutes_is_thirty(self):
         tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
         tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
         last_task = tasks[-1]
-        self.assertEqual(last_task["children"][0]["stages"][0]["workMinutes"], 30)
+        self.assertEqual(last_task["stages"][0]["extensions"][0]["workMinutes"], 30)
 
     def test_hong_yang_fo_fa_gong_cheng_jiu_has_editorial_notes(self):
         tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
@@ -16,9 +16,12 @@ class TasksJsonTests(unittest.TestCase):
 
         target_task = None
         for task in tasks:
-            for child in task.get("children", []):
-                if child.get("name") == "弘揚佛法共成就":
-                    target_task = child
+            for stage in task.get("stages", []):
+                for extension in stage.get("extensions", []):
+                    if extension.get("name") == "弘揚佛法共成就":
+                        target_task = extension
+                        break
+                if target_task is not None:
                     break
             if target_task is not None:
                 break
@@ -38,9 +41,12 @@ class TasksJsonTests(unittest.TestCase):
 
         target_task = None
         for task in tasks:
-            for child in task.get("children", []):
-                if child.get("name") == "聞法造福淨心靈":
-                    target_task = child
+            for stage in task.get("stages", []):
+                for extension in stage.get("extensions", []):
+                    if extension.get("name") == "聞法造福淨心靈":
+                        target_task = extension
+                        break
+                if target_task is not None:
                     break
             if target_task is not None:
                 break

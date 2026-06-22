@@ -425,59 +425,42 @@
       {
         "startAt": "2026-06-18T08:53:00Z",
         "deadline": "2026-06-25T03:53:00Z",
-        "workMinutes": 1680
-      }
-    ],
-    "children": [
-      {
-        "id": "44",
-        "name": "布碌崙人校",
-        "stages": [
+        "workMinutes": 1680,
+        "contentSeconds": 2100,
+        "extensions": [
           {
+            "name": "布碌崙人校",
             "type": "news",
             "startAt": "2026-06-22T00:22:05.504214Z",
             "workMinutes": 30,
-            "contentSeconds": 9480
-          }
-        ],
-        "children": [],
-        "sourceText": "Alex Chen: 布碌崙人校 2:38"
-      },
-      {
-        "id": "45",
-        "name": "聞法造福淨心靈",
-        "stages": [
+            "contentSeconds": 9480,
+            "sourceText": "Alex Chen: 布碌崙人校 2:38"
+          },
           {
+            "name": "聞法造福淨心靈",
             "type": "posts",
             "startAt": "2026-06-22T01:00:27.842224Z",
-            "workMinutes": 50
-          }
-        ],
-        "notes": [
-          "Added a time marker so the introduction could bring in Tzu Chi volunteers from Central and South America more smoothly and broaden the overall scope."
-        ],
-        "children": [],
-        "sourceText": "1.\talex\n6/12聞法造福淨心靈\nhttps://www.daai.tv/master/life-wisdom/P90230288?more=true"
-      },
-      {
-        "id": "46",
-        "name": "弘揚佛法共成就",
-        "stages": [
+            "workMinutes": 50,
+            "sourceText": "1.\talex\n6/12聞法造福淨心靈\nhttps://www.daai.tv/master/life-wisdom/P90230288?more=true",
+            "notes": [
+              "Added a time marker so the introduction could bring in Tzu Chi volunteers from Central and South America more smoothly and broaden the overall scope."
+            ]
+          },
           {
+            "name": "弘揚佛法共成就",
             "type": "posts",
             "startAt": "2026-06-22T02:01:42.069061Z",
-            "workMinutes": 50
+            "workMinutes": 50,
+            "sourceText": "6. alex\n6/20弘揚佛法共成就\nhttps://www.daai.tv/master/life-wisdom/P90230296?more=true",
+            "notes": [
+              "Added the date because Dharma tour pieces are published quickly and participating Tzu Chi volunteers may be eager to see them soon after the event.",
+              "Reworked the introduction to specify that this talk was for the Taipei Buddha Bathing Ceremony team and to credit different volunteer groups in a style closer to the Chinese introduction."
+            ]
           }
-        ],
-        "notes": [
-          "Added the date because Dharma tour pieces are published quickly and participating Tzu Chi volunteers may be eager to see them soon after the event.",
-          "Reworked the introduction to specify that this talk was for the Taipei Buddha Bathing Ceremony team and to credit different volunteer groups in a style closer to the Chinese introduction."
-        ],
-        "children": [],
-        "sourceText": "6. alex\n6/20弘揚佛法共成就\nhttps://www.daai.tv/master/life-wisdom/P90230296?more=true"
+        ]
       }
     ],
-    "sourceText": "請 Alex Chen 翻譯 心靈講座(在不確定中走出確定 - 童子賢) 4 個短版, 長度35分, 預計翻譯28時(3天4時), 從6/18（四）16:53起算, deadline 為6/25(四)11:53, 謝謝！",
-    "contentSeconds": 2100
+    "children": [],
+    "sourceText": "請 Alex Chen 翻譯 心靈講座(在不確定中走出確定 - 童子賢) 4 個短版, 長度35分, 預計翻譯28時(3天4時), 從6/18（四）16:53起算, deadline 為6/25(四)11:53, 謝謝！"
   }
 ]
