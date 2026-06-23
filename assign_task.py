@@ -16,24 +16,6 @@ TRANSLATION_WORK_RATE_BY_ASSIGNEE = {
 }
 
 
-def normalize_task_name_for_match(name: str) -> str:
-    normalized = (
-        name.strip()
-        .replace("（", "(")
-        .replace("）", ")")
-        .replace("－", "-")
-        .replace("—", "-")
-        .replace("～", "~")
-    )
-    return re.sub(r"\s+", "", normalized)
-
-
-def normalize_program_name_for_match(name: str) -> str:
-    normalized = normalize_task_name_for_match(name)
-    normalized = re.sub(r"^(?:\d+|[零一二三四五六七八九十百千兩]+)集", "", normalized)
-    return re.split(r"[(（]", normalized, maxsplit=1)[0]
-
-
 def strip_assignment_tail(name: str) -> str:
     return re.sub(r"\s*[，,。!！~～]?\s*謝謝\s*[~～]?\s*$", "", name).strip()
 
@@ -150,39 +132,9 @@ def ensure_mutable_stage_for_assignment(task: dict, stage_name: str) -> dict:
     return new_stage
 
 
-def find_matching_top_level_tasks(tasks: list[dict], task_name: str) -> tuple[list[dict], list[dict]]:
-    target = normalize_task_name_for_match(task_name)
-    target_program = normalize_program_name_for_match(task_name)
-    exact_name_matched = []
-    program_matched = []
-    for task in tasks:
-        if not isinstance(task, dict):
-            continue
-        task_name_value = str(task.get("name") or "")
-        normalized_name = normalize_task_name_for_match(task_name_value)
-        if normalized_name == target:
-            exact_name_matched.append(task)
-            continue
-        normalized_program = normalize_program_name_for_match(task_name_value)
-        if normalized_program == target_program:
-            program_matched.append(task)
-    return exact_name_matched, program_matched
-
-
-def resolve_matching_top_level_task(tasks: list[dict], task_name: str) -> dict:
-    exact_name_matched, program_matched = find_matching_top_level_tasks(tasks, task_name)
-    if exact_name_matched:
-        if len(exact_name_matched) > 1:
-            raise ValueError(f"Multiple matching top-level tasks: {task_name}")
-        return exact_name_matched[0]
-    if not program_matched:
-        raise ValueError(f"No matching top-level task: {task_name}")
-    return program_matched[-1]
-
-
 def assign_task(tasks: list[dict], text: str) -> list[dict]:
     parsed = parse_assignment_message(text)
-    task = resolve_matching_top_level_task(tasks, parsed["name"])
+    task = get_latest_top_level_task(tasks)
     stage = ensure_mutable_stage_for_assignment(task, parsed["stage"])
     task["assigner"] = parsed["assigner"]
     stage["assignee"] = parsed["assignee"]
@@ -214,9 +166,13 @@ def parse_task_start_message(text: str, year: int | None = None) -> dict[str, st
     }
 
 
-def confirm_task_start(tasks: list[dict], text: str, year: int | None = None) -> list[dict]:
+def confirm_task_start(
+    tasks: list[dict],
+    text: str,
+    year: int | None = None,
+) -> list[dict]:
     parsed = parse_task_start_message(text, year=year)
-    task = resolve_matching_top_level_task(tasks, parsed["name"])
+    task = get_latest_top_level_task(tasks)
     stage = get_or_create_current_stage(task)
     assignee = normalize_assignee_key(stage.get("assignee"))
     if not assignee:
@@ -239,6 +195,15 @@ def parse_translate_assignment_message(text: str) -> dict[str, str]:
 
 def assign_translate_task(tasks: list[dict], text: str) -> list[dict]:
     return assign_task(tasks, text)
+
+
+def get_latest_top_level_task(tasks: list[dict]) -> dict:
+    if not tasks:
+        raise ValueError("No matching top-level task: latest")
+    latest = tasks[-1]
+    if not isinstance(latest, dict):
+        raise ValueError("No matching top-level task: latest")
+    return latest
 
 
 def main():

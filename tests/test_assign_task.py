@@ -174,7 +174,7 @@ class AssignTaskTests(unittest.TestCase):
         self.assertEqual(stage["name"], "edit")
         self.assertEqual(stage["workMinutes"], 120)
 
-    def test_assign_task_matches_short_program_name_to_full_task_name(self):
+    def test_assign_task_updates_latest_task(self):
         tasks = [
             {
                 "id": "1",
@@ -184,7 +184,19 @@ class AssignTaskTests(unittest.TestCase):
                 "assigner": "Alex Chen",
                 "stages": [
                     {
-                        "workMinutes": 333,
+                        "workMinutes": 111,
+                    }
+                ],
+            },
+            {
+                "id": "2",
+                "name": "3集大愛醫生館（放進去打~輸尿管結石 + 腰椎連環「扁」 + 肺腺癌先禮後兵）",
+                "type": "subs",
+                "contentSeconds": 418,
+                "assigner": "Alex Chen",
+                "stages": [
+                    {
+                        "workMinutes": 418,
                     }
                 ],
             }
@@ -193,12 +205,13 @@ class AssignTaskTests(unittest.TestCase):
             tasks,
             "Alex Chen 請 張牧軒 Shawn edit+定稿 3 集大愛醫生館，謝謝~",
         )
-        stage = updated[0]["stages"][0]
+        self.assertEqual(updated[0]["stages"][0]["workMinutes"], 111)
+        stage = updated[1]["stages"][0]
         self.assertEqual(stage["assignee"], "張牧軒 Shawn")
         self.assertEqual(stage["name"], "edit")
         self.assertNotIn("status", stage)
 
-    def test_assign_task_prefers_latest_task_for_short_program_name(self):
+    def test_assign_task_uses_latest_task_even_when_message_names_older_task(self):
         tasks = [
             {
                 "id": "1",
@@ -215,7 +228,7 @@ class AssignTaskTests(unittest.TestCase):
         ]
         updated = assign_task.assign_task(
             tasks,
-            "Alex Chen 請 Emily Ding 翻譯3集大愛醫生館，謝謝~",
+            "Alex Chen 請 Emily Ding 翻譯3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈），謝謝~",
         )
         self.assertEqual(updated[0].get("stages"), None)
         stage = updated[1]["stages"][0]
@@ -267,33 +280,28 @@ class AssignTaskTests(unittest.TestCase):
         self.assertNotIn("startAt", edit_stage)
         self.assertNotIn("deadline", edit_stage)
 
-    def test_assign_task_does_not_match_partial_prefix_only(self):
+    def test_assign_task_ignores_message_name_and_uses_latest_task(self):
         tasks = [
             {
                 "id": "1",
                 "name": "3集大愛醫生館（杯弓蛇影 乳房腫瘤 + 鬼門關走一遭~冠心病 + 住輸尿管）",
-                "stages": [{"type": "subs"}],
-            }
-        ]
-        with self.assertRaisesRegex(ValueError, "No matching top-level task"):
-            assign_task.assign_task(
-                tasks,
-                "Alex Chen 請 張牧軒 Shawn edit+定稿 3 集大愛醫生，謝謝~",
-            )
-
-    def test_assign_task_errors_when_no_match(self):
-        tasks = [
+                "stages": [{"type": "subs", "workMinutes": 111}],
+            },
             {
-                "id": "1",
-                "name": "別的任務",
-                "stages": [{"type": "subs"}],
-            }
+                "id": "2",
+                "name": "最新任務",
+                "type": "subs",
+                "contentSeconds": 480,
+            },
         ]
-        with self.assertRaisesRegex(ValueError, "No matching top-level task"):
-            assign_task.assign_task(
-                tasks,
-                "Emily Ding 請 Alex Chen 翻譯3集我的阿公阿媽做慈濟，謝謝~",
-            )
+        updated = assign_task.assign_task(
+            tasks,
+            "Emily Ding 請 Alex Chen 翻譯完全不同的任務名稱，謝謝~",
+        )
+        self.assertEqual(updated[0]["stages"][0]["workMinutes"], 111)
+        stage = updated[1]["stages"][0]
+        self.assertEqual(stage["assignee"], "Alex Chen")
+        self.assertEqual(stage["workMinutes"], 480)
 
     def test_parse_task_start_message(self):
         parsed = assign_task.parse_task_start_message(
@@ -347,7 +355,7 @@ class AssignTaskTests(unittest.TestCase):
         self.assertEqual(stage["startAt"], "2026-06-09T03:35:00Z")
         self.assertEqual(stage["deadline"], "2026-06-10T01:40:00Z")
 
-    def test_confirm_task_start_prefers_latest_task_for_short_program_name(self):
+    def test_confirm_task_start_uses_latest_task_even_for_short_program_name(self):
         tasks = [
             {
                 "id": "1",
@@ -386,7 +394,7 @@ class AssignTaskTests(unittest.TestCase):
         self.assertEqual(stage["startAt"], "2026-06-09T03:35:00Z")
         self.assertEqual(stage["deadline"], "2026-06-10T02:34:00Z")
 
-    def test_confirm_task_start_with_comma_prefers_latest_task(self):
+    def test_confirm_task_start_uses_latest_task_even_when_message_names_older_task(self):
         tasks = [
             {
                 "id": "1",
@@ -417,7 +425,7 @@ class AssignTaskTests(unittest.TestCase):
         ]
         updated = assign_task.confirm_task_start(
             tasks,
-            "接下來我會開始翻譯3集大愛醫生館，deadline從6/23 (三)13:00起算，再麻煩  \n\nAlex Chen 方便時幫我設 deadline與傳稿子，謝謝。",
+            "接下來我會開始翻譯3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈），deadline從6/23 (三)13:00起算，再麻煩  \n\nAlex Chen 方便時幫我設 deadline與傳稿子，謝謝。",
             year=2026,
         )
         self.assertNotIn("startAt", updated[0]["stages"][0])
