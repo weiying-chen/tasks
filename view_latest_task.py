@@ -533,6 +533,8 @@ def render_extension_block(
     lines.append(f"Work time: {fmt_work(minutes if isinstance(minutes, int) else None)}")
     if task_type != "custom":
         deadline = to_local(item["deadline"]) if isinstance(item.get("deadline"), str) and item.get("deadline", "").strip() else None
+        if deadline is None and created is not None and isinstance(minutes, int) and minutes > 0:
+            deadline = add_work_minutes(created, minutes)
         lines.append(f"Deadline: {color(to_display(deadline) if deadline else '-', YELLOW)}")
     if show_notes:
         notes = item.get("notes")

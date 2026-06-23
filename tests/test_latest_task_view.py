@@ -423,6 +423,29 @@ class LatestTaskViewTests(unittest.TestCase):
         self.assertIn("Work time: 1h 35m", out)
         self.assertNotIn("Deadline: 2026-06-19 Fri 09:35", out)
 
+    def test_extension_deadline_is_computed_from_start_and_work_time(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "Parent",
+                "workMinutes": 60,
+                "stages": [
+                    {
+                        "extensions": [
+                            {
+                                "name": "Child",
+                                "type": "news",
+                                "startAt": "2026-05-13T01:00:00Z",
+                                "workMinutes": 60,
+                            }
+                        ]
+                    }
+                ],
+            }
+        ]
+        out = self.strip_ansi(view_latest_task.build_latest_view(tasks))
+        self.assertIn("Deadline: 2026-05-13 Wed 10:00", out)
+
     def test_extension_blocks_have_single_blank_line_separator(self):
         tasks = [
             {
