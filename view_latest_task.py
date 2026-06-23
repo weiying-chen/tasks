@@ -95,15 +95,19 @@ def build_actions_line(input_file: str | None = None, selected_task: dict | None
         "s": (
             color('set ', MAGENTA) + color('s', GREEN) + color('tart time', MAGENTA)
             if mode == "coworker"
-            else color('add extensions', MAGENTA) + color(' (s)', GREEN)
+            else color('add e', MAGENTA)
         ),
+        "e": color('add ', MAGENTA) + color('e', GREEN) + color('xtensions', MAGENTA),
         "n": color('add ', MAGENTA) + color('n', GREEN) + color('otes', MAGENTA),
         "d": color('confirm ', MAGENTA) + color('d', GREEN) + color('eadline extension', MAGENTA),
         "v": color('toggle ', MAGENTA) + color('v', GREEN) + color('iew notes', MAGENTA),
         "m": color('copy ', MAGENTA) + color('m', GREEN) + color('essage', MAGENTA),
         "q": color('q', GREEN) + color('uit', MAGENTA),
     }
-    order = [key for key in ALL_ACTIONS if key in allowed]
+    order = [key for key in ALL_ACTIONS if key in allowed and not (mode != "coworker" and key == "s")]
+    if mode != "coworker" and "s" in allowed:
+        insert_at = order.index("t") + 1 if "t" in order else 0
+        order.insert(insert_at, "e")
     return color('Actions: ', MAGENTA) + color(' | ', MAGENTA).join(labels[key] for key in order)
 
 
