@@ -518,6 +518,7 @@ def render_extension_block(
     show_subtask_assignment_fields: bool,
 ) -> None:
     name = str(item.get("name") or "(Untitled)").strip()
+    cleaned_notes: list[str] = []
     lines.append(f"Name: {name}")
     task_type = str(item.get("type") or "").strip()
     lines.append(f"Type: {task_type if task_type else '-'}")
@@ -538,8 +539,8 @@ def render_extension_block(
         lines.append(f"Deadline: {color(to_display(deadline) if deadline else '-', YELLOW)}")
     if show_notes:
         notes = item.get("notes")
-        cleaned = [note.strip() for note in notes if isinstance(note, str) and note.strip()] if isinstance(notes, list) else []
-        render_notes_block(lines, "Notes" if not cleaned else f"Notes ({len(cleaned)})", cleaned, show_subtask_notes)
+        cleaned_notes = [note.strip() for note in notes if isinstance(note, str) and note.strip()] if isinstance(notes, list) else []
+        render_notes_block(lines, "Notes" if not cleaned_notes else f"Notes ({len(cleaned_notes)})", cleaned_notes, show_subtask_notes)
     lines.append("")
 
 
@@ -624,8 +625,8 @@ def render_notes_block(lines: list[str], title: str, notes: list[str], show_note
             lines.append("Notes: -")
         return
     lines.append(title)
-    lines.append('')
     if show_notes:
+        lines.append('')
         for note in notes:
             lines.append(f'• {note}')
         lines.append('')
@@ -691,6 +692,9 @@ def render_task_block(
             countdown = fmt_countdown(now_local, deadline)
             resume_hint = fmt_resume_hint(now_local, deadline)
             lines.append(f'Work time left: {color(countdown, GREEN)}{resume_hint}')
+        if show_notes:
+            notes = clean_notes(task)
+            render_notes_block(lines, "Notes" if not notes else bold(f'Notes ({len(notes)})'), notes, True)
         extension_items = stage_extension_items(task)
         if extension_items:
             lines.append('')
@@ -705,12 +709,6 @@ def render_task_block(
                     show_notes,
                     show_subtask_assignment_fields,
                 )
-
-        if show_notes:
-            notes = clean_notes(task)
-            if notes and (not lines or lines[-1] != ''):
-                lines.append('')
-            render_notes_block(lines, "Notes" if not notes else bold(f'Notes ({len(notes)})'), notes, True)
 
 
 def build_task_view(

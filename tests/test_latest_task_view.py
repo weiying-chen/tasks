@@ -133,6 +133,58 @@ class LatestTaskViewTests(unittest.TestCase):
         out = self.strip_ansi(view_latest_task.build_latest_view(tasks))
         self.assertIn("Work time left: -\nNotes: -", out)
 
+    def test_main_notes_render_before_extensions(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "Parent",
+                "workMinutes": 120,
+                "notes": ["parent note"],
+                "stages": [
+                    {
+                        "extensions": [
+                            {
+                                "name": "Child",
+                                "type": "news",
+                                "workMinutes": 30,
+                            }
+                        ]
+                    }
+                ],
+            }
+        ]
+        out = self.strip_ansi(view_latest_task.build_latest_view(tasks))
+        self.assertIn("Work time left: -\nNotes (1)", out)
+        self.assertLess(out.index("Notes (1)"), out.index("Extensions"))
+
+    def test_hidden_extension_notes_do_not_add_extra_blank_line(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "Parent",
+                "workMinutes": 120,
+                "stages": [
+                    {
+                        "extensions": [
+                            {
+                                "name": "Child A",
+                                "type": "news",
+                                "workMinutes": 30,
+                                "notes": ["note one"],
+                            },
+                            {
+                                "name": "Child B",
+                                "type": "news",
+                                "workMinutes": 40,
+                            },
+                        ]
+                    }
+                ],
+            }
+        ]
+        out = self.strip_ansi(view_latest_task.build_latest_view(tasks))
+        self.assertIn("Notes (1)\n\nName: Child B", out)
+
     def test_countdown_line_present(self):
         tasks = [
             {
