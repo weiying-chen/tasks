@@ -198,6 +198,32 @@ class AssignTaskTests(unittest.TestCase):
         self.assertEqual(stage["name"], "edit")
         self.assertNotIn("status", stage)
 
+    def test_assign_task_prefers_latest_task_for_short_program_name(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈）",
+                "type": "subs",
+                "contentSeconds": 364,
+            },
+            {
+                "id": "2",
+                "name": "3集大愛醫生館（放進去打~輸尿管結石 + 腰椎連環「扁」 + 肺腺癌先禮後兵）",
+                "type": "subs",
+                "contentSeconds": 418,
+            },
+        ]
+        updated = assign_task.assign_task(
+            tasks,
+            "Alex Chen 請 Emily Ding 翻譯3集大愛醫生館，謝謝~",
+        )
+        self.assertEqual(updated[0].get("stages"), None)
+        stage = updated[1]["stages"][0]
+        self.assertEqual(updated[1]["assigner"], "Alex Chen")
+        self.assertEqual(stage["assignee"], "Emily Ding")
+        self.assertEqual(stage["name"], "translate")
+        self.assertEqual(stage["workMinutes"], 418)
+
     def test_assign_edit_task_appends_new_stage_after_translate_stage(self):
         tasks = [
             {
@@ -282,6 +308,19 @@ class AssignTaskTests(unittest.TestCase):
             },
         )
 
+    def test_parse_task_start_message_strips_trailing_comma_from_name(self):
+        parsed = assign_task.parse_task_start_message(
+            "接下來我會開始翻譯3集大愛醫生館，deadline從6/23 (三)13:00起算，再麻煩  \n\nAlex Chen 方便時幫我設 deadline與傳稿子，謝謝。",
+            year=2026,
+        )
+        self.assertEqual(
+            parsed,
+            {
+                "name": "3集大愛醫生館",
+                "startAt": "2026-06-23T05:00:00Z",
+            },
+        )
+
     def test_confirm_task_start_sets_start_and_deadline(self):
         tasks = [
             {
@@ -307,6 +346,84 @@ class AssignTaskTests(unittest.TestCase):
         stage = updated[0]["stages"][0]
         self.assertEqual(stage["startAt"], "2026-06-09T03:35:00Z")
         self.assertEqual(stage["deadline"], "2026-06-10T01:40:00Z")
+
+    def test_confirm_task_start_prefers_latest_task_for_short_program_name(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈）",
+                "assigner": "Alex Chen",
+                "stages": [
+                    {
+                        "type": "subs",
+                        "stage": "translate",
+                        "assignee": "Emily Ding",
+                        "workMinutes": 364,
+                    }
+                ],
+            },
+            {
+                "id": "2",
+                "name": "3集大愛醫生館（放進去打~輸尿管結石 + 腰椎連環「扁」 + 肺腺癌先禮後兵）",
+                "assigner": "Alex Chen",
+                "stages": [
+                    {
+                        "type": "subs",
+                        "stage": "translate",
+                        "assignee": "Emily Ding",
+                        "workMinutes": 418,
+                    }
+                ],
+            },
+        ]
+        updated = assign_task.confirm_task_start(
+            tasks,
+            "已完成翻譯報獎節目，接下來我會開始翻譯大愛醫生館 deadline從6/9 (二) 11:35 起算，再麻煩Alex Chen 方便時幫我設deadline，謝謝。",
+            year=2026,
+        )
+        self.assertNotIn("startAt", updated[0]["stages"][0])
+        stage = updated[1]["stages"][0]
+        self.assertEqual(stage["startAt"], "2026-06-09T03:35:00Z")
+        self.assertEqual(stage["deadline"], "2026-06-10T02:34:00Z")
+
+    def test_confirm_task_start_with_comma_prefers_latest_task(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈）",
+                "assigner": "Alex Chen",
+                "stages": [
+                    {
+                        "type": "subs",
+                        "stage": "translate",
+                        "assignee": "Emily Ding",
+                        "workMinutes": 364,
+                    }
+                ],
+            },
+            {
+                "id": "2",
+                "name": "3集大愛醫生館（放進去打~輸尿管結石 + 腰椎連環「扁」 + 肺腺癌先禮後兵）",
+                "assigner": "Alex Chen",
+                "stages": [
+                    {
+                        "type": "subs",
+                        "stage": "translate",
+                        "assignee": "Emily Ding",
+                        "workMinutes": 418,
+                    }
+                ],
+            },
+        ]
+        updated = assign_task.confirm_task_start(
+            tasks,
+            "接下來我會開始翻譯3集大愛醫生館，deadline從6/23 (三)13:00起算，再麻煩  \n\nAlex Chen 方便時幫我設 deadline與傳稿子，謝謝。",
+            year=2026,
+        )
+        self.assertNotIn("startAt", updated[0]["stages"][0])
+        stage = updated[1]["stages"][0]
+        self.assertEqual(stage["startAt"], "2026-06-23T05:00:00Z")
+        self.assertEqual(stage["deadline"], "2026-06-24T02:59:00Z")
 
 
 if __name__ == "__main__":

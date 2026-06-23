@@ -4,6 +4,30 @@ from pathlib import Path
 
 
 class TasksJsonTests(unittest.TestCase):
+    def test_latest_coworker_task_groups_three_daai_doctor_episodes(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks_coworkers.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+
+        last_task = tasks[-1]
+        self.assertEqual(
+            last_task["name"],
+            "3集大愛醫生館（放進去打~輸尿管結石 + 腰椎連環「扁」 + 肺腺癌先禮後兵）",
+        )
+        self.assertEqual(last_task["contentSeconds"], 418)
+        self.assertNotIn("sourceText", last_task)
+        self.assertEqual(
+            last_task["stages"],
+            [
+                {
+                    "name": "translate",
+                    "assignee": "Emily Ding",
+                    "startAt": "2026-06-23T05:20:00Z",
+                    "deadline": "2026-06-24T03:19:00Z",
+                    "workMinutes": 418,
+                }
+            ],
+        )
+
     def test_last_task_first_extension_work_minutes_is_thirty(self):
         tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
         tasks = json.loads(tasks_path.read_text(encoding="utf-8"))

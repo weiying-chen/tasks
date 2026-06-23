@@ -112,6 +112,29 @@ class LatestTaskActionsTests(unittest.TestCase):
         line = self.strip_ansi(view_latest_task.build_actions_line(input_file="/tmp/tasks_coworkers.json"))
         self.assertIn("set start time", line)
 
+    def test_build_actions_line_for_started_coworker_task_includes_copy_message(self):
+        selected = {
+            "id": "1",
+            "name": "3集大愛醫生館（放進去打~輸尿管結石 + 腰椎連環「扁」 + 肺腺癌先禮後兵）",
+            "stages": [
+                {
+                    "type": "subs",
+                    "name": "translate",
+                    "assignee": "Emily Ding",
+                    "startAt": "2026-06-23T05:20:00Z",
+                    "deadline": "2026-06-24T03:19:00Z",
+                    "workMinutes": 418,
+                }
+            ],
+        }
+        line = self.strip_ansi(
+            view_latest_task.build_actions_line(
+                input_file="/tmp/tasks_coworkers.json",
+                selected_task=selected,
+            )
+        )
+        self.assertIn("copy message", line)
+
     def test_build_notes_target_options_parent_and_extensions(self):
         latest = {
             "id": "6",

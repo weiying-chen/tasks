@@ -86,7 +86,7 @@ def allowed_actions_for_mode(mode: str) -> tuple[str, ...]:
 def build_actions_line(input_file: str | None = None, selected_task: dict | None = None) -> str:
     mode = detect_action_mode(input_file)
     allowed = set(allowed_actions_for_mode(mode))
-    if mode != "coworker" and build_message_target_options(selected_task, input_file=input_file):
+    if build_message_target_options(selected_task, input_file=input_file):
         allowed.add("m")
     labels = {
         "t": color('create ', MAGENTA) + color('t', GREEN) + color('ask', MAGENTA),
