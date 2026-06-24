@@ -49,9 +49,9 @@ SUBS_SUMMARY_MESSAGE_COPIED_STATUS = "Success: Task assignment message copied to
 CONFIRM_DEADLINE_EXTENSION_STATUS = "Success: Confirm deadline extension checked"
 TASK_INITIATION_MESSAGE_COPIED_STATUS = "Success: Task initiation message copied to clipboard"
 
-PERSONAL_ACTIONS = ("t", "s", "n", "v", "q")
+PERSONAL_ACTIONS = ("t", "e", "n", "v", "q")
 COWORKER_ACTIONS = ("a", "s", "d", "q")
-ALL_ACTIONS = ("t", "a", "s", "n", "d", "v", "m", "q")
+ALL_ACTIONS = ("t", "a", "s", "e", "n", "d", "v", "m", "q")
 
 
 def fmt_work(minutes: int | None) -> str:
@@ -95,7 +95,7 @@ def build_actions_line(input_file: str | None = None, selected_task: dict | None
         "s": (
             color('set ', MAGENTA) + color('s', GREEN) + color('tart time', MAGENTA)
             if mode == "coworker"
-            else color('add e', MAGENTA)
+            else color('add extensions', MAGENTA)
         ),
         "e": color('add ', MAGENTA) + color('e', GREEN) + color('xtensions', MAGENTA),
         "n": color('add ', MAGENTA) + color('n', GREEN) + color('otes', MAGENTA),
@@ -104,10 +104,7 @@ def build_actions_line(input_file: str | None = None, selected_task: dict | None
         "m": color('copy ', MAGENTA) + color('m', GREEN) + color('essage', MAGENTA),
         "q": color('q', GREEN) + color('uit', MAGENTA),
     }
-    order = [key for key in ALL_ACTIONS if key in allowed and not (mode != "coworker" and key == "s")]
-    if mode != "coworker" and "s" in allowed:
-        insert_at = order.index("t") + 1 if "t" in order else 0
-        order.insert(insert_at, "e")
+    order = [key for key in ALL_ACTIONS if key in allowed and not (mode == "personal" and key == "s")]
     return color('Actions: ', MAGENTA) + color(' | ', MAGENTA).join(labels[key] for key in order)
 
 
@@ -497,6 +494,19 @@ def stage_extension_items(task: dict) -> list[dict]:
     return []
 
 
+def visible_extension_items(task: dict, now_local: datetime) -> list[dict]:
+    all_items = stage_extension_items(task)
+    visible: list[dict] = []
+    for item in all_items:
+        start_at = item.get("startAt")
+        if not isinstance(start_at, str) or not start_at.strip():
+            visible.append(item)
+            continue
+        if to_local(start_at).date() == now_local.date():
+            visible.append(item)
+    return visible if visible else all_items
+
+
 def extension_total_minutes(task: dict) -> int:
     total = 0
     extensions = stage_extension_items(task)
@@ -695,7 +705,7 @@ def render_task_block(
         if show_notes:
             notes = clean_notes(task)
             render_notes_block(lines, "Notes" if not notes else bold(f'Notes ({len(notes)})'), notes, True)
-        extension_items = stage_extension_items(task)
+        extension_items = visible_extension_items(task, now_local)
         if extension_items:
             lines.append('')
             lines.append(bold('Extensions'))
@@ -920,7 +930,7 @@ def main():
                     except Exception as exc:
                         status = color(f"Error: Set start time failed: {exc}", RED)
                         status_until = time.time() + STATUS_TTL_SECONDS
-                if ch == b"s" and detect_action_mode(input_file) != "coworker" and "s" in base_allowed_actions:
+                if ch == b"e" and detect_action_mode(input_file) != "coworker" and "e" in base_allowed_actions:
                     try:
                         data = json.loads(in_path.read_text(encoding='utf-8'))
                         tasks = normalize_tasks(data)

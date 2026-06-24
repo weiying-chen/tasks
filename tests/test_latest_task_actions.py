@@ -112,6 +112,12 @@ class LatestTaskActionsTests(unittest.TestCase):
         line = self.strip_ansi(view_latest_task.build_actions_line(input_file="/tmp/tasks_coworkers.json"))
         self.assertIn("set start time", line)
 
+    def test_build_actions_line_for_personal_mode_uses_e_for_extensions(self):
+        line = self.strip_ansi(view_latest_task.build_actions_line(input_file="/tmp/tasks.json"))
+        self.assertIn("add extensions", line)
+        self.assertIn("e", view_latest_task.allowed_actions_for_mode("personal"))
+        self.assertNotIn("s", view_latest_task.allowed_actions_for_mode("personal"))
+
     def test_build_actions_line_for_started_coworker_task_includes_copy_message(self):
         selected = {
             "id": "1",

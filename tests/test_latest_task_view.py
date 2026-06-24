@@ -285,7 +285,7 @@ class LatestTaskViewTests(unittest.TestCase):
         self.assertNotRegex(out, r"\x1b\[35mcreate \x1b\[0m\x1b\[32mt\x1b\[0m\x1b\[35mask")
         self.assertNotRegex(out, r"\x1b\[35madd \x1b\[0m\x1b\[32me\x1b\[0m\x1b\[35mxtensions")
 
-    def test_coworker_actions_do_not_include_copy_message_when_message_exists(self):
+    def test_coworker_actions_include_copy_message_when_message_exists(self):
         tasks = [
             {
                 "id": "1",
@@ -304,7 +304,7 @@ class LatestTaskViewTests(unittest.TestCase):
             }
         ]
         out = view_latest_task.build_latest_view(tasks, input_file="/tmp/tasks_coworkers.json")
-        self.assertNotRegex(out, r"\x1b\[35mcopy \x1b\[0m\x1b\[32mm\x1b\[0m\x1b\[35message")
+        self.assertRegex(out, r"\x1b\[35mcopy \x1b\[0m\x1b\[32mm\x1b\[0m\x1b\[35message")
 
     def test_coworker_actions_hide_copy_message_when_no_message_exists(self):
         tasks = [
@@ -418,6 +418,38 @@ class LatestTaskViewTests(unittest.TestCase):
         self.assertIn("Name: 新聞英文與配音", out)
         self.assertNotIn("Name: 新聞英文與配音\nType: custom\nStage:", out)
         self.assertNotIn("Assignee:", out.split("Extensions", 1)[1])
+
+    def test_latest_view_shows_only_current_workday_extensions(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "Parent",
+                "stages": [
+                    {
+                        "type": "subs",
+                        "workMinutes": 364,
+                        "extensions": [
+                            {
+                                "name": "Older extension",
+                                "type": "news",
+                                "startAt": "2026-06-23T00:31:48.475067Z",
+                                "workMinutes": 70,
+                            },
+                            {
+                                "name": "Today extension",
+                                "type": "news",
+                                "startAt": "2026-06-24T00:19:56.331294Z",
+                                "workMinutes": 68,
+                            }
+                        ],
+                    }
+                ],
+            }
+        ]
+        now_local = datetime(2026, 6, 24, 12, 0, tzinfo=timezone(timedelta(hours=8)))
+        out = self.strip_ansi(view_latest_task.build_latest_view(tasks, now_local))
+        self.assertIn("Name: Today extension", out)
+        self.assertNotIn("Name: Older extension", out)
 
     def test_work_seconds_between_skips_off_hours(self):
         start = datetime(2026, 5, 13, 16, 0, tzinfo=timezone(timedelta(hours=8)))

@@ -2,6 +2,7 @@
   {
     "id": "10",
     "name": "人文講堂 (安靜是種超能力 - 張瀞仁) 4 個短版",
+    "contentSeconds": 1140,
     "stages": [
       {
         "assignee": "Alex",
@@ -19,12 +20,12 @@
       "Changed the description of Japanese cultural norms to the present tense because it refers to ongoing cultural characteristics rather than past events.",
       "Reworked the wording to better convey the speaker's eagerness to learn, which was understated in the original translation."
     ],
-    "sourceText": "人文講堂 (安靜是種超能力 - 張瀞仁) 4 個短版\n5/22（五）08:22\n19分\n15時12分",
-    "contentSeconds": 1140
+    "sourceText": "人文講堂 (安靜是種超能力 - 張瀞仁) 4 個短版\n5/22（五）08:22\n19分\n15時12分"
   },
   {
     "id": "11",
     "name": "大愛學漢醫 (吃出肺活力 — 肺癌照護 | 莊佳穎 | 大愛學漢醫 | 20220823)",
+    "contentSeconds": 720,
     "assigner": "Syharn Shen",
     "stages": [
       {
@@ -42,13 +43,13 @@
       "Used \"XXX\" instead of transcribing Chinese dialogue when no Chinese subtitles were shown on screen.",
       "Expanded an overly compressed explanation about TCM and targeted therapy."
     ],
-    "sourceText": "大愛學漢醫 (吃出肺活力 — 肺癌照護 | 莊佳穎 | 大愛學漢醫 | 20220823)\n5/26（二）15:04\n12分\n9小時36分",
-    "contentSeconds": 720
+    "sourceText": "大愛學漢醫 (吃出肺活力 — 肺癌照護 | 莊佳穎 | 大愛學漢醫 | 20220823)\n5/26（二）15:04\n12分\n9小時36分"
   },
   {
     "id": "14",
     "name": "人文講堂 (送一份專業的禮物 職涯發光 - 方植永) 6 個短版",
     "type": "subs",
+    "contentSeconds": 1200,
     "assigner": "Evelyn",
     "stages": [
       {
@@ -112,13 +113,13 @@
       "Unless it is clear that the speaker previously lived in Taiwan, avoid using \"move back to Taiwan.\" \"Move to Taiwan\" is the safer and more accurate choice.",
       "There is an English phrase spoken in the video that does not appear in the Chinese transcript. Consider inserting a placeholder (e.g., \"XXX\") so the subtitle team knows on-screen text is needed here. This also avoids the awkwardness of the host already saying the English term and then having it translated again immediately afterward."
     ],
-    "sourceText": "請 Alex Chen 翻譯人文講堂 (送一份專業的禮物 職涯發光 - 方植永) 6 個短版, 長度20分, 預計做16時(2天), 從5/28（四）11:40起算，deadline 6/1(一)11:40，謝謝！",
-    "contentSeconds": 1200
+    "sourceText": "請 Alex Chen 翻譯人文講堂 (送一份專業的禮物 職涯發光 - 方植永) 6 個短版, 長度20分, 預計做16時(2天), 從5/28（四）11:40起算，deadline 6/1(一)11:40，謝謝！"
   },
   {
     "id": "22",
     "name": "3集我的阿公阿媽做慈濟",
     "type": "subs",
+    "contentSeconds": 540,
     "assigner": "Emily Ding",
     "stages": [
       {
@@ -167,13 +168,13 @@
       "Reworked the closing lines to make them more connected, complete, and warm.",
       "Revised the English introduction to describe Zheng Li-hua as a teacher rather than a woman, shifted the focus from generic volunteer work to her personality and character, and removed the unsupported 阿媽 reference from the Chinese introduction."
     ],
-    "sourceText": "接下來請 Alex Chen 翻譯3集我的阿公阿媽做慈濟，片長合計9分，預計做7 時 12 分，從6/2（二）13:30起算，deadline 為 6/3（三）11:45，謝謝 ~",
-    "contentSeconds": 540
+    "sourceText": "接下來請 Alex Chen 翻譯3集我的阿公阿媽做慈濟，片長合計9分，預計做7 時 12 分，從6/2（二）13:30起算，deadline 為 6/3（三）11:45，謝謝 ~"
   },
   {
     "id": "24",
     "name": "人文講堂 (親密搶奪：人性與法律的修煉 - 李永然) 6 個短版",
     "type": "subs",
+    "contentSeconds": 1260,
     "assigner": "Evelyn",
     "stages": [
       {
@@ -238,13 +239,13 @@
       "Reworked the sentence to focus on the law's strict formatting requirements because the original translation introduced meaning that was not explicitly stated in the source text.",
       "Specified the Insurance Act and Article 112 because there was sufficient subtitle time and legal references should be translated as precisely as possible."
     ],
-    "sourceText": "請 Alex Chen 翻譯人文講堂 (親密搶奪：人性與法律的修煉 - 李永然) 6 個短版, 長度21分, 預計做16時48分(2天48分), 從6/3（三）14:15起算，deadline 6/5(五)15:03，謝謝！",
-    "contentSeconds": 1260
+    "sourceText": "請 Alex Chen 翻譯人文講堂 (親密搶奪：人性與法律的修煉 - 李永然) 6 個短版, 長度21分, 預計做16時48分(2天48分), 從6/3（三）14:15起算，deadline 6/5(五)15:03，謝謝！"
   },
   {
     "id": "30",
     "name": "大愛學漢醫 (排氣不停 中醫有解)",
     "type": "subs",
+    "contentSeconds": 720,
     "assigner": "Syharn Shen",
     "stages": [
       {
@@ -280,13 +281,13 @@
       "Restructured the subtitles to follow the video's scene transition and separate the previous conclusion from the start of the new topic.",
       "Recommended translating the on-screen super around 08:55 by briefly summarizing the prescribed remedies instead of leaving the section untranslated."
     ],
-    "sourceText": "請 Alex Chen 翻譯大愛學漢醫 (排氣不停 中醫有解)，片長12分，預計做9小時36分，從6/8 (一) 14:43起算，deadline為6/9 (二) 16:20 ，謝謝~",
-    "contentSeconds": 720
+    "sourceText": "請 Alex Chen 翻譯大愛學漢醫 (排氣不停 中醫有解)，片長12分，預計做9小時36分，從6/8 (一) 14:43起算，deadline為6/9 (二) 16:20 ，謝謝~"
   },
   {
     "id": "32",
     "name": "人文講堂 (其實你胖得很冤枉 - 陳欣湄) 4個短版",
     "type": "subs",
+    "contentSeconds": 1200,
     "assigner": "Evelyn",
     "stages": [
       {
@@ -328,13 +329,13 @@
       "Reflected 各種運動 by describing varied exercise rather than generic exercise.",
       "Revised the inflammation wording to say the body becomes more inflamed instead of using a more literal buildup description."
     ],
-    "sourceText": "請 Alex Chen 翻譯人文講堂 (其實你胖得很冤枉 - 陳欣湄) 4個短版,  長度20分, 預計翻譯16時(2天), 從6/10（三）08:30起算, deadline 為6/12(五)8:30, 謝謝！",
-    "contentSeconds": 1200
+    "sourceText": "請 Alex Chen 翻譯人文講堂 (其實你胖得很冤枉 - 陳欣湄) 4個短版,  長度20分, 預計翻譯16時(2天), 從6/10（三）08:30起算, deadline 為6/12(五)8:30, 謝謝！"
   },
   {
     "id": "36",
     "name": "慈濟的故事(臺北的第二個家 、感念臺北因緣 、講藥師經結緣)",
     "type": "subs",
+    "contentSeconds": 1488,
     "assigner": "張牧軒",
     "stages": [
       {
@@ -390,8 +391,7 @@
         ]
       }
     ],
-    "sourceText": "Alex Chen接下來請Alex翻譯 慈濟的故事(臺北的第二個家 、感念臺北因緣 、講藥師經結緣)，長24分48秒，預計做19小時51分，由6/12（五）15:00起算，deadline為6/17(三) 9:51，謝謝。",
-    "contentSeconds": 1488
+    "sourceText": "Alex Chen接下來請Alex翻譯 慈濟的故事(臺北的第二個家 、感念臺北因緣 、講藥師經結緣)，長24分48秒，預計做19小時51分，由6/12（五）15:00起算，deadline為6/17(三) 9:51，謝謝。"
   },
   {
     "id": "42",
@@ -411,13 +411,13 @@
     "id": "43",
     "name": "心靈講座(在不確定中走出確定 - 童子賢) 4 個短版",
     "type": "subs",
+    "contentSeconds": 2100,
     "assigner": "Evelyn",
     "stages": [
       {
         "startAt": "2026-06-18T08:53:00Z",
         "deadline": "2026-06-25T03:53:00Z",
         "workMinutes": 1680,
-        "contentSeconds": 2100,
         "extensions": [
           {
             "name": "布碌崙人校",
@@ -455,6 +455,14 @@
             "workMinutes": 70,
             "contentSeconds": 3420,
             "sourceText": "Alex Chen: 瓜菩薩招生 0:57"
+          },
+          {
+            "name": "美眼科義診",
+            "type": "news",
+            "startAt": "2026-06-24T00:32:23.716600Z",
+            "workMinutes": 60,
+            "contentSeconds": 2880,
+            "sourceText": "Alex Chen: 美眼科義診 0:48"
           }
         ]
       }
