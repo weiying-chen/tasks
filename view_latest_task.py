@@ -504,7 +504,7 @@ def visible_extension_items(task: dict, now_local: datetime) -> list[dict]:
             continue
         if to_local(start_at).date() == now_local.date():
             visible.append(item)
-    return visible if visible else all_items
+    return visible
 
 
 def extension_total_minutes(task: dict) -> int:

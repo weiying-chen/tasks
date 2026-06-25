@@ -94,7 +94,8 @@ class LatestTaskViewTests(unittest.TestCase):
                 ],
             }
         ]
-        out = self.strip_ansi(view_latest_task.build_latest_view(tasks, show_subtask_notes=True))
+        now_local = datetime(2026, 5, 13, 12, 0, tzinfo=timezone(timedelta(hours=8)))
+        out = self.strip_ansi(view_latest_task.build_latest_view(tasks, now_local, show_subtask_notes=True))
         self.assertIn("Notes (1)", out)
         self.assertIn("• subtask note", out)
 
@@ -184,6 +185,39 @@ class LatestTaskViewTests(unittest.TestCase):
         ]
         out = self.strip_ansi(view_latest_task.build_latest_view(tasks))
         self.assertIn("Notes (1)\n\nName: Child B", out)
+
+    def test_extensions_hide_non_today_items(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "Parent",
+                "startAt": "2026-06-18T08:53:00Z",
+                "workMinutes": 1680,
+                "stages": [
+                    {
+                        "extensions": [
+                            {
+                                "name": "Old extension",
+                                "type": "news",
+                                "startAt": "2026-06-22T00:22:00Z",
+                                "workMinutes": 30,
+                            },
+                            {
+                                "name": "Older extension",
+                                "type": "posts",
+                                "startAt": "2026-06-23T00:31:00Z",
+                                "workMinutes": 70,
+                            },
+                        ]
+                    }
+                ],
+            }
+        ]
+        now_local = datetime(2026, 6, 25, 8, 22, tzinfo=timezone(timedelta(hours=8)))
+        out = self.strip_ansi(view_latest_task.build_latest_view(tasks, now_local))
+        self.assertNotIn("Extensions", out)
+        self.assertNotIn("Old extension", out)
+        self.assertNotIn("Older extension", out)
 
     def test_countdown_line_present(self):
         tasks = [
@@ -527,7 +561,8 @@ class LatestTaskViewTests(unittest.TestCase):
                 ],
             }
         ]
-        out = self.strip_ansi(view_latest_task.build_latest_view(tasks))
+        now_local = datetime(2026, 5, 13, 12, 0, tzinfo=timezone(timedelta(hours=8)))
+        out = self.strip_ansi(view_latest_task.build_latest_view(tasks, now_local))
         self.assertIn("Deadline: 2026-05-13 Wed 10:00", out)
 
     def test_extension_blocks_have_single_blank_line_separator(self):
@@ -559,7 +594,8 @@ class LatestTaskViewTests(unittest.TestCase):
                 ],
             }
         ]
-        out = self.strip_ansi(view_latest_task.build_latest_view(tasks))
+        now_local = datetime(2026, 5, 13, 12, 0, tzinfo=timezone(timedelta(hours=8)))
+        out = self.strip_ansi(view_latest_task.build_latest_view(tasks, now_local))
         self.assertIn(
             "Deadline: 2026-05-13 Wed 10:00\nNotes: -\n\nName: Child B",
             out,
