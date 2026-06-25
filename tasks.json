@@ -463,6 +463,14 @@
             "workMinutes": 60,
             "contentSeconds": 2880,
             "sourceText": "Alex Chen: 美眼科義診 0:48"
+          },
+          {
+            "name": "加文化體驗",
+            "type": "news",
+            "startAt": "2026-06-25T00:33:00.904665Z",
+            "workMinutes": 90,
+            "contentSeconds": 5340,
+            "sourceText": "Alex Chen: 加文化體驗 1:29"
           }
         ]
       }
