@@ -83,6 +83,32 @@ class TasksJsonTests(unittest.TestCase):
             ],
         )
 
+    def test_ai_shan_chuan_cheng_di_xiang_he_has_work_time_and_notes(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+
+        target_task = None
+        for task in tasks:
+            for stage in task.get("stages", []):
+                for extension in stage.get("extensions", []):
+                    if extension.get("name") == "愛善傳承締祥和":
+                        target_task = extension
+                        break
+                if target_task is not None:
+                    break
+            if target_task is not None:
+                break
+
+        self.assertIsNotNone(target_task)
+        self.assertEqual(target_task.get("workMinutes"), 50)
+        self.assertEqual(
+            target_task.get("notes"),
+            [
+                "Adjusted the conclusion to emphasize the longstanding bond between the Master and Lin's mother, framing the story as an example of members of the Dharma family caring for one another.",
+                "Remember to include the closing phrase \"Let's take a listen\" at the end.",
+            ],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

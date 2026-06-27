@@ -348,7 +348,11 @@
             "type": "posts",
             "startAt": "2026-06-15T00:37:33.690622Z",
             "workMinutes": 50,
-            "sourceText": "1.\talex\n6/5愛善傳承締祥和\nhttps://www.daai.tv/master/life-wisdom/P90230281?more=true"
+            "sourceText": "1.\talex\n6/5愛善傳承締祥和\nhttps://www.daai.tv/master/life-wisdom/P90230281?more=true",
+            "notes": [
+              "Adjusted the conclusion to emphasize the longstanding bond between the Master and Lin's mother, framing the story as an example of members of the Dharma family caring for one another.",
+              "Remember to include the closing phrase \"Let's take a listen\" at the end."
+            ]
           },
           {
             "name": "愛滿地慈少畢典",
@@ -356,11 +360,7 @@
             "startAt": "2026-06-15T01:14:59.857631Z",
             "workMinutes": 130,
             "contentSeconds": 7920,
-            "sourceText": "Alex Chen: 愛滿地慈少畢典 2:12",
-            "notes": [
-              "Adjusted the conclusion to emphasize the longstanding bond between the Master and Lin's mother, framing the story as an example of members of the Dharma family caring for one another.",
-              "Remember to include the closing phrase \"Let's take a listen\" at the end."
-            ]
+            "sourceText": "Alex Chen: 愛滿地慈少畢典 2:12"
           },
           {
             "name": "守護花東聚善能",
