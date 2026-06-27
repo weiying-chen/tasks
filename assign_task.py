@@ -147,14 +147,29 @@ def parse_task_start_message(text: str, year: int | None = None) -> dict[str, st
     if year is None:
         year = datetime.now(TZ_TAIPEI).year
     stripped = text.strip()
-    match = re.search(
-        r"接下來(?:我會|會)?開始翻譯\s*(?P<name>.+?)\s*deadline從\s*"
-        r"(?P<md>\d{1,2}/\d{1,2})\s*(?:[（(][^）)]*[）)])?\s*"
-        r"(?P<hm>\d{1,2}:\d{2})\s*起算",
-        stripped,
-        flags=re.I | re.S,
-    )
-    if not match:
+    patterns = [
+        (
+            r"接下來(?:我會|會)?開始翻譯\s*(?P<name>.+?)\s*deadline從\s*"
+            r"(?P<md>\d{1,2}/\d{1,2})\s*(?:[（(][^）)]*[）)])?\s*"
+            r"(?P<hm>\d{1,2}:\d{2})\s*起算"
+        ),
+        (
+            r"(?:我要)?接著審\s*(?P<name>.+?)\s*，?\s*請.+?deadline\s*，?\s*"
+            r"deadline請由\s*(?P<md>\d{1,2}/\d{1,2})\s*(?:[（(][^）)]*[）)])?\s*"
+            r"(?P<hm>\d{1,2}:\d{2})\s*開始算"
+        ),
+        (
+            r"接下來(?:我會|會)?開始審\s*(?P<name>.+?)\s*deadline請由\s*"
+            r"(?P<md>\d{1,2}/\d{1,2})\s*(?:[（(][^）)]*[）)])?\s*"
+            r"(?P<hm>\d{1,2}:\d{2})\s*開始算"
+        ),
+    ]
+    match = None
+    for pattern in patterns:
+        match = re.search(pattern, stripped, flags=re.I | re.S)
+        if match:
+            break
+    if match is None:
         raise ValueError("Cannot parse task start message")
     name = strip_task_name_trailing_punctuation(match.group("name"))
     if not name:
@@ -183,7 +198,10 @@ def confirm_task_start(
 
     start_at = parsed["startAt"]
     start_local = next_work_start(datetime.fromisoformat(start_at.replace("Z", "+00:00")).astimezone(TZ_TAIPEI))
-    deadline_local = add_work_minutes(start_local, work_minutes) + timedelta(minutes=1)
+    stage_name = str(stage.get("name") or stage.get("stage") or "").strip().lower()
+    deadline_local = add_work_minutes(start_local, work_minutes)
+    if stage_name != "edit":
+        deadline_local += timedelta(minutes=1)
     stage["startAt"] = start_at
     stage["deadline"] = deadline_local.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
     return tasks

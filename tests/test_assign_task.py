@@ -329,6 +329,20 @@ class AssignTaskTests(unittest.TestCase):
             },
         )
 
+    def test_parse_task_start_message_accepts_edit_wording_and_deadline_qing_you(self):
+        parsed = assign_task.parse_task_start_message(
+            "Alex Chen日日有新知已審完，我要接著審三集大愛醫生館（杯弓蛇影 乳房腫瘤 + 鬼門關走一遭~冠心病 + 住輸尿管），"
+            "請Alex再給我deadline，deadline請由6/2(二) 13:32開始算，謝謝。",
+            year=2026,
+        )
+        self.assertEqual(
+            parsed,
+            {
+                "name": "三集大愛醫生館（杯弓蛇影 乳房腫瘤 + 鬼門關走一遭~冠心病 + 住輸尿管）",
+                "startAt": "2026-06-02T05:32:00Z",
+            },
+        )
+
     def test_confirm_task_start_sets_start_and_deadline(self):
         tasks = [
             {
@@ -432,6 +446,36 @@ class AssignTaskTests(unittest.TestCase):
         stage = updated[1]["stages"][0]
         self.assertEqual(stage["startAt"], "2026-06-23T05:00:00Z")
         self.assertEqual(stage["deadline"], "2026-06-24T02:59:00Z")
+
+    def test_confirm_task_start_sets_edit_stage_start_and_deadline_from_shen_wording(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "3集大愛醫生館（杯弓蛇影 乳房腫瘤 + 鬼門關走一遭~冠心病 + 住輸尿管）",
+                "assigner": "Alex Chen",
+                "stages": [
+                    {
+                        "stage": "translate",
+                        "assignee": "Emily Ding",
+                        "workMinutes": 333,
+                    },
+                    {
+                        "stage": "edit",
+                        "assignee": "張牧軒 Shawn",
+                        "workMinutes": 166,
+                    },
+                ],
+            }
+        ]
+        updated = assign_task.confirm_task_start(
+            tasks,
+            "Alex Chen日日有新知已審完，我要接著審三集大愛醫生館（杯弓蛇影 乳房腫瘤 + 鬼門關走一遭~冠心病 + 住輸尿管），"
+            "請Alex再給我deadline，deadline請由6/2(二) 13:32開始算，謝謝。",
+            year=2026,
+        )
+        stage = updated[0]["stages"][1]
+        self.assertEqual(stage["startAt"], "2026-06-02T05:32:00Z")
+        self.assertEqual(stage["deadline"], "2026-06-02T08:18:00Z")
 
 
 if __name__ == "__main__":
