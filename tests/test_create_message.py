@@ -420,6 +420,36 @@ class CreateMessageTests(unittest.TestCase):
             "片長共6分04秒，翻譯工時6時04分，預計製作3時02分，謝謝~",
         )
 
+    def test_subs_summary_message_normalizes_elijah_assignee_prefix(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈）",
+                "type": "subs",
+                "contentSeconds": 364,
+                "assigner": "Emily Ding",
+                "stages": [
+                    {
+                        "stage": "translate",
+                        "assignee": "Emily Ding",
+                        "workMinutes": 364,
+                    },
+                    {
+                        "stage": "edit",
+                        "assignee": "方便時給 Elijah Salie",
+                        "workMinutes": 182,
+                    },
+                ],
+            }
+        ]
+
+        message = create_message.create_message(tasks, msg_type="task-assignment")
+        self.assertEqual(
+            message,
+            "請@Elijah Salie edit + 定稿3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈），"
+            "片長共6分04秒，翻譯工時6時04分，預計製作3時02分，謝謝~",
+        )
+
     def test_subs_initiation_message_uses_translate_wording(self):
         tasks = [
             {

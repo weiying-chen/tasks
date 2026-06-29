@@ -72,7 +72,9 @@ def format_mention(name: str) -> str:
 
 
 def normalize_person_name(name: str) -> str:
-    return re.sub(r"\s+", " ", str(name or "").strip().lstrip("@"))
+    normalized = re.sub(r"\s+", " ", str(name or "").strip().lstrip("@"))
+    normalized = re.sub(r"^(?:方便時|便時)\s*(?:給|幫)\s*", "", normalized)
+    return normalized.strip()
 
 
 def should_include_task_assignment_deadline(assignee: str) -> bool:
@@ -283,7 +285,7 @@ def task_assignment_action_text(task: dict) -> str:
 
 def format_task_assignment_message(task: dict) -> str:
     task_name = str(task.get("name") or "").strip()
-    assignee = str(get_task_assignee(task) or "").strip()
+    assignee = normalize_person_name(get_task_assignee(task) or "")
     work_minutes = get_task_work_minutes(task)
     content_seconds = get_task_content_seconds(task)
     if not task_name or not assignee:
@@ -317,7 +319,7 @@ def format_task_assignment_message(task: dict) -> str:
 
 def format_task_initiation_message(task: dict) -> str:
     task_name = str(task.get("name") or "").strip()
-    assignee = str(get_task_assignee(task) or "").strip()
+    assignee = normalize_person_name(get_task_assignee(task) or "")
     start_at = str(get_task_start_at(task) or "").strip()
     work_minutes = get_task_work_minutes(task)
     content_seconds = get_task_content_seconds(task)
