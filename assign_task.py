@@ -25,7 +25,9 @@ def strip_task_name_trailing_punctuation(name: str) -> str:
 
 
 def normalize_assignee_key(name: str) -> str:
-    return re.sub(r"\s+", " ", str(name or "").strip().lstrip("@"))
+    normalized = re.sub(r"\s+", " ", str(name or "").strip().lstrip("@"))
+    normalized = re.sub(r"^(?:方便時|便時)\s*(?:給|幫)\s*", "", normalized)
+    return normalized.strip()
 
 
 def get_assignee_work_rate(name: str) -> float:
@@ -78,7 +80,7 @@ def parse_assignment_message(text: str) -> dict[str, str]:
             continue
         parsed = {key: value.strip() for key, value in match.groupdict().items() if value is not None}
         parsed["assigner"] = re.sub(r"\s*[.。．]\s*$", "", parsed["assigner"]).strip()
-        parsed["assignee"] = parsed.get("assignee", default_assignee or "").strip()
+        parsed["assignee"] = normalize_assignee_key(parsed.get("assignee", default_assignee or ""))
         parsed["name"] = strip_assignment_tail(parsed["name"])
         parsed["stage"] = stage
         if not parsed["assignee"]:

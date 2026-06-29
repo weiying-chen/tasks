@@ -94,6 +94,20 @@ class AssignTaskTests(unittest.TestCase):
             },
         )
 
+    def test_parse_edit_assignment_message_strips_convenience_prefix_from_assignee(self):
+        parsed = assign_task.parse_assignment_message(
+            "Alex Chen 請方便時給 Elijah Salie edit + 定稿3集大愛醫生館，謝謝~"
+        )
+        self.assertEqual(
+            parsed,
+            {
+                "assigner": "Alex Chen",
+                "assignee": "Elijah Salie",
+                "stage": "edit",
+                "name": "3集大愛醫生館",
+            },
+        )
+
     def test_assign_task_updates_matching_stage(self):
         tasks = [
             {
