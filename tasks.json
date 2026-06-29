@@ -108,10 +108,10 @@
     ],
     "notes": [
       "Do not split established terms across subtitle lines. For example, \"behavioral psychology\" is a complete term and should be kept together whenever possible.",
-      "\"That's why they were hired\" may imply that they were hired because of their ability to collaborate. The Chinese meaning is that they were hired because each person brings their own professional expertise to the team. Consider revising accordingly.",
-      "The translation in this section is essentially the same as the previous paragraph and does not match the source content here. If this was an accidental copy/paste or misplacement, please double-check and avoid similar issues in the future.",
+      "\"That's why they were hired\" may imply they were hired for their ability to collaborate, but the Chinese means each person was hired for their own professional expertise.",
+      "The translation here is essentially the same as the previous paragraph and does not match the source content, so please check for an accidental copy/paste or misplacement.",
       "Unless it is clear that the speaker previously lived in Taiwan, avoid using \"move back to Taiwan.\" \"Move to Taiwan\" is the safer and more accurate choice.",
-      "There is an English phrase spoken in the video that does not appear in the Chinese transcript. Consider inserting a placeholder (e.g., \"XXX\") so the subtitle team knows on-screen text is needed here. This also avoids the awkwardness of the host already saying the English term and then having it translated again immediately afterward."
+      "An English phrase is missing from the Chinese transcript, so consider inserting a placeholder such as \"XXX\" instead of translating the host's English again."
     ],
     "sourceText": "請 Alex Chen 翻譯人文講堂 (送一份專業的禮物 職涯發光 - 方植永) 6 個短版, 長度20分, 預計做16時(2天), 從5/28（四）11:40起算，deadline 6/1(一)11:40，謝謝！"
   },
@@ -166,7 +166,7 @@
       "Restored \"caring\" and \"repeated questions,\" and added a note for Zilin to keep the subtitle on screen because the English sentence continued into the next subtitle.",
       "Restored the detail that the person was not her daughter and included her years of legal work; also corrected the Chinese subtitle error in 當法務是多年.",
       "Reworked the closing lines to make them more connected, complete, and warm.",
-      "Revised the English introduction to describe Zheng Li-hua as a teacher rather than a woman, shifted the focus from generic volunteer work to her personality and character, and removed the unsupported 阿媽 reference from the Chinese introduction."
+      "Revised the English introduction to describe Zheng Li-hua as a teacher, focus on her personality and character, and remove the unsupported 阿媽 reference from the Chinese introduction."
     ],
     "sourceText": "接下來請 Alex Chen 翻譯3集我的阿公阿媽做慈濟，片長合計9分，預計做7 時 12 分，從6/2（二）13:30起算，deadline 為 6/3（三）11:45，謝謝 ~"
   },
@@ -404,6 +404,11 @@
         "deadline": "2026-06-18T08:53:00Z",
         "workMinutes": 432
       }
+    ],
+    "notes": [
+      "Added the speaker's self-introduction because there is sufficient subtitle time here and recurring speakers in this series can often be identified from earlier episodes.",
+      "Replaced \"stars\" with a more general term because the speaker is using 星星 loosely here and the examples include planets, which are not actually stars.",
+      "Softened the phrasing about our worries to reflect the speaker's positive intent of making them feel lighter rather than implying our lives or actions are unimportant."
     ],
     "sourceText": "請 Alex Chen 翻譯3集日日有新知，預計做7小時12分鐘，從6/18(四) 08:41開始算，deadline為6/18 (四)16:53，謝謝~"
   },
