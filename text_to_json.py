@@ -181,6 +181,14 @@ def strip_leading_md_date(text: str) -> str:
     return re.sub(r"^\s*\d{1,2}/\d{1,2}\s*", "", text).strip()
 
 
+def normalize_posts_owner_line(text: str) -> str:
+    return re.sub(
+        r"^\s*\d{1,2}/\d{1,2}\s*(?:[（(][^）)]*[）)])?\s*發\s*",
+        "",
+        text,
+    ).strip()
+
+
 def parse_posts_input(text: str, owner_filter: str):
     tasks = []
     now_iso = datetime.now(TZ_TAIPEI).astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
@@ -202,7 +210,8 @@ def parse_posts_input(text: str, owner_filter: str):
             i += 1
             continue
         owner_line = numbered_match.group(1).strip()
-        if not owner_matches_filter(owner_line, owner_filter):
+        normalized_owner_line = normalize_posts_owner_line(owner_line)
+        if not owner_matches_filter(normalized_owner_line, owner_filter):
             i += 1
             continue
 

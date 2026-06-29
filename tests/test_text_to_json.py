@@ -22,6 +22,22 @@ class TextToJsonTests(unittest.TestCase):
         self.assertEqual(get_task_type(tasks[0]), "posts")
         self.assertNotIn("assigner", tasks[0])
 
+    def test_parse_posts_accepts_scheduled_owner_line(self):
+        text = (
+            "2.\t7/22(三)發 alex\n"
+            "Reducing Brain Age to Prevent Dementia (人文講堂 - 養腦 防失智 - 曾文毅 [2])\n"
+            "https://www.youtube.com/watch?v=LA76bSzLVgE&t=280s\n\n"
+            "搭配 7/22 World Brain Day 世界腦健康日\n"
+        )
+        tasks = text_to_json.parse_posts_input(text, "alex")
+        self.assertEqual(len(tasks), 1)
+        self.assertEqual(
+            tasks[0]["name"],
+            "Reducing Brain Age to Prevent Dementia (人文講堂 - 養腦 防失智 - 曾文毅 [2])",
+        )
+        self.assertEqual(get_task_work_minutes(tasks[0]), 60)
+        self.assertEqual(get_task_type(tasks[0]), "posts")
+
     def test_parse_news_only_keeps_alex_chen(self):
         text = (
             "5/13\n\n"
