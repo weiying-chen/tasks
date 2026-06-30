@@ -262,6 +262,30 @@ class TextToJsonTests(unittest.TestCase):
         self.assertEqual(get_task_work_minutes(task), 364)
         self.assertNotIn("deadline", normalize_stages(task)[0])
 
+    def test_parse_source_text_groups_daai_doctor_clip_blocks_into_single_task(self):
+        text = (
+            "【大愛醫生館】 胰管狹窄 胰臟腫脹 20260527\n"
+            "https://www.youtube.com/watch?v=uhHmxU3e7Ew\n"
+            "06:44-09:10 (2分26秒)\n"
+            "【大愛醫生館】 頭痛的背影 20260526\n"
+            "https://www.youtube.com/watch?v=8DGC63T7GkY\n"
+            "07:57-09:26 (1分29秒)\n"
+            "【大愛醫生館】 崩解的膝平臺 20260525\n"
+            "https://www.youtube.com/watch?v=rfOTDuC_TFE\n"
+            "07:37-09:10 (1分33秒)\n"
+        )
+        parsed = text_to_json.parse_source_text(text, [], 2026)
+        self.assertEqual(len(parsed), 1)
+        task = parsed[0]
+        self.assertEqual(task["assigner"], "Alex Chen")
+        self.assertEqual(
+            task["name"],
+            "3集大愛醫生館（胰管狹窄 胰臟腫脹 + 頭痛的背影 + 崩解的膝平臺）",
+        )
+        self.assertEqual(get_task_content_seconds(task), 328)
+        self.assertEqual(get_task_type(task), "subs")
+        self.assertNotIn("stages", task)
+
     def test_subs_assigner_is_grouped_by_assigner(self):
         self.assertEqual(
             list(SUBS_PROGRAM_ASSIGNERS.items()),

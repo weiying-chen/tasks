@@ -246,6 +246,53 @@ def parse_posts_input(text: str, owner_filter: str):
     return tasks
 
 
+def parse_duration_text_to_seconds(duration_text: str) -> int:
+    match = re.match(r"^\s*(\d+)\s*分\s*(\d+)\s*秒\s*$", duration_text)
+    if not match:
+        raise ValueError(f"Invalid duration text: {duration_text}")
+    return int(match.group(1)) * 60 + int(match.group(2))
+
+
+def parse_daai_doctor_clip_input(text: str, task_id: str) -> dict | None:
+    lines = [line.strip() for line in text.splitlines() if line.strip()]
+    if len(lines) < 3 or len(lines) % 3 != 0:
+        return None
+
+    episodes: list[str] = []
+    total_seconds = 0
+    raw_blocks: list[str] = []
+
+    for i in range(0, len(lines), 3):
+        title_line, url_line, timing_line = lines[i : i + 3]
+        title_match = re.match(r"^【(?P<program>[^】]+)】\s*(?P<title>.+?)\s+\d{8}$", title_line)
+        timing_match = re.match(r"^\d{1,2}:\d{2}\s*-\s*\d{1,2}:\d{2}\s*\((?P<duration>\d+\s*分\s*\d+\s*秒)\)$", timing_line)
+        if not title_match or not timing_match:
+            return None
+        if not url_line.startswith("http://") and not url_line.startswith("https://"):
+            return None
+
+        program_name = title_match.group("program").strip()
+        if program_name != "大愛醫生館":
+            return None
+
+        episodes.append(title_match.group("title").strip())
+        total_seconds += parse_duration_text_to_seconds(timing_match.group("duration"))
+        raw_blocks.extend([title_line, url_line, timing_line])
+
+    if len(episodes) < 2:
+        return None
+
+    task_name = f"{len(episodes)}集大愛醫生館（{' + '.join(episodes)}）"
+    return {
+        "id": task_id,
+        "name": task_name,
+        "type": "subs",
+        "assigner": resolve_subs_assigner(task_name),
+        "contentSeconds": total_seconds,
+        "sourceText": "\n".join(raw_blocks),
+    }
+
+
 def parse_simple_duration_input(text: str):
     now_iso = datetime.now(TZ_TAIPEI).astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
     for raw_line in text.splitlines():
@@ -331,6 +378,10 @@ def parse_source_text(source_text: str, existing_tasks: list[dict], now_year: in
         return new_items
 
     new_task_id = next_numeric_task_id(existing_tasks)
+    parsed_daai_doctor = parse_daai_doctor_clip_input(source_text, new_task_id)
+    if parsed_daai_doctor:
+        return [parsed_daai_doctor]
+
     out = parse_subs_input(source_text, now_year, task_id=new_task_id)
     return [out]
 
