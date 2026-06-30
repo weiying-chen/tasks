@@ -83,6 +83,30 @@ class TasksJsonTests(unittest.TestCase):
             ],
         )
 
+    def test_shi_bing_ru_qin_nuan_xing_lin_has_editorial_note(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+
+        target_task = None
+        for task in tasks:
+            for stage in task.get("stages", []):
+                for extension in stage.get("extensions", []):
+                    if extension.get("name") == "視病如親暖杏林":
+                        target_task = extension
+                        break
+                if target_task is not None:
+                    break
+            if target_task is not None:
+                break
+
+        self.assertIsNotNone(target_task)
+        self.assertEqual(
+            target_task.get("notes"),
+            [
+                "Reworked the introduction and summary to more closely reflect the episode's spoken content.",
+            ],
+        )
+
     def test_ai_shan_chuan_cheng_di_xiang_he_has_work_time_and_notes(self):
         tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
         tasks = json.loads(tasks_path.read_text(encoding="utf-8"))

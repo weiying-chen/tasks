@@ -507,6 +507,9 @@
             "type": "posts",
             "startAt": "2026-06-29T01:42:37.577834Z",
             "workMinutes": 50,
+            "notes": [
+              "Reworked the introduction and summary to more closely reflect the episode's spoken content."
+            ],
             "sourceText": "6. alex\n6/26視病如親暖杏林\nhttps://www.daai.tv/master/life-wisdom/P90230302"
           },
           {
@@ -520,5 +523,20 @@
       }
     ],
     "sourceText": "請 Alex Chen 翻譯人文講堂(醫生到我家 - 呂立) 4 個短版, 長度22分, 預計做17時36分(2天1時36分), 從6/26（五）09:43起算，deadline為6/30(二) 11:19，謝謝！"
+  },
+  {
+    "id": "45",
+    "name": "大愛學漢醫（陽虛 血瘀 痰濕體質 防癌方法）",
+    "type": "subs",
+    "contentSeconds": 720,
+    "assigner": "Syharn Shen",
+    "stages": [
+      {
+        "startAt": "2026-06-30T07:09:00Z",
+        "deadline": "2026-07-01T08:45:00Z",
+        "workMinutes": 576
+      }
+    ],
+    "sourceText": "請 Alex Chen 翻譯大愛學漢醫（陽虛 血瘀 痰濕體質 防癌方法），片長12分，預計做9小時36分，從6/30（二）15:09起算，deadline為 7/1 (三) 16:45，謝謝~"
   }
 ]
