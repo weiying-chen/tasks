@@ -55,6 +55,50 @@ class CliErrorTests(unittest.TestCase):
         self.assertIn("Cannot add notes.", proc.stderr)
         self.assertNotIn("Traceback", proc.stderr)
 
+    def test_news_add_without_parent_errors_instead_of_creating_task(self):
+        script = Path(__file__).resolve().parent.parent / "text_to_json.py"
+        text = (
+            "大家好，新聞分配如下，麻煩7/1 (三) 早上開始做，謝謝大家~\n\n"
+            "7/1\n\n"
+            "張牧軒 Shawn: 溫哥華人校結業 1:14\n"
+            "Alex Chen: 菲獨立日義診 3:29\n"
+            "Elijah Salie: 尼單親媽修繕 4:26"
+        )
+        with tempfile.TemporaryDirectory() as temp_dir:
+            tasks_path = Path(temp_dir) / "tasks.json"
+            tasks_path.write_text(
+                json.dumps(
+                    [
+                        {
+                            "id": "45",
+                            "name": "大愛學漢醫（陽虛 血瘀 痰濕體質 防癌方法）",
+                            "type": "subs",
+                            "stages": [
+                                {
+                                    "startAt": "2026-06-30T07:09:00Z",
+                                    "deadline": "2026-07-01T08:45:00Z",
+                                    "workMinutes": 576,
+                                }
+                            ],
+                        }
+                    ],
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            proc = subprocess.run(
+                [sys.executable, str(script), "--infile", str(tasks_path), text],
+                capture_output=True,
+                text=True,
+            )
+            updated = json.loads(tasks_path.read_text(encoding="utf-8"))
+
+        self.assertNotEqual(proc.returncode, 0)
+        self.assertIn("Cannot parse input as posts/news/subs", proc.stderr)
+        self.assertNotIn("Traceback", proc.stderr)
+        self.assertEqual(len(updated), 1)
+        self.assertNotIn("extensions", updated[0]["stages"][0])
+
     def test_assign_task_cli_uses_latest_coworker_task(self):
         script = Path(__file__).resolve().parent.parent / "assign_task.py"
         with tempfile.TemporaryDirectory() as temp_dir:

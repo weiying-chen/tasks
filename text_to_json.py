@@ -512,6 +512,12 @@ def append_notes_under_parent(tasks, parent_id, notes: list[str]) -> bool:
     return False
 
 
+def reject_extension_only_items_without_parent(new_items: list[dict]) -> None:
+    extension_types = {"news", "posts", "custom"}
+    if any(isinstance(item, dict) and item.get("type") in extension_types for item in new_items):
+        raise ValueError("Parsed extension item but no parent task was selected")
+
+
 def normalize_task_shape(task):
     normalized = {
         "id": str(task.get("id", "")),
@@ -633,6 +639,14 @@ def main():
             if not inserted:
                 raise ValueError(f"Parent id not found: {args.parent_id}")
     else:
+        try:
+            reject_extension_only_items_without_parent(new_items)
+        except ValueError as exc:
+            if args.debug:
+                raise
+            raise SystemExit(
+                f"Cannot parse input as posts/news/subs. Check clipboard text format. ({exc})"
+            ) from exc
         for item in new_items:
             warning = item.pop("__warning__", None)
             if isinstance(warning, str) and warning.strip():

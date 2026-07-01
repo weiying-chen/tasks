@@ -133,6 +133,31 @@ class TasksJsonTests(unittest.TestCase):
             ],
         )
 
+    def test_reducing_brain_age_has_editorial_notes(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+
+        target_task = None
+        for task in tasks:
+            for stage in task.get("stages", []):
+                for extension in stage.get("extensions", []):
+                    if extension.get("name") == "Reducing Brain Age to Prevent Dementia (人文講堂 - 養腦 防失智 - 曾文毅 [2])":
+                        target_task = extension
+                        break
+                if target_task is not None:
+                    break
+            if target_task is not None:
+                break
+
+        self.assertIsNotNone(target_task)
+        self.assertEqual(
+            target_task.get("notes"),
+            [
+                "Reworked the expert introduction to replace a formal academic title with a clearer description for general readers.",
+                "Added the name of the featured speaker to the hashtags.",
+            ],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
