@@ -1,0 +1,158 @@
+[
+  {
+    "id": "4",
+    "name": "人文講堂(活出自己的第三人生 - 丁菱娟) 5 個短版",
+    "assignedBy": "Evelyn",
+    "assignedTo": "Alex",
+    "createdAt": "2026-05-06T05:49:00Z",
+    "workMinutes": 1110,
+    "contentSeconds": 1380,
+    "children": [],
+    "sourceText": "人文講堂(活出自己的第三人生 - 丁菱娟) 5 個短版\nEvelyn\n5/6（三）13:49\n23分\n18時30分"
+  },
+  {
+    "id": "5",
+    "name": "3集大愛真健康（總是沒力氣動？5分鐘喚醒體能 長者波比跳找回好精神＋想動卻體力跟不上？3招輕鬆練核心體力升級＋5分鐘菇菇運動，提升核心與腿部肌力）",
+    "assignedBy": "Emily",
+    "assignedTo": "Alex",
+    "createdAt": "2026-05-11T05:39:00Z",
+    "workMinutes": 720,
+    "contentSeconds": 900,
+    "children": [],
+    "sourceText": "3集大愛真健康（總是沒力氣動？5分鐘喚醒體能 長者波比跳找回好精神＋想動卻體力跟不上？3招輕鬆練核心體力升級＋5分鐘菇菇運動，提升核心與腿部肌力）\nEmily\n5/11（一）13:39\n15分\n12時"
+  },
+  {
+    "id": "6",
+    "name": "人文講堂 (個人品牌的密碼 - 丁菱娟) 4 個短版",
+    "assignedBy": "Evelyn",
+    "assignedTo": "Alex",
+    "createdAt": "2026-05-13T00:40:00Z",
+    "workMinutes": 1056,
+    "contentSeconds": 1320,
+    "children": [],
+    "sourceText": "人文講堂 (個人品牌的密碼 - 丁菱娟) 4 個短版\nEvelyn\n5/13（三）08:40\n22分\n17時36分"
+  },
+  {
+    "id": "7",
+    "name": "三集精舍日常(怡師父03叢林作息。自我修正、怡師父04－新手典座。資深傳承 、怡師父05種菜修行。種希望 )",
+    "assignedTo": "Alex",
+    "createdAt": "2026-05-18T00:36:00Z",
+    "workMinutes": 504,
+    "contentSeconds": 629,
+    "children": [],
+    "sourceText": "三集精舍日常(怡師父03叢林作息。自我修正、怡師父04－新手典座。資深傳承 、怡師父05種菜修行。種希望 )\n5/18（一）08:36\n10分29秒\n8時24分"
+  },
+  {
+    "id": "8",
+    "name": "【大愛學漢醫】20220718 - 皮膚發炎",
+    "assignedTo": "Alex",
+    "createdAt": "2026-05-19T06:20:00Z",
+    "workMinutes": 576,
+    "contentSeconds": 720,
+    "children": [],
+    "sourceText": "【大愛學漢醫】20220718 - 皮膚發炎\n5/19 (二) 14:20\n12分\n9時36分"
+  },
+  {
+    "id": "9",
+    "name": "仁心慧語 (辜懷群3集)",
+    "assignedTo": "Alex",
+    "createdAt": "2026-05-20T08:40:00Z",
+    "workMinutes": 432,
+    "contentSeconds": 540,
+    "children": [],
+    "sourceText": "仁心慧語 (辜懷群3集)\n5/20（三）16:40\n9分\n7時12分"
+  },
+  {
+    "id": "10",
+    "name": "人文講堂 (安靜是種超能力 - 張瀞仁) 4 個短版",
+    "assignedTo": "Alex",
+    "createdAt": "2026-05-22T00:22:00Z",
+    "workMinutes": 912,
+    "contentSeconds": 1140,
+    "children": [],
+    "sourceText": "人文講堂 (安靜是種超能力 - 張瀞仁) 4 個短版\n5/22（五）08:22\n19分\n15時12分"
+  },
+  {
+    "id": "11",
+    "name": "大愛學漢醫 (吃出肺活力 — 肺癌照護 | 莊佳穎 | 大愛學漢醫 | 20220823)",
+    "assignedBy": "Syharn Shen",
+    "assignedTo": "Alex",
+    "createdAt": "2026-05-26T07:04:00Z",
+    "workMinutes": 576,
+    "contentSeconds": 720,
+    "children": [
+      {
+        "id": "12",
+        "name": "藍毘尼新婚禮",
+        "type": "news",
+        "createdAt": "2026-05-27T02:57:12.216654Z",
+        "workMinutes": 130,
+        "contentSeconds": 8100,
+        "children": [],
+        "sourceText": "Alex Chen: 藍毘尼新婚禮 2:15"
+      },
+      {
+        "id": "13",
+        "name": "多明尼加母親節",
+        "type": "news",
+        "createdAt": "2026-05-28T00:23:58.608943Z",
+        "workMinutes": 110,
+        "contentSeconds": 6900,
+        "children": [],
+        "sourceText": "Alex Chen: 多明尼加母親節 1:55"
+      }
+    ],
+    "sourceText": "大愛學漢醫 (吃出肺活力 — 肺癌照護 | 莊佳穎 | 大愛學漢醫 | 20220823)\n5/26（二）15:04\n12分\n9小時36分"
+  },
+  {
+    "id": "14",
+    "name": "人文講堂 (送一份專業的禮物 職涯發光 - 方植永)",
+    "type": "subs",
+    "assignedBy": "Evelyn",
+    "createdAt": "2026-05-28T03:40:00Z",
+    "deadline": "2026-06-01T03:40:00Z",
+    "workMinutes": 960,
+    "contentSeconds": 1200,
+    "children": [
+      {
+        "id": "15",
+        "name": "墨西哥浴佛併",
+        "type": "news",
+        "createdAt": "2026-06-01T00:28:58.413922Z",
+        "workMinutes": 180,
+        "contentSeconds": 11760,
+        "children": [],
+        "sourceText": "Alex Chen: 墨西哥浴佛併 3:16"
+      },
+      {
+        "id": "16",
+        "name": "勤拭心鏡度有緣",
+        "type": "posts",
+        "createdAt": "2026-06-01T00:29:44.640583Z",
+        "workMinutes": 50,
+        "children": [],
+        "sourceText": "1.\talex\n5/22勤拭心鏡度有緣\nhttps://www.daai.tv/master/life-wisdom/P90230267?more=true"
+      },
+      {
+        "id": "17",
+        "name": "學覺菩薩從善法",
+        "type": "posts",
+        "createdAt": "2026-06-01T00:29:44.640583Z",
+        "workMinutes": 50,
+        "children": [],
+        "sourceText": "2.\talex\n5/23學覺菩薩從善法\nhttps://www.daai.tv/master/life-wisdom/P90230268?more=true"
+      },
+      {
+        "id": "18",
+        "name": "悉達多校創佳績",
+        "type": "news",
+        "createdAt": "2026-06-01T00:35:55.341064Z",
+        "workMinutes": 130,
+        "contentSeconds": 7860,
+        "children": [],
+        "sourceText": "Alex Chen: 悉達多校創佳績 2:11"
+      }
+    ],
+    "sourceText": "請 Alex Chen 翻譯人文講堂 (送一份專業的禮物 職涯發光 - 方植永) 6 個短版, 長度20分, 預計做16時(2天), 從5/28（四）11:40起算，deadline 6/1(一)11:40，謝謝！"
+  }
+]
