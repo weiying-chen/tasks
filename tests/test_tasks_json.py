@@ -158,6 +158,25 @@ class TasksJsonTests(unittest.TestCase):
             ],
         )
 
+    def test_tung_tzu_hsien_has_editorial_notes(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+
+        target_task = None
+        for task in tasks:
+            if task.get("name") == "心靈講座(在不確定中走出確定 - 童子賢) 4 個短版":
+                target_task = task
+                break
+
+        self.assertIsNotNone(target_task)
+        self.assertEqual(
+            target_task.get("notes"),
+            [
+                "Replaced \"I never socialize\" with wording about avoiding business social events so 不應酬 does not imply avoiding social interaction in general.",
+                "Reworked the sentence structure to restore the specific examples of meeting clients, talking to vendors, and checking construction without making the subtitles feel too rushed.",
+            ],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -148,6 +148,10 @@
         ]
       }
     ],
+    "notes": [
+      "Replaced \"I never socialize\" with wording about avoiding business social events so 不應酬 does not imply avoiding social interaction in general.",
+      "Reworked the sentence structure to restore the specific examples of meeting clients, talking to vendors, and checking construction without making the subtitles feel too rushed."
+    ],
     "sourceText": "請 Alex Chen 翻譯 心靈講座(在不確定中走出確定 - 童子賢) 4 個短版, 長度35分, 預計翻譯28時(3天4時), 從6/18（四）16:53起算, deadline 為6/25(四)11:53, 謝謝！"
   },
   {
@@ -215,6 +219,22 @@
             "workMinutes": 190,
             "contentSeconds": 12540,
             "sourceText": "Alex Chen: 菲獨立日義診 3:29"
+          },
+          {
+            "name": "瓜靜思語發放併",
+            "type": "news",
+            "startAt": "2026-07-02T01:22:22.434747Z",
+            "workMinutes": 80,
+            "contentSeconds": 4260,
+            "sourceText": "Alex Chen: 瓜靜思語發放併 1:11"
+          },
+          {
+            "name": "菲賑災發放",
+            "type": "news",
+            "startAt": "2026-07-02T02:41:04.161721Z",
+            "workMinutes": 100,
+            "contentSeconds": 6120,
+            "sourceText": "Alex Chen: 菲賑災發放1:42"
           }
         ]
       }
