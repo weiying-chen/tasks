@@ -251,7 +251,16 @@
       {
         "startAt": "2026-07-02T06:55:00Z",
         "deadline": "2026-07-08T00:25:00Z",
-        "workMinutes": 1590
+        "workMinutes": 1590,
+        "extensions": [
+          {
+            "name": "善用此生厚美德",
+            "type": "posts",
+            "startAt": "2026-07-06T00:33:25.877688Z",
+            "workMinutes": 50,
+            "sourceText": "4.\talex\n7/1善用此生厚美德\nhttps://www.daai.tv/master/life-wisdom/P90230307?more=true"
+          }
+        ]
       }
     ],
     "sourceText": "請 Alex Chen 翻譯 心靈講座 (美感修行：當代人文行者的追尋 - 姚仁祿 姚仁喜  姚仁恭) 6個短版,  長度33分, 預計翻譯26時30分(3天2時30分), 從7/2（四）14:55起算, deadline 為7/8(三)8:25, 謝謝！"
