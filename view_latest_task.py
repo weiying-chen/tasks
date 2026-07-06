@@ -50,7 +50,7 @@ CONFIRM_DEADLINE_EXTENSION_STATUS = "Success: Confirm deadline extension checked
 TASK_INITIATION_MESSAGE_COPIED_STATUS = "Success: Task initiation message copied to clipboard"
 
 PERSONAL_ACTIONS = ("t", "e", "n", "v", "q")
-COWORKER_ACTIONS = ("a", "s", "d", "q")
+COWORKER_ACTIONS = ("t", "a", "s", "d", "q")
 ALL_ACTIONS = ("t", "a", "s", "e", "n", "d", "v", "m", "q")
 
 

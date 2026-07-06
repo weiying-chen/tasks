@@ -110,7 +110,9 @@ class LatestTaskActionsTests(unittest.TestCase):
 
     def test_build_actions_line_for_coworker_mode_includes_confirm_task_start(self):
         line = self.strip_ansi(view_latest_task.build_actions_line(input_file="/tmp/tasks_coworkers.json"))
+        self.assertIn("create task", line)
         self.assertIn("set start time", line)
+        self.assertIn("t", view_latest_task.allowed_actions_for_mode("coworker"))
 
     def test_build_actions_line_for_personal_mode_uses_e_for_extensions(self):
         line = self.strip_ansi(view_latest_task.build_actions_line(input_file="/tmp/tasks.json"))
