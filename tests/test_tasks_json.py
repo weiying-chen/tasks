@@ -177,6 +177,41 @@ class TasksJsonTests(unittest.TestCase):
             ],
         )
 
+    def test_tzu_chi_story_has_editorial_notes(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+
+        target_task = None
+        for task in tasks:
+            if task.get("name") == "慈濟的故事(臺北的第二個家 、感念臺北因緣 、講藥師經結緣)":
+                target_task = task
+                break
+
+        self.assertIsNotNone(target_task)
+        notes = target_task.get("notes")
+        self.assertEqual(len(notes), 28)
+        self.assertEqual(notes[0], "Number selected images when more than one image is included.")
+        self.assertEqual(
+            notes[9],
+            "Changed the telephone wording from donating a phone to installing one because the next lines discuss utility poles and phone lines.",
+        )
+        self.assertEqual(
+            notes[10],
+            "Numbered selected images and reconsidered the first image because its connection to the title, summary, and content was not clear.",
+        )
+        self.assertEqual(
+            notes[20],
+            "Removed the extra space after the question in the Chinese summary.",
+        )
+        self.assertEqual(
+            notes[21],
+            "Numbered selected images and avoided using an AI-edited historical photo that changed the color of the Master's robe.",
+        )
+        self.assertEqual(
+            notes[27],
+            "Reworked the summaries so the hospital-building context is introduced before mentioning eastern Taiwan medical care.",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
