@@ -29,6 +29,29 @@ class AssignTaskTests(unittest.TestCase):
         self.assertIn("Emily Ding", assign_task.TRANSLATION_WORK_RATE_BY_ASSIGNEE)
         self.assertNotIn("Emily", assign_task.TRANSLATION_WORK_RATE_BY_ASSIGNEE)
         self.assertEqual(assign_task.get_assignee_work_rate("Emily Ding"), 1.0)
+        self.assertEqual(assign_task.get_assignee_work_rate("張牧軒 Shawn"), 0.8)
+
+    def test_assign_task_uses_shawn_work_rate(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "3集大愛醫生館（胰管狹窄 胰臟腫脹 + 頭痛的背影 + 崩解的膝平臺）",
+                "type": "subs",
+                "contentSeconds": 328,
+                "assigner": "Alex Chen",
+                "stages": [
+                    {
+                    }
+                ],
+            }
+        ]
+        updated = assign_task.assign_task(
+            tasks,
+            "Alex Chen 請 張牧軒 Shawn 翻譯3集大愛醫生館，謝謝~",
+        )
+        stage = updated[0]["stages"][0]
+        self.assertEqual(stage["assignee"], "張牧軒 Shawn")
+        self.assertEqual(stage["workMinutes"], 262)
 
     def test_assign_task_keeps_existing_work_minutes(self):
         tasks = [

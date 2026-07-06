@@ -13,6 +13,7 @@ DEFAULT_SELF_ASSIGNEE = "Alex Chen"
 TZ_TAIPEI = timezone(timedelta(hours=8))
 TRANSLATION_WORK_RATE_BY_ASSIGNEE = {
     "Emily Ding": 1.0,
+    "張牧軒 Shawn": 0.8,
 }
 
 

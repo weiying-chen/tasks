@@ -48,5 +48,20 @@
         "workMinutes": 209
       }
     ]
+  },
+  {
+    "id": "3",
+    "name": "3集大愛醫生館（胰管狹窄 胰臟腫脹 + 頭痛的背影 + 崩解的膝平臺）",
+    "type": "subs",
+    "contentSeconds": 328,
+    "assigner": "Alex Chen",
+    "stages": [
+      {
+        "name": "translate",
+        "assignee": "張牧軒 Shawn",
+        "workMinutes": 262
+      }
+    ],
+    "sourceText": "【大愛醫生館】 胰管狹窄 胰臟腫脹 20260527\nhttps://www.youtube.com/watch?v=uhHmxU3e7Ew\n06:44-09:10 (2分26秒)\n【大愛醫生館】 頭痛的背影 20260526\nhttps://www.youtube.com/watch?v=8DGC63T7GkY\n07:57-09:26 (1分29秒)\n【大愛醫生館】 崩解的膝平臺 20260525\nhttps://www.youtube.com/watch?v=rfOTDuC_TFE\n07:37-09:10 (1分33秒)"
   }
 ]
