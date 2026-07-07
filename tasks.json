@@ -228,6 +228,15 @@
         ]
       }
     ],
+    "notes": [
+      "Simplified the long-term care sentence so it does not overstate health maintenance and keeps the focus on home healthcare.",
+      "Restored the opening point that children are a unique patient group before mentioning pediatric home care experience.",
+      "Removed tracheostomy from the ventilator sentence and used may eventually to show this is a possible future outcome.",
+      "Rephrased the birth-related tracheostomy sentence so it does not imply the child was born with a tracheostomy.",
+      "Changed numbers over ten to Arabic numerals, such as using 20 instead of twenty.",
+      "Reworked the Japanese home healthcare system sentence so the main point is about the system rather than Japan as a whole.",
+      "Reworked the case manager explanation so the ending emphasizes seamless continuity of care."
+    ],
     "sourceText": "請 Alex Chen 翻譯人文講堂(醫生到我家 - 呂立) 4 個短版, 長度22分, 預計做17時36分(2天1時36分), 從6/26（五）09:43起算，deadline為6/30(二) 11:19，謝謝！"
   },
   {
@@ -268,6 +277,16 @@
           }
         ]
       }
+    ],
+    "notes": [
+      "Removed TCM from the opening doctor title so the super reads more naturally.",
+      "Changed lower back and knee pain to lower back and knee weakness because 痠軟 refers to soreness with weakness rather than pain.",
+      "Reworked the post-surgery treatment sentence so the patient is clearly the one being told to avoid raw and cold foods.",
+      "Clarified that the patient worried a new liver cyst might become metastasis, not that the original metastasis had already returned.",
+      "Kept the full herb name because dropping part of a plant name can point to a different species, and noted that Fo-ti is the more common English name for 何首烏.",
+      "Reworked the summary to attribute the cancer-risk explanation to Dr. Chuang rather than to Traditional Chinese medicine as a whole.",
+      "Changed the section title because the segment discusses yang deficiency, blood stasis, and phlegm-dampness rather than only yang deficiency.",
+      "Changed the herb description to say it works gently rather than suggesting it warms the body."
     ],
     "sourceText": "請 Alex Chen 翻譯大愛學漢醫（陽虛 血瘀 痰濕體質 防癌方法），片長12分，預計做9小時36分，從6/30（二）15:09起算，deadline為 7/1 (三) 16:45，謝謝~"
   },

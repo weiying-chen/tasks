@@ -11,19 +11,19 @@ class TasksJsonTests(unittest.TestCase):
         last_task = tasks[-1]
         self.assertEqual(
             last_task["name"],
-            "3集大愛醫生館（放進去打~輸尿管結石 + 腰椎連環「扁」 + 肺腺癌先禮後兵）",
+            "3集大愛醫生館（胰管狹窄 胰臟腫脹 + 頭痛的背影 + 崩解的膝平臺）",
         )
-        self.assertEqual(last_task["contentSeconds"], 418)
-        self.assertNotIn("sourceText", last_task)
+        self.assertEqual(last_task["contentSeconds"], 328)
+        self.assertIn("sourceText", last_task)
         self.assertEqual(
             last_task["stages"],
             [
                 {
                     "name": "translate",
-                    "assignee": "Emily Ding",
-                    "startAt": "2026-06-23T05:20:00Z",
-                    "deadline": "2026-06-24T03:19:00Z",
-                    "workMinutes": 418,
+                    "assignee": "張牧軒 Shawn",
+                    "startAt": "2026-07-07T01:29:00Z",
+                    "deadline": "2026-07-07T06:51:00Z",
+                    "workMinutes": 262,
                 }
             ],
         )
@@ -32,7 +32,7 @@ class TasksJsonTests(unittest.TestCase):
         tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
         tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
         last_task = tasks[-1]
-        self.assertEqual(last_task["stages"][0]["extensions"][0]["workMinutes"], 30)
+        self.assertEqual(last_task["stages"][0]["extensions"][0]["workMinutes"], 50)
 
     def test_hong_yang_fo_fa_gong_cheng_jiu_has_editorial_notes(self):
         tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
@@ -210,6 +210,50 @@ class TasksJsonTests(unittest.TestCase):
         self.assertEqual(
             notes[27],
             "Reworked the summaries so the hospital-building context is introduced before mentioning eastern Taiwan medical care.",
+        )
+
+    def test_da_ai_xue_han_yi_has_editorial_notes(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+
+        target_task = None
+        for task in tasks:
+            if task.get("name") == "大愛學漢醫（陽虛 血瘀 痰濕體質 防癌方法）":
+                target_task = task
+                break
+
+        self.assertIsNotNone(target_task)
+        notes = target_task.get("notes")
+        self.assertEqual(len(notes), 8)
+        self.assertEqual(
+            notes[0],
+            "Removed TCM from the opening doctor title so the super reads more naturally.",
+        )
+        self.assertEqual(
+            notes[7],
+            "Changed the herb description to say it works gently rather than suggesting it warms the body.",
+        )
+
+    def test_lu_li_has_editorial_notes(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+
+        target_task = None
+        for task in tasks:
+            if task.get("name") == "人文講堂(醫生到我家 - 呂立) 4 個短版":
+                target_task = task
+                break
+
+        self.assertIsNotNone(target_task)
+        notes = target_task.get("notes")
+        self.assertEqual(len(notes), 7)
+        self.assertEqual(
+            notes[0],
+            "Simplified the long-term care sentence so it does not overstate health maintenance and keeps the focus on home healthcare.",
+        )
+        self.assertEqual(
+            notes[6],
+            "Reworked the case manager explanation so the ending emphasizes seamless continuity of care.",
         )
 
 
