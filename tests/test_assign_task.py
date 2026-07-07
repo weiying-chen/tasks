@@ -380,6 +380,20 @@ class AssignTaskTests(unittest.TestCase):
             },
         )
 
+    def test_parse_task_start_message_accepts_translation_qing_you_with_deadline_typo(self):
+        parsed = assign_task.parse_task_start_message(
+            "Alex Chen大愛學漢醫 已審完，我要接著翻譯 大愛醫生館（胰管狹窄 胰臟腫脹 + 頭痛的背影 + 崩解的膝平臺），"
+            "請Alex再給我deadline，deadlien請由7/7(二) 9:29開始算，謝謝。",
+            year=2026,
+        )
+        self.assertEqual(
+            parsed,
+            {
+                "name": "大愛醫生館（胰管狹窄 胰臟腫脹 + 頭痛的背影 + 崩解的膝平臺）",
+                "startAt": "2026-07-07T01:29:00Z",
+            },
+        )
+
     def test_confirm_task_start_sets_start_and_deadline(self):
         tasks = [
             {
@@ -404,7 +418,7 @@ class AssignTaskTests(unittest.TestCase):
         )
         stage = updated[0]["stages"][0]
         self.assertEqual(stage["startAt"], "2026-06-09T03:35:00Z")
-        self.assertEqual(stage["deadline"], "2026-06-10T01:40:00Z")
+        self.assertEqual(stage["deadline"], "2026-06-10T01:39:00Z")
 
     def test_confirm_task_start_uses_latest_task_even_for_short_program_name(self):
         tasks = [
@@ -443,7 +457,7 @@ class AssignTaskTests(unittest.TestCase):
         self.assertNotIn("startAt", updated[0]["stages"][0])
         stage = updated[1]["stages"][0]
         self.assertEqual(stage["startAt"], "2026-06-09T03:35:00Z")
-        self.assertEqual(stage["deadline"], "2026-06-10T02:34:00Z")
+        self.assertEqual(stage["deadline"], "2026-06-10T02:33:00Z")
 
     def test_confirm_task_start_uses_latest_task_even_when_message_names_older_task(self):
         tasks = [
@@ -482,7 +496,7 @@ class AssignTaskTests(unittest.TestCase):
         self.assertNotIn("startAt", updated[0]["stages"][0])
         stage = updated[1]["stages"][0]
         self.assertEqual(stage["startAt"], "2026-06-23T05:00:00Z")
-        self.assertEqual(stage["deadline"], "2026-06-24T02:59:00Z")
+        self.assertEqual(stage["deadline"], "2026-06-24T02:58:00Z")
 
     def test_confirm_task_start_sets_edit_stage_start_and_deadline_from_shen_wording(self):
         tasks = [

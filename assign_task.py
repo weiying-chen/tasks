@@ -157,8 +157,8 @@ def parse_task_start_message(text: str, year: int | None = None) -> dict[str, st
             r"(?P<hm>\d{1,2}:\d{2})\s*起算"
         ),
         (
-            r"(?:我要)?接著審\s*(?P<name>.+?)\s*，?\s*請.+?deadline\s*，?\s*"
-            r"deadline請由\s*(?P<md>\d{1,2}/\d{1,2})\s*(?:[（(][^）)]*[）)])?\s*"
+            r"(?:我要)?接著(?:審|翻譯)\s*(?P<name>.+?)\s*，?\s*請.+?deadline\s*，?\s*"
+            r"deadl(?:ine|ien)請由\s*(?P<md>\d{1,2}/\d{1,2})\s*(?:[（(][^）)]*[）)])?\s*"
             r"(?P<hm>\d{1,2}:\d{2})\s*開始算"
         ),
         (
@@ -201,10 +201,7 @@ def confirm_task_start(
 
     start_at = parsed["startAt"]
     start_local = next_work_start(datetime.fromisoformat(start_at.replace("Z", "+00:00")).astimezone(TZ_TAIPEI))
-    stage_name = str(stage.get("name") or stage.get("stage") or "").strip().lower()
     deadline_local = add_work_minutes(start_local, work_minutes)
-    if stage_name != "edit":
-        deadline_local += timedelta(minutes=1)
     stage["startAt"] = start_at
     stage["deadline"] = deadline_local.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
     return tasks

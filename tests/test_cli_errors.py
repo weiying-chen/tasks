@@ -195,7 +195,7 @@ class CliErrorTests(unittest.TestCase):
         self.assertEqual(proc.returncode, 0)
         self.assertNotIn("startAt", updated[0]["stages"][0])
         self.assertEqual(updated[1]["stages"][0]["startAt"], "2026-06-23T05:00:00Z")
-        self.assertEqual(updated[1]["stages"][0]["deadline"], "2026-06-24T02:59:00Z")
+        self.assertEqual(updated[1]["stages"][0]["deadline"], "2026-06-24T02:58:00Z")
 
 
 if __name__ == "__main__":
