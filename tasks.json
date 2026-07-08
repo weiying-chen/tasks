@@ -331,6 +331,14 @@
             "workMinutes": 120,
             "contentSeconds": 7440,
             "sourceText": "Alex Chen: 提娃那西語見習 2:04"
+          },
+          {
+            "name": "守護天使食堂",
+            "type": "news",
+            "startAt": "2026-07-08T00:23:46.391254Z",
+            "workMinutes": 110,
+            "contentSeconds": 6420,
+            "sourceText": "Alex Chen: 守護天使食堂 1:47"
           }
         ]
       }
