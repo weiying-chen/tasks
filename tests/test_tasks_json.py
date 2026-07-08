@@ -133,6 +133,30 @@ class TasksJsonTests(unittest.TestCase):
             ],
         )
 
+    def test_shan_yong_ci_sheng_has_editorial_note(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+
+        target_task = None
+        for task in tasks:
+            for stage in task.get("stages", []):
+                for extension in stage.get("extensions", []):
+                    if extension.get("name") == "善用此生厚美德":
+                        target_task = extension
+                        break
+                if target_task is not None:
+                    break
+            if target_task is not None:
+                break
+
+        self.assertIsNotNone(target_task)
+        self.assertEqual(
+            target_task.get("notes"),
+            [
+                "Adjusted Tzu Chi branch names to use country or U.S. state names, not city or Taiwan-based forms such as Tzu Chi Tainan or Tzu Chi Taiwan.",
+            ],
+        )
+
     def test_reducing_brain_age_has_editorial_notes(self):
         tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
         tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
@@ -155,6 +179,31 @@ class TasksJsonTests(unittest.TestCase):
             [
                 "Reworked the expert introduction to replace a formal academic title with a clearer description for general readers.",
                 "Added the name of the featured speaker to the hashtags.",
+            ],
+        )
+
+    def test_when_liver_disease_goes_unnoticed_has_editorial_notes(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+
+        target_task = None
+        for task in tasks:
+            for stage in task.get("stages", []):
+                for extension in stage.get("extensions", []):
+                    if extension.get("name") == "All About Health - When Liver Disease Goes Unnoticed (大愛醫生館 - 雲霧肝癌)":
+                        target_task = extension
+                        break
+                if target_task is not None:
+                    break
+            if target_task is not None:
+                break
+
+        self.assertIsNotNone(target_task)
+        self.assertEqual(
+            target_task.get("notes"),
+            [
+                "Built the post around the episode's patient case and key message instead of relying mainly on outside context.",
+                "Mentioned World Hepatitis Day only briefly as the occasion rather than making it central to the content.",
             ],
         )
 

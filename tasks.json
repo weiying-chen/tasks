@@ -307,14 +307,21 @@
             "type": "posts",
             "startAt": "2026-07-06T00:33:25.877688Z",
             "workMinutes": 50,
-            "sourceText": "4.\talex\n7/1善用此生厚美德\nhttps://www.daai.tv/master/life-wisdom/P90230307?more=true"
+            "sourceText": "4.\talex\n7/1善用此生厚美德\nhttps://www.daai.tv/master/life-wisdom/P90230307?more=true",
+            "notes": [
+              "Adjusted Tzu Chi branch names to use country or U.S. state names, not city or Taiwan-based forms such as Tzu Chi Tainan or Tzu Chi Taiwan."
+            ]
           },
           {
             "name": "All About Health - When Liver Disease Goes Unnoticed (大愛醫生館 - 雲霧肝癌)",
             "type": "posts",
             "startAt": "2026-07-06T01:44:15.513718Z",
             "workMinutes": 50,
-            "sourceText": "1.\t7/28(二)發 alex\nAll About Health - When Liver Disease Goes Unnoticed (大愛醫生館 - 雲霧肝癌)\nhttps://www.youtube.com/watch?v=47tbzXquNm8"
+            "sourceText": "1.\t7/28(二)發 alex\nAll About Health - When Liver Disease Goes Unnoticed (大愛醫生館 - 雲霧肝癌)\nhttps://www.youtube.com/watch?v=47tbzXquNm8",
+            "notes": [
+              "Built the post around the episode's patient case and key message instead of relying mainly on outside context.",
+              "Mentioned World Hepatitis Day only briefly as the occasion rather than making it central to the content."
+            ]
           },
           {
             "name": "巴東方市訪長者",
