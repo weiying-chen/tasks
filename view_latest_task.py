@@ -21,6 +21,7 @@ from task_stages import (
     get_task_work_minutes,
 )
 from create_message import (
+    aggregate_extensions,
     final_deadline_local,
     format_message_date,
     parse_deadline_transition_message,
@@ -427,16 +428,26 @@ def build_notes_target_options(latest_task: dict) -> list[tuple[str, str]]:
     return options
 
 
-def build_message_target_options(latest_task: dict | None = None, input_file: str | None = None) -> list[tuple[str, str]]:
+def has_current_deadline_extension_work(task: dict | None, now_local: datetime | None = None) -> bool:
+    if not isinstance(task, dict):
+        return False
+    if task_deadline_local(task) is None:
+        return False
+    current = now_local or datetime.now(TZ_TAIPEI)
+    return bool(aggregate_extensions(task, only_local_date=current.date()))
+
+
+def build_message_target_options(
+    latest_task: dict | None = None,
+    input_file: str | None = None,
+    now_local: datetime | None = None,
+) -> list[tuple[str, str]]:
     mode = detect_action_mode(input_file)
     options: list[tuple[str, str]] = []
     if mode != "coworker":
-        options.extend(
-            [
-                ("deadline-extension", "Deadline extension message"),
-                ("task-completion", "Task completion message"),
-            ]
-        )
+        if has_current_deadline_extension_work(latest_task, now_local=now_local):
+            options.append(("deadline-extension", "Deadline extension message"))
+        options.append(("task-completion", "Task completion message"))
     if isinstance(latest_task, dict):
         task_name = str(latest_task.get("name") or "").strip()
         start_at = str(get_task_start_at(latest_task) or "").strip()

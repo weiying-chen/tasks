@@ -1,6 +1,6 @@
 import unittest
-from unittest import mock
 from datetime import datetime, timezone, timedelta
+from unittest import mock
 import re
 
 import view_latest_task
@@ -159,7 +159,7 @@ class LatestTaskActionsTests(unittest.TestCase):
             ],
         )
 
-    def test_build_message_target_options_for_personal_tasks(self):
+    def test_build_message_target_options_for_personal_tasks_with_today_extensions(self):
         latest = {
             "id": "1",
             "name": "3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈）",
@@ -167,16 +167,53 @@ class LatestTaskActionsTests(unittest.TestCase):
             "stages": [
                 {
                     "type": "subs",
+                    "deadline": "2026-07-13T01:45:00Z",
                     "assignee": "Alex Chen",
                     "workMinutes": 364,
                     "contentSeconds": 364,
+                    "extensions": [
+                        {
+                            "name": "守護天使食堂",
+                            "type": "news",
+                            "startAt": "2026-07-13T00:23:46.391254Z",
+                            "workMinutes": 110,
+                        }
+                    ],
                 }
             ],
         }
         self.assertEqual(
-            view_latest_task.build_message_target_options(latest, input_file="/tmp/tasks.json"),
+            view_latest_task.build_message_target_options(
+                latest,
+                input_file="/tmp/tasks.json",
+                now_local=datetime(2026, 7, 13, 9, 0, tzinfo=timezone(timedelta(hours=8))),
+            ),
             [
                 ("deadline-extension", "Deadline extension message"),
+                ("task-completion", "Task completion message"),
+            ],
+        )
+
+    def test_build_message_target_options_hides_deadline_extension_without_today_extensions(self):
+        latest = {
+            "id": "1",
+            "name": "人文講堂 (從閱讀到行動 - 莊勝翔) 3個短版",
+            "assigner": "Evelyn",
+            "stages": [
+                {
+                    "type": "subs",
+                    "deadline": "2026-07-13T01:45:00Z",
+                    "workMinutes": 1110,
+                }
+            ],
+        }
+        self.assertEqual(
+            view_latest_task.build_message_target_options(
+                latest,
+                input_file="/tmp/tasks.json",
+                now_local=datetime(2026, 7, 13, 9, 0, tzinfo=timezone(timedelta(hours=8))),
+            ),
+            [
                 ("task-completion", "Task completion message"),
             ],
         )
