@@ -314,9 +314,9 @@ class LatestTaskViewTests(unittest.TestCase):
         self.assertRegex(out, r"\x1b\[35mset \x1b\[0m\x1b\[32ma\x1b\[0m\x1b\[35mssignee")
         self.assertRegex(out, r"\x1b\[35mset \x1b\[0m\x1b\[32ms\x1b\[0m\x1b\[35mtart time")
         self.assertRegex(out, r"\x1b\[35mconfirm \x1b\[0m\x1b\[32md\x1b\[0m\x1b\[35meadline extension")
+        self.assertRegex(out, r"\x1b\[35mcreate \x1b\[0m\x1b\[32mt\x1b\[0m\x1b\[35mask")
         self.assertNotRegex(out, r"\x1b\[35madd \x1b\[0m\x1b\[32mn\x1b\[0m\x1b\[35motes")
         self.assertNotRegex(out, r"\x1b\[35mtoggle \x1b\[0m\x1b\[32mv\x1b\[0m\x1b\[35miew notes")
-        self.assertNotRegex(out, r"\x1b\[35mcreate \x1b\[0m\x1b\[32mt\x1b\[0m\x1b\[35mask")
         self.assertNotRegex(out, r"\x1b\[35madd \x1b\[0m\x1b\[32me\x1b\[0m\x1b\[35mxtensions")
 
     def test_coworker_actions_include_copy_message_when_message_exists(self):
@@ -339,6 +339,29 @@ class LatestTaskViewTests(unittest.TestCase):
         ]
         out = view_latest_task.build_latest_view(tasks, input_file="/tmp/tasks_coworkers.json")
         self.assertRegex(out, r"\x1b\[35mcopy \x1b\[0m\x1b\[32mm\x1b\[0m\x1b\[35message")
+
+    def test_coworker_latest_view_can_filter_by_program(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "3集大愛真健康（低衝擊有氧 + 美背有氧 + 手臂減脂）",
+                "assigner": "Emily Ding",
+            },
+            {
+                "id": "2",
+                "name": "3集大愛醫生館（胰管狹窄 + 頭痛的背影 + 崩解的膝平臺）",
+                "assigner": "Alex Chen",
+            },
+        ]
+        out = self.strip_ansi(
+            view_latest_task.build_latest_view(
+                tasks,
+                input_file="/tmp/tasks_coworkers.json",
+                program="大愛真健康",
+            )
+        )
+        self.assertIn("3集大愛真健康", out)
+        self.assertNotIn("3集大愛醫生館", out)
 
     def test_coworker_actions_hide_copy_message_when_no_message_exists(self):
         tasks = [

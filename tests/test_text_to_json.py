@@ -286,6 +286,45 @@ class TextToJsonTests(unittest.TestCase):
         self.assertEqual(get_task_type(task), "subs")
         self.assertNotIn("stages", task)
 
+    def test_parse_source_text_groups_known_program_clip_blocks_into_single_task(self):
+        text = (
+            "【大愛真健康】 65+必練：不傷膝蓋、不用跳也能大爆汗的低衝擊有氧！全身燃脂超有感，找回輕盈好體力 20260626\n"
+            "https://youtu.be/YkBI7Jx0IJk\n"
+            "00:00-02:30 (2分30秒)\n"
+            "【大愛真健康】 背影看起來老十歲？3招美背有氧操，甩掉厚實後背、消除虎背熊腰 20260625\n"
+            "https://youtu.be/8lSJ7tBDaKc\n"
+            "00:00-01:45 (1分45秒)\n"
+        )
+        parsed = text_to_json.parse_source_text(text, [], 2026)
+        self.assertEqual(len(parsed), 1)
+        task = parsed[0]
+        self.assertEqual(task["assigner"], "Emily Ding")
+        self.assertEqual(
+            task["name"],
+            "2集大愛真健康（65+必練：不傷膝蓋、不用跳也能大爆汗的低衝擊有氧！全身燃脂超有感，找回輕盈好體力 + 背影看起來老十歲？3招美背有氧操，甩掉厚實後背、消除虎背熊腰）",
+        )
+        self.assertEqual(get_task_content_seconds(task), 255)
+        self.assertEqual(get_task_type(task), "subs")
+        self.assertNotIn("stages", task)
+
+    def test_parse_source_text_groups_known_program_pipe_titles_into_single_task(self):
+        text = (
+            "65+必練：不傷膝蓋、不用跳也能大爆汗的低衝擊有氧！全身燃脂超有感，找回輕盈好體力｜有氧減脂｜大愛真健康｜ 20260626\n\n"
+            "背影看起來老十歲？3招美背有氧操，甩掉厚實後背、消除虎背熊腰｜有氧減脂｜大愛真健康｜ 20260625\n\n"
+            "手一揮贅肉跟著晃？3招手臂減脂操，改善掰掰袖，告別手臂無力感｜有氧減脂｜大愛真健康｜20260624"
+        )
+        parsed = text_to_json.parse_source_text(text, [], 2026)
+        self.assertEqual(len(parsed), 1)
+        task = parsed[0]
+        self.assertEqual(task["assigner"], "Emily Ding")
+        self.assertEqual(
+            task["name"],
+            "3集大愛真健康（65+必練：不傷膝蓋、不用跳也能大爆汗的低衝擊有氧！全身燃脂超有感，找回輕盈好體力 + 背影看起來老十歲？3招美背有氧操，甩掉厚實後背、消除虎背熊腰 + 手一揮贅肉跟著晃？3招手臂減脂操，改善掰掰袖，告別手臂無力感）",
+        )
+        self.assertNotIn("contentSeconds", task)
+        self.assertEqual(get_task_type(task), "subs")
+        self.assertNotIn("stages", task)
+
     def test_subs_assigner_is_grouped_by_assigner(self):
         self.assertEqual(
             list(SUBS_PROGRAM_ASSIGNERS.items()),

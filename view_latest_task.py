@@ -146,9 +146,35 @@ def find_task_by_id(tasks: list[dict], task_id: str) -> dict | None:
     return None
 
 
-def get_view_task(tasks: list[dict], task_id: str | None = None) -> dict | None:
+def get_task_program_name(task: dict) -> str:
+    name = str(task.get("name") or "").strip()
+    if not name:
+        return ""
+    try:
+        _, program_name, _ = parse_task_assignment_task_name(name)
+        return program_name
+    except ValueError:
+        cleaned = re.sub(r"^\s*(?:\d+|[零一二三四五六七八九十百千兩]+)\s*集\s*", "", name)
+        return re.split(r"[（(]", cleaned, maxsplit=1)[0].strip()
+
+
+def find_latest_task_by_program(tasks: list[dict], program: str) -> dict | None:
+    expected = program.strip()
+    if not expected:
+        return None
+    for task in reversed(tasks):
+        if not isinstance(task, dict):
+            continue
+        if get_task_program_name(task) == expected:
+            return task
+    return None
+
+
+def get_view_task(tasks: list[dict], task_id: str | None = None, program: str | None = None) -> dict | None:
     if task_id:
         return find_task_by_id(tasks, task_id)
+    if program:
+        return find_latest_task_by_program(tasks, program)
     if not tasks:
         return None
     latest = tasks[-1]
@@ -735,6 +761,7 @@ def render_task_block(
 def build_task_view(
     tasks: list[dict],
     task_id: str | None = None,
+    program: str | None = None,
     now_local: datetime | None = None,
     status: str = "",
     show_subtask_notes: bool = False,
@@ -748,9 +775,12 @@ def build_task_view(
         lines.append(color('No tasks', YELLOW))
         return '\n'.join(lines) + '\n'
 
-    selected = get_view_task(tasks, task_id=task_id)
+    selected = get_view_task(tasks, task_id=task_id, program=program)
     if not isinstance(selected, dict):
-        lines.append(color('Selected task is invalid', YELLOW))
+        if program:
+            lines.append(color(f'No task found for program: {program}', YELLOW))
+        else:
+            lines.append(color('Selected task is invalid', YELLOW))
         return '\n'.join(lines) + '\n'
 
     show_notes = detect_action_mode(input_file) != "coworker"
@@ -780,9 +810,11 @@ def build_latest_view(
     status: str = "",
     show_subtask_notes: bool = False,
     input_file: str | None = None,
+    program: str | None = None,
 ) -> str:
     return build_task_view(
         tasks,
+        program=program,
         now_local=now_local,
         status=status,
         show_subtask_notes=show_subtask_notes,
@@ -804,6 +836,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--file', help='input JSON path relative to script dir or absolute path')
     parser.add_argument('--id', help='specific task id to view instead of latest')
+    parser.add_argument('--program', help='show latest task for this programme name')
     parser.add_argument('--once', action='store_true', help='print once and exit')
     parser.add_argument('--interval', type=float, default=1.0, help='refresh seconds for live mode')
     args = parser.parse_args()
@@ -820,6 +853,7 @@ def main():
         return build_task_view(
             tasks,
             task_id=args.id,
+            program=args.program,
             status=status,
             show_subtask_notes=show_notes,
             input_file=input_file,
@@ -881,7 +915,7 @@ def main():
                     try:
                         data = json.loads(in_path.read_text(encoding='utf-8'))
                         tasks = normalize_tasks(data)
-                        selected_task = get_view_task(tasks, task_id=args.id)
+                        selected_task = get_view_task(tasks, task_id=args.id, program=args.program)
                         selected_id = str(selected_task.get("id") or "").strip() if isinstance(selected_task, dict) else ""
                         if not selected_id:
                             status = color("Error: No selected task id found.", RED)
@@ -913,7 +947,7 @@ def main():
                     try:
                         data = json.loads(in_path.read_text(encoding='utf-8'))
                         tasks = normalize_tasks(data)
-                        selected_task = get_view_task(tasks, task_id=args.id)
+                        selected_task = get_view_task(tasks, task_id=args.id, program=args.program)
                         selected_id = str(selected_task.get("id") or "").strip() if isinstance(selected_task, dict) else ""
                         if not selected_id:
                             status = color("Error: No selected task id found.", RED)
@@ -945,7 +979,7 @@ def main():
                     try:
                         data = json.loads(in_path.read_text(encoding='utf-8'))
                         tasks = normalize_tasks(data)
-                        selected_task = get_view_task(tasks, task_id=args.id)
+                        selected_task = get_view_task(tasks, task_id=args.id, program=args.program)
                         selected_id = str(selected_task.get("id") or "").strip() if isinstance(selected_task, dict) else ""
                         if not selected_id:
                             status = color("Error: No selected task id found.", RED)
@@ -984,7 +1018,7 @@ def main():
                     try:
                         data = json.loads(in_path.read_text(encoding='utf-8'))
                         tasks = normalize_tasks(data)
-                        selected_task = get_view_task(tasks, task_id=args.id)
+                        selected_task = get_view_task(tasks, task_id=args.id, program=args.program)
                         if not isinstance(selected_task, dict):
                             status = color("Error: Selected task is invalid.", RED)
                             status_until = time.time() + STATUS_TTL_SECONDS
@@ -1051,7 +1085,7 @@ def main():
                     try:
                         data = json.loads(in_path.read_text(encoding='utf-8'))
                         tasks = normalize_tasks(data)
-                        selected_task = get_view_task(tasks, task_id=args.id)
+                        selected_task = get_view_task(tasks, task_id=args.id, program=args.program)
                         if not isinstance(selected_task, dict):
                             status = color("Error: Selected task is invalid.", RED)
                             status_until = time.time() + STATUS_TTL_SECONDS
@@ -1077,7 +1111,7 @@ def main():
                             )
                             data = json.loads(in_path.read_text(encoding='utf-8'))
                             tasks = normalize_tasks(data)
-                            selected_task = get_view_task(tasks, task_id=args.id)
+                            selected_task = get_view_task(tasks, task_id=args.id, program=args.program)
                             if not isinstance(selected_task, dict):
                                 status = color("Error: Selected task is invalid.", RED)
                                 status_until = time.time() + STATUS_TTL_SECONDS
@@ -1093,7 +1127,7 @@ def main():
                     try:
                         data = json.loads(in_path.read_text(encoding='utf-8'))
                         tasks = normalize_tasks(data)
-                        selected_task = get_view_task(tasks, task_id=args.id)
+                        selected_task = get_view_task(tasks, task_id=args.id, program=args.program)
                         latest_id = str(selected_task.get("id") or "").strip() if isinstance(selected_task, dict) else ""
                         if not latest_id:
                             status = color("Error: No selected task id found.", RED)

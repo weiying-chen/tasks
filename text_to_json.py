@@ -253,12 +253,66 @@ def parse_duration_text_to_seconds(duration_text: str) -> int:
     return int(match.group(1)) * 60 + int(match.group(2))
 
 
+def parse_known_program_pipe_title_line(line: str) -> tuple[str, str] | None:
+    cleaned = line.strip()
+    match = re.match(r"^(?P<body>.+?)\s*(?P<date>\d{8})\s*$", cleaned)
+    if not match:
+        return None
+
+    body = match.group("body").strip().strip("｜|").strip()
+    parts = [part.strip() for part in re.split(r"[｜|]", body) if part.strip()]
+    if len(parts) < 2:
+        return None
+
+    program_name = parts[-1]
+    if program_name not in SUBS_PROGRAM_ASSIGNERS:
+        return None
+
+    title = parts[0]
+    if not title:
+        return None
+    return program_name, title
+
+
+def parse_known_program_pipe_title_list_input(text: str, task_id: str) -> dict | None:
+    lines = [line.strip() for line in text.splitlines() if line.strip()]
+    if len(lines) < 2:
+        return None
+
+    episodes: list[str] = []
+    program_names: set[str] = set()
+    raw_lines: list[str] = []
+
+    for line in lines:
+        parsed = parse_known_program_pipe_title_line(line)
+        if parsed is None:
+            return None
+        program_name, title = parsed
+        program_names.add(program_name)
+        episodes.append(title)
+        raw_lines.append(line)
+
+    if len(program_names) != 1:
+        return None
+
+    program_name = next(iter(program_names))
+    task_name = f"{len(episodes)}集{program_name}（{' + '.join(episodes)}）"
+    return {
+        "id": task_id,
+        "name": task_name,
+        "type": "subs",
+        "assigner": resolve_subs_assigner(task_name),
+        "sourceText": "\n".join(raw_lines),
+    }
+
+
 def parse_daai_doctor_clip_input(text: str, task_id: str) -> dict | None:
     lines = [line.strip() for line in text.splitlines() if line.strip()]
     if len(lines) < 3 or len(lines) % 3 != 0:
         return None
 
     episodes: list[str] = []
+    program_names: set[str] = set()
     total_seconds = 0
     raw_blocks: list[str] = []
 
@@ -272,17 +326,19 @@ def parse_daai_doctor_clip_input(text: str, task_id: str) -> dict | None:
             return None
 
         program_name = title_match.group("program").strip()
-        if program_name != "大愛醫生館":
+        if program_name not in SUBS_PROGRAM_ASSIGNERS:
             return None
 
+        program_names.add(program_name)
         episodes.append(title_match.group("title").strip())
         total_seconds += parse_duration_text_to_seconds(timing_match.group("duration"))
         raw_blocks.extend([title_line, url_line, timing_line])
 
-    if len(episodes) < 2:
+    if len(episodes) < 2 or len(program_names) != 1:
         return None
 
-    task_name = f"{len(episodes)}集大愛醫生館（{' + '.join(episodes)}）"
+    program_name = next(iter(program_names))
+    task_name = f"{len(episodes)}集{program_name}（{' + '.join(episodes)}）"
     return {
         "id": task_id,
         "name": task_name,
@@ -381,6 +437,10 @@ def parse_source_text(source_text: str, existing_tasks: list[dict], now_year: in
     parsed_daai_doctor = parse_daai_doctor_clip_input(source_text, new_task_id)
     if parsed_daai_doctor:
         return [parsed_daai_doctor]
+
+    parsed_pipe_titles = parse_known_program_pipe_title_list_input(source_text, new_task_id)
+    if parsed_pipe_titles:
+        return [parsed_pipe_titles]
 
     out = parse_subs_input(source_text, now_year, task_id=new_task_id)
     return [out]

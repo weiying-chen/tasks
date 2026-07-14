@@ -24,6 +24,11 @@ class TasksJsonTests(unittest.TestCase):
                     "startAt": "2026-07-07T01:29:00Z",
                     "deadline": "2026-07-07T06:51:00Z",
                     "workMinutes": 262,
+                },
+                {
+                    "name": "edit",
+                    "assignee": "Elijah Salie",
+                    "workMinutes": 131,
                 }
             ],
         )

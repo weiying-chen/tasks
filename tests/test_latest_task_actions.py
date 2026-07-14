@@ -31,6 +31,23 @@ class LatestTaskActionsTests(unittest.TestCase):
         ]
         self.assertEqual(view_latest_task.find_latest_task_id(tasks), "7")
 
+    def test_get_view_task_filters_latest_by_program(self):
+        tasks = [
+            {"id": "1", "name": "3集大愛真健康（A + B + C）"},
+            {"id": "2", "name": "3集大愛醫生館（D + E + F）"},
+            {"id": "3", "name": "2集大愛真健康（G + H）"},
+        ]
+        selected = view_latest_task.get_view_task(tasks, program="大愛真健康")
+        self.assertEqual(selected["id"], "3")
+
+    def test_get_view_task_id_overrides_program_filter(self):
+        tasks = [
+            {"id": "1", "name": "3集大愛真健康（A + B + C）"},
+            {"id": "2", "name": "3集大愛醫生館（D + E + F）"},
+        ]
+        selected = view_latest_task.get_view_task(tasks, task_id="2", program="大愛真健康")
+        self.assertEqual(selected["id"], "2")
+
     def test_build_add_to_latest_command(self):
         cmd = view_latest_task.build_add_to_latest_command("/tmp", "9", "extensions", "/tmp/tasks_coworkers.json")
         self.assertEqual(
