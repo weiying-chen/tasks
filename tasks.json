@@ -361,7 +361,7 @@
     "stages": [
       {
         "startAt": "2026-07-08T08:15:00Z",
-        "deadline": "2026-07-14T01:45:00Z",
+        "deadline": "2026-07-13T01:45:00Z",
         "workMinutes": 1110,
         "extensions": [
           {
@@ -377,6 +377,13 @@
             "startAt": "2026-07-13T01:29:22.049138Z",
             "workMinutes": 50,
             "sourceText": "1. 8/1(六)發 alex\nChinese Medicine Clinic - Acupressure to Boost Lactation (看中醫 - 產後穴道按摩)\nhttps://www.youtube.com/watch?v=gDZ6IRtXX8s"
+          },
+          {
+            "name": "颱風假",
+            "type": "custom",
+            "startAt": "2026-07-13T01:45:00Z",
+            "workMinutes": 480,
+            "sourceText": "颱風假 8時"
           },
           {
             "name": "紐約獎學金",
