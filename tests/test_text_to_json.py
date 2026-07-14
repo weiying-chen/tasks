@@ -125,6 +125,26 @@ class TextToJsonTests(unittest.TestCase):
         self.assertEqual(parsed[0]["assigner"], "Emily Ding")
         self.assertEqual(parsed[0]["name"], "3集我的阿公阿媽做慈濟")
 
+    def test_subs_program_assigner_maps_daai_documentary_to_evelyn(self):
+        text = (
+            "請\n"
+            "Alex Chen 翻譯大愛全紀實 (好好吃飯) 4 個短版,  長度21分, "
+            "預計翻譯16時48分, deadline等手上工作完成後再給~\n\n"
+            "好好吃飯\n"
+            "https://www.youtube.com/watch?v=0qhuyXC-__o\n"
+            "(1)01:28-08:50 (7m22s)\n"
+            "(2)10:24-13:39 (3m15s)\n"
+            "(3)13:39-19:16 (5m37s)\n"
+            "(4)19:17-23:30 (4m13s)\n\n"
+            "20'27"
+        )
+        parsed = text_to_json.parse_source_text(text, [], 2026)
+        task = parsed[0]
+        self.assertEqual(task["assigner"], "Evelyn")
+        self.assertEqual(task["name"], "大愛全紀實 (好好吃飯) 4 個短版")
+        self.assertEqual(get_task_content_seconds(task), 1260)
+        self.assertEqual(get_task_work_minutes(task), 1008)
+
     def test_parse_source_text_subs_accepts_total_content_duration(self):
         text = (
             "接下來請 Alex Chen 翻譯3集我的阿公阿媽做慈濟，片長合計9分，"
@@ -334,6 +354,7 @@ class TextToJsonTests(unittest.TestCase):
                 ("我的阿公阿媽做慈濟", "Emily Ding"),
                 ("人文講堂", "Evelyn"),
                 ("心靈講座", "Evelyn"),
+                ("大愛全紀實", "Evelyn"),
                 ("大愛學漢醫", "Syharn Shen"),
                 ("日日有新知", "Elijah Salie"),
                 ("集日日有新知", "Elijah Salie"),
