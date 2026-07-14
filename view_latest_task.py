@@ -49,6 +49,11 @@ NEXT_TASK_MESSAGE_COPIED_STATUS = "Success: Next task message copied to clipboar
 SUBS_SUMMARY_MESSAGE_COPIED_STATUS = "Success: Task assignment message copied to clipboard"
 CONFIRM_DEADLINE_EXTENSION_STATUS = "Success: Confirm deadline extension checked"
 TASK_INITIATION_MESSAGE_COPIED_STATUS = "Success: Task initiation message copied to clipboard"
+STATUS_LABEL_COLORS = {
+    "Success": GREEN,
+    "Warning": YELLOW,
+    "Error": RED,
+}
 
 PERSONAL_ACTIONS = ("t", "e", "n", "v", "q")
 COWORKER_ACTIONS = ("t", "a", "s", "d", "q")
@@ -615,6 +620,15 @@ def color(text: str, code: str) -> str:
     return f'{code}{text}{RESET}'
 
 
+def format_status_text(message: str) -> str:
+    label = message.split(":", 1)[0].strip()
+    return color(message, STATUS_LABEL_COLORS.get(label, YELLOW))
+
+
+def build_status_text(label: str, message: str) -> str:
+    return format_status_text(f"{label}: {message}")
+
+
 def bold(text: str) -> str:
     return f'{BOLD}{text}{RESET}'
 
@@ -778,7 +792,7 @@ def build_task_view(
     selected = get_view_task(tasks, task_id=task_id, program=program)
     if not isinstance(selected, dict):
         if program:
-            lines.append(color(f'No task found for program: {program}', YELLOW))
+            lines.append(build_status_text("Error", f"No task found for program: {program}"))
         else:
             lines.append(color('Selected task is invalid', YELLOW))
         return '\n'.join(lines) + '\n'
@@ -898,7 +912,7 @@ def main():
                         )
                         if add_proc.returncode != 0:
                             msg = (add_proc.stderr or add_proc.stdout or "Add failed").strip()
-                            status = color(f"Error: {msg}", RED)
+                            status = format_status_text(f"Error: {msg}")
                             status_until = time.time() + STATUS_TTL_SECONDS
                         else:
                             out = (add_proc.stdout or "").strip()
@@ -909,7 +923,7 @@ def main():
                                 status = ""
                                 status_until = 0.0
                     except Exception as exc:
-                        status = color(f"Error: Add failed: {exc}", RED)
+                        status = format_status_text(f"Error: Add failed: {exc}")
                         status_until = time.time() + STATUS_TTL_SECONDS
                 if ch == b"a" and "a" in base_allowed_actions:
                     try:
@@ -918,7 +932,7 @@ def main():
                         selected_task = get_view_task(tasks, task_id=args.id, program=args.program)
                         selected_id = str(selected_task.get("id") or "").strip() if isinstance(selected_task, dict) else ""
                         if not selected_id:
-                            status = color("Error: No selected task id found.", RED)
+                            status = format_status_text("Error: No selected task id found.")
                             status_until = time.time() + STATUS_TTL_SECONDS
                             continue
                         clipboard_proc = subprocess.run(
@@ -929,7 +943,7 @@ def main():
                         )
                         clipboard_text = clipboard_proc.stdout
                         if not clipboard_text.strip():
-                            status = color("Error: Clipboard is empty.", RED)
+                            status = format_status_text("Error: Clipboard is empty.")
                             status_until = time.time() + STATUS_TTL_SECONDS
                             continue
                         copied_status = assign_coworker_and_copy_message(
@@ -938,10 +952,10 @@ def main():
                             selected_id,
                             clipboard_text,
                         )
-                        status = color(copied_status, GREEN)
+                        status = format_status_text(copied_status)
                         status_until = time.time() + STATUS_TTL_SECONDS
                     except Exception as exc:
-                        status = color(f"Error: Assign failed: {exc}", RED)
+                        status = format_status_text(f"Error: Assign failed: {exc}")
                         status_until = time.time() + STATUS_TTL_SECONDS
                 if ch == b"s" and detect_action_mode(input_file) == "coworker" and "s" in base_allowed_actions:
                     try:
@@ -950,7 +964,7 @@ def main():
                         selected_task = get_view_task(tasks, task_id=args.id, program=args.program)
                         selected_id = str(selected_task.get("id") or "").strip() if isinstance(selected_task, dict) else ""
                         if not selected_id:
-                            status = color("Error: No selected task id found.", RED)
+                            status = format_status_text("Error: No selected task id found.")
                             status_until = time.time() + STATUS_TTL_SECONDS
                             continue
                         clipboard_proc = subprocess.run(
@@ -961,7 +975,7 @@ def main():
                         )
                         clipboard_text = clipboard_proc.stdout
                         if not clipboard_text.strip():
-                            status = color("Error: Clipboard is empty.", RED)
+                            status = format_status_text("Error: Clipboard is empty.")
                             status_until = time.time() + STATUS_TTL_SECONDS
                             continue
                         copied_status = set_task_start_and_copy_message(
@@ -970,10 +984,10 @@ def main():
                             selected_id,
                             clipboard_text,
                         )
-                        status = color(copied_status, GREEN)
+                        status = format_status_text(copied_status)
                         status_until = time.time() + STATUS_TTL_SECONDS
                     except Exception as exc:
-                        status = color(f"Error: Set start time failed: {exc}", RED)
+                        status = format_status_text(f"Error: Set start time failed: {exc}")
                         status_until = time.time() + STATUS_TTL_SECONDS
                 if ch == b"e" and detect_action_mode(input_file) != "coworker" and "e" in base_allowed_actions:
                     try:
@@ -982,7 +996,7 @@ def main():
                         selected_task = get_view_task(tasks, task_id=args.id, program=args.program)
                         selected_id = str(selected_task.get("id") or "").strip() if isinstance(selected_task, dict) else ""
                         if not selected_id:
-                            status = color("Error: No selected task id found.", RED)
+                            status = format_status_text("Error: No selected task id found.")
                             status_until = time.time() + STATUS_TTL_SECONDS
                             continue
                         clipboard_proc = subprocess.run(
@@ -993,7 +1007,7 @@ def main():
                         )
                         clipboard_text = clipboard_proc.stdout
                         if not clipboard_text.strip():
-                            status = color("Error: Clipboard is empty.", RED)
+                            status = format_status_text("Error: Clipboard is empty.")
                             status_until = time.time() + STATUS_TTL_SECONDS
                             continue
                         cmd = build_add_to_latest_command(script_dir, selected_id, "extensions", input_file)
@@ -1006,13 +1020,13 @@ def main():
                         )
                         if add_proc.returncode != 0:
                             msg = (add_proc.stderr or add_proc.stdout or "Add failed").strip()
-                            status = color(f"Error: {msg}", RED)
+                            status = format_status_text(f"Error: {msg}")
                             status_until = time.time() + STATUS_TTL_SECONDS
                         else:
                             status = ""
                             status_until = 0.0
                     except Exception as exc:
-                        status = color(f"Error: Add failed: {exc}", RED)
+                        status = format_status_text(f"Error: Add failed: {exc}")
                         status_until = time.time() + STATUS_TTL_SECONDS
                 if ch == b"n" and "n" in base_allowed_actions:
                     try:
@@ -1020,13 +1034,13 @@ def main():
                         tasks = normalize_tasks(data)
                         selected_task = get_view_task(tasks, task_id=args.id, program=args.program)
                         if not isinstance(selected_task, dict):
-                            status = color("Error: Selected task is invalid.", RED)
+                            status = format_status_text("Error: Selected task is invalid.")
                             status_until = time.time() + STATUS_TTL_SECONDS
                             continue
                         latest_task = selected_task
                         latest_id = str(selected_task.get("id") or "").strip()
                         if not latest_id:
-                            status = color("Error: No selected task id found.", RED)
+                            status = format_status_text("Error: No selected task id found.")
                             status_until = time.time() + STATUS_TTL_SECONDS
                             continue
                         target_id = latest_id
@@ -1042,7 +1056,7 @@ def main():
                             if should_quit:
                                 break
                             if pick_err:
-                                status = color(pick_err, RED)
+                                status = format_status_text(pick_err)
                                 status_until = time.time() + STATUS_TTL_SECONDS
                                 continue
                             if pick_idx is None:
@@ -1058,7 +1072,7 @@ def main():
                         )
                         clipboard_text = clipboard_proc.stdout
                         if not clipboard_text.strip():
-                            status = color("Error: Clipboard is empty.", RED)
+                            status = format_status_text("Error: Clipboard is empty.")
                             status_until = time.time() + STATUS_TTL_SECONDS
                             continue
                         cmd = build_add_notes_command(script_dir, target_id, input_file)
@@ -1071,13 +1085,13 @@ def main():
                         )
                         if add_proc.returncode != 0:
                             msg = (add_proc.stderr or add_proc.stdout or "Add failed").strip()
-                            status = color(f"Error: {msg}", RED)
+                            status = format_status_text(f"Error: {msg}")
                             status_until = time.time() + STATUS_TTL_SECONDS
                         else:
                             status = ""
                             status_until = 0.0
                     except Exception as exc:
-                        status = color(f"Error: Add failed: {exc}", RED)
+                        status = format_status_text(f"Error: Add failed: {exc}")
                         status_until = time.time() + STATUS_TTL_SECONDS
                 if ch == b"v" and "v" in base_allowed_actions:
                     show_notes = not show_notes
@@ -1087,7 +1101,7 @@ def main():
                         tasks = normalize_tasks(data)
                         selected_task = get_view_task(tasks, task_id=args.id, program=args.program)
                         if not isinstance(selected_task, dict):
-                            status = color("Error: Selected task is invalid.", RED)
+                            status = format_status_text("Error: Selected task is invalid.")
                             status_until = time.time() + STATUS_TTL_SECONDS
                             continue
                         clipboard_proc = subprocess.run(
@@ -1099,7 +1113,7 @@ def main():
                         clipboard_text = clipboard_proc.stdout
                         selected_id = str(selected_task.get("id") or "").strip()
                         if not selected_id:
-                            status = color("Error: No selected task id found.", RED)
+                            status = format_status_text("Error: No selected task id found.")
                             status_until = time.time() + STATUS_TTL_SECONDS
                             continue
                         inserted_count = ingest_deadline_extension_subtasks(tasks, selected_id, clipboard_text)
@@ -1113,15 +1127,14 @@ def main():
                             tasks = normalize_tasks(data)
                             selected_task = get_view_task(tasks, task_id=args.id, program=args.program)
                             if not isinstance(selected_task, dict):
-                                status = color("Error: Selected task is invalid.", RED)
+                                status = format_status_text("Error: Selected task is invalid.")
                                 status_until = time.time() + STATUS_TTL_SECONDS
                                 continue
                         message = build_confirm_deadline_extension_status(selected_task, clipboard_text)
-                        status_color = YELLOW if message.startswith("Warning:") else GREEN
-                        status = color(message, status_color)
+                        status = format_status_text(message)
                         status_until = time.time() + STATUS_TTL_SECONDS
                     except Exception as exc:
-                        status = color(f"Error: Confirm deadline extension failed: {exc}", RED)
+                        status = format_status_text(f"Error: Confirm deadline extension failed: {exc}")
                         status_until = time.time() + STATUS_TTL_SECONDS
                 if ch == b"m":
                     try:
@@ -1130,7 +1143,7 @@ def main():
                         selected_task = get_view_task(tasks, task_id=args.id, program=args.program)
                         latest_id = str(selected_task.get("id") or "").strip() if isinstance(selected_task, dict) else ""
                         if not latest_id:
-                            status = color("Error: No selected task id found.", RED)
+                            status = format_status_text("Error: No selected task id found.")
                             status_until = time.time() + STATUS_TTL_SECONDS
                             continue
                         msg_options = build_message_target_options(selected_task, input_file=input_file)
@@ -1146,7 +1159,7 @@ def main():
                         if should_quit:
                             break
                         if pick_err:
-                            status = color(pick_err, RED)
+                            status = format_status_text(pick_err)
                             status_until = time.time() + STATUS_TTL_SECONDS
                             continue
                         if pick_idx is None:
@@ -1159,12 +1172,12 @@ def main():
                             msg_proc = subprocess.run(msg_cmd, capture_output=True, text=True)
                             if msg_proc.returncode != 0:
                                 msg = (msg_proc.stderr or msg_proc.stdout or "Message generation failed").strip()
-                                status = color(f"Error: {msg}", RED)
+                                status = format_status_text(f"Error: {msg}")
                                 status_until = time.time() + STATUS_TTL_SECONDS
                                 continue
                             message_text = msg_proc.stdout.strip()
                             if not message_text:
-                                status = color("Error: Generated message is empty.", RED)
+                                status = format_status_text("Error: Generated message is empty.")
                                 status_until = time.time() + STATUS_TTL_SECONDS
                                 continue
                             copy_proc = subprocess.Popen(
@@ -1175,19 +1188,19 @@ def main():
                             if copy_proc.stdin:
                                 copy_proc.stdin.write(message_text)
                                 copy_proc.stdin.close()
-                            status = color(DEADLINE_MESSAGE_COPIED_STATUS, GREEN)
+                            status = format_status_text(DEADLINE_MESSAGE_COPIED_STATUS)
                             status_until = time.time() + STATUS_TTL_SECONDS
                         elif picked_kind == "task-initiation":
                             msg_cmd = build_task_initiation_message_command(script_dir, str(in_path.resolve()), latest_id)
                             msg_proc = subprocess.run(msg_cmd, capture_output=True, text=True)
                             if msg_proc.returncode != 0:
                                 msg = (msg_proc.stderr or msg_proc.stdout or "Message generation failed").strip()
-                                status = color(f"Error: {msg}", RED)
+                                status = format_status_text(f"Error: {msg}")
                                 status_until = time.time() + STATUS_TTL_SECONDS
                                 continue
                             message_text = msg_proc.stdout.strip()
                             if not message_text:
-                                status = color("Error: Generated message is empty.", RED)
+                                status = format_status_text("Error: Generated message is empty.")
                                 status_until = time.time() + STATUS_TTL_SECONDS
                                 continue
                             copy_proc = subprocess.Popen(
@@ -1198,19 +1211,19 @@ def main():
                             if copy_proc.stdin:
                                 copy_proc.stdin.write(message_text)
                                 copy_proc.stdin.close()
-                            status = color(TASK_INITIATION_MESSAGE_COPIED_STATUS, GREEN)
+                            status = format_status_text(TASK_INITIATION_MESSAGE_COPIED_STATUS)
                             status_until = time.time() + STATUS_TTL_SECONDS
                         elif picked_kind == "task-assignment":
                             msg_cmd = build_task_assignment_message_command(script_dir, str(in_path.resolve()), latest_id)
                             msg_proc = subprocess.run(msg_cmd, capture_output=True, text=True)
                             if msg_proc.returncode != 0:
                                 msg = (msg_proc.stderr or msg_proc.stdout or "Message generation failed").strip()
-                                status = color(f"Error: {msg}", RED)
+                                status = format_status_text(f"Error: {msg}")
                                 status_until = time.time() + STATUS_TTL_SECONDS
                                 continue
                             message_text = msg_proc.stdout.strip()
                             if not message_text:
-                                status = color("Error: Generated message is empty.", RED)
+                                status = format_status_text("Error: Generated message is empty.")
                                 status_until = time.time() + STATUS_TTL_SECONDS
                                 continue
                             copy_proc = subprocess.Popen(
@@ -1221,7 +1234,7 @@ def main():
                             if copy_proc.stdin:
                                 copy_proc.stdin.write(message_text)
                                 copy_proc.stdin.close()
-                            status = color(SUBS_SUMMARY_MESSAGE_COPIED_STATUS, GREEN)
+                            status = format_status_text(SUBS_SUMMARY_MESSAGE_COPIED_STATUS)
                             status_until = time.time() + STATUS_TTL_SECONDS
                         else:
                             clipboard_proc = subprocess.run(
@@ -1232,7 +1245,7 @@ def main():
                             )
                             next_assigner, next_task_name = parse_next_task_clipboard_payload(clipboard_proc.stdout)
                             if not next_task_name:
-                                status = color("Error: Clipboard is empty.", RED)
+                                status = format_status_text("Error: Clipboard is empty.")
                                 status_until = time.time() + STATUS_TTL_SECONDS
                                 continue
                             msg_cmd = build_task_completion_message_command(
@@ -1245,12 +1258,12 @@ def main():
                             msg_proc = subprocess.run(msg_cmd, capture_output=True, text=True)
                             if msg_proc.returncode != 0:
                                 msg = (msg_proc.stderr or msg_proc.stdout or "Message generation failed").strip()
-                                status = color(f"Error: {msg}", RED)
+                                status = format_status_text(f"Error: {msg}")
                                 status_until = time.time() + STATUS_TTL_SECONDS
                                 continue
                             message_text = msg_proc.stdout.strip()
                             if not message_text:
-                                status = color("Error: Generated message is empty.", RED)
+                                status = format_status_text("Error: Generated message is empty.")
                                 status_until = time.time() + STATUS_TTL_SECONDS
                                 continue
                             copy_proc = subprocess.Popen(
@@ -1261,10 +1274,10 @@ def main():
                             if copy_proc.stdin:
                                 copy_proc.stdin.write(message_text)
                                 copy_proc.stdin.close()
-                            status = color(NEXT_TASK_MESSAGE_COPIED_STATUS, GREEN)
+                            status = format_status_text(NEXT_TASK_MESSAGE_COPIED_STATUS)
                             status_until = time.time() + STATUS_TTL_SECONDS
                     except Exception as exc:
-                        status = color(f"Error: Message failed: {exc}", RED)
+                        status = format_status_text(f"Error: Message failed: {exc}")
                         status_until = time.time() + STATUS_TTL_SECONDS
     except KeyboardInterrupt:
         pass

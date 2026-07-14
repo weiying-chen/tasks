@@ -363,6 +363,36 @@ class LatestTaskViewTests(unittest.TestCase):
         self.assertIn("3集大愛真健康", out)
         self.assertNotIn("3集大愛醫生館", out)
 
+    def test_coworker_latest_view_missing_program_uses_error_label(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "3集大愛醫生館（胰管狹窄 + 頭痛的背影 + 崩解的膝平臺）",
+            },
+        ]
+        out = self.strip_ansi(
+            view_latest_task.build_latest_view(
+                tasks,
+                input_file="/tmp/tasks_coworkers.json",
+                program="大愛真健康",
+            )
+        )
+        self.assertIn("Error: No task found for program: 大愛真健康", out)
+
+    def test_coworker_latest_view_missing_program_error_is_red(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "3集大愛醫生館（胰管狹窄 + 頭痛的背影 + 崩解的膝平臺）",
+            },
+        ]
+        out = view_latest_task.build_latest_view(
+            tasks,
+            input_file="/tmp/tasks_coworkers.json",
+            program="大愛真健康",
+        )
+        self.assertIn("\x1b[31mError: No task found for program: 大愛真健康\x1b[0m", out)
+
     def test_coworker_actions_hide_copy_message_when_no_message_exists(self):
         tasks = [
             {

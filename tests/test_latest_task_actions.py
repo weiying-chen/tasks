@@ -24,6 +24,17 @@ class LatestTaskActionsTests(unittest.TestCase):
             "Success: Task initiation message copied to clipboard",
         )
 
+    def test_format_status_text_uses_label_colors(self):
+        self.assertEqual(view_latest_task.format_status_text("Success: Done"), "\x1b[32mSuccess: Done\x1b[0m")
+        self.assertEqual(view_latest_task.format_status_text("Warning: Check"), "\x1b[33mWarning: Check\x1b[0m")
+        self.assertEqual(view_latest_task.format_status_text("Error: Failed"), "\x1b[31mError: Failed\x1b[0m")
+
+    def test_build_status_text_adds_label_and_color(self):
+        self.assertEqual(
+            view_latest_task.build_status_text("Error", "No task found"),
+            "\x1b[31mError: No task found\x1b[0m",
+        )
+
     def test_find_latest_task_id(self):
         tasks = [
             {"id": "1", "name": "A"},
