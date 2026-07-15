@@ -350,6 +350,16 @@
         ]
       }
     ],
+    "notes": [
+      "Adjusted the freedom line so it says the parents let them do whatever they wanted rather than repeating that they trusted them.",
+      "Identified the roundabout as likely Taipei Circle because the speaker appears to be referring to 建成圓環.",
+      "Simplified the embroidery sentence to say their mother did embroidery.",
+      "Rephrased 不務正業跑去唱歌 in a more colloquial way instead of saying he neglected his profession.",
+      "Removed the false start about the plane so the sentence focuses on waking up at night and being unable to fall back asleep.",
+      "Combined the lines about moving moments into one sentence because the Mandarin expresses it as a single idea.",
+      "Used \"Please be more mindful\" for 多用心 and clarified the snack-related wordplay in parentheses.",
+      "Restored the dropped meaning that the piano leasing company may have taken advantage of her before she ended up with a faulty piano."
+    ],
     "sourceText": "請 Alex Chen 翻譯 心靈講座 (美感修行：當代人文行者的追尋 - 姚仁祿 姚仁喜  姚仁恭) 6個短版,  長度33分, 預計翻譯26時30分(3天2時30分), 從7/2（四）14:55起算, deadline 為7/8(三)8:25, 謝謝！"
   },
   {
@@ -369,14 +379,23 @@
             "type": "posts",
             "startAt": "2026-07-13T00:31:26.584149Z",
             "workMinutes": 50,
-            "sourceText": "4.\talex\n7/8付出為功歸己德\nhttps://www.daai.tv/master/life-wisdom/P90230314?more=true"
+            "sourceText": "4.\talex\n7/8付出為功歸己德\nhttps://www.daai.tv/master/life-wisdom/P90230314?more=true",
+            "notes": [
+              "Refocused the post on Dr. Lin Hui-chen's personal journey, including her gratitude, Dr. Tsai Tsung-hsien's inspiration, and the strength she found through Tzu Chi free clinics.",
+              "Removed the Master's teaching from the introduction so the post stays a human-interest story and ends with \"Let's hear her story.\""
+            ]
           },
           {
             "name": "Chinese Medicine Clinic - Acupressure to Boost Lactation (看中醫 - 產後穴道按摩)",
             "type": "posts",
             "startAt": "2026-07-13T01:29:22.049138Z",
             "workMinutes": 50,
-            "sourceText": "1. 8/1(六)發 alex\nChinese Medicine Clinic - Acupressure to Boost Lactation (看中醫 - 產後穴道按摩)\nhttps://www.youtube.com/watch?v=gDZ6IRtXX8s"
+            "sourceText": "1. 8/1(六)發 alex\nChinese Medicine Clinic - Acupressure to Boost Lactation (看中醫 - 產後穴道按摩)\nhttps://www.youtube.com/watch?v=gDZ6IRtXX8s",
+            "notes": [
+              "Changed the opening from a general pregnancy and Chinese medicine introduction to an audience-focused hook about common breastfeeding challenges.",
+              "Clarified that the doctor shares acupressure points that may support milk production and smoother breastfeeding.",
+              "Updated the hashtags to better match the video's focus on postpartum care, breastfeeding, and acupressure."
+            ]
           },
           {
             "name": "颱風假",
@@ -395,6 +414,15 @@
           }
         ]
       }
+    ],
+    "notes": [
+      "Combined the reading-ability lines so the English clearly says the ability to read has never been the problem.",
+      "Changed the punctuation after the setbacks and conflict clause from a period to a comma.",
+      "Simplified the sentence about thinking so the English stays closer to the plain Mandarin wording.",
+      "Changed self-affirmation to give yourself credit because 肯定自己 refers to recognizing one's own efforts here.",
+      "Reworked the future-planning sentence to better match the ideas of where to work, who to spend time with, and what kind of life to create.",
+      "Smoothed the one-year-later hypothetical so the timing reads more naturally in English.",
+      "Clarified 本來 as what the viewer would have done before, not what they are about to do now."
     ],
     "sourceText": "請 Alex Chen 翻譯人文講堂 (從閱讀到行動 - 莊勝翔) 3個短版, 長度23分, 預計翻譯18時30分(2天2時30分), 從7/8（三）16:15起算, deadline 為7/13(一)9:45, 謝謝！"
   },
