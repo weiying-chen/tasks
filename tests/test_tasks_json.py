@@ -3,6 +3,15 @@ import unittest
 from pathlib import Path
 
 
+def find_extension_by_name(tasks, name):
+    for task in tasks:
+        for stage in task.get("stages", []):
+            for extension in stage.get("extensions", []):
+                if extension.get("name") == name:
+                    return extension
+    return None
+
+
 class TasksJsonTests(unittest.TestCase):
     def test_latest_coworker_task_groups_three_daai_doctor_episodes(self):
         tasks_path = Path(__file__).resolve().parents[1] / "tasks_coworkers.json"
@@ -33,11 +42,13 @@ class TasksJsonTests(unittest.TestCase):
             ],
         )
 
-    def test_last_task_first_extension_work_minutes_is_thirty(self):
+    def test_post_extension_keeps_work_minutes(self):
         tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
         tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
-        last_task = tasks[-1]
-        self.assertEqual(last_task["stages"][0]["extensions"][0]["workMinutes"], 50)
+        extension = find_extension_by_name(tasks, "視病如親暖杏林")
+
+        self.assertIsNotNone(extension)
+        self.assertEqual(extension.get("workMinutes"), 50)
 
     def test_hong_yang_fo_fa_gong_cheng_jiu_has_editorial_notes(self):
         tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
