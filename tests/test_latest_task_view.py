@@ -261,39 +261,42 @@ class LatestTaskViewTests(unittest.TestCase):
         work_line = next(line for line in out.splitlines() if line.startswith("Work time left:"))
         self.assertNotIn("(resumes ", work_line)
 
-    def test_reminds_when_deadline_is_before_next_workday_nine(self):
+    def test_reminds_after_ask_by_time_for_before_nine_deadline(self):
         tasks = [
             {
                 "id": "1",
                 "name": "Only",
-                "startAt": "2026-05-13T00:00:00Z",
-                "deadline": "2026-05-13T09:00:00Z",
-                "workMinutes": 480,
+                "deadline": "2026-05-13T17:00:00Z",
             }
         ]
         now_local = datetime(2026, 5, 13, 10, 0, tzinfo=timezone(timedelta(hours=8)))
         out = self.strip_ansi(view_latest_task.build_latest_view(tasks, now_local))
-        self.assertIn("Hint: Due before your next workday. Ask for another task when ready.", out)
-        self.assertIn(
-            "Deadline: 2026-05-13 Wed 17:00\n"
-            "Hint: Due before your next workday. Ask for another task when ready.\n"
-            "Work time left:",
-            out,
-        )
+        self.assertIn("Deadline: 2026-05-14 Thu 01:00 (ask for another task)", out)
 
-    def test_reminder_hides_when_deadline_reaches_next_workday_nine(self):
+    def test_reminder_hides_before_ask_by_time_for_after_nine_deadline(self):
         tasks = [
             {
                 "id": "1",
                 "name": "Only",
-                "startAt": "2026-05-13T00:00:00Z",
-                "deadline": "2026-05-14T01:00:00Z",
-                "workMinutes": 480,
+                "deadline": "2026-05-14T05:00:00Z",
             }
         ]
         now_local = datetime(2026, 5, 13, 10, 0, tzinfo=timezone(timedelta(hours=8)))
         out = self.strip_ansi(view_latest_task.build_latest_view(tasks, now_local))
-        self.assertNotIn("Hint: Due before your next workday.", out)
+        self.assertIn("Deadline: 2026-05-14 Thu 13:00", out)
+        self.assertNotIn("(ask for another task)", out)
+
+    def test_reminds_after_ask_by_time_for_after_nine_deadline(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "Only",
+                "deadline": "2026-05-14T05:00:00Z",
+            }
+        ]
+        now_local = datetime(2026, 5, 14, 9, 0, tzinfo=timezone(timedelta(hours=8)))
+        out = self.strip_ansi(view_latest_task.build_latest_view(tasks, now_local))
+        self.assertIn("Deadline: 2026-05-14 Thu 13:00 (ask for another task)", out)
 
     def test_countdown_does_not_show_overdue_label(self):
         now_local = datetime(2026, 5, 13, 12, 0, tzinfo=timezone(timedelta(hours=8)))
