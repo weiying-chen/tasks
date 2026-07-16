@@ -616,6 +616,19 @@ def fmt_resume_hint(now_local: datetime, target: datetime | None) -> str:
     return f" (resumes {to_display(resume_at)})"
 
 
+def next_workday_nine(now_local: datetime) -> datetime:
+    cursor = (now_local + timedelta(days=1)).replace(hour=9, minute=0, second=0, microsecond=0)
+    while cursor.weekday() >= 5:
+        cursor += timedelta(days=1)
+    return cursor
+
+
+def should_show_next_task_hint(now_local: datetime, deadline: datetime | None) -> bool:
+    if deadline is None:
+        return False
+    return deadline < next_workday_nine(now_local)
+
+
 def color(text: str, code: str) -> str:
     return f'{code}{text}{RESET}'
 
@@ -744,12 +757,17 @@ def render_task_block(
             lines.append(f'Deadline: {to_display(deadline) if deadline else "-"}')
         else:
             lines.append(f'Deadline: {color(to_display(deadline) if deadline else "-", YELLOW)}')
+        reminder_deadline = extended or deadline
         if extended:
             lines.append(f'Extended deadline: {color(to_display(extended), YELLOW)}')
+            if should_show_next_task_hint(now_local, reminder_deadline):
+                lines.append(color("Hint: Due before your next workday. Ask for another task when ready.", YELLOW))
             countdown = fmt_countdown(now_local, extended)
             resume_hint = fmt_resume_hint(now_local, extended)
             lines.append(f'Work time left: {color(countdown, GREEN)}{resume_hint}')
         else:
+            if should_show_next_task_hint(now_local, reminder_deadline):
+                lines.append(color("Hint: Due before your next workday. Ask for another task when ready.", YELLOW))
             countdown = fmt_countdown(now_local, deadline)
             resume_hint = fmt_resume_hint(now_local, deadline)
             lines.append(f'Work time left: {color(countdown, GREEN)}{resume_hint}')
