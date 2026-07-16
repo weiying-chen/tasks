@@ -633,7 +633,9 @@ def ask_by_for_deadline(deadline: datetime) -> datetime:
 def should_show_next_task_reminder(now_local: datetime, deadline: datetime | None) -> bool:
     if deadline is None:
         return False
-    return now_local < deadline and now_local >= ask_by_for_deadline(deadline)
+    ask_by = ask_by_for_deadline(deadline)
+    ask_window_start = ask_by.replace(hour=WORK_BLOCKS[0][0][0], minute=WORK_BLOCKS[0][0][1])
+    return now_local < deadline and ask_window_start <= now_local < ask_by
 
 
 def format_deadline_line(label: str, deadline: datetime | None, now_local: datetime, colored: bool = True) -> str:
