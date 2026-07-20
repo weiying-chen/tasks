@@ -64,6 +64,20 @@ class TasksJsonTests(unittest.TestCase):
             ],
         )
 
+    def test_huan_xi_zan_tan_has_editorial_notes(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+        extension = find_extension_by_name(tasks, "歡喜讚歎菩薩行")
+
+        self.assertIsNotNone(extension)
+        self.assertEqual(
+            extension.get("notes"),
+            [
+                "Changed the volunteer description to be shorter and more direct, changing \"willingly taking on various duties and caring for Jing Si Hall as if it were their own home\" to \"taking on various duties and treating the Jing Si Hall like their own home.\"",
+                "Changed the Master's message to focus more specifically on learning about Tzu Chi volunteers' work around the world instead of the broader idea of \"understanding Tzu Chi's mission.\"",
+            ],
+        )
+
     def test_hong_yang_fo_fa_gong_cheng_jiu_has_editorial_notes(self):
         tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
         tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
