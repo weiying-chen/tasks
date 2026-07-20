@@ -50,6 +50,20 @@ class TasksJsonTests(unittest.TestCase):
         self.assertIsNotNone(extension)
         self.assertEqual(extension.get("workMinutes"), 50)
 
+    def test_chuan_cheng_yi_dao_has_editorial_notes(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+        extension = find_extension_by_name(tasks, "傳承醫道暖杏林")
+
+        self.assertIsNotNone(extension)
+        self.assertEqual(
+            extension.get("notes"),
+            [
+                "Changed the nurse's story to emphasize passing on the care she received (\"extend that same care to others\") rather than only becoming a nurse.",
+                "Changed the Master's encouragement from \"professionalism\" to \"expertise\" to better fit the medical context.",
+            ],
+        )
+
     def test_hong_yang_fo_fa_gong_cheng_jiu_has_editorial_notes(self):
         tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
         tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
