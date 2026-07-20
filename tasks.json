@@ -454,6 +454,14 @@
         "workMinutes": 960,
         "extensions": [
           {
+            "name": "委內瑞拉發放",
+            "type": "news",
+            "startAt": "2026-07-17T02:37:00Z",
+            "workMinutes": 90,
+            "contentSeconds": 5340,
+            "sourceText": "Alex Chen: 委內瑞拉發放 1:29"
+          },
+          {
             "name": "約堡冬令發放",
             "type": "news",
             "startAt": "2026-07-20T00:30:50.083591Z",
