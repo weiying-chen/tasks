@@ -451,7 +451,31 @@
       {
         "startAt": "2026-07-16T06:43:00Z",
         "deadline": "2026-07-20T06:43:00Z",
-        "workMinutes": 960
+        "workMinutes": 960,
+        "extensions": [
+          {
+            "name": "約堡冬令發放",
+            "type": "news",
+            "startAt": "2026-07-20T00:30:50.083591Z",
+            "workMinutes": 80,
+            "contentSeconds": 4260,
+            "sourceText": "Alex Chen: 約堡冬令發放 1:11"
+          },
+          {
+            "name": "傳承醫道暖杏林",
+            "type": "posts",
+            "startAt": "2026-07-20T01:44:18.226119Z",
+            "workMinutes": 50,
+            "sourceText": "1.\talex\n7/12傳承醫道暖杏林\nhttps://www.daai.tv/master/life-wisdom/P90230318?more=true"
+          },
+          {
+            "name": "歡喜讚歎菩薩行",
+            "type": "posts",
+            "startAt": "2026-07-20T02:21:05.660144Z",
+            "workMinutes": 50,
+            "sourceText": "2.\talex\n7/13歡喜讚歎菩薩行\nhttps://www.daai.tv/master/life-wisdom/P90230319?more=true"
+          }
+        ]
       }
     ],
     "sourceText": "請 Alex Chen  翻譯人文講堂 (獨創思考力 創造影響力 - 洪震宇) 3個短版, 長度20分, 預計翻譯16時(2天), 從7/16（四）14:43起算, deadline 為7/20(一)14:43, 謝謝！"
