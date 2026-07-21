@@ -490,6 +490,14 @@
               "Changed the volunteer description to be shorter and more direct, changing \"willingly taking on various duties and caring for Jing Si Hall as if it were their own home\" to \"taking on various duties and treating the Jing Si Hall like their own home.\"",
               "Changed the Master's message to focus more specifically on learning about Tzu Chi volunteers' work around the world instead of the broader idea of \"understanding Tzu Chi's mission.\""
             ]
+          },
+          {
+            "name": "保和幸福家園",
+            "type": "news",
+            "startAt": "2026-07-21T00:30:27.514990Z",
+            "workMinutes": 100,
+            "contentSeconds": 5640,
+            "sourceText": "Alex Chen: 保和幸福家園 1:34"
           }
         ]
       }
