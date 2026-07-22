@@ -50,13 +50,13 @@ class TasksJsonTests(unittest.TestCase):
         self.assertIsNotNone(extension)
         self.assertEqual(extension.get("workMinutes"), 50)
 
-    def test_tijuana_environment_news_work_time_is_ninety(self):
+    def test_tijuana_environment_news_work_time_is_two_hours(self):
         tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
         tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
         extension = find_extension_by_name(tasks, "提娃那社區環保")
 
         self.assertIsNotNone(extension)
-        self.assertEqual(extension.get("workMinutes"), 90)
+        self.assertEqual(extension.get("workMinutes"), 120)
 
     def test_chuan_cheng_yi_dao_has_editorial_notes(self):
         tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
