@@ -270,6 +270,27 @@ class TasksJsonTests(unittest.TestCase):
             ],
         )
 
+    def test_hao_hao_chi_fan_has_editorial_notes(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+
+        target_task = None
+        for task in tasks:
+            if task.get("name") == "大愛全紀實 (好好吃飯) 4 個短版":
+                target_task = task
+                break
+
+        self.assertIsNotNone(target_task)
+        self.assertEqual(
+            target_task.get("notes"),
+            [
+                "Simplified the teeth-related phrasing because the Mandarin leaves the detail implicit and difficulty chewing covers the point more naturally.",
+                "Changed the grandfather-in-bed line from heartbreaking to feeling helpless so it stays closer to 有一點無力.",
+                "Restored the point that Ge Wei-cheng entered long-term care graduate studies before joining his family's facility.",
+                "Reworked the restaurant program line to emphasize building a communication channel between restaurants and diners, not only meeting diners' needs.",
+            ],
+        )
+
     def test_tzu_chi_story_has_editorial_notes(self):
         tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
         tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
