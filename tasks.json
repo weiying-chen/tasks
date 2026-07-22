@@ -514,7 +514,17 @@
       {
         "startAt": "2026-07-21T03:53:00Z",
         "deadline": "2026-07-24T08:05:00Z",
-        "workMinutes": 1632
+        "workMinutes": 1632,
+        "extensions": [
+          {
+            "name": "提娃那社區環保",
+            "type": "news",
+            "startAt": "2026-07-22T00:18:42.317336Z",
+            "workMinutes": 160,
+            "contentSeconds": 10140,
+            "sourceText": "Alex Chen: 提娃那社區環保 2:49"
+          }
+        ]
       }
     ],
     "sourceText": "請 Alex Chen  翻譯 心靈講座(變成自己想望的大人 - 侯文詠) 3個短版, 長度34分,  預計翻譯27時12分(3天3時12分), 從7/21（二）11:53起算, deadline 為7/24(五)16:05, 謝謝！"
