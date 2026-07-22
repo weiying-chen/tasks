@@ -299,6 +299,31 @@ class TasksJsonTests(unittest.TestCase):
             ],
         )
 
+    def test_hong_zhen_yu_has_editorial_notes(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+
+        target_task = None
+        for task in tasks:
+            if task.get("name") == "人文講堂 (獨創思考力 創造影響力 - 洪震宇) 3個短版":
+                target_task = task
+                break
+
+        self.assertIsNotNone(target_task)
+        self.assertEqual(
+            target_task.get("notes"),
+            [
+                "Put unofficial English book titles in parentheses when no official English title exists.",
+                "Separated teaching in university EMBA programs from providing corporate training so the two activities remain distinct.",
+                "Changed designing rural trips to planning trips to rural areas for more natural English.",
+                "Reworked the managers line to show that he asks probing questions and expects business leaders to respond, rather than inviting them to share their challenges.",
+                "Replaced the comma splice between the two independent clauses about western and eastern Taiwan with a semicolon.",
+                "Restored the detail that they twisted the threads on their thighs like the tribal women did before tying them.",
+                "Clarified that part of the store was dedicated to MUJI's own products rather than describing it as MUJI's original space serving the local community.",
+                "Replaced the literal phrase worked backward with reflecting from a doctor's perspective to convey how he redefined his purpose.",
+            ],
+        )
+
     def test_tzu_chi_story_has_editorial_notes(self):
         tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
         tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
