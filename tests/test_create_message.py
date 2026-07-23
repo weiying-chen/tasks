@@ -390,6 +390,32 @@ class CreateMessageTests(unittest.TestCase):
             "片長共5分33秒，翻譯工時5時33分，預計製作2時46分，deadline等手上工作完成後再給，謝謝~",
         )
 
+    def test_subs_summary_message_uses_translation_and_finalization_wording(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "3集大愛醫生館（聲帶增胖 + 膽結石肆虐胰臟 + 晦暗不明出血點）",
+                "type": "subs",
+                "contentSeconds": 303,
+                "assigner": "Alex Chen",
+                "stages": [
+                    {
+                        "name": "finalize",
+                        "assignee": "Elijah Salie",
+                        "workMinutes": 242,
+                    }
+                ],
+            }
+        ]
+
+        message = create_message.create_message(tasks, msg_type="task-assignment")
+
+        self.assertEqual(
+            message,
+            "請@Elijah Salie翻譯 + 定稿3集大愛醫生館（聲帶增胖 + 膽結石肆虐胰臟 + 晦暗不明出血點），"
+            "片長共5分03秒，預計翻譯4時02分，謝謝~",
+        )
+
     def test_subs_summary_message_omits_deadline_for_elijah(self):
         tasks = [
             {

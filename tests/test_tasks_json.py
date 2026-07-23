@@ -20,24 +20,17 @@ class TasksJsonTests(unittest.TestCase):
         last_task = tasks[-1]
         self.assertEqual(
             last_task["name"],
-            "3集大愛醫生館（胰管狹窄 胰臟腫脹 + 頭痛的背影 + 崩解的膝平臺）",
+            "3集大愛醫生館（聲帶增胖 + 膽結石肆虐胰臟 + 晦暗不明出血點）",
         )
-        self.assertEqual(last_task["contentSeconds"], 328)
+        self.assertEqual(last_task["contentSeconds"], 303)
         self.assertIn("sourceText", last_task)
         self.assertEqual(
             last_task["stages"],
             [
                 {
-                    "name": "translate",
-                    "assignee": "張牧軒 Shawn",
-                    "startAt": "2026-07-07T01:29:00Z",
-                    "deadline": "2026-07-07T06:51:00Z",
-                    "workMinutes": 262,
-                },
-                {
-                    "name": "edit",
+                    "name": "finalize",
                     "assignee": "Elijah Salie",
-                    "workMinutes": 131,
+                    "workMinutes": 242,
                 }
             ],
         )

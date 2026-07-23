@@ -13,6 +13,7 @@ DEFAULT_SELF_ASSIGNEE = "Alex Chen"
 TZ_TAIPEI = timezone(timedelta(hours=8))
 TRANSLATION_WORK_RATE_BY_ASSIGNEE = {
     "Emily Ding": 1.0,
+    "Elijah Salie": 0.8,
     "張牧軒 Shawn": 0.8,
 }
 
@@ -58,6 +59,11 @@ def populate_stage_work_minutes(task: dict, stage: dict, assignee: str, stage_la
 def parse_assignment_message(text: str) -> dict[str, str]:
     stripped = text.strip()
     patterns: list[tuple[str, str, str | None]] = [
+        (
+            r"^\s*(?P<assigner>.+?)\s*[.。．]?\s*請\s*(?P<assignee>.+?)\s*翻譯\s*\+\s*定稿\s*(?P<name>.+?)\s*$",
+            "finalize",
+            None,
+        ),
         (
             r"^\s*(?P<assigner>.+?)\s*請\s*(?P<assignee>.+?)\s*edit\s*\+\s*定稿\s*(?P<name>.+?)\s*$",
             "edit",

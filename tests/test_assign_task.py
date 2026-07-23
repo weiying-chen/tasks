@@ -53,6 +53,46 @@ class AssignTaskTests(unittest.TestCase):
         self.assertEqual(stage["assignee"], "張牧軒 Shawn")
         self.assertEqual(stage["workMinutes"], 262)
 
+    def test_assign_task_uses_elijah_work_rate(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "3集大愛醫生館（聲帶增胖 + 膽結石肆虐胰臟 + 晦暗不明出血點）",
+                "type": "subs",
+                "contentSeconds": 303,
+                "assigner": "Alex Chen",
+            }
+        ]
+
+        updated = assign_task.assign_task(
+            tasks,
+            "Alex Chen 請 Elijah Salie 翻譯3集大愛醫生館，謝謝~",
+        )
+
+        stage = updated[0]["stages"][0]
+        self.assertEqual(stage["assignee"], "Elijah Salie")
+        self.assertEqual(stage["workMinutes"], 242)
+
+    def test_assign_task_records_translation_and_finalization(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "3集大愛醫生館（聲帶增胖 + 膽結石肆虐胰臟 + 晦暗不明出血點）",
+                "type": "subs",
+                "contentSeconds": 303,
+                "assigner": "Alex Chen",
+            }
+        ]
+
+        updated = assign_task.assign_task(
+            tasks,
+            "Alex Chen 請 Elijah Salie 翻譯 + 定稿3集大愛醫生館，謝謝~",
+        )
+
+        stage = updated[0]["stages"][0]
+        self.assertEqual(stage["name"], "finalize")
+        self.assertEqual(stage["workMinutes"], 242)
+
     def test_assign_task_keeps_existing_work_minutes(self):
         tasks = [
             {

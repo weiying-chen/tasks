@@ -280,6 +280,8 @@ def task_assignment_action_text(task: dict) -> str:
     stage = str(get_task_stage(task) or "").strip().lower()
     if stage == "edit":
         return "edit + 定稿"
+    if stage == "finalize":
+        return "翻譯 + 定稿"
     return "翻譯"
 
 
@@ -296,14 +298,16 @@ def format_task_assignment_message(task: dict) -> str:
         raise ValueError("Missing required content seconds for task-assignment message.")
 
     count_text, program_name, episodes = parse_task_assignment_task_name(task_name)
+    stage = str(get_task_stage(task) or "").strip().lower()
+    is_translation = stage != "edit"
     action_text = task_assignment_action_text(task)
-    action_prefix = action_text if action_text == "翻譯" else f" {action_text}"
+    action_prefix = action_text if is_translation else f" {action_text}"
     episode_text = " + ".join(episodes)
     message = (
         f"請{format_mention(assignee)}{action_prefix}{count_text}集{program_name}（{episode_text}），"
         f"片長共{format_content_duration_for_message(content_seconds)}，"
     )
-    if action_text == "翻譯":
+    if is_translation:
         message += f"預計翻譯{format_duration_for_summary_message(work_minutes)}，"
     else:
         translate_minutes = get_previous_stage_work_minutes(task, "translate")
