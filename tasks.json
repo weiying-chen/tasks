@@ -592,7 +592,17 @@
       {
         "startAt": "2026-07-28T00:15:00Z",
         "deadline": "2026-07-29T03:15:00Z",
-        "workMinutes": 660
+        "workMinutes": 660,
+        "extensions": [
+          {
+            "name": "墨素食食堂",
+            "type": "news",
+            "startAt": "2026-07-28T00:27:07.118046Z",
+            "workMinutes": 180,
+            "contentSeconds": 11640,
+            "sourceText": "Alex Chen: 墨素食食堂 3:14 （請寫完小編文再開始做，週二再開始或繼續做也可以)"
+          }
+        ]
       }
     ],
     "sourceText": "請 Alex Chen 翻譯3集慈濟的故事 (123_成立臺中分會、122_慈濟世界影音開播、121_海外第一個分支機構)，片長共13分37秒，預計做11小時，從7/28 (二) 08:15起算，deadline為7/29 (三) 11:15，謝謝~"
