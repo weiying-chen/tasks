@@ -64,6 +64,16 @@ class TextToJsonTests(unittest.TestCase):
         self.assertEqual(get_task_work_minutes(tasks[0]), 125)
         self.assertEqual(get_task_type(tasks[0]), "news")
 
+    def test_parse_news_accepts_fullwidth_colon(self):
+        text = (
+            "7/29\n\n"
+            "Alex Chen：墨修女學校 4:16\n"
+            "Elijah Salie：美盲人中心慶生 1:07\n"
+        )
+        tasks = text_to_json.parse_news_input(text, 2026, "Alex Chen")
+        self.assertEqual(len(tasks), 1)
+        self.assertEqual(tasks[0]["name"], "墨修女學校")
+
     def test_parse_news_accepts_trailing_parenthetical_note(self):
         text = (
             "6/19\n\n"

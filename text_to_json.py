@@ -147,7 +147,7 @@ def parse_news_input(text: str, year: int, owner_filter: str):
         if date_match:
             continue
 
-        row_match = re.match(r"^([^:]+):\s*(.+?)\s*(\d+:\d{2})\s*(?:[（(][^）)]*[）)])?$", line)
+        row_match = re.match(r"^([^:：]+)[:：]\s*(.+?)\s*(\d+:\d{2})\s*(?:[（(][^）)]*[）)])?$", line)
         if not row_match:
             continue
 
