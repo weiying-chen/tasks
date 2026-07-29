@@ -561,14 +561,22 @@
             "type": "posts",
             "startAt": "2026-07-27T03:52:02.680926Z",
             "workMinutes": 50,
-            "sourceText": "1.\talex\n7/19見善隨喜造福緣\nhttps://www.daai.tv/master/life-wisdom/P90230325?more=true"
+            "sourceText": "1.\talex\n7/19見善隨喜造福緣\nhttps://www.daai.tv/master/life-wisdom/P90230325?more=true",
+            "notes": [
+              "Replaced the internal project name \"An Mei Project\" with a description of what the volunteers do so the post is more meaningful to general readers.",
+              "Used the wording that best conveys the story's central message, preserving the Master's exact words when they are the takeaway and summarizing them when they are not."
+            ]
           },
           {
             "name": "視病猶親聚福緣",
             "type": "posts",
             "startAt": "2026-07-27T03:52:02.680926Z",
             "workMinutes": 50,
-            "sourceText": "2.\talex\n7/20視病猶親聚福緣\nhttps://www.daai.tv/master/life-wisdom/P90230326?more=true"
+            "sourceText": "2.\talex\n7/20視病猶親聚福緣\nhttps://www.daai.tv/master/life-wisdom/P90230326?more=true",
+            "notes": [
+              "Used broader time references such as \"in July\" or \"in mid-July\" because the story combines content from multiple days.",
+              "Led with the strongest news angle, reorganized the supporting points around it, and ended with the Master's core takeaway."
+            ]
           },
           {
             "name": "Easy Fitness - Coordination Exercises to Help Prevent Stroke (大愛真健康 - 65+ 養腦運動 手腳協調提升平衡力 - 預防中風)",
