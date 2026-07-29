@@ -609,6 +609,14 @@
             "workMinutes": 180,
             "contentSeconds": 11640,
             "sourceText": "Alex Chen: 墨素食食堂 3:14 （請寫完小編文再開始做，週二再開始或繼續做也可以)"
+          },
+          {
+            "name": "墨修女學校",
+            "type": "news",
+            "startAt": "2026-07-29T00:26:22.592418Z",
+            "workMinutes": 230,
+            "contentSeconds": 15360,
+            "sourceText": "Alex Chen：墨修女學校 4:16"
           }
         ]
       }
