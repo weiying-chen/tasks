@@ -6,6 +6,7 @@ SUBS_PROGRAM_ASSIGNERS = {
     "心靈講座": "Evelyn",
     "大愛全紀實": "Evelyn",
     "大愛學漢醫": "Syharn Shen",
+    "報獎戲劇字幕和劇本": "Syharn Shen",
     "日日有新知": "Elijah Salie",
     "集日日有新知": "Elijah Salie",
     "慈濟的故事": "張牧軒 Shawn",
