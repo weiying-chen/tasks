@@ -648,5 +648,38 @@
       }
     ],
     "sourceText": "請 Alex Chen 翻譯報獎戲劇字幕和劇本 (銀髮白之歌：靜曦ep1)，剛剛已經轉了兩封email給你，麻煩請你完成手上的工作之後跟我說一聲，我再傳給你SOP和跟你說明注意事項，謝謝~"
+  },
+  {
+    "id": "53",
+    "name": "人文講堂 (人生的50個夢想：從寫下 到實現 - 王永福) 4個短版",
+    "type": "subs",
+    "contentSeconds": 1080,
+    "assigner": "Evelyn",
+    "stages": [
+      {
+        "startAt": "2026-07-30T08:00:00Z",
+        "deadline": "2026-08-03T06:24:00Z",
+        "workMinutes": 864,
+        "extensions": [
+          {
+            "name": "墨在地善種",
+            "type": "news",
+            "startAt": "2026-07-30T22:55:47.641276Z",
+            "workMinutes": 120,
+            "contentSeconds": 13260,
+            "sourceText": "Alex Chen：墨在地善種 3:41"
+          },
+          {
+            "name": "巴拉圭智利送暖",
+            "type": "news",
+            "startAt": "2026-07-31T02:21:21.445486Z",
+            "workMinutes": 90,
+            "contentSeconds": 4980,
+            "sourceText": "Alex Chen: 巴拉圭智利送暖 1:23"
+          }
+        ]
+      }
+    ],
+    "sourceText": "請  Alex Chen 翻譯人文講堂 (人生的50個夢想：從寫下 到實現 - 王永福) 4個短版, 長度18分,  預計翻譯14時24分(1天6時24分), 從7/30（四）16:00起算, deadline 為8/3(一)14:24, 謝謝！"
   }
 ]
