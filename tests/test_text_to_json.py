@@ -6,6 +6,23 @@ from task_stages import get_task_content_seconds, get_task_type, get_task_work_m
 
 
 class TextToJsonTests(unittest.TestCase):
+    def test_add_chongde_post_as_single_extension(self):
+        source = (
+            "2.\talex\n"
+            "7/27崇德感恩傳善念\n"
+            "https://www.daai.tv/master/life-wisdom/P90230333?more=true"
+        )
+        tasks = [{"id": "53", "name": "Main task", "stages": [{}]}]
+
+        items = text_to_json.parse_source_text(source, tasks, 2026)
+        text_to_json.apply_extension_work_rule(items[0])
+        self.assertTrue(text_to_json.append_extensions_under_parent(tasks, "53", items))
+
+        extensions = tasks[0]["stages"][0]["extensions"]
+        self.assertEqual(len(extensions), 1)
+        self.assertEqual(extensions[0]["name"], "崇德感恩傳善念")
+        self.assertEqual(extensions[0]["workMinutes"], 50)
+
     def test_parse_posts_only_keeps_alex(self):
         text = (
             "1. evelyn\n"

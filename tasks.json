@@ -592,6 +592,15 @@
         ]
       }
     ],
+    "notes": [
+      "Clarified that the speaker felt he did not even have enough time to study, rather than that he simply was not studying.",
+      "Changed \"every patient\" to \"any patients\" because the speaker is describing the frustration of being unable to save even one patient.",
+      "Replaced \"find my footing\" with wording about standing there with confidence because the speaker means not shrinking from an uncomfortable situation.",
+      "Used Arabic numerals for references to spans of years.",
+      "Clarified that at age 36, the realization was the best thing that had happened to him up to that point.",
+      "Changed \"all my life\" to \"early on\" because the speaker later questioned the definition of success he had held since childhood.",
+      "Used quotation marks and switched the subject because the speaker is reenacting what he said directly to his mother."
+    ],
     "sourceText": "請 Alex Chen  翻譯 心靈講座(變成自己想望的大人 - 侯文詠) 3個短版, 長度34分,  預計翻譯27時12分(3天3時12分), 從7/21（二）11:53起算, deadline 為7/24(五)16:05, 謝謝！"
   },
   {
@@ -676,6 +685,38 @@
             "workMinutes": 90,
             "contentSeconds": 4980,
             "sourceText": "Alex Chen: 巴拉圭智利送暖 1:23"
+          },
+          {
+            "name": "崇德感恩傳善念",
+            "type": "posts",
+            "startAt": "2026-08-03T00:30:00Z",
+            "workMinutes": 50,
+            "sourceText": "2.\talex\n7/27崇德感恩傳善念\nhttps://www.daai.tv/master/life-wisdom/P90230333?more=true",
+            "notes": [
+              "Check whether it is part of the Master’s 行腳: If the event is not during 行腳, treat it as a regular post and don’t unnecessarily emphasize the specific date.",
+              "Use concrete transformation details: When someone describes a clear personal change, use the specific before-and-after story instead of a vague summary, such as resentment turning into gratitude and service.",
+              "Use all of the Master’s relevant remarks: Don’t stop at her immediate response to the featured speaker. Check the later remarks, title, and official introduction for points that clearly reinforce the main theme."
+            ]
+          },
+          {
+            "name": "大愛醫護暖杏林",
+            "type": "posts",
+            "startAt": "2026-08-03T01:19:26.188797Z",
+            "workMinutes": 50,
+            "sourceText": "3.\talex\n7/28 大愛醫護暖杏林\nhttps://www.daai.tv/master/life-wisdom/P90230334?more=true",
+            "notes": [
+              "Follow the tour-date convention: Include dates during active daily tour coverage to distinguish each day’s events, but omit them after the tour ends, even when leftover tour material is used. Follow notices from the Dharma Audio team and Evelyn about when tour coverage begins and ends.",
+              "Use “Assistant Superintendent” rather than “Vice Superintendent” for 副院長.",
+              "Keep the post focused: Choose the strongest source-supported points that advance the main story instead of including every available detail or adding unnecessary interpretation."
+            ]
+          },
+          {
+            "name": "拉羅馬那28足跡",
+            "type": "news",
+            "startAt": "2026-08-04T00:16:25.250651Z",
+            "workMinutes": 190,
+            "contentSeconds": 12480,
+            "sourceText": "Alex Chen：拉羅馬那28足跡 3:28 （請寫完小編文和修改完報獎戲劇再開始做，也可以8/4再開始做）"
           }
         ]
       }
