@@ -722,5 +722,22 @@
       }
     ],
     "sourceText": "請  Alex Chen 翻譯人文講堂 (人生的50個夢想：從寫下 到實現 - 王永福) 4個短版, 長度18分,  預計翻譯14時24分(1天6時24分), 從7/30（四）16:00起算, deadline 為8/3(一)14:24, 謝謝！"
+  },
+  {
+    "id": "54",
+    "name": "3集大愛醫生館（腦中取栓 + 脊椎一開再開！ + 肺臟菜瓜布）",
+    "type": "subs",
+    "contentSeconds": 459,
+    "assigner": "Alex Chen",
+    "stages": [
+      {
+        "name": "translate",
+        "assignee": "Alex Chen",
+        "startAt": "2026-08-04T06:44:00Z",
+        "deadline": "2026-08-05T03:51:00Z",
+        "workMinutes": 367
+      }
+    ],
+    "sourceText": "【大愛醫生館】 腦中取栓 20260609\nhttps://www.youtube.com/watch?v=qNnhiiVdj8U\n07:28-09:29 (2分1秒)\n【大愛醫生館】 脊椎一開再開！ 20260608\nhttps://www.youtube.com/watch?v=SAwSpFXe-Q4\n06:06-09:14 (3分8秒)\n【大愛醫生館】 肺臟菜瓜布 20260605\nhttps://www.youtube.com/watch?v=sciUx7g9ju0\n06:54-09:24 (2分30秒)"
   }
 ]

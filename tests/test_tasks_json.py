@@ -13,8 +13,8 @@ def find_extension_by_name(tasks, name):
 
 
 class TasksJsonTests(unittest.TestCase):
-    def test_latest_coworker_task_groups_three_daai_doctor_episodes(self):
-        tasks_path = Path(__file__).resolve().parents[1] / "tasks_coworkers.json"
+    def test_latest_self_task_groups_three_daai_doctor_episodes(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
         tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
 
         last_task = tasks[-1]
@@ -36,6 +36,18 @@ class TasksJsonTests(unittest.TestCase):
                 }
             ],
         )
+
+    def test_coworker_tasks_do_not_include_alex_assignments(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks_coworkers.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+
+        assignees = {
+            stage.get("assignee")
+            for task in tasks
+            for stage in task.get("stages", [])
+        }
+
+        self.assertNotIn("Alex Chen", assignees)
 
     def test_post_extension_keeps_work_minutes(self):
         tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
