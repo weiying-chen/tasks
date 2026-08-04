@@ -20,20 +20,11 @@ class TasksJsonTests(unittest.TestCase):
         last_task = tasks[-1]
         self.assertEqual(
             last_task["name"],
-            "3集大愛醫生館（聲帶增胖 + 膽結石肆虐胰臟 + 晦暗不明出血點）",
+            "3集大愛醫生館（腦中取栓 + 脊椎一開再開！ + 肺臟菜瓜布）",
         )
-        self.assertEqual(last_task["contentSeconds"], 303)
+        self.assertEqual(last_task["contentSeconds"], 459)
         self.assertIn("sourceText", last_task)
-        self.assertEqual(
-            last_task["stages"],
-            [
-                {
-                    "name": "finalize",
-                    "assignee": "Elijah Salie",
-                    "workMinutes": 242,
-                }
-            ],
-        )
+        self.assertNotIn("stages", last_task)
 
     def test_post_extension_keeps_work_minutes(self):
         tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
