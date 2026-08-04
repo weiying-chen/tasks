@@ -29,6 +29,7 @@ class AssignTaskTests(unittest.TestCase):
         self.assertIn("Emily Ding", assign_task.TRANSLATION_WORK_RATE_BY_ASSIGNEE)
         self.assertNotIn("Emily", assign_task.TRANSLATION_WORK_RATE_BY_ASSIGNEE)
         self.assertEqual(assign_task.get_assignee_work_rate("Emily Ding"), 1.0)
+        self.assertEqual(assign_task.get_assignee_work_rate("Alex Chen"), 0.8)
         self.assertEqual(assign_task.get_assignee_work_rate("張牧軒 Shawn"), 0.8)
 
     def test_assign_task_uses_shawn_work_rate(self):
@@ -378,7 +379,7 @@ class AssignTaskTests(unittest.TestCase):
         self.assertEqual(updated[0]["stages"][0]["workMinutes"], 111)
         stage = updated[1]["stages"][0]
         self.assertEqual(stage["assignee"], "Alex Chen")
-        self.assertEqual(stage["workMinutes"], 480)
+        self.assertEqual(stage["workMinutes"], 384)
 
     def test_parse_task_start_message(self):
         parsed = assign_task.parse_task_start_message(

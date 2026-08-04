@@ -92,6 +92,13 @@
     "type": "subs",
     "contentSeconds": 459,
     "assigner": "Alex Chen",
+    "stages": [
+      {
+        "name": "translate",
+        "assignee": "Alex Chen",
+        "workMinutes": 367
+      }
+    ],
     "sourceText": "【大愛醫生館】 腦中取栓 20260609\nhttps://www.youtube.com/watch?v=qNnhiiVdj8U\n07:28-09:29 (2分1秒)\n【大愛醫生館】 脊椎一開再開！ 20260608\nhttps://www.youtube.com/watch?v=SAwSpFXe-Q4\n06:06-09:14 (3分8秒)\n【大愛醫生館】 肺臟菜瓜布 20260605\nhttps://www.youtube.com/watch?v=sciUx7g9ju0\n06:54-09:24 (2分30秒)"
   }
 ]

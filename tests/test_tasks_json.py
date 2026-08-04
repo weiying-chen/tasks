@@ -24,7 +24,16 @@ class TasksJsonTests(unittest.TestCase):
         )
         self.assertEqual(last_task["contentSeconds"], 459)
         self.assertIn("sourceText", last_task)
-        self.assertNotIn("stages", last_task)
+        self.assertEqual(
+            last_task["stages"],
+            [
+                {
+                    "name": "translate",
+                    "assignee": "Alex Chen",
+                    "workMinutes": 367,
+                }
+            ],
+        )
 
     def test_post_extension_keeps_work_minutes(self):
         tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
