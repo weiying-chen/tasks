@@ -159,6 +159,12 @@ def parse_task_start_message(text: str, year: int | None = None) -> dict[str, st
     stripped = text.strip()
     patterns = [
         (
+            r"(?:^|，)\s*我接下來要翻譯\s*(?P<name>.+?)\s*，\s*"
+            r"再麻煩.+?設\s*deadline\s*，\s*從\s*"
+            r"(?P<md>\d{1,2}/\d{1,2})\s*(?:[（(][^）)]*[）)])?\s*"
+            r"(?P<hm>\d{1,2}:\d{2})\s*起算"
+        ),
+        (
             r"接下來(?:我會|會)?開始翻譯\s*(?P<name>.+?)\s*deadline從\s*"
             r"(?P<md>\d{1,2}/\d{1,2})\s*(?:[（(][^）)]*[）)])?\s*"
             r"(?P<hm>\d{1,2}:\d{2})\s*起算"

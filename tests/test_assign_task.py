@@ -394,6 +394,17 @@ class AssignTaskTests(unittest.TestCase):
             },
         )
 
+    def test_parse_task_start_message_accepts_first_person_generated_wording(self):
+        parsed = assign_task.parse_task_start_message(
+            "已完成人文講堂，"
+            "我接下來要翻譯3集大愛醫生館（腦中取栓 + 脊椎一開再開！ + 肺臟菜瓜布），"
+            "再麻煩@Alex Chen便時幫忙設deadline，從8/4（二）14:44起算，謝謝。",
+            year=2026,
+        )
+
+        self.assertEqual(parsed["name"], "3集大愛醫生館（腦中取栓 + 脊椎一開再開！ + 肺臟菜瓜布）")
+        self.assertEqual(parsed["startAt"], "2026-08-04T06:44:00Z")
+
     def test_parse_task_start_message_strips_trailing_comma_from_name(self):
         parsed = assign_task.parse_task_start_message(
             "接下來我會開始翻譯3集大愛醫生館，deadline從6/23 (三)13:00起算，再麻煩  \n\nAlex Chen 方便時幫我設 deadline與傳稿子，謝謝。",
