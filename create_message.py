@@ -301,10 +301,15 @@ def format_task_assignment_message(task: dict) -> str:
     stage = str(get_task_stage(task) or "").strip().lower()
     is_translation = stage != "edit"
     action_text = task_assignment_action_text(task)
-    action_prefix = action_text if is_translation else f" {action_text}"
+    is_self_assignment = assignee == "Alex Chen"
+    if is_self_assignment:
+        message_prefix = f"我接下來要{action_text}"
+    else:
+        action_prefix = action_text if is_translation else f" {action_text}"
+        message_prefix = f"請{format_mention(assignee)}{action_prefix}"
     episode_text = " + ".join(episodes)
     message = (
-        f"請{format_mention(assignee)}{action_prefix}{count_text}集{program_name}（{episode_text}），"
+        f"{message_prefix}{count_text}集{program_name}（{episode_text}），"
         f"片長共{format_content_duration_for_message(content_seconds)}，"
     )
     if is_translation:
