@@ -7,6 +7,11 @@ import view_latest_task
 
 
 class LatestTaskActionsTests(unittest.TestCase):
+    def test_action_debounce_rejects_rapid_repeat(self):
+        self.assertTrue(view_latest_task.should_accept_action(b"e", None, 10.0))
+        self.assertFalse(view_latest_task.should_accept_action(b"e", (b"e", 10.0), 10.1))
+        self.assertTrue(view_latest_task.should_accept_action(b"e", (b"e", 10.0), 10.6))
+
     def strip_ansi(self, text: str) -> str:
         return re.sub(r"\x1b\[[0-9;]*m", "", text)
 

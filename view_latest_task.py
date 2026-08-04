@@ -874,6 +874,20 @@ def resolve_input_path(input_file: str | None = None, fake_script: Path | None =
     return script_file.resolve().parent / 'tasks.json'
 
 
+ACTION_DEBOUNCE_SECONDS = 0.5
+
+
+def should_accept_action(
+    action: bytes,
+    previous: tuple[bytes, float] | None,
+    now: float,
+) -> bool:
+    if previous is None:
+        return True
+    previous_action, previous_at = previous
+    return action != previous_action or now - previous_at >= ACTION_DEBOUNCE_SECONDS
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--file', help='input JSON path relative to script dir or absolute path')
@@ -908,6 +922,7 @@ def main():
     interval = max(0.2, args.interval)
     status = ""
     status_until = 0.0
+    last_action: tuple[bytes, float] | None = None
     script_dir = str(Path(__file__).resolve().parent)
     stdin_fd = sys.stdin.fileno()
     old_term = termios.tcgetattr(stdin_fd)
@@ -930,6 +945,10 @@ def main():
                 ch = os.read(stdin_fd, 1)
                 if ch == b"q":
                     break
+                action_at = time.monotonic()
+                if not should_accept_action(ch, last_action, action_at):
+                    continue
+                last_action = (ch, action_at)
                 if ch == b"t" and "t" in base_allowed_actions:
                     try:
                         add_proc = subprocess.run(
