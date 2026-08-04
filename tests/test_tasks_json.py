@@ -30,6 +30,8 @@ class TasksJsonTests(unittest.TestCase):
                 {
                     "name": "translate",
                     "assignee": "Alex Chen",
+                    "startAt": "2026-08-04T06:44:00Z",
+                    "deadline": "2026-08-05T03:51:00Z",
                     "workMinutes": 367,
                 }
             ],
