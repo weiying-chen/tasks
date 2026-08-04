@@ -531,6 +531,36 @@ class CreateMessageTests(unittest.TestCase):
             "片長共6分04秒，預計做6時04分，從6/9（二）11:35起算，deadline 6/10（三）09:40，謝謝！",
         )
 
+    def test_self_initiation_message_uses_first_person_stage_wording(self):
+        expected_prefixes = {
+            "translate": "我接下來要翻譯3集",
+            "edit": "我接下來要edit + 定稿3集",
+            "finalize": "我接下來要翻譯 + 定稿3集",
+        }
+        for stage_name, expected_prefix in expected_prefixes.items():
+            with self.subTest(stage=stage_name):
+                tasks = [
+                    {
+                        "id": "1",
+                        "name": "3集大愛醫生館（甲 + 乙 + 丙）",
+                        "type": "subs",
+                        "contentSeconds": 300,
+                        "stages": [
+                            {
+                                "name": stage_name,
+                                "assignee": "Alex Chen",
+                                "startAt": "2026-08-04T06:44:00Z",
+                                "deadline": "2026-08-05T03:51:00Z",
+                                "workMinutes": 240,
+                            }
+                        ],
+                    }
+                ]
+
+                message = create_message.create_message(tasks, msg_type="task-initiation")
+
+                self.assertTrue(message.startswith(expected_prefix), message)
+
     def test_subs_initiation_message_uses_edit_wording(self):
         tasks = [
             {

@@ -285,6 +285,13 @@ def task_assignment_action_text(task: dict) -> str:
     return "翻譯"
 
 
+def format_task_action_prefix(assignee: str, action_text: str) -> str:
+    if assignee == "Alex Chen":
+        return f"我接下來要{action_text}"
+    separator = " " if action_text.startswith("edit") else ""
+    return f"請{format_mention(assignee)}{separator}{action_text}"
+
+
 def format_task_assignment_message(task: dict) -> str:
     task_name = str(task.get("name") or "").strip()
     assignee = normalize_person_name(get_task_assignee(task) or "")
@@ -301,12 +308,7 @@ def format_task_assignment_message(task: dict) -> str:
     stage = str(get_task_stage(task) or "").strip().lower()
     is_translation = stage != "edit"
     action_text = task_assignment_action_text(task)
-    is_self_assignment = assignee == "Alex Chen"
-    if is_self_assignment:
-        message_prefix = f"我接下來要{action_text}"
-    else:
-        action_prefix = action_text if is_translation else f" {action_text}"
-        message_prefix = f"請{format_mention(assignee)}{action_prefix}"
+    message_prefix = format_task_action_prefix(assignee, action_text)
     episode_text = " + ".join(episodes)
     message = (
         f"{message_prefix}{count_text}集{program_name}（{episode_text}），"
@@ -348,10 +350,10 @@ def format_task_initiation_message(task: dict) -> str:
     start_text = format_message_date(to_local(start_at))
     deadline_text = format_message_date(deadline_local)
     action_text = task_assignment_action_text(task)
-    action_prefix = action_text if action_text == "翻譯" else f" {action_text}"
+    message_prefix = format_task_action_prefix(assignee, action_text)
     episode_text = " + ".join(episodes)
     message = (
-        f"請{format_mention(assignee)}{action_prefix}{count_text}集{program_name}（{episode_text}），"
+        f"{message_prefix}{count_text}集{program_name}（{episode_text}），"
         f"片長共{format_content_duration_for_message(content_seconds)}，"
     )
     if action_text == "翻譯":
