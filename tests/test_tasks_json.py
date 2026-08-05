@@ -43,6 +43,15 @@ class TasksJsonTests(unittest.TestCase):
 
         self.assertNotIn("Alex Chen", assignees)
 
+    def test_latest_doctor_extension_uses_actual_work_time(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+
+        extension = find_extension_by_name(tasks, "宏大愛村回顧")
+
+        self.assertIsNotNone(extension)
+        self.assertEqual(extension["workMinutes"], 140)
+
     def test_post_extension_keeps_work_minutes(self):
         tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
         tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
