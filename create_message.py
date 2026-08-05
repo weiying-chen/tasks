@@ -329,8 +329,8 @@ def format_task_assignment_message(task: dict) -> str:
             message += f"翻譯工時{format_duration_for_summary_message(translate_minutes)}，"
         message += f"預計製作{format_duration_for_summary_message(work_minutes)}，"
     if should_include_task_assignment_deadline(assignee):
-        return message + "deadline等手上工作完成後再給，謝謝~"
-    return message + "謝謝~"
+        return message + "deadline等手上工作完成後再給，謝謝。"
+    return message + "謝謝。"
 
 
 def format_task_initiation_message(task: dict) -> str:
@@ -365,7 +365,7 @@ def format_task_initiation_message(task: dict) -> str:
         message += f"預計做{format_duration_for_summary_message(work_minutes)}，"
     else:
         message += f"預計製作{format_duration_for_summary_message(work_minutes)}，"
-    return message + f"從{start_text}起算，deadline {deadline_text}，謝謝！"
+    return message + f"從{start_text}起算，deadline {deadline_text}，謝謝。"
 
 
 def format_next_task_message(finished_task: dict, next_task_name: str, next_assigner: str | None = None) -> str:

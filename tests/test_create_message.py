@@ -376,7 +376,7 @@ class CreateMessageTests(unittest.TestCase):
         self.assertEqual(
             message,
             "請@Shawn翻譯3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈），"
-            "片長共6分04秒，預計翻譯6時04分，deadline等手上工作完成後再給，謝謝~",
+            "片長共6分04秒，預計翻譯6時04分，deadline等手上工作完成後再給，謝謝。",
         )
 
     def test_self_assignment_message_uses_first_person_stage_wording(self):
@@ -434,7 +434,7 @@ class CreateMessageTests(unittest.TestCase):
         self.assertEqual(
             message,
             "請@Shawn edit + 定稿3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈），"
-            "片長共5分33秒，翻譯工時5時33分，預計製作2時46分，deadline等手上工作完成後再給，謝謝~",
+            "片長共5分33秒，翻譯工時5時33分，預計製作2時46分，deadline等手上工作完成後再給，謝謝。",
         )
 
     def test_subs_summary_message_uses_translation_and_finalization_wording(self):
@@ -460,7 +460,7 @@ class CreateMessageTests(unittest.TestCase):
         self.assertEqual(
             message,
             "請@Elijah Salie翻譯 + 定稿3集大愛醫生館（聲帶增胖 + 膽結石肆虐胰臟 + 晦暗不明出血點），"
-            "片長共5分03秒，預計翻譯4時02分，謝謝~",
+            "片長共5分03秒，預計翻譯4時02分，謝謝。",
         )
 
     def test_subs_summary_message_omits_deadline_for_elijah(self):
@@ -490,7 +490,7 @@ class CreateMessageTests(unittest.TestCase):
         self.assertEqual(
             message,
             "請@Elijah Salie edit + 定稿3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈），"
-            "片長共6分04秒，翻譯工時6時04分，預計製作3時02分，謝謝~",
+            "片長共6分04秒，翻譯工時6時04分，預計製作3時02分，謝謝。",
         )
 
     def test_subs_summary_message_normalizes_elijah_assignee_prefix(self):
@@ -520,7 +520,7 @@ class CreateMessageTests(unittest.TestCase):
         self.assertEqual(
             message,
             "請@Elijah Salie edit + 定稿3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈），"
-            "片長共6分04秒，翻譯工時6時04分，預計製作3時02分，謝謝~",
+            "片長共6分04秒，翻譯工時6時04分，預計製作3時02分，謝謝。",
         )
 
     def test_subs_initiation_message_uses_translate_wording(self):
@@ -547,7 +547,7 @@ class CreateMessageTests(unittest.TestCase):
         self.assertEqual(
             message,
             "請@Shawn翻譯3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈），"
-            "片長共6分04秒，預計做6時04分，從6/9（二）11:35起算，deadline 6/10（三）09:40，謝謝！",
+            "片長共6分04秒，預計做6時04分，從6/9（二）11:35起算，deadline 6/10（三）09:40，謝謝。",
         )
 
     def test_self_initiation_message_uses_first_person_stage_wording(self):
@@ -604,7 +604,7 @@ class CreateMessageTests(unittest.TestCase):
         self.assertEqual(
             message,
             "請@Shawn edit + 定稿3集大愛醫生館（杯弓蛇影 乳房腫瘤 + 鬼門關走一遭~冠心病 + 住輸尿管），"
-            "片長共5分33秒，預計製作2時46分，從6/2（二）13:32起算，deadline 6/2（二）16:18，謝謝！",
+            "片長共5分33秒，預計製作2時46分，從6/2（二）13:32起算，deadline 6/2（二）16:18，謝謝。",
         )
 
     def test_subs_summary_message_requires_parenthesized_episode_titles(self):
