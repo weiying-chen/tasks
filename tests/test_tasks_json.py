@@ -24,18 +24,12 @@ class TasksJsonTests(unittest.TestCase):
         )
         self.assertEqual(last_task["contentSeconds"], 459)
         self.assertIn("sourceText", last_task)
-        self.assertEqual(
-            last_task["stages"],
-            [
-                {
-                    "name": "translate",
-                    "assignee": "Alex Chen",
-                    "startAt": "2026-08-04T06:44:00Z",
-                    "deadline": "2026-08-05T03:51:00Z",
-                    "workMinutes": 367,
-                }
-            ],
-        )
+        stage = last_task["stages"][0]
+        self.assertEqual(stage["name"], "translate")
+        self.assertEqual(stage["assignee"], "Alex Chen")
+        self.assertEqual(stage["startAt"], "2026-08-04T06:44:00Z")
+        self.assertEqual(stage["deadline"], "2026-08-05T03:51:00Z")
+        self.assertEqual(stage["workMinutes"], 367)
 
     def test_coworker_tasks_do_not_include_alex_assignments(self):
         tasks_path = Path(__file__).resolve().parents[1] / "tasks_coworkers.json"

@@ -735,7 +735,25 @@
         "assignee": "Alex Chen",
         "startAt": "2026-08-04T06:44:00Z",
         "deadline": "2026-08-05T03:51:00Z",
-        "workMinutes": 367
+        "workMinutes": 367,
+        "extensions": [
+          {
+            "name": "關懷團在宏都拉斯",
+            "type": "news",
+            "startAt": "2026-08-05T00:29:46.312473Z",
+            "workMinutes": 120,
+            "contentSeconds": 7680,
+            "sourceText": "Alex Chen: 關懷團在宏都拉斯 2:08"
+          },
+          {
+            "name": "宏大愛村回顧",
+            "type": "news",
+            "startAt": "2026-08-05T02:23:29.636898Z",
+            "workMinutes": 160,
+            "contentSeconds": 10320,
+            "sourceText": "Alex Chen: 宏大愛村回顧 2:52"
+          }
+        ]
       }
     ],
     "sourceText": "【大愛醫生館】 腦中取栓 20260609\nhttps://www.youtube.com/watch?v=qNnhiiVdj8U\n07:28-09:29 (2分1秒)\n【大愛醫生館】 脊椎一開再開！ 20260608\nhttps://www.youtube.com/watch?v=SAwSpFXe-Q4\n06:06-09:14 (3分8秒)\n【大愛醫生館】 肺臟菜瓜布 20260605\nhttps://www.youtube.com/watch?v=sciUx7g9ju0\n06:54-09:24 (2分30秒)"
