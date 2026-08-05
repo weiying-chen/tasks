@@ -27,6 +27,7 @@ TYPE_LABELS = {
 NO_DEADLINE_REQUEST_ASSIGNEES = {
     "Elijah Salie",
 }
+SELF_ASSIGNEE = "Alex Chen"
 
 
 def to_local(iso_str: str) -> datetime:
@@ -229,7 +230,11 @@ def format_deadline_extension_message(task: dict, now_local: datetime | None = N
         lines.append("")
 
     prefix = f"{assignment}，" if assignment else ""
-    assigner_text = f"，請{format_mention(assigner)}幫我確認" if assigner else ""
+    assigner_text = (
+        f"，請{format_mention(assigner)}幫我確認"
+        if assigner and normalize_person_name(assigner) != SELF_ASSIGNEE
+        else ""
+    )
     lines.append(
         f"{prefix}deadline由{format_message_date(previous)}，"
         f"{transition_text}{format_message_date(next_deadline)}{assigner_text}，謝謝。"
@@ -286,7 +291,7 @@ def task_assignment_action_text(task: dict) -> str:
 
 
 def format_task_action_prefix(assignee: str, action_text: str) -> str:
-    if assignee == "Alex Chen":
+    if assignee == SELF_ASSIGNEE:
         return f"我接下來要{action_text}"
     separator = " " if action_text.startswith("edit") else ""
     return f"請{format_mention(assignee)}{separator}{action_text}"

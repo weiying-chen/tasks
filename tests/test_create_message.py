@@ -75,6 +75,25 @@ class CreateMessageTests(unittest.TestCase):
             "人文講堂 (個人品牌的密碼 - 丁菱娟) 4 個短版，deadline由5/15（五）10:16，延後至5/15（五）14:26，請@Evelyn幫我確認，謝謝。",
         )
 
+    def test_deadline_extension_message_does_not_ask_self_to_confirm(self):
+        task = {
+            "name": "3集大愛醫生館",
+            "assigner": "Alex Chen",
+            "stages": [
+                {
+                    "deadline": "2026-08-05T03:51:00Z",
+                    "extensions": [
+                        {"type": "news", "name": "其他工作", "workMinutes": 280},
+                    ],
+                }
+            ],
+        }
+
+        message = create_message.format_deadline_extension_message(task)
+
+        self.assertNotIn("請@Alex Chen幫我確認", message)
+        self.assertTrue(message.endswith("延後至8/6（四）08:31，謝謝。"), message)
+
     def test_deadline_extension_requires_subtasks(self):
         tasks = [
             {
