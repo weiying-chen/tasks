@@ -27,7 +27,7 @@ from create_message import (
     parse_deadline_transition_message,
     parse_task_assignment_task_name,
 )
-from text_to_json import next_numeric_task_id, normalize_task_shape
+from text_to_json import format_known_program_pipe_titles, next_numeric_task_id, normalize_task_shape
 from task_titles import extract_subs_task_name
 from work_time import add_work_minutes, next_work_start
 
@@ -441,6 +441,9 @@ def parse_next_task_clipboard_payload(clipboard_text: str) -> tuple[str | None, 
     text = clipboard_text.strip()
     if not text:
         return None, ""
+    pipe_title_name = format_known_program_pipe_titles(text)
+    if pipe_title_name:
+        return None, pipe_title_name
     task_name = extract_subs_task_name(text)
     if task_name:
         return None, task_name

@@ -54,14 +54,15 @@ def resolve_subs_assigner(subs_name: str) -> str:
 
 
 def parse_subs_input(text: str, year: int, task_id: str):
-    name = extract_subs_task_name(text)
+    pipe_title_name = format_known_program_pipe_titles(text)
+    name = pipe_title_name or extract_subs_task_name(text)
     if not name:
         raise ValueError("Cannot parse name")
     assigner = resolve_subs_assigner(name)
 
     content_seconds = None
     content_match = re.search(
-        r"(?:長度|片長|長)\s*(?:共|合計)?\s*(\d+)\s*(?:分(?:鐘)?|分鐘)(?:\s*(\d+)\s*秒)?",
+        r"(?:長度|片長|長)\s*(?:共有|共|合計)?\s*(\d+)\s*(?:分(?:鐘)?|分鐘)(?:\s*(\d+)\s*秒)?",
         text,
     )
     if content_match:
@@ -255,6 +256,8 @@ def parse_duration_text_to_seconds(duration_text: str) -> int:
 
 def parse_known_program_pipe_title_line(line: str) -> tuple[str, str] | None:
     cleaned = line.strip()
+    if cleaned.startswith("【"):
+        return None
     match = re.match(r"^(?P<body>.+?)\s*(?P<date>\d{8})\s*$", cleaned)
     if not match:
         return None
@@ -264,14 +267,33 @@ def parse_known_program_pipe_title_line(line: str) -> tuple[str, str] | None:
     if len(parts) < 2:
         return None
 
-    program_name = parts[-1]
-    if program_name not in SUBS_PROGRAM_ASSIGNERS:
+    program_names = [part for part in parts[1:] if part in SUBS_PROGRAM_ASSIGNERS]
+    if len(program_names) != 1:
         return None
+    program_name = program_names[0]
 
     title = parts[0]
     if not title:
         return None
     return program_name, title
+
+
+def format_known_program_pipe_titles(text: str) -> str | None:
+    parsed_lines = [
+        parsed
+        for line in text.splitlines()
+        if (parsed := parse_known_program_pipe_title_line(line)) is not None
+    ]
+    if not parsed_lines:
+        return None
+
+    program_names = {program_name for program_name, _ in parsed_lines}
+    if len(program_names) != 1:
+        return None
+
+    program_name = next(iter(program_names))
+    titles = [title for _, title in parsed_lines]
+    return f"{len(titles)}集{program_name}（{' + '.join(titles)}）"
 
 
 def parse_known_program_pipe_title_list_input(text: str, task_id: str) -> dict | None:

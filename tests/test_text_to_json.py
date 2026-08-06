@@ -372,6 +372,26 @@ class TextToJsonTests(unittest.TestCase):
         self.assertEqual(get_task_type(task), "subs")
         self.assertNotIn("stages", task)
 
+    def test_parse_subs_assignment_uses_pipe_titles_in_parentheses(self):
+        text = (
+            "請\n"
+            "Alex Chen 翻譯3集日日有新知:\n\n"
+            "細嚼慢嚥的方法｜日日有新知｜李毅｜20240625\n"
+            "我是泡芙人嗎？怎麼辦？｜日日有新知｜李毅｜ 20231108\n"
+            "100％純果汁和體重的關聯｜日日有新知｜李毅｜20240711\n\n"
+            "片長共有9分鐘，預計做7小時12分鐘，完成手上的工作再給deadline，感恩~"
+        )
+
+        task = text_to_json.parse_source_text(text, [], 2026)[0]
+
+        self.assertEqual(
+            task["name"],
+            "3集日日有新知（細嚼慢嚥的方法 + 我是泡芙人嗎？怎麼辦？ + 100％純果汁和體重的關聯）",
+        )
+        self.assertEqual(task["assigner"], "Elijah Salie")
+        self.assertEqual(get_task_content_seconds(task), 540)
+        self.assertEqual(get_task_work_minutes(task), 432)
+
     def test_subs_assigner_is_grouped_by_assigner(self):
         self.assertEqual(
             list(SUBS_PROGRAM_ASSIGNERS.items()),

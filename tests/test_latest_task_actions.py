@@ -603,6 +603,25 @@ https://www.youtube.com/watch?v=example
         self.assertIsNone(assignee)
         self.assertEqual(name, "大愛學漢醫")
 
+    def test_parse_next_task_clipboard_payload_groups_pipe_episode_titles(self):
+        clipboard_text = """請
+Alex Chen 翻譯3集日日有新知:
+
+細嚼慢嚥的方法｜日日有新知｜李毅｜20240625
+我是泡芙人嗎？怎麼辦？｜日日有新知｜李毅｜ 20231108
+100％純果汁和體重的關聯｜日日有新知｜李毅｜20240711
+
+片長共有9分鐘，預計做7小時12分鐘，完成手上的工作再給deadline，感恩~
+"""
+
+        assignee, name = view_latest_task.parse_next_task_clipboard_payload(clipboard_text)
+
+        self.assertIsNone(assignee)
+        self.assertEqual(
+            name,
+            "3集日日有新知（細嚼慢嚥的方法 + 我是泡芙人嗎？怎麼辦？ + 100％純果汁和體重的關聯）",
+        )
+
     def test_choose_numbered_option_esc_cancels(self):
         with mock.patch("view_latest_task.os.read", return_value=b"\x1b"):
             pick_idx, pick_err, should_quit = view_latest_task.choose_numbered_option(
