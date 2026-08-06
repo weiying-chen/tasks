@@ -85,5 +85,25 @@
       }
     ],
     "sourceText": "【大愛醫生館】 聲帶增胖 20260604\nhttps://www.youtube.com/watch?v=qpSHvipmmM4\n08:16-09:24 (1分8秒)\n【大愛醫生館】 膽結石肆虐胰臟 20260603\nhttps://www.youtube.com/watch?v=F__cU-k8hwM\n06:58-09:27 (2分29秒)\n【大愛醫生館】 晦暗不明出血點 20260602\nhttps://www.youtube.com/watch?v=Nt7C9B9AFZ4\n07:38-09:04 (1分26秒)"
+  },
+  {
+    "id": "5",
+    "name": "3集大愛醫生館（腦中取栓 + 脊椎一開再開！ + 肺臟菜瓜布）",
+    "type": "subs",
+    "contentSeconds": 459,
+    "assigner": "Alex Chen",
+    "stages": [
+      {
+        "name": "translate",
+        "assignee": "Alex Chen",
+        "workMinutes": 367
+      },
+      {
+        "name": "edit",
+        "assignee": "張牧軒 Shawn",
+        "workMinutes": 184
+      }
+    ],
+    "sourceText": "【大愛醫生館】 腦中取栓 20260609\nhttps://www.youtube.com/watch?v=qNnhiiVdj8U\n07:28-09:29 (2分1秒)\n【大愛醫生館】 脊椎一開再開！ 20260608\nhttps://www.youtube.com/watch?v=SAwSpFXe-Q4\n06:06-09:14 (3分8秒)\n【大愛醫生館】 肺臟菜瓜布 20260605\nhttps://www.youtube.com/watch?v=sciUx7g9ju0\n06:54-09:24 (2分30秒)"
   }
 ]

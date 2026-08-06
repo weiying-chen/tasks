@@ -13,11 +13,11 @@ def find_extension_by_name(tasks, name):
 
 
 class TasksJsonTests(unittest.TestCase):
-    def test_latest_self_task_groups_three_daai_doctor_episodes(self):
+    def test_latest_doctor_task_groups_three_episodes(self):
         tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
         tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
 
-        last_task = tasks[-1]
+        last_task = [task for task in tasks if "大愛醫生館" in task.get("name", "")][-1]
         self.assertEqual(
             last_task["name"],
             "3集大愛醫生館（腦中取栓 + 脊椎一開再開！ + 肺臟菜瓜布）",
@@ -31,17 +31,19 @@ class TasksJsonTests(unittest.TestCase):
         self.assertEqual(stage["deadline"], "2026-08-05T03:51:00Z")
         self.assertEqual(stage["workMinutes"], 367)
 
-    def test_coworker_tasks_do_not_include_alex_assignments(self):
+    def test_coworker_tasks_only_record_alex_for_completed_translation(self):
         tasks_path = Path(__file__).resolve().parents[1] / "tasks_coworkers.json"
         tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
 
-        assignees = {
-            stage.get("assignee")
+        alex_stages = [
+            stage
             for task in tasks
             for stage in task.get("stages", [])
-        }
+            if stage.get("assignee") == "Alex Chen"
+        ]
 
-        self.assertNotIn("Alex Chen", assignees)
+        self.assertTrue(alex_stages)
+        self.assertTrue(all(stage.get("name") == "translate" for stage in alex_stages))
 
     def test_latest_doctor_extension_uses_actual_work_time(self):
         tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"

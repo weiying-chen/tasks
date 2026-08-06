@@ -757,5 +757,29 @@
       }
     ],
     "sourceText": "【大愛醫生館】 腦中取栓 20260609\nhttps://www.youtube.com/watch?v=qNnhiiVdj8U\n07:28-09:29 (2分1秒)\n【大愛醫生館】 脊椎一開再開！ 20260608\nhttps://www.youtube.com/watch?v=SAwSpFXe-Q4\n06:06-09:14 (3分8秒)\n【大愛醫生館】 肺臟菜瓜布 20260605\nhttps://www.youtube.com/watch?v=sciUx7g9ju0\n06:54-09:24 (2分30秒)"
+  },
+  {
+    "id": "55",
+    "name": "3集日日有新知",
+    "type": "subs",
+    "assigner": "Elijah Salie",
+    "stages": [
+      {
+        "startAt": "2026-08-06T00:11:00Z",
+        "deadline": "2026-08-06T08:23:00Z",
+        "workMinutes": 432,
+        "extensions": [
+          {
+            "name": "曼德勒發熱食",
+            "type": "news",
+            "startAt": "2026-08-06T01:41:24.146858Z",
+            "workMinutes": 110,
+            "contentSeconds": 8520,
+            "sourceText": "Alex Chen: 曼德勒發熱食 2:22"
+          }
+        ]
+      }
+    ],
+    "sourceText": "請\nAlex Chen 翻譯3集日日有新知，預計做7小時12分鐘，從8/6(四) 08:11開始算，deadline為8/6 (四)16:23，謝謝~"
   }
 ]
