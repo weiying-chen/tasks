@@ -828,7 +828,7 @@
             "name": "奧莫克牙科",
             "type": "news",
             "startAt": "2026-08-10T03:52:05.418544Z",
-            "workMinutes": 110,
+            "workMinutes": 67,
             "contentSeconds": 7020,
             "sourceText": "Alex Chen: 奧莫克牙科 1:57"
           },
@@ -836,7 +836,7 @@
             "name": "曼哈頓食物發放",
             "type": "news",
             "startAt": "2026-08-10T06:01:29.763097Z",
-            "workMinutes": 120,
+            "workMinutes": 89,
             "contentSeconds": 7800,
             "sourceText": "Alex Chen: 曼哈頓食物發放 2:10"
           }
