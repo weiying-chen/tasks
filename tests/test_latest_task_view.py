@@ -569,6 +569,32 @@ class LatestTaskViewTests(unittest.TestCase):
         self.assertNotIn("Name: 新聞英文與配音\nType: custom\nStage:", out)
         self.assertNotIn("Assignee:", out.split("Extensions", 1)[1])
 
+    def test_personal_view_hides_stage_and_assignee_for_extensions(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "Parent",
+                "stages": [
+                    {
+                        "extensions": [
+                            {
+                                "name": "News extension",
+                                "type": "news",
+                                "assignee": "Alex Chen",
+                                "workMinutes": 110,
+                            }
+                        ]
+                    }
+                ],
+            }
+        ]
+
+        out = self.strip_ansi(view_latest_task.build_latest_view(tasks, input_file="/tmp/tasks.json"))
+        extension_text = out.split("Extensions", 1)[1]
+        self.assertIn("Name: News extension", extension_text)
+        self.assertNotIn("Stage:", extension_text)
+        self.assertNotIn("Assignee:", extension_text)
+
     def test_latest_view_shows_only_current_workday_extensions(self):
         tasks = [
             {

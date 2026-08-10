@@ -570,20 +570,16 @@ def render_extension_block(
     now_local: datetime,
     show_subtask_notes: bool,
     show_notes: bool,
-    show_subtask_assignment_fields: bool,
+    show_subtask_start_time: bool,
 ) -> None:
     name = str(item.get("name") or "(Untitled)").strip()
     cleaned_notes: list[str] = []
     lines.append(f"Name: {name}")
     task_type = str(item.get("type") or "").strip()
     lines.append(f"Type: {task_type if task_type else '-'}")
-    if show_subtask_assignment_fields:
-        assignee = str(item.get("assignee") or "").strip()
-        lines.append("Stage: -")
-        lines.append(f"Assignee: {assignee if assignee else '-'}")
     start_at = item.get("startAt")
     created = next_work_start(to_local(start_at)) if isinstance(start_at, str) and start_at.strip() else None
-    if show_subtask_assignment_fields:
+    if show_subtask_start_time:
         lines.append(f"Start time: {to_display(created) if created else '-'}")
     minutes = item.get("workMinutes")
     lines.append(f"Work time: {fmt_work(minutes if isinstance(minutes, int) else None)}")
