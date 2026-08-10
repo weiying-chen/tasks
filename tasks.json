@@ -760,8 +760,9 @@
   },
   {
     "id": "55",
-    "name": "3集日日有新知",
+    "name": "3集日日有新知（細嚼慢嚥的方法 + 我是泡芙人嗎？怎麼辦？ + 100％純果汁和體重的關聯）",
     "type": "subs",
+    "contentSeconds": 540,
     "assigner": "Elijah Salie",
     "stages": [
       {
@@ -780,6 +781,60 @@
         ]
       }
     ],
-    "sourceText": "請\nAlex Chen 翻譯3集日日有新知，預計做7小時12分鐘，從8/6(四) 08:11開始算，deadline為8/6 (四)16:23，謝謝~"
+    "sourceText": "請\nAlex Chen 翻譯3集日日有新知:\n\n細嚼慢嚥的方法｜日日有新知｜李毅｜20240625\n\n我是泡芙人嗎？怎麼辦？｜日日有新知｜李毅｜ 20231108\n\n100％純果汁和體重的關聯｜日日有新知｜李毅｜20240711\n\n片長共有9分鐘，預計做7小時12分鐘，完成手上的工作再給deadline，感恩~"
+  },
+  {
+    "id": "56",
+    "name": "人文講堂 (翻轉不科學的科學教育 - 嚴天浩) 3個短版",
+    "type": "subs",
+    "contentSeconds": 1200,
+    "assigner": "Evelyn",
+    "stages": [
+      {
+        "startAt": "2026-08-07T01:13:00Z",
+        "deadline": "2026-08-11T01:13:00Z",
+        "workMinutes": 960,
+        "extensions": [
+          {
+            "name": "仁醫守護利人群",
+            "type": "posts",
+            "startAt": "2026-08-10T00:42:34.867465Z",
+            "workMinutes": 50,
+            "sourceText": "1.\talex\n8/2 仁醫守護利人群\nhttps://www.daai.tv/master/life-wisdom/P90230339?more=true"
+          },
+          {
+            "name": "守護生命顯溫情",
+            "type": "posts",
+            "startAt": "2026-08-10T01:46:02.656829Z",
+            "workMinutes": 50,
+            "sourceText": "3.\talex\n8/4 守護生命顯溫情\nhttps://www.daai.tv/master/life-wisdom/P90230341?more=true"
+          },
+          {
+            "name": "Chinese Medicine Clinic - Addressing Allergies at the Root (大愛學漢醫 - 皮在癢! 原來是免疫力害的)",
+            "type": "posts",
+            "startAt": "2026-08-10T02:53:22.346179Z",
+            "workMinutes": 50,
+            "sourceText": "1.\t9/3(四)發 alex\nChinese Medicine Clinic - Addressing Allergies at the Root (大愛學漢醫 - 皮在癢! 原來是免疫力害的)\nhttps://www.youtube.com/watch?v=qlvOxrDO9yM"
+          },
+          {
+            "name": "奧莫克牙科",
+            "type": "news",
+            "startAt": "2026-08-10T03:52:05.418544Z",
+            "workMinutes": 110,
+            "contentSeconds": 7020,
+            "sourceText": "Alex Chen: 奧莫克牙科 1:57"
+          },
+          {
+            "name": "曼哈頓食物發放",
+            "type": "news",
+            "startAt": "2026-08-10T06:01:29.763097Z",
+            "workMinutes": 120,
+            "contentSeconds": 7800,
+            "sourceText": "Alex Chen: 曼哈頓食物發放 2:10"
+          }
+        ]
+      }
+    ],
+    "sourceText": "請\nAlex Chen 翻譯人文講堂 (翻轉不科學的科學教育 - 嚴天浩) 3個短版, 長度20分, 預計翻譯16時, 從8/7（五）09:13起算，deadline為8/11(二) 09:13，謝謝！"
   }
 ]

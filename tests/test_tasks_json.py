@@ -13,6 +13,18 @@ def find_extension_by_name(tasks, name):
 
 
 class TasksJsonTests(unittest.TestCase):
+    def test_latest_daily_knowledge_task_keeps_episode_metadata(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+
+        task = [task for task in tasks if task.get("id") == "55"][0]
+        self.assertEqual(
+            task["name"],
+            "3集日日有新知（細嚼慢嚥的方法 + 我是泡芙人嗎？怎麼辦？ + 100％純果汁和體重的關聯）",
+        )
+        self.assertEqual(task["contentSeconds"], 540)
+        self.assertIn("細嚼慢嚥的方法｜日日有新知｜李毅｜20240625", task["sourceText"])
+
     def test_latest_doctor_task_groups_three_episodes(self):
         tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
         tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
