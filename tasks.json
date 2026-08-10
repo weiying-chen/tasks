@@ -800,14 +800,22 @@
             "type": "posts",
             "startAt": "2026-08-10T00:42:34.867465Z",
             "workMinutes": 50,
-            "sourceText": "1.\talex\n8/2 仁醫守護利人群\nhttps://www.daai.tv/master/life-wisdom/P90230339?more=true"
+            "sourceText": "1.\talex\n8/2 仁醫守護利人群\nhttps://www.daai.tv/master/life-wisdom/P90230339?more=true",
+            "notes": [
+              "Used “Dalin Tzu Chi Hospital,” not “Da Lin Tzu Chi Hospital,” as the correct English name.",
+              "Condensed 守護生命、守護健康、守護愛 to “safeguard lives with love” instead of translating all three phrases; when more detail was needed, limited it to “safeguard people’s lives and health with love.”"
+            ]
           },
           {
             "name": "守護生命顯溫情",
             "type": "posts",
             "startAt": "2026-08-10T01:46:02.656829Z",
             "workMinutes": 50,
-            "sourceText": "3.\talex\n8/4 守護生命顯溫情\nhttps://www.daai.tv/master/life-wisdom/P90230341?more=true"
+            "sourceText": "3.\talex\n8/4 守護生命顯溫情\nhttps://www.daai.tv/master/life-wisdom/P90230341?more=true",
+            "notes": [
+              "Made the volunteers’ concrete work explicit by saying they “collected, cleaned, and provided” assistive devices instead of merely saying they “provided” them.",
+              "Made the Master’s advice concrete by changing “care for the elderly” to “pay closer attention to older adults’ safety at home to help prevent falls,” reflecting her specific advice about installing handrails and reducing fall risks rather than broadly referring to preventing injuries."
+            ]
           },
           {
             "name": "Chinese Medicine Clinic - Addressing Allergies at the Root (大愛學漢醫 - 皮在癢! 原來是免疫力害的)",
