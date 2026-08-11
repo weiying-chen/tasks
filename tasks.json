@@ -842,6 +842,12 @@
             "workMinutes": 89,
             "contentSeconds": 7800,
             "sourceText": "Alex Chen: 曼哈頓食物發放 2:10"
+          },
+          {
+            "name": "參加會議",
+            "type": "custom",
+            "startAt": "2026-08-11T05:30:00Z",
+            "workMinutes": 60
           }
         ]
       }
