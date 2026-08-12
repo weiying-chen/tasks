@@ -853,5 +853,38 @@
       }
     ],
     "sourceText": "請\nAlex Chen 翻譯人文講堂 (翻轉不科學的科學教育 - 嚴天浩) 3個短版, 長度20分, 預計翻譯16時, 從8/7（五）09:13起算，deadline為8/11(二) 09:13，謝謝！"
+  },
+  {
+    "id": "57",
+    "name": "三集精舍日常(禪師父－佛像。眾生之相09 、禪師父－對的人向錯的人說對不起10 、格師父－甘願歡喜。結緣慈濟01)",
+    "type": "subs",
+    "contentSeconds": 458,
+    "assigner": "張牧軒 Shawn",
+    "stages": [
+      {
+        "startAt": "2026-08-11T08:19:00Z",
+        "deadline": "2026-08-12T06:30:00Z",
+        "workMinutes": 367,
+        "extensions": [
+          {
+            "name": "星赴斯義診",
+            "type": "news",
+            "startAt": "2026-08-12T01:09:26.850017Z",
+            "workMinutes": 91,
+            "contentSeconds": 9000,
+            "sourceText": "Alex Chen: 星赴斯義診 2:30"
+          },
+          {
+            "name": "威明頓發食物",
+            "type": "news",
+            "startAt": "2026-08-12T02:48:32.990197Z",
+            "workMinutes": 120,
+            "contentSeconds": 7200,
+            "sourceText": "Alex Chen: 威明頓發食物 2:00"
+          }
+        ]
+      }
+    ],
+    "sourceText": "Alex Chen接下來請Alex翻譯三集精舍日常(禪師父－佛像。眾生之相09 、禪師父－對的人向錯的人說對不起10 、格師父－甘願歡喜。結緣慈濟01)，長7分38秒，預計翻譯6小時7分，由8/11（二）16:19起算，deadline為8/12(三) 14:30，謝謝。"
   }
 ]
