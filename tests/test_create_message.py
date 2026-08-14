@@ -590,6 +590,11 @@ class CreateMessageTests(unittest.TestCase):
                 "assigner": "Alex Chen",
                 "stages": [
                     {
+                        "stage": "translate",
+                        "assignee": "Alex Chen",
+                        "workMinutes": 333,
+                    },
+                    {
                         "stage": "edit",
                         "assignee": "Shawn",
                         "startAt": "2026-06-02T05:32:00Z",
@@ -604,7 +609,7 @@ class CreateMessageTests(unittest.TestCase):
         self.assertEqual(
             message,
             "請@Shawn edit + 定稿3集大愛醫生館（杯弓蛇影 乳房腫瘤 + 鬼門關走一遭~冠心病 + 住輸尿管），"
-            "片長共5分33秒，預計製作2時46分，從6/2（二）13:32起算，deadline 6/2（二）16:18，謝謝。",
+            "片長共5分33秒，翻譯工時5時33分，預計製作2時46分，從6/2（二）13:32起算，deadline 6/2（二）16:18，謝謝。",
         )
 
     def test_subs_summary_message_requires_parenthesized_episode_titles(self):

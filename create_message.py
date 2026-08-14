@@ -364,6 +364,11 @@ def format_task_initiation_message(task: dict) -> str:
     if action_text == "翻譯":
         message += f"預計做{format_duration_for_summary_message(work_minutes)}，"
     else:
+        if action_text == "edit + 定稿":
+            translate_minutes = get_previous_stage_work_minutes(task, "translate")
+            if translate_minutes is None:
+                translate_minutes = work_minutes * 2
+            message += f"翻譯工時{format_duration_for_summary_message(translate_minutes)}，"
         message += f"預計製作{format_duration_for_summary_message(work_minutes)}，"
     return message + f"從{start_text}起算，deadline {deadline_text}，謝謝。"
 
