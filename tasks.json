@@ -911,7 +911,39 @@
       {
         "startAt": "2026-08-13T02:01:00Z",
         "deadline": "2026-08-17T05:25:00Z",
-        "workMinutes": 1104
+        "workMinutes": 1104,
+        "extensions": [
+          {
+            "name": "史瓦帝尼幼兒園",
+            "type": "news",
+            "startAt": "2026-08-17T00:20:37.597459Z",
+            "workMinutes": 130,
+            "contentSeconds": 11760,
+            "sourceText": "Alex Chen: 史瓦帝尼幼兒園 3:16"
+          },
+          {
+            "name": "同耕福田結好緣",
+            "type": "posts",
+            "startAt": "2026-08-17T02:37:55.735603Z",
+            "workMinutes": 50,
+            "sourceText": "2.\talex\n8/10 同耕福田結好緣\nhttps://www.daai.tv/master/life-wisdom/P90230347?more=true"
+          },
+          {
+            "name": "守護健康化使命",
+            "type": "posts",
+            "startAt": "2026-08-17T03:34:56.368868Z",
+            "workMinutes": 50,
+            "sourceText": "4.      alex\n8/12守護健康化使命\nhttps://www.daai.tv/master/life-wisdom/P90230349?more=true"
+          },
+          {
+            "name": "莫三埃社圖羅",
+            "type": "news",
+            "startAt": "2026-08-17T05:26:58.851476Z",
+            "workMinutes": 124,
+            "contentSeconds": 11700,
+            "sourceText": "Alex Chen: 莫三埃社圖羅 3:15 (請寫完小編文再開始做)"
+          }
+        ]
       }
     ],
     "sourceText": "請 Alex Chen 翻譯人文講堂 (未知寄給你的邀請函 - 鄭國威) 4個短版,  長度23分, 預計翻譯18時24分(2天2時24分), 從8/13（四）10:01起算, deadline 為8/17(一)13:25, 謝謝！"
