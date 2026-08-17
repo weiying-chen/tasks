@@ -1,4 +1,5 @@
 import unittest
+from datetime import datetime, timedelta, timezone
 
 from subs_assigners import SUBS_PROGRAM_ASSIGNERS
 import text_to_json
@@ -6,6 +7,12 @@ from task_stages import get_task_content_seconds, get_task_type, get_task_work_m
 
 
 class TextToJsonTests(unittest.TestCase):
+    def test_start_iso_uses_displayed_minute_boundary(self):
+        taipei = timezone(timedelta(hours=8))
+        now = datetime(2026, 8, 17, 13, 26, 58, 851476, tzinfo=taipei)
+
+        self.assertEqual(text_to_json.start_iso_now(now), "2026-08-17T05:26:00Z")
+
     def test_add_chongde_post_as_single_extension(self):
         source = (
             "2.\talex\n"

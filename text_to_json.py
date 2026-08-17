@@ -13,6 +13,14 @@ from task_titles import extract_subs_task_name
 from work_time_adjustments import adjusted_extension_minutes
 
 TZ_TAIPEI = timezone(timedelta(hours=8))
+
+
+def start_iso_now(now: datetime | None = None) -> str:
+    local_now = now if now is not None else datetime.now(TZ_TAIPEI)
+    minute_start = local_now.replace(second=0, microsecond=0)
+    return minute_start.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
+
+
 RESET = '\x1b[0m'
 YELLOW = '\x1b[33m'
 
@@ -137,7 +145,7 @@ def parse_hhmm_to_work_minutes(hhmm: str) -> int:
 
 def parse_news_input(text: str, year: int, owner_filter: str):
     tasks = []
-    now_iso = datetime.now(TZ_TAIPEI).astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
+    now_iso = start_iso_now()
 
     for raw_line in text.splitlines():
         line = raw_line.strip()
@@ -192,7 +200,7 @@ def normalize_posts_owner_line(text: str) -> str:
 
 def parse_posts_input(text: str, owner_filter: str):
     tasks = []
-    now_iso = datetime.now(TZ_TAIPEI).astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
+    now_iso = start_iso_now()
     default_work_minutes = 60  # Raw 1 hour; extension factor is applied in view/message rendering
 
     lines = [line.rstrip() for line in text.splitlines()]
@@ -372,7 +380,7 @@ def parse_daai_doctor_clip_input(text: str, task_id: str) -> dict | None:
 
 
 def parse_simple_duration_input(text: str):
-    now_iso = datetime.now(TZ_TAIPEI).astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
+    now_iso = start_iso_now()
     for raw_line in text.splitlines():
         line = raw_line.strip()
         if not line:
