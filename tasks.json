@@ -950,6 +950,22 @@
             "workMinutes": 124,
             "contentSeconds": 11700,
             "sourceText": "Alex Chen: 莫三埃社圖羅 3:15 (請寫完小編文再開始做)"
+          },
+          {
+            "name": "智利冬令發放",
+            "type": "news",
+            "startAt": "2026-08-18T00:19:00Z",
+            "workMinutes": 90,
+            "contentSeconds": 5340,
+            "sourceText": "Alex Chen: 智利冬令發放 1:29"
+          },
+          {
+            "name": "菲農夫之子希望",
+            "type": "news",
+            "startAt": "2026-08-18T01:40:00Z",
+            "workMinutes": 50,
+            "contentSeconds": 4680,
+            "sourceText": "Alex Chen: 菲農夫之子希望 1:18"
           }
         ]
       }
