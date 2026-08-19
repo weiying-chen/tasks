@@ -642,6 +642,13 @@
         ]
       }
     ],
+    "notes": [
+      "Recast 菩提大道 as Tzu Chi’s work taking root in the Americas rather than the overly literal “the Bodhi Path” beginning at that time.",
+      "Translated 法門 contextually as “skillful means” used to guide people instead of literally establishing numerous Dharma paths.",
+      "Linked the ideas clearly: everyone possesses Buddha nature, but human ignorance leads people away from it and creates social unrest.",
+      "Expressed the radio program as relating Tzu Chi’s spirit and Buddhist principles to everyday life rather than literally integrating them into daily life.",
+      "Used “Tzu Chi’s volunteer network” for 人間菩薩 instead of the capitalized “Bodhisattva network,” which would suggest religious figures such as Guanyin or Kṣitigarbha."
+    ],
     "sourceText": "請 Alex Chen 翻譯3集慈濟的故事 (123_成立臺中分會、122_慈濟世界影音開播、121_海外第一個分支機構)，片長共13分37秒，預計做11小時，從7/28 (二) 08:15起算，deadline為7/29 (三) 11:15，謝謝~"
   },
   {
@@ -721,6 +728,12 @@
         ]
       }
     ],
+    "notes": [
+      "Translated 讀完博士學位 as “finishing my PhD” to show that he was already pursuing the degree and had yet to complete it.",
+      "Removed the literal and unnatural “Is there a method?” while preserving the surrounding questions about how he succeeded and whether others could do the same.",
+      "Avoided translating the familial form of address 弟弟 as “young man,” since English speakers generally do not use such terms when addressing others.",
+      "Clarified that dreams he had thought would never come true gradually did, rather than referring broadly to things he had never imagined."
+    ],
     "sourceText": "請  Alex Chen 翻譯人文講堂 (人生的50個夢想：從寫下 到實現 - 王永福) 4個短版, 長度18分,  預計翻譯14時24分(1天6時24分), 從7/30（四）16:00起算, deadline 為8/3(一)14:24, 謝謝！"
   },
   {
@@ -755,6 +768,13 @@
           }
         ]
       }
+    ],
+    "notes": [
+      "Supported the medical term used for 中腦動脈 with a reference.",
+      "Added a note or reference supporting “fuse” when 固定 specifically referred to spinal fusion surgery.",
+      "Used the formal medical term “spondylolisthesis” for 滑脫 instead of the less precise “a slipped vertebra.”",
+      "Ensured that the cited reference for 杵狀指 matched the translation “clubbed fingers.”",
+      "Translated 心室中膈缺損 directly as “ventricular septal defect” rather than the exaggerated “a hole in her heart.”"
     ],
     "sourceText": "【大愛醫生館】 腦中取栓 20260609\nhttps://www.youtube.com/watch?v=qNnhiiVdj8U\n07:28-09:29 (2分1秒)\n【大愛醫生館】 脊椎一開再開！ 20260608\nhttps://www.youtube.com/watch?v=SAwSpFXe-Q4\n06:06-09:14 (3分8秒)\n【大愛醫生館】 肺臟菜瓜布 20260605\nhttps://www.youtube.com/watch?v=sciUx7g9ju0\n06:54-09:24 (2分30秒)"
   },
@@ -852,14 +872,14 @@
         ]
       }
     ],
-    "sourceText": "請\nAlex Chen 翻譯人文講堂 (翻轉不科學的科學教育 - 嚴天浩) 3個短版, 長度20分, 預計翻譯16時, 從8/7（五）09:13起算，deadline為8/11(二) 09:13，謝謝！",
     "notes": [
       "Reflected 可能 with “perhaps” when the speaker answered his own rhetorical question, making the question-and-answer technique sound natural in English.",
       "Used the organization’s official English name, Learning in Science (LIS), and spelled it out at its first appearance.",
       "Clarified that “the process” referred to scientists’ thought process and described bringing it to life through engaging animated videos.",
       "Restructured the full sentence to integrate the question about biology naturally instead of leaving it as a disconnected final phrase.",
       "Translated 性別調控的模式 as “how sex is determined,” accurately conveying the biological mechanism rather than suggesting deliberate sex control."
-    ]
+    ],
+    "sourceText": "請\nAlex Chen 翻譯人文講堂 (翻轉不科學的科學教育 - 嚴天浩) 3個短版, 長度20分, 預計翻譯16時, 從8/7（五）09:13起算，deadline為8/11(二) 09:13，謝謝！"
   },
   {
     "id": "57",
@@ -892,13 +912,13 @@
         ]
       }
     ],
-    "sourceText": "Alex Chen接下來請Alex翻譯三集精舍日常(禪師父－佛像。眾生之相09 、禪師父－對的人向錯的人說對不起10 、格師父－甘願歡喜。結緣慈濟01)，長7分38秒，預計翻譯6小時7分，由8/11（二）16:19起算，deadline為8/12(三) 14:30，謝謝。",
     "notes": [
       "Specified that most full and rounded Buddha statues seen online were made during the Tang dynasty, rather than implying that most Buddha statues online came from that period.",
       "Translated 天空破了洞 contextually as “a hole in the ozone layer” instead of the overly literal “a hole in the sky.”",
       "Linked the two passages with a “not only...but also” structure to include both peace, gratitude, and respect and love and care for the Earth.",
       "Clarified that their cultivation experience embodied “Do it willingly and accept it joyfully,” rather than merely stating that the saying itself was true."
-    ]
+    ],
+    "sourceText": "Alex Chen接下來請Alex翻譯三集精舍日常(禪師父－佛像。眾生之相09 、禪師父－對的人向錯的人說對不起10 、格師父－甘願歡喜。結緣慈濟01)，長7分38秒，預計翻譯6小時7分，由8/11（二）16:19起算，deadline為8/12(三) 14:30，謝謝。"
   },
   {
     "id": "58",
