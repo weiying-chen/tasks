@@ -31,6 +31,21 @@ def mapped_program_name(name: str) -> str | None:
     return None
 
 
+def normalize_wrapped_program_title(name: str) -> str:
+    for program in SUBS_PROGRAM_ASSIGNERS:
+        match = re.match(
+            rf"^\(\s*{re.escape(program)}\s*[-－—]\s*(.+?)\s*\)\s*(.*)$",
+            name,
+        )
+        if not match:
+            continue
+        title = match.group(1).strip()
+        suffix = match.group(2).strip()
+        normalized = f"{program} ({title})"
+        return f"{normalized} {suffix}" if suffix else normalized
+    return name
+
+
 def extract_subs_task_name(text: str) -> str | None:
     formatted = format_program_selection_title(text)
     if formatted:
@@ -39,5 +54,5 @@ def extract_subs_task_name(text: str) -> str | None:
     match = re.search(r"翻譯\s*([^，,\n]+?)\s*[，,]", text)
     if match:
         name = match.group(1).strip()
-        return mapped_program_name(name) or name
+        return mapped_program_name(name) or normalize_wrapped_program_title(name)
     return None

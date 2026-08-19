@@ -316,6 +316,21 @@ class TextToJsonTests(unittest.TestCase):
         self.assertEqual(get_task_work_minutes(task), 364)
         self.assertNotIn("deadline", normalize_stages(task)[0])
 
+    def test_parse_subs_accepts_program_inside_outer_parentheses(self):
+        text = (
+            "請 Alex Chen 翻譯 (人文講堂 - 醫院裡的急先鋒 - 胡勝川) 1個短版, "
+            "長度7分, 預計翻譯5時36分, deadline 等手上工作完成後再給~\n"
+            "醫院裡的急先鋒 - 胡勝川\n"
+            "https://www.youtube.com/watch?v=uNLh5_XtZq8\n"
+            "01:35-05:33 + 19:22-22:07 (6m43s)"
+        )
+
+        task = text_to_json.parse_source_text(text, [], 2026)[0]
+
+        self.assertEqual(task["assigner"], "Evelyn")
+        self.assertEqual(task["name"], "人文講堂 (醫院裡的急先鋒 - 胡勝川) 1個短版")
+        self.assertEqual(get_task_work_minutes(task), 336)
+
     def test_parse_source_text_groups_daai_doctor_clip_blocks_into_single_task(self):
         text = (
             "【大愛醫生館】 胰管狹窄 胰臟腫脹 20260527\n"
