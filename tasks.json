@@ -999,6 +999,13 @@
             "workMinutes": 50,
             "contentSeconds": 4680,
             "sourceText": "Alex Chen: 菲農夫之子希望 1:18"
+          },
+          {
+            "name": "開會",
+            "type": "custom",
+            "startAt": "2026-08-18T05:30:00Z",
+            "workMinutes": 120,
+            "sourceText": "開會 2時00分"
           }
         ]
       }
