@@ -1045,7 +1045,25 @@
       {
         "startAt": "2026-08-19T05:15:00Z",
         "deadline": "2026-08-21T06:03:00Z",
-        "workMinutes": 1008
+        "workMinutes": 1008,
+        "extensions": [
+          {
+            "name": "辛巴威送輔具",
+            "type": "news",
+            "startAt": "2026-08-21T00:09:00Z",
+            "workMinutes": 126,
+            "contentSeconds": 10860,
+            "sourceText": "Alex Chen: 辛巴威送輔具 3:01"
+          },
+          {
+            "name": "巴拉圭發放併",
+            "type": "news",
+            "startAt": "2026-08-21T02:32:00Z",
+            "workMinutes": 48,
+            "contentSeconds": 5880,
+            "sourceText": "Alex Chen: 巴拉圭發放併 1:38"
+          }
+        ]
       }
     ],
     "sourceText": "請 Alex Chen 翻譯大愛全紀實(人生歌未央) 3個短版,  長度21分 , 預計翻譯16時48分(2天48分), 從8/19（三）13:15起算, deadline 為8/21(五)14:03, 謝謝！"
