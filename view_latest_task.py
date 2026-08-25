@@ -290,14 +290,7 @@ def build_task_initiation_message_command(script_dir: str, infile: str, task_id:
 
 
 def copy_to_clipboard(text: str) -> None:
-    copy_proc = subprocess.Popen(
-        ["wl-copy"],
-        stdin=subprocess.PIPE,
-        text=True,
-    )
-    if copy_proc.stdin:
-        copy_proc.stdin.write(text)
-        copy_proc.stdin.close()
+    subprocess.run(["wl-copy"], input=text, text=True, check=True)
 
 
 def assign_coworker_and_copy_message(

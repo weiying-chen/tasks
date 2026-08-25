@@ -7,6 +7,14 @@ import view_latest_task
 
 
 class LatestTaskActionsTests(unittest.TestCase):
+    @mock.patch("view_latest_task.subprocess.run")
+    def test_copy_to_clipboard_waits_for_success(self, run_mock):
+        view_latest_task.copy_to_clipboard("copied text")
+
+        run_mock.assert_called_once_with(
+            ["wl-copy"], input="copied text", text=True, check=True
+        )
+
     def test_action_debounce_rejects_rapid_repeat(self):
         self.assertTrue(view_latest_task.should_accept_action(b"e", None, 10.0))
         self.assertFalse(view_latest_task.should_accept_action(b"e", (b"e", 10.0), 10.1))
