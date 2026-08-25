@@ -1010,6 +1010,14 @@
         ]
       }
     ],
+    "notes": [
+      "Recast 我們先看一個畫面 as “I want you to picture something,” treating it as an introduction that sets up a story rather than a reference to unseen images.",
+      "Translated 街頭 contextually as “protests,” since the speaker was describing social activism and how knowledge affects protests, laws, and budgets.",
+      "Clarified that power works through language, rather than incorrectly making language the subject that exercises power.",
+      "Preserved the full contrast: people can either learn to use scientific and statistical information themselves or place their trust in someone who can.",
+      "Used the available subtitle time to express the complete idea that sounding convincing does not mean being correct.",
+      "Restored the omitted idea that people who do not ask questions may still have them but have learned to swallow them."
+    ],
     "sourceText": "請 Alex Chen 翻譯人文講堂 (未知寄給你的邀請函 - 鄭國威) 4個短版,  長度23分, 預計翻譯18時24分(2天2時24分), 從8/13（四）10:01起算, deadline 為8/17(一)13:25, 謝謝！"
   },
   {
@@ -1059,14 +1067,22 @@
             "type": "posts",
             "startAt": "2026-08-24T00:25:00Z",
             "workMinutes": 50,
-            "sourceText": "2.\talex\n8/17 真誠大愛護眾生\nhttps://www.daai.tv/master/life-wisdom/P90230354?more=true"
+            "sourceText": "2.\talex\n8/17 真誠大愛護眾生\nhttps://www.daai.tv/master/life-wisdom/P90230354?more=true",
+            "notes": [
+              "Refined the wording to make the English more natural and precise.",
+              "Added context about Lanyu for international audiences who may be unfamiliar with Taiwan."
+            ]
           },
           {
             "name": "醫療之愛遍照拂",
             "type": "posts",
             "startAt": "2026-08-24T01:42:00Z",
             "workMinutes": 50,
-            "sourceText": "3.      alex\n8/18 醫療之愛遍照拂\nhttps://www.daai.tv/master/life-wisdom/P90230355?more=true"
+            "sourceText": "3.      alex\n8/18 醫療之愛遍照拂\nhttps://www.daai.tv/master/life-wisdom/P90230355?more=true",
+            "notes": [
+              "Rendered 靜曦 as “Jing Xi,” without a hyphen, because it is her Dharma name rather than her legal name, 顏惠美; noted that 靜 or 慈 often begins women’s Dharma names in Tzu Chi, while 濟 often begins men’s.",
+              "Avoided saying the Master met specifically with “hospital volunteers,” because the group may also have included doctors, nurses, and other hospital personnel."
+            ]
           },
           {
             "name": "Dreamers in Action - Beautify Formosa (Part 1) (熱青年 - 寶島淨鄉團 - 林藝 [1])",
