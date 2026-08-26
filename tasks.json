@@ -1112,6 +1112,14 @@
               "Skimmed the subtitles or sampled the video for a compelling personal detail to use as the hook, then briefly connected it to the relevant World Day so the post felt less promotional.",
               "Included the featured person’s name in the Chinese hashtags when the post centered on that individual, such as #林藝 or #曾文毅."
             ]
+          },
+          {
+            "name": "聖荷西捐血",
+            "type": "news",
+            "startAt": "2026-08-26T00:24:00Z",
+            "workMinutes": 90,
+            "contentSeconds": 4920,
+            "sourceText": "Alex Chen: 聖荷西捐血 1:22"
           }
         ]
       }
