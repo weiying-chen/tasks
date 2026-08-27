@@ -1121,6 +1121,18 @@
             ]
           },
           {
+            "name": "Da Ai Journal - Staying Young at 105 (大愛全紀實 - 人生歌未央 [1])",
+            "type": "posts",
+            "startAt": "2026-08-26T05:42:00Z",
+            "workMinutes": 30,
+            "sourceText": "我做完人文講堂(如何成功爭取想要的機會 - 鄭匡宇) 3個短版後，接下來會寫一篇小編文，預計30分鐘：\n\n1. Da Ai Journal - Staying Young at 105 (大愛全紀實 - 人生歌未央 [1])\nhttps://www.youtube.com/watch?v=aveSJuohzqw",
+            "notes": [
+              "Made the storytelling more vivid by letting his own words and actions reveal his character.",
+              "Kept the post focused on his story.",
+              "Cut more of the general advice about staying young and living longer."
+            ]
+          },
+          {
             "name": "聖荷西捐血",
             "type": "news",
             "startAt": "2026-08-26T00:24:00Z",
@@ -1132,5 +1144,31 @@
       }
     ],
     "sourceText": "請 Alex Chen 翻譯人文講堂(如何成功爭取想要的機會 - 鄭匡宇) 3 個短版, 長度21分, 預計翻譯16時48分(2天48分), 從8/21（五）16:57起算，deadline為8/26(三) 08:45，謝謝！"
+  },
+  {
+    "id": "63",
+    "name": "創中心人醫會片花（朝山行 + 靜曦 + 界線之外）",
+    "type": "custom",
+    "stages": [
+      {
+        "workMinutes": 180
+      }
+    ],
+    "sourceText": "創中心人醫會片花（朝山行 + 靜曦 + 界線之外），每個1小時，共3小時"
+  },
+  {
+    "id": "64",
+    "name": "3集大愛真健康（正確推拉發力 + 每天5分鐘省力起身方式 + 起身變輕鬆、走路更有自信！）",
+    "type": "subs",
+    "contentSeconds": 650,
+    "assigner": "Alex Chen",
+    "stages": [
+      {
+        "startAt": "2026-08-27T01:40:00Z",
+        "deadline": "2026-08-28T02:20:00Z",
+        "workMinutes": 520
+      }
+    ],
+    "sourceText": "請\nAlex Chen 翻譯 3 集大愛真健康，謝謝~\n\n手臂力氣不流失！教你正確推拉發力，提菜、拿東西更有力，保護肩膀不痠痛｜大愛真健康｜功能性訓練｜ 20260416\nhttps://www.youtube.com/watch?v=FKXCP-8UGAk\n00:00-03:30 (3分30秒)\n從沙發起身很吃力？每天5分鐘省力起身方式，讓你起身、站穩不再是負擔｜大愛真健康｜功能性訓練｜ 20260414\nhttps://www.youtube.com/watch?v=tuWnGR5lBLE\n00:00-03:50 (3分50秒)\n生活自理不求人，讓你起身變輕鬆、走路更有自信！｜大愛真健康｜功能性訓練｜ 20260413\nhttps://www.youtube.com/watch?v=lmUU85BXdJI\n00:00-03:30 (3分30秒)"
   }
 ]
