@@ -150,6 +150,14 @@ class TextToJsonTests(unittest.TestCase):
         parsed = text_to_json.parse_source_text(text, [], 2026)
         self.assertEqual(parsed[0]["assigner"], "Elijah Salie")
 
+    def test_subs_program_assigner_maps_daai_health_to_alex(self):
+        text = (
+            "請 Alex Chen 翻譯3集大愛真健康（功能性訓練），片長10分，"
+            "預計做8時，deadline等手上工作完成後再給，謝謝！"
+        )
+        parsed = text_to_json.parse_source_text(text, [], 2026)
+        self.assertEqual(parsed[0]["assigner"], "Alex Chen")
+
     def test_subs_program_assigner_preserves_leading_episode_count(self):
         text = (
             "請 Someone 翻譯3集我的阿公阿媽做慈濟, 長度7分, "
@@ -367,7 +375,7 @@ class TextToJsonTests(unittest.TestCase):
         parsed = text_to_json.parse_source_text(text, [], 2026)
         self.assertEqual(len(parsed), 1)
         task = parsed[0]
-        self.assertEqual(task["assigner"], "Emily Ding")
+        self.assertEqual(task["assigner"], "Alex Chen")
         self.assertEqual(
             task["name"],
             "2集大愛真健康（65+必練：不傷膝蓋、不用跳也能大爆汗的低衝擊有氧！全身燃脂超有感，找回輕盈好體力 + 背影看起來老十歲？3招美背有氧操，甩掉厚實後背、消除虎背熊腰）",
@@ -385,7 +393,7 @@ class TextToJsonTests(unittest.TestCase):
         parsed = text_to_json.parse_source_text(text, [], 2026)
         self.assertEqual(len(parsed), 1)
         task = parsed[0]
-        self.assertEqual(task["assigner"], "Emily Ding")
+        self.assertEqual(task["assigner"], "Alex Chen")
         self.assertEqual(
             task["name"],
             "3集大愛真健康（65+必練：不傷膝蓋、不用跳也能大爆汗的低衝擊有氧！全身燃脂超有感，找回輕盈好體力 + 背影看起來老十歲？3招美背有氧操，甩掉厚實後背、消除虎背熊腰 + 手一揮贅肉跟著晃？3招手臂減脂操，改善掰掰袖，告別手臂無力感）",
@@ -419,7 +427,7 @@ class TextToJsonTests(unittest.TestCase):
             list(SUBS_PROGRAM_ASSIGNERS.items()),
             [
                 ("大愛醫生館", "Alex Chen"),
-                ("大愛真健康", "Emily Ding"),
+                ("大愛真健康", "Alex Chen"),
                 ("我的阿公阿媽做慈濟", "Emily Ding"),
                 ("人文講堂", "Evelyn"),
                 ("心靈講座", "Evelyn"),
