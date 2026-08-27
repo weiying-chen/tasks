@@ -24,6 +24,7 @@ from create_message import (
     aggregate_extensions,
     final_deadline_local,
     format_message_date,
+    is_self_owned_task,
     parse_deadline_transition_message,
     parse_task_assignment_task_name,
 )
@@ -479,14 +480,20 @@ def build_message_target_options(
         task_name = str(latest_task.get("name") or "").strip()
         start_at = str(get_task_start_at(latest_task) or "").strip()
         assignee = str(get_task_assignee(latest_task) or "").strip()
-        if mode == "coworker" and task_name and assignee:
+        offers_assignment = (mode == "coworker" and bool(assignee)) or (
+            mode == "personal" and is_self_owned_task(latest_task)
+        )
+        if task_name and offers_assignment:
             try:
                 parse_task_assignment_task_name(task_name)
             except ValueError:
                 pass
             else:
                 options.append(("task-assignment", "Task assignment message"))
-        if mode == "coworker" and start_at and assignee and task_deadline_local(latest_task) is not None:
+        offers_initiation = (mode == "coworker" and bool(assignee)) or (
+            mode == "personal" and is_self_owned_task(latest_task)
+        )
+        if start_at and offers_initiation and task_deadline_local(latest_task) is not None:
             options.append(("task-initiation", "Task initiation message"))
     return options
 

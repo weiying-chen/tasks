@@ -297,9 +297,20 @@ def format_task_action_prefix(assignee: str, action_text: str) -> str:
     return f"請{format_mention(assignee)}{separator}{action_text}"
 
 
+def is_self_owned_task(task: dict) -> bool:
+    return normalize_person_name(task.get("assigner") or "") == SELF_ASSIGNEE
+
+
+def task_assignment_assignee(task: dict) -> str:
+    assignee = normalize_person_name(get_task_assignee(task) or "")
+    if not assignee and is_self_owned_task(task):
+        return SELF_ASSIGNEE
+    return assignee
+
+
 def format_task_assignment_message(task: dict) -> str:
     task_name = str(task.get("name") or "").strip()
-    assignee = normalize_person_name(get_task_assignee(task) or "")
+    assignee = task_assignment_assignee(task)
     work_minutes = get_task_work_minutes(task)
     content_seconds = get_task_content_seconds(task)
     if not task_name or not assignee:
@@ -335,7 +346,7 @@ def format_task_assignment_message(task: dict) -> str:
 
 def format_task_initiation_message(task: dict) -> str:
     task_name = str(task.get("name") or "").strip()
-    assignee = normalize_person_name(get_task_assignee(task) or "")
+    assignee = task_assignment_assignee(task)
     start_at = str(get_task_start_at(task) or "").strip()
     work_minutes = get_task_work_minutes(task)
     content_seconds = get_task_content_seconds(task)

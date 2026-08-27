@@ -259,6 +259,42 @@ class LatestTaskActionsTests(unittest.TestCase):
             ],
         )
 
+    def test_personal_self_owned_task_offers_assignment_message(self):
+        latest = {
+            "id": "63",
+            "name": "3集大愛真健康（甲 + 乙 + 丙）",
+            "assigner": "Alex Chen",
+            "contentSeconds": 650,
+            "stages": [{"workMinutes": 520}],
+        }
+
+        self.assertEqual(
+            view_latest_task.build_message_target_options(latest, input_file="/tmp/tasks.json"),
+            [
+                ("task-completion", "Task completion message"),
+                ("task-assignment", "Task assignment message"),
+            ],
+        )
+
+    def test_started_personal_self_owned_task_offers_initiation_message(self):
+        latest = {
+            "id": "64",
+            "name": "3集大愛真健康（甲 + 乙 + 丙）",
+            "assigner": "Alex Chen",
+            "contentSeconds": 650,
+            "stages": [
+                {
+                    "startAt": "2026-08-27T01:40:00Z",
+                    "deadline": "2026-08-28T02:20:00Z",
+                    "workMinutes": 520,
+                }
+            ],
+        }
+
+        options = view_latest_task.build_message_target_options(latest, input_file="/tmp/tasks.json")
+
+        self.assertIn(("task-initiation", "Task initiation message"), options)
+
     def test_build_message_target_options_for_coworker_tasks(self):
         latest = {
             "id": "1",

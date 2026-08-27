@@ -407,6 +407,26 @@ class CreateMessageTests(unittest.TestCase):
 
                 self.assertTrue(message.startswith(expected_prefix), message)
 
+    def test_self_owned_personal_task_infers_alex_as_assignee(self):
+        tasks = [
+            {
+                "id": "1",
+                "name": "3集大愛真健康（甲 + 乙 + 丙）",
+                "type": "subs",
+                "contentSeconds": 650,
+                "assigner": "Alex Chen",
+                "stages": [{"workMinutes": 520}],
+            }
+        ]
+
+        message = create_message.create_message(tasks, msg_type="task-assignment")
+
+        self.assertEqual(
+            message,
+            "我接下來要翻譯3集大愛真健康（甲 + 乙 + 丙），片長共10分50秒，"
+            "預計翻譯8時40分，deadline等手上工作完成後再給，謝謝。",
+        )
+
     def test_subs_summary_message_uses_edit_wording_for_edit_stage(self):
         tasks = [
             {
@@ -579,6 +599,32 @@ class CreateMessageTests(unittest.TestCase):
                 message = create_message.create_message(tasks, msg_type="task-initiation")
 
                 self.assertTrue(message.startswith(expected_prefix), message)
+
+    def test_self_owned_personal_initiation_infers_alex_as_assignee(self):
+        tasks = [
+            {
+                "id": "64",
+                "name": "3集大愛真健康（甲 + 乙 + 丙）",
+                "type": "subs",
+                "contentSeconds": 650,
+                "assigner": "Alex Chen",
+                "stages": [
+                    {
+                        "startAt": "2026-08-27T01:40:00Z",
+                        "deadline": "2026-08-28T02:20:00Z",
+                        "workMinutes": 520,
+                    }
+                ],
+            }
+        ]
+
+        message = create_message.create_message(tasks, msg_type="task-initiation", task_id="64")
+
+        self.assertEqual(
+            message,
+            "我接下來要翻譯3集大愛真健康（甲 + 乙 + 丙），片長共10分50秒，"
+            "預計做8時40分，從8/27（四）09:40起算，deadline 8/28（五）10:20，謝謝。",
+        )
 
     def test_subs_initiation_message_uses_edit_wording(self):
         tasks = [
