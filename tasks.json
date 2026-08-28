@@ -1166,9 +1166,34 @@
       {
         "startAt": "2026-08-27T01:40:00Z",
         "deadline": "2026-08-28T02:20:00Z",
-        "workMinutes": 520
+        "workMinutes": 520,
+        "extensions": [
+          {
+            "name": "菲眼科跨合作",
+            "type": "news",
+            "startAt": "2026-08-28T00:06:00Z",
+            "workMinutes": 84,
+            "contentSeconds": 7020,
+            "sourceText": "Alex Chen：菲眼科跨合作 1:57"
+          }
+        ]
       }
     ],
     "sourceText": "請\nAlex Chen 翻譯 3 集大愛真健康，謝謝~\n\n手臂力氣不流失！教你正確推拉發力，提菜、拿東西更有力，保護肩膀不痠痛｜大愛真健康｜功能性訓練｜ 20260416\nhttps://www.youtube.com/watch?v=FKXCP-8UGAk\n00:00-03:30 (3分30秒)\n從沙發起身很吃力？每天5分鐘省力起身方式，讓你起身、站穩不再是負擔｜大愛真健康｜功能性訓練｜ 20260414\nhttps://www.youtube.com/watch?v=tuWnGR5lBLE\n00:00-03:50 (3分50秒)\n生活自理不求人，讓你起身變輕鬆、走路更有自信！｜大愛真健康｜功能性訓練｜ 20260413\nhttps://www.youtube.com/watch?v=lmUU85BXdJI\n00:00-03:30 (3分30秒)"
+  },
+  {
+    "id": "65",
+    "name": "人文講堂(他們不能被遺忘 為所有孩子建構公平的成長機會 - 侯雯琪) 5個短版",
+    "type": "subs",
+    "contentSeconds": 1320,
+    "assigner": "Evelyn",
+    "stages": [
+      {
+        "startAt": "2026-08-28T03:44:00Z",
+        "deadline": "2026-09-01T06:20:00Z",
+        "workMinutes": 1056
+      }
+    ],
+    "sourceText": "請Alex Chen翻譯 人文講堂(他們不能被遺忘 為所有孩子建構公平的成長機會 - 侯雯琪) 5個短版, 長度22分, 預計翻譯17時36分(2天1時36分), 8/28（五）11:44起算, deadline 為9/1(二)14:20, 謝謝！"
   }
 ]
