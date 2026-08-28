@@ -134,6 +134,17 @@ class TextToJsonTests(unittest.TestCase):
         self.assertEqual(get_task_content_seconds(task), 1380)
         self.assertEqual(get_task_type(task), "subs")
 
+    def test_parse_subs_start_time_without_from_prefix(self):
+        text = (
+            "請 Anyone 翻譯人文講堂(他們不能被遺忘 - 侯雯琪) 5個短版, 長度22分, "
+            "預計翻譯17時36分(2天1時36分), 8/28（五）11:44起算, "
+            "deadline 為9/1(二)14:20, 謝謝！"
+        )
+
+        task = text_to_json.parse_source_text(text, [], 2026)[0]
+
+        self.assertEqual(task["stages"][0]["startAt"], "2026-08-28T03:44:00Z")
+
     def test_subs_program_assigner_uses_mapping_only(self):
         text = (
             "請 Someone 翻譯3集精舍日常(淳師父09 如律如儀) 3 個短版, 長度7分, "

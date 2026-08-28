@@ -86,7 +86,7 @@ def parse_subs_input(text: str, year: int, task_id: str):
     work_minutes = int(work.group(1)) * 60 + int(work.group(2) or 0)
 
     start = re.search(
-        r"(?:從|由)\s*(\d{1,2}/\d{1,2})\s*(?:[（(][^）)]*[）)])?\s*(\d{1,2}:\d{2})\s*(?:起算|開始算)",
+        r"(?:(?:從|由)\s*)?(\d{1,2}/\d{1,2})\s*(?:[（(][^）)]*[）)])?\s*(\d{1,2}:\d{2})\s*(?:起算|開始算)",
         text,
     )
     dl = re.search(
