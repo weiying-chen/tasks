@@ -1206,14 +1206,21 @@
             "type": "posts",
             "startAt": "2026-08-31T02:40:00Z",
             "workMinutes": 50,
-            "sourceText": "1.\talex\n8/23環保永續共生息\nhttps://www.daai.tv/master/life-wisdom/P90230360?more=true"
+            "sourceText": "1.\talex\n8/23環保永續共生息\nhttps://www.daai.tv/master/life-wisdom/P90230360?more=true",
+            "notes": [
+              "Added background on the talk at 新民商工 because the event carried important significance, using the linked Da Ai News article as a reference.",
+              "Condensed repeated ideas about protecting Earth to focus on environmental and personal health, and omitted the Thousand-Armed Guanyin reference because encouraging broader participation already conveyed the intended message."
+            ]
           },
           {
             "name": "共濟群生利他行",
             "type": "posts",
             "startAt": "2026-08-31T03:37:00Z",
             "workMinutes": 50,
-            "sourceText": "3.\talex\n8/25 共濟群生利他行\nhttps://www.daai.tv/master/life-wisdom/P90230362?more=true"
+            "sourceText": "3.\talex\n8/25 共濟群生利他行\nhttps://www.daai.tv/master/life-wisdom/P90230362?more=true",
+            "notes": [
+              "Rendered 全球靜思生活營 in the usual house style as “a Tzu Chi training camp,” “a Tzu Chi training camp for entrepreneurs,” or “Tzu Chi’s Jing Si Camp for entrepreneurs,” rather than following the reference wording directly."
+            ]
           },
           {
             "name": "Chinese Medicine Clinic - Relieving Acid Reflux by Managing Stress and Diet (大愛學漢醫 - 胃食道逆流 怎麼吃)",
