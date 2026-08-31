@@ -1191,7 +1191,38 @@
       {
         "startAt": "2026-08-28T03:44:00Z",
         "deadline": "2026-09-01T06:20:00Z",
-        "workMinutes": 1056
+        "workMinutes": 1056,
+        "extensions": [
+          {
+            "name": "尼三線勘災",
+            "type": "news",
+            "startAt": "2026-08-31T00:18:00Z",
+            "workMinutes": 142,
+            "contentSeconds": 10140,
+            "sourceText": "Alex Chen: 尼三線勘災 2:49"
+          },
+          {
+            "name": "環保永續共生息",
+            "type": "posts",
+            "startAt": "2026-08-31T02:40:00Z",
+            "workMinutes": 50,
+            "sourceText": "1.\talex\n8/23環保永續共生息\nhttps://www.daai.tv/master/life-wisdom/P90230360?more=true"
+          },
+          {
+            "name": "共濟群生利他行",
+            "type": "posts",
+            "startAt": "2026-08-31T03:37:00Z",
+            "workMinutes": 50,
+            "sourceText": "3.\talex\n8/25 共濟群生利他行\nhttps://www.daai.tv/master/life-wisdom/P90230362?more=true"
+          },
+          {
+            "name": "Chinese Medicine Clinic - Relieving Acid Reflux by Managing Stress and Diet (大愛學漢醫 - 胃食道逆流 怎麼吃)",
+            "type": "posts",
+            "startAt": "2026-08-31T05:14:00Z",
+            "workMinutes": 50,
+            "sourceText": "2.\t9/25(五)發 alex\nChinese Medicine Clinic - Relieving Acid Reflux by Managing Stress and Diet (大愛學漢醫 - 胃食道逆流 怎麼吃)\nhttps://www.youtube.com/watch?v=AGkAxnlaqQw"
+          }
+        ]
       }
     ],
     "sourceText": "請Alex Chen翻譯 人文講堂(他們不能被遺忘 為所有孩子建構公平的成長機會 - 侯雯琪) 5個短版, 長度22分, 預計翻譯17時36分(2天1時36分), 8/28（五）11:44起算, deadline 為9/1(二)14:20, 謝謝！"
