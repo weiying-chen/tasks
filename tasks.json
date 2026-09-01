@@ -1228,6 +1228,14 @@
             "startAt": "2026-08-31T05:14:00Z",
             "workMinutes": 50,
             "sourceText": "2.\t9/25(五)發 alex\nChinese Medicine Clinic - Relieving Acid Reflux by Managing Stress and Diet (大愛學漢醫 - 胃食道逆流 怎麼吃)\nhttps://www.youtube.com/watch?v=AGkAxnlaqQw"
+          },
+          {
+            "name": "多明尼加發書包",
+            "type": "news",
+            "startAt": "2026-09-01T00:30:00Z",
+            "workMinutes": 100,
+            "contentSeconds": 5760,
+            "sourceText": "Alex Chen: 多明尼加發書包 1:36"
           }
         ]
       }
