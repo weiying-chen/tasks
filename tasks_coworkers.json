@@ -129,5 +129,29 @@
       }
     ],
     "sourceText": "【大愛醫生館】 屈膝不能~膝關節脫位 20260612\nhttps://www.youtube.com/watch?v=dimmNgU1VWw\n08:00-09:29 (1分29秒)\n【大愛醫生館】 腰椎爆裂性骨折 20260611\nhttps://www.youtube.com/watch?v=-y656r5470I\n06:43-08:49 (2分6秒)\n【大愛醫生館】 小隆起 大煩惱 20260610\nhttps://www.youtube.com/watch?v=2hEVVnIQecc\n08:06-09:16 (1分10秒)"
+  },
+  {
+    "id": "7",
+    "name": "3集大愛真健康（正確推拉發力 + 每天5分鐘省力起身方式 + 起身變輕鬆、走路更有自信！）",
+    "type": "subs",
+    "contentSeconds": 650,
+    "assigner": "Alex Chen",
+    "origin": {
+      "file": "tasks.json",
+      "taskId": "64"
+    },
+    "stages": [
+      {
+        "name": "translate",
+        "assignee": "Alex Chen",
+        "workMinutes": 520
+      },
+      {
+        "name": "edit",
+        "assignee": "Elijah Salie",
+        "workMinutes": 260
+      }
+    ],
+    "sourceText": "請\nAlex Chen 翻譯 3 集大愛真健康，謝謝~\n\n手臂力氣不流失！教你正確推拉發力，提菜、拿東西更有力，保護肩膀不痠痛｜大愛真健康｜功能性訓練｜ 20260416\nhttps://www.youtube.com/watch?v=FKXCP-8UGAk\n00:00-03:30 (3分30秒)\n從沙發起身很吃力？每天5分鐘省力起身方式，讓你起身、站穩不再是負擔｜大愛真健康｜功能性訓練｜ 20260414\nhttps://www.youtube.com/watch?v=tuWnGR5lBLE\n00:00-03:50 (3分50秒)\n生活自理不求人，讓你起身變輕鬆、走路更有自信！｜大愛真健康｜功能性訓練｜ 20260413\nhttps://www.youtube.com/watch?v=lmUU85BXdJI\n00:00-03:30 (3分30秒)"
   }
 ]
