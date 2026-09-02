@@ -7,6 +7,17 @@ from task_stages import get_task_content_seconds, get_task_type, get_task_work_m
 
 
 class TextToJsonTests(unittest.TestCase):
+    def test_normalize_task_shape_preserves_origin_link(self):
+        task = {
+            "id": "7",
+            "name": "Linked task",
+            "origin": {"file": "tasks.json", "taskId": "64"},
+        }
+
+        normalized = text_to_json.normalize_task_shape(task)
+
+        self.assertEqual(normalized["origin"], {"file": "tasks.json", "taskId": "64"})
+
     def test_start_iso_uses_displayed_minute_boundary(self):
         taipei = timezone(timedelta(hours=8))
         now = datetime(2026, 8, 17, 13, 26, 58, 851476, tzinfo=taipei)

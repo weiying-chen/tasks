@@ -142,9 +142,18 @@ def ensure_mutable_stage_for_assignment(task: dict, stage_name: str) -> dict:
     return new_stage
 
 
-def assign_task(tasks: list[dict], text: str) -> list[dict]:
+def get_top_level_task(tasks: list[dict], task_id: str | None = None) -> dict:
+    if task_id is None:
+        return get_latest_top_level_task(tasks)
+    for task in tasks:
+        if isinstance(task, dict) and str(task.get("id") or "") == str(task_id):
+            return task
+    raise ValueError(f"No matching top-level task: {task_id}")
+
+
+def assign_task(tasks: list[dict], text: str, task_id: str | None = None) -> list[dict]:
     parsed = parse_assignment_message(text)
-    task = get_latest_top_level_task(tasks)
+    task = get_top_level_task(tasks, task_id=task_id)
     stage = ensure_mutable_stage_for_assignment(task, parsed["stage"])
     task["assigner"] = parsed["assigner"]
     stage["assignee"] = parsed["assignee"]
@@ -201,9 +210,10 @@ def confirm_task_start(
     tasks: list[dict],
     text: str,
     year: int | None = None,
+    task_id: str | None = None,
 ) -> list[dict]:
     parsed = parse_task_start_message(text, year=year)
-    task = get_latest_top_level_task(tasks)
+    task = get_top_level_task(tasks, task_id=task_id)
     stage = get_or_create_current_stage(task)
     assignee = normalize_assignee_key(stage.get("assignee"))
     if not assignee:
@@ -246,6 +256,7 @@ def main():
         default="assignment",
         help="update mode",
     )
+    parser.add_argument("--task-id", help="specific task id to update instead of latest")
     parser.add_argument("text", nargs="?", help="assignment message text")
     args = parser.parse_args()
 
@@ -261,9 +272,9 @@ def main():
 
     try:
         if args.mode == "task-start":
-            updated = confirm_task_start(tasks, args.text)
+            updated = confirm_task_start(tasks, args.text, task_id=args.task_id)
         else:
-            updated = assign_task(tasks, args.text)
+            updated = assign_task(tasks, args.text, task_id=args.task_id)
     except ValueError as exc:
         if args.mode == "task-start":
             raise SystemExit(f"Cannot confirm coworker task start. ({exc})") from exc

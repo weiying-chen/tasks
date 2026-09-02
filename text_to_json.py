@@ -636,6 +636,15 @@ def normalize_task_shape(task):
         normalized["createdDate"] = task["createdDate"]
     if isinstance(task.get("deadlineDate"), str):
         normalized["deadlineDate"] = task["deadlineDate"]
+    origin = task.get("origin")
+    if isinstance(origin, dict):
+        origin_file = origin.get("file")
+        origin_task_id = origin.get("taskId")
+        if isinstance(origin_file, str) and origin_file.strip() and isinstance(origin_task_id, str) and origin_task_id.strip():
+            normalized["origin"] = {
+                "file": origin_file.strip(),
+                "taskId": origin_task_id.strip(),
+            }
     stages = normalize_stages(task)
     if stages:
         normalized["stages"] = stages

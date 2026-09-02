@@ -4,6 +4,21 @@ import assign_task
 
 
 class AssignTaskTests(unittest.TestCase):
+    def test_assign_task_targets_selected_id_instead_of_latest(self):
+        tasks = [
+            {"id": "1", "name": "3集大愛真健康", "contentSeconds": 600, "stages": [{}]},
+            {"id": "2", "name": "3集大愛醫生館", "contentSeconds": 300, "stages": [{}]},
+        ]
+
+        updated = assign_task.assign_task(
+            tasks,
+            "Alex Chen 請 Elijah Salie edit+定稿3集大愛真健康，謝謝~",
+            task_id="1",
+        )
+
+        self.assertEqual(updated[0]["stages"][0]["assignee"], "Elijah Salie")
+        self.assertNotIn("assignee", updated[1]["stages"][0])
+
     def test_assign_task_sets_work_minutes_from_content_seconds(self):
         tasks = [
             {
