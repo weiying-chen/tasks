@@ -1239,6 +1239,22 @@
             "workMinutes": 100,
             "contentSeconds": 5760,
             "sourceText": "Alex Chen: 多明尼加發書包 1:36"
+          },
+          {
+            "name": "尼達定學校勘查",
+            "type": "news",
+            "startAt": "2026-09-02T00:31:00Z",
+            "workMinutes": 119,
+            "contentSeconds": 7920,
+            "sourceText": "Alex Chen：尼達定學校勘查 2:12"
+          },
+          {
+            "name": "菲馬克求學路",
+            "type": "news",
+            "startAt": "2026-09-02T02:34:00Z",
+            "workMinutes": 66,
+            "contentSeconds": 7800,
+            "sourceText": "Alex Chen：菲馬克求學路 2:10"
           }
         ]
       }
