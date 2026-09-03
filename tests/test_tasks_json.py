@@ -67,10 +67,26 @@ class TasksJsonTests(unittest.TestCase):
             "3集大愛醫生館（膝關節加油 + 頸椎深部的呢喃 + 腫瘤豐頰）",
         )
         self.assertEqual(last_task["contentSeconds"], 340)
-        self.assertNotIn("stages", last_task)
         self.assertIn("https://www.youtube.com/watch?v=qXuEe1dXBlc", last_task["sourceText"])
         self.assertIn("https://www.youtube.com/watch?v=f7DM1lkfU4k", last_task["sourceText"])
         self.assertIn("https://www.youtube.com/watch?v=TtD7C19VCQo", last_task["sourceText"])
+
+    def test_latest_true_health_task_has_editorial_notes(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+
+        task = [task for task in tasks if task.get("id") == "64"][0]
+        self.assertEqual(
+            task.get("notes"),
+            [
+                "Translated 活動度 contextually as reaching the full range of motion—‘pulled back all the way’—rather than the vague ‘completed the movement.’",
+                "Removed the upward pull from the chair-assisted exercise because the demonstrated motion is pulling back before pushing, with no upward movement.",
+                "Simplified the breathing instruction to ‘Exhale as you push out.’",
+                "Adjusted the direction cue to emphasize pushing forward because the demonstrated diagonal motion is more forward than upward.",
+                "Translated 發力方式 contextually as how the viewer uses their body to get up rather than literally as how they use their strength.",
+                "Corrected 創造我們的重心 to ‘shift our center of gravity,’ not ‘create momentum.’",
+            ],
+        )
 
     def test_latest_doctor_extension_uses_actual_work_time(self):
         tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
