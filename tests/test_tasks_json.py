@@ -57,6 +57,21 @@ class TasksJsonTests(unittest.TestCase):
         self.assertTrue(alex_stages)
         self.assertTrue(all(stage.get("name") == "translate" for stage in alex_stages))
 
+    def test_latest_coworker_doctor_task_groups_three_episodes(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks_coworkers.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+
+        last_task = [task for task in tasks if "大愛醫生館" in task.get("name", "")][-1]
+        self.assertEqual(
+            last_task["name"],
+            "3集大愛醫生館（膝關節加油 + 頸椎深部的呢喃 + 腫瘤豐頰）",
+        )
+        self.assertEqual(last_task["contentSeconds"], 340)
+        self.assertNotIn("stages", last_task)
+        self.assertIn("https://www.youtube.com/watch?v=qXuEe1dXBlc", last_task["sourceText"])
+        self.assertIn("https://www.youtube.com/watch?v=f7DM1lkfU4k", last_task["sourceText"])
+        self.assertIn("https://www.youtube.com/watch?v=TtD7C19VCQo", last_task["sourceText"])
+
     def test_latest_doctor_extension_uses_actual_work_time(self):
         tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
         tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
