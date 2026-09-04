@@ -1279,9 +1279,51 @@
       {
         "startAt": "2026-09-02T07:57:00Z",
         "deadline": "2026-09-03T08:53:00Z",
-        "workMinutes": 536
+        "workMinutes": 536,
+        "extensions": [
+          {
+            "name": "尼賑災後續",
+            "type": "news",
+            "startAt": "2026-09-02T23:42:00Z",
+            "workMinutes": 150,
+            "contentSeconds": 9780,
+            "sourceText": "Alex Chen：尼賑災後續 2:43"
+          },
+          {
+            "name": "墨爾本齋戒周",
+            "type": "news",
+            "startAt": "2026-09-04T00:03:00Z",
+            "workMinutes": 47,
+            "contentSeconds": 5280,
+            "sourceText": "Alex Chen: 墨爾本齋戒周 1:28"
+          }
+        ]
       }
     ],
     "sourceText": "Alex Chen接下來請Alex翻譯三集慈濟的故事(124_慈濟醫院提前完工 、125_醫院志工服務隊 、126_取消住院保證金 )，長11分9秒，預計做8小時56分，由9/2（三）15:57起算，deadline為9/3(四) 16:53，謝謝。"
+  },
+  {
+    "id": "67",
+    "name": "三集精舍日常(格師父 – 幸福歡喜 做慈濟02、格師父－弟子服其勞 出家03、格師父－外國人師父。語言適應04)",
+    "type": "subs",
+    "contentSeconds": 659,
+    "assigner": "張牧軒 Shawn",
+    "stages": [
+      {
+        "startAt": "2026-09-04T03:10:00Z",
+        "deadline": "2026-09-07T03:58:00Z",
+        "workMinutes": 528,
+        "extensions": [
+          {
+            "name": "They Just Need a Chance (為所有孩子建構公平的成長機會 - 侯雯琪 [3])",
+            "type": "posts",
+            "startAt": "2026-09-04T03:23:00Z",
+            "workMinutes": 30,
+            "sourceText": "They Just Need a Chance (為所有孩子建構公平的成長機會 - 侯雯琪 [3])"
+          }
+        ]
+      }
+    ],
+    "sourceText": "Alex Chen接下來請Alex翻譯三集精舍日常(格師父 – 幸福歡喜 做慈濟02、格師父－弟子服其勞 出家03、格師父－外國人師父。語言適應04)，片長10分59秒，預計做8小時48分，從9/4（五）11:10起算，deadline為9/7(一) 11:58。"
   }
 ]
