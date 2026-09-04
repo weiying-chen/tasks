@@ -461,6 +461,21 @@ class AssignTaskTests(unittest.TestCase):
             },
         )
 
+    def test_parse_task_start_message_accepts_next_translation_qing_you(self):
+        parsed = assign_task.parse_task_start_message(
+            "Alex Chen地球證詞已翻譯完，我接下來要翻譯三集大愛醫生館（膝關節加油 + 頸椎深部的呢喃 + 腫瘤豐頰），"
+            "請Alex再給我deadline，deadline請由9/4(五) 14:24開始算，謝謝。",
+            year=2026,
+        )
+
+        self.assertEqual(
+            parsed,
+            {
+                "name": "三集大愛醫生館（膝關節加油 + 頸椎深部的呢喃 + 腫瘤豐頰）",
+                "startAt": "2026-09-04T06:24:00Z",
+            },
+        )
+
     def test_confirm_task_start_sets_start_and_deadline(self):
         tasks = [
             {

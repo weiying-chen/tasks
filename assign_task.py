@@ -179,7 +179,7 @@ def parse_task_start_message(text: str, year: int | None = None) -> dict[str, st
             r"(?P<hm>\d{1,2}:\d{2})\s*起算"
         ),
         (
-            r"(?:我要)?接著(?:審|翻譯)\s*(?P<name>.+?)\s*，?\s*請.+?deadline\s*，?\s*"
+            r"(?:我接下來要|(?:我要)?接著)(?:審|翻譯)\s*(?P<name>.+?)\s*，?\s*請.+?deadline\s*，?\s*"
             r"deadl(?:ine|ien)請由\s*(?P<md>\d{1,2}/\d{1,2})\s*(?:[（(][^）)]*[）)])?\s*"
             r"(?P<hm>\d{1,2}:\d{2})\s*開始算"
         ),
