@@ -164,7 +164,17 @@
       {
         "name": "translate",
         "assignee": "張牧軒 Shawn",
-        "workMinutes": 272
+        "startAt": "2026-09-04T06:24:00Z",
+        "deadline": "2026-09-07T01:56:00Z",
+        "workMinutes": 272,
+        "extensions": [
+          {
+            "name": "更新人間菩提YouTube",
+            "type": "custom",
+            "workMinutes": 30,
+            "sourceText": "更新人間菩提YouTube 30分"
+          }
+        ]
       }
     ],
     "sourceText": "【大愛醫生館】 膝關節加油 20260625\nhttps://www.youtube.com/watch?v=qXuEe1dXBlc\n06:57-09:02 (2分5秒)\n【大愛醫生館】 頸椎深部的呢喃 20260624\nhttps://www.youtube.com/watch?v=f7DM1lkfU4k\n07:23-09:18 (1分55秒)\n【大愛醫生館】 腫瘤豐頰 20260623\nhttps://www.youtube.com/watch?v=TtD7C19VCQo\n07:44-09:24 (1分40秒)"
