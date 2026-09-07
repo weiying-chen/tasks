@@ -25,6 +25,21 @@ class TasksJsonTests(unittest.TestCase):
         self.assertEqual(task["contentSeconds"], 540)
         self.assertIn("細嚼慢嚥的方法｜日日有新知｜李毅｜20240625", task["sourceText"])
 
+    def test_latest_daily_knowledge_task_has_editorial_notes(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+        task = [task for task in tasks if task.get("id") == "55"][0]
+
+        self.assertEqual(len(task.get("notes", [])), 22)
+        self.assertIn(
+            "Retained ‘no added sugar’ because it is essential to the recommendation about 100% fruit juice.",
+            task["notes"],
+        )
+        self.assertIn(
+            "Clarified that participants were offered 323 grams of cheese pizza to eat freely, not that everyone finished that amount.",
+            task["notes"],
+        )
+
     def test_latest_doctor_task_groups_three_episodes(self):
         tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
         tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
@@ -112,6 +127,22 @@ class TasksJsonTests(unittest.TestCase):
 
         self.assertIsNotNone(extension)
         self.assertEqual(extension.get("workMinutes"), 120)
+
+    def test_nepal_school_recovery_uses_actual_work_time(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+        extension = find_extension_by_name(tasks, "尼校園復原落後")
+
+        self.assertIsNotNone(extension)
+        self.assertEqual(extension.get("workMinutes"), 86)
+
+    def test_chile_winter_aid_uses_actual_work_time(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+        extension = find_extension_by_name(tasks, "智利冬日送暖")
+
+        self.assertIsNotNone(extension)
+        self.assertEqual(extension.get("workMinutes"), 96)
 
     def test_mexico_city_news_work_time_is_two_and_a_half_hours(self):
         tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
@@ -345,6 +376,20 @@ class TasksJsonTests(unittest.TestCase):
             [
                 "Replaced \"I never socialize\" with wording about avoiding business social events so 不應酬 does not imply avoiding social interaction in general.",
                 "Reworked the sentence structure to restore the specific examples of meeting clients, talking to vendors, and checking construction without making the subtitles feel too rushed.",
+            ],
+        )
+
+    def test_cheng_kuang_yu_has_editorial_notes(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+
+        task = [task for task in tasks if task.get("id") == "62"][0]
+        self.assertEqual(
+            task.get("notes"),
+            [
+                "Replaced the literal ‘block your chances’ with the more idiomatic ‘stand in your way.’",
+                "Used ‘putting yourself out there’ instead of ‘putting yourself forward’ for more natural English.",
+                "Reworked ‘everything I've talked about isn't shameless’ as ‘nothing I've described is shameless’ to correct the awkward negative construction.",
             ],
         )
 

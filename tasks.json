@@ -801,6 +801,30 @@
         ]
       }
     ],
+    "notes": [
+      "For the fruit-juice thumbnail, favored the more objective image and toned down the scale reading so it would not be mistaken for study data; avoided imagery that exaggerated the small association or stigmatized body size.",
+      "Retained ‘no added sugar’ because it is essential to the recommendation about 100% fruit juice.",
+      "Added the missing comma after ‘vitamins’ in the list of nutrients.",
+      "Rephrased the question about the drink in the viewer's hand to sound more conversational than ‘exceed that amount.’",
+      "Softened the study findings to describe an association between juice intake and small changes in BMI or weight rather than implying direct causation.",
+      "Reworked ‘drink juice too young’ to clearly mean introducing juice to children at too early an age.",
+      "Explained the whole-fruit and juice comparison clearly instead of relying on the potentially confusing terms ‘solid calories’ and ‘liquid calories.’",
+      "Specified orange juice in the concentration example so the reference to three oranges was clear.",
+      "Used parentheses for the Daily Knowledge closing supers, following the format confirmed with the PM.",
+      "Made the fruit-juice title and introduction more engaging instead of presenting them as a flat informational summary.",
+      "Smoothed the transition from describing cream puffs to introducing the term ‘cream puff body.’",
+      "Formatted quiz answers with a colon rather than a period and removed ‘correct’ when timing was too tight.",
+      "Rephrased the description of someone with a normal weight but a body-fat percentage in the obesity range for more natural English.",
+      "Avoided absolute or stigmatizing descriptions such as ‘store more fat’ and ‘skinny-fat people,’ and added ‘the’ before ‘organs.’",
+      "Avoided labels such as ‘thin people,’ ‘skinny-fat diabetics,’ and ‘obese diabetics,’ using clear person-first descriptions instead.",
+      "Replaced awkward phrases such as ‘moderate meat’ and ‘human trial’ with idiomatic wording, and removed the unnecessary ‘But’ before the 2022 study.",
+      "Toned down the overly graphic thumbnail for the cream-puff-body episode.",
+      "Kept the target audience in mind and avoided using chopsticks as the central example in the English introduction.",
+      "Rendered 增加熱量的攝取 as ‘increase calorie intake’ rather than the overly literal ‘increase energy intake.’",
+      "Avoided repeating ‘diseases’ and did not inaccurately label obesity or fatty liver as diseases in the list of metabolic conditions.",
+      "Clarified that participants were offered 323 grams of cheese pizza to eat freely, not that everyone finished that amount.",
+      "Used ‘recommend’ rather than ‘suggest’ for nutritionists' mindful-eating guidance."
+    ],
     "sourceText": "請\nAlex Chen 翻譯3集日日有新知:\n\n細嚼慢嚥的方法｜日日有新知｜李毅｜20240625\n\n我是泡芙人嗎？怎麼辦？｜日日有新知｜李毅｜ 20231108\n\n100％純果汁和體重的關聯｜日日有新知｜李毅｜20240711\n\n片長共有9分鐘，預計做7小時12分鐘，完成手上的工作再給deadline，感恩~"
   },
   {
@@ -1143,6 +1167,11 @@
         ]
       }
     ],
+    "notes": [
+      "Replaced the literal ‘block your chances’ with the more idiomatic ‘stand in your way.’",
+      "Used ‘putting yourself out there’ instead of ‘putting yourself forward’ for more natural English.",
+      "Reworked ‘everything I've talked about isn't shameless’ as ‘nothing I've described is shameless’ to correct the awkward negative construction."
+    ],
     "sourceText": "請 Alex Chen 翻譯人文講堂(如何成功爭取想要的機會 - 鄭匡宇) 3 個短版, 長度21分, 預計翻譯16時48分(2天48分), 從8/21（五）16:57起算，deadline為8/26(三) 08:45，謝謝！"
   },
   {
@@ -1320,6 +1349,43 @@
             "startAt": "2026-09-04T03:23:00Z",
             "workMinutes": 30,
             "sourceText": "They Just Need a Chance (為所有孩子建構公平的成長機會 - 侯雯琪 [3])"
+          },
+          {
+            "name": "科技弘法善利生",
+            "type": "posts",
+            "startAt": "2026-09-07T00:45:00Z",
+            "workMinutes": 50,
+            "sourceText": "1.\talex\n8/31科技弘法善利生\nhttps://daai.tv/master/life-wisdom/P90230368?more=true"
+          },
+          {
+            "name": "粽串精神法弘揚",
+            "type": "posts",
+            "startAt": "2026-09-07T01:35:00Z",
+            "workMinutes": 50,
+            "sourceText": "4.\talex\n9/3 粽串精神法弘揚\nhttps://daai.tv/master/life-wisdom/P90230371?more=true"
+          },
+          {
+            "name": "Da Ai Journal - Let's Cherish Food (Part 3) (大愛全紀實 - 這樣吃 因為我在乎 [3])",
+            "type": "posts",
+            "startAt": "2026-09-07T02:19:00Z",
+            "workMinutes": 50,
+            "sourceText": "3.\t9/29(二)發 alex\nDa Ai Journal - Let's Cherish Food (Part 3) (大愛全紀實 - 這樣吃 因為我在乎 [3])\nhttps://www.youtube.com/watch?v=Q7y5tuhzlo4"
+          },
+          {
+            "name": "尼校園復原落後",
+            "type": "news",
+            "startAt": "2026-09-07T03:04:00Z",
+            "workMinutes": 86,
+            "contentSeconds": 9240,
+            "sourceText": "Alex Chen: 尼校園復原落後 2:34 (請寫完小編文再開始做)"
+          },
+          {
+            "name": "智利冬日送暖",
+            "type": "news",
+            "startAt": "2026-09-07T05:24:00Z",
+            "workMinutes": 96,
+            "contentSeconds": 8220,
+            "sourceText": "Alex Chen: 智利冬日送暖 2:17 (請寫完小編文再開始做)"
           }
         ]
       }
