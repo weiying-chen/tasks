@@ -95,12 +95,12 @@ def parse_message_datetime(md: str, hm: str, year: int) -> datetime:
 def parse_deadline_transition_message(text: str, year: int | None = None) -> tuple[datetime | None, datetime]:
     target_year = year or datetime.now(TZ_TAIPEI).year
     old_match = re.search(
-        r"deadline\s*由\s*(\d{1,2}/\d{1,2})\s*(?:[（(][^）)]*[）)])?\s*(\d{1,2}:\d{2})",
+        r"deadline\s*(?:由|從)\s*(\d{1,2}/\d{1,2})\s*(?:[（(][^）)]*[）)])?\s*(\d{1,2}:\d{2})",
         text,
         flags=re.I,
     )
     new_match = re.search(
-        r"(?:延後至|提前至)\s*(\d{1,2}/\d{1,2})\s*(?:[（(][^）)]*[）)])?\s*(\d{1,2}:\d{2})",
+        r"(?:延後|提前)(?:至|為)\s*(\d{1,2}/\d{1,2})\s*(?:[（(][^）)]*[）)])?\s*(\d{1,2}:\d{2})",
         text,
         flags=re.I,
     )

@@ -596,6 +596,39 @@ class LatestTaskActionsTests(unittest.TestCase):
             "Success: Confirm deadline extension checked (6/10（三）11:15).",
         )
 
+    def test_confirm_deadline_extension_accepts_conversational_wording(self):
+        task = {
+            "id": "8",
+            "name": "3集大愛醫生館",
+            "stages": [
+                {
+                    "deadline": "2026-09-07T02:26:00Z",
+                    "workMinutes": 272,
+                }
+            ],
+        }
+        clipboard_text = (
+            "Alex Chen因deadline已至，我先加時間\n\n"
+            "翻譯英語新聞 3小時38分\n\n"
+            "翻譯3集大愛醫生館 deadline從 9/7（一）10:26延後為9/7 15:04，"
+            "請Alex再幫我確認，謝謝。"
+        )
+
+        status = view_latest_task.build_confirm_deadline_extension_status(
+            task,
+            clipboard_text,
+            now_local=datetime(2026, 9, 7, 10, 26, tzinfo=timezone(timedelta(hours=8))),
+        )
+
+        self.assertEqual(
+            status,
+            "Success: Confirm deadline extension checked (9/7（一）15:04).",
+        )
+        self.assertEqual(
+            view_latest_task.extract_deadline_extension_subtasks(clipboard_text),
+            [("翻譯英語新聞", 218)],
+        )
+
     def test_extract_deadline_extension_subtasks(self):
         clipboard_text = (
             "因deadline 已至，我先加時間 做其他事時間是 1時35分\n\n"

@@ -436,7 +436,7 @@ def extract_deadline_extension_subtasks(text: str) -> list[tuple[str, int]]:
             continue
         if "做其他事時間是" in line:
             continue
-        match = re.match(r"^(.+?)\s+((?:(\d+)時(?:(\d+)分)?)|(?:(\d+)分))$", line)
+        match = re.match(r"^(.+?)\s+((?:(\d+)(?:小時|時)(?:(\d+)分)?)|(?:(\d+)分))$", line)
         if not match:
             continue
         name = match.group(1).strip()
