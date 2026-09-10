@@ -1296,6 +1296,14 @@
         ]
       }
     ],
+    "notes": [
+      "Identified Wen-chi Hou as Deputy Chief Executive Officer of the Good Shepherd Social Welfare Foundation in the descriptions to emphasize her role and impact.",
+      "Clarified that her New Taipei district director role referred to Good Shepherd at the time of the talk, and identified its Luzhou Youth Center.",
+      "Replaced ‘shine through their strengths’ with the more idiomatic ‘show what they can do.’",
+      "Translated 隔代教養 as ‘children raised by grandparents’ for clearer meaning and more natural English.",
+      "Added the missing subject after the semicolon so both clauses form complete sentences: ‘They weren't incapable; they simply lacked opportunities.’",
+      "Completed the contrast about mild intellectual disability by restoring ‘it's not that they can't do it’ before explaining that they may not understand the questions."
+    ],
     "sourceText": "請Alex Chen翻譯 人文講堂(他們不能被遺忘 為所有孩子建構公平的成長機會 - 侯雯琪) 5個短版, 長度22分, 預計翻譯17時36分(2天1時36分), 8/28（五）11:44起算, deadline 為9/1(二)14:20, 謝謝！"
   },
   {
@@ -1329,6 +1337,16 @@
         ]
       }
     ],
+    "notes": [
+      "Changed the title to ‘Nine Months Ahead of Schedule’ because the hospital was completed nine months early, which does not necessarily mean it opened nine months early.",
+      "Avoided screenshots of groups posing for the camera because they look too staged.",
+      "Requested a reference for the English name of 花蓮醫院, which is distinct from Hualien Tzu Chi Hospital.",
+      "Changed ‘his son and daughter-in-law’ to ‘her son and daughter-in-law’ because the relationship refers to Lin Ying-ju and his wife from his mother's perspective.",
+      "Replaced ‘offering their sincerest heart to society’ with ‘offering their sincerest devotion to society’ to avoid the romantic connotation of offering one's heart.",
+      "Flagged the pool-of-blood sentence as absent from the video and emphasized checking the footage and reference formatting to avoid adding unsupported lines.",
+      "Changed ‘if I didn't know’ to ‘if I never saw her’ to convey that even with money, help was impossible without encountering her.",
+      "Translated 因緣 as ‘circumstances’ because the passage refers to the conditions that came together before Tzu Chi was established."
+    ],
     "sourceText": "Alex Chen接下來請Alex翻譯三集慈濟的故事(124_慈濟醫院提前完工 、125_醫院志工服務隊 、126_取消住院保證金 )，長11分9秒，預計做8小時56分，由9/2（三）15:57起算，deadline為9/3(四) 16:53，謝謝。"
   },
   {
@@ -1355,21 +1373,35 @@
             "type": "posts",
             "startAt": "2026-09-07T00:45:00Z",
             "workMinutes": 50,
-            "sourceText": "1.\talex\n8/31科技弘法善利生\nhttps://daai.tv/master/life-wisdom/P90230368?more=true"
+            "sourceText": "1.\talex\n8/31科技弘法善利生\nhttps://daai.tv/master/life-wisdom/P90230368?more=true",
+            "notes": [
+              "Located Tijuana explicitly in Mexico and clarified that seminar exchanges and free-clinic practice helped dentists there gain experience caring for people with special needs.",
+              "Removed the sections on Tzu Chi's second 60 years and using technology to spread the Dharma to keep the theme focused on medical outreach."
+            ]
           },
           {
             "name": "粽串精神法弘揚",
             "type": "posts",
             "startAt": "2026-09-07T01:35:00Z",
             "workMinutes": 50,
-            "sourceText": "4.\talex\n9/3 粽串精神法弘揚\nhttps://daai.tv/master/life-wisdom/P90230371?more=true"
+            "sourceText": "4.\talex\n9/3 粽串精神法弘揚\nhttps://daai.tv/master/life-wisdom/P90230371?more=true",
+            "notes": [
+              "Removed nonessential time references such as ‘last September’ when the date did not help the story.",
+              "Omitted a person's name when sources differed and the name was unnecessary to understand the story.",
+              "Simplified abstract or lofty language to make the writing direct and easy for a general audience to understand."
+            ]
           },
           {
             "name": "Da Ai Journal - Let's Cherish Food (Part 3) (大愛全紀實 - 這樣吃 因為我在乎 [3])",
             "type": "posts",
             "startAt": "2026-09-07T02:19:00Z",
             "workMinutes": 50,
-            "sourceText": "3.\t9/29(二)發 alex\nDa Ai Journal - Let's Cherish Food (Part 3) (大愛全紀實 - 這樣吃 因為我在乎 [3])\nhttps://www.youtube.com/watch?v=Q7y5tuhzlo4"
+            "sourceText": "3.\t9/29(二)發 alex\nDa Ai Journal - Let's Cherish Food (Part 3) (大愛全紀實 - 這樣吃 因為我在乎 [3])\nhttps://www.youtube.com/watch?v=Q7y5tuhzlo4",
+            "notes": [
+              "Opened with a familiar everyday experience to help viewers connect with the topic.",
+              "Smoothed the transition from individual actions to retailers' practices so the shift was clearer.",
+              "Reworked the ending to cover both individual choices and retailers' practices, since ‘small choices in everyday life’ mainly fit individuals."
+            ]
           },
           {
             "name": "尼校園復原落後",
@@ -1386,10 +1418,59 @@
             "workMinutes": 96,
             "contentSeconds": 8220,
             "sourceText": "Alex Chen: 智利冬日送暖 2:17 (請寫完小編文再開始做)"
+          },
+          {
+            "name": "尼醫門診恢復",
+            "type": "news",
+            "startAt": "2026-09-08T00:28:00Z",
+            "workMinutes": 62,
+            "contentSeconds": 8640,
+            "sourceText": "Alex Chen: 尼醫門診恢復 2:24"
           }
         ]
       }
     ],
+    "notes": [
+      "Removed the trailing episode numbers from the Chinese titles.",
+      "Used ‘Tzu Cheng members’ instead of ‘Faith Corps members,’ following the terminology in earlier files.",
+      "Corrected the Chinese title for 弟子服其勞 出家, which had mistakenly repeated the previous episode's title.",
+      "Translated 回來精舍修行 as ‘become a nun at the Jing Si Abode’ to convey her decision to enter monastic life without implying she had lived there before.",
+      "Used ‘come to the Abode’ in the introduction because ‘return’ could misleadingly suggest she had previously lived there and then left.",
+      "Changed ‘Returning to the Jing Si Abode’ to ‘Coming to the Jing Si Abode’ in the language-adaptation episode to avoid implying an earlier stay without supporting context."
+    ],
     "sourceText": "Alex Chen接下來請Alex翻譯三集精舍日常(格師父 – 幸福歡喜 做慈濟02、格師父－弟子服其勞 出家03、格師父－外國人師父。語言適應04)，片長10分59秒，預計做8小時48分，從9/4（五）11:10起算，deadline為9/7(一) 11:58。"
+  },
+  {
+    "id": "68",
+    "name": "人文講堂(阻力成為社會助力 叛逆青春的蛻變之路 - 成瑋盛) 3 個短版",
+    "type": "subs",
+    "contentSeconds": 1140,
+    "assigner": "Evelyn",
+    "stages": [
+      {
+        "startAt": "2026-09-08T03:02:00Z",
+        "deadline": "2026-09-10T02:14:00Z",
+        "workMinutes": 912,
+        "extensions": [
+          {
+            "name": "菩提迦耶尼哈",
+            "type": "news",
+            "startAt": "2026-09-09T01:11:00Z",
+            "workMinutes": 109,
+            "contentSeconds": 8340,
+            "sourceText": "Alex Chen: 菩提迦耶尼哈 2:19"
+          },
+          {
+            "name": "尼災後復學日",
+            "type": "news",
+            "startAt": "2026-09-10T01:30:00Z",
+            "workMinutes": 120,
+            "contentSeconds": 10440,
+            "sourceText": "Alex Chen: 尼災後復學日 2:54"
+          }
+        ]
+      }
+    ],
+    "sourceText": "請\nAlex Chen 翻譯人文講堂(阻力成為社會助力 叛逆青春的蛻變之路 - 成瑋盛) 3 個短版,  長度19分, 預計翻譯15時12分 (1天7時12分), 從9/8（二）11:02起算, deadline 為9/10(四)10:14, 謝謝！"
   }
 ]

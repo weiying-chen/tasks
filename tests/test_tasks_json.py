@@ -144,6 +144,14 @@ class TasksJsonTests(unittest.TestCase):
         self.assertIsNotNone(extension)
         self.assertEqual(extension.get("workMinutes"), 96)
 
+    def test_nepal_clinic_reopening_uses_actual_work_time(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+        extension = find_extension_by_name(tasks, "尼醫門診恢復")
+
+        self.assertIsNotNone(extension)
+        self.assertEqual(extension.get("workMinutes"), 62)
+
     def test_mexico_city_news_work_time_is_two_and_a_half_hours(self):
         tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
         tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
