@@ -1483,7 +1483,17 @@
       {
         "startAt": "2026-09-10T07:03:00Z",
         "deadline": "2026-09-14T06:15:00Z",
-        "workMinutes": 912
+        "workMinutes": 912,
+        "extensions": [
+          {
+            "name": "尼收容所發放",
+            "type": "news",
+            "startAt": "2026-09-10T23:35:00Z",
+            "workMinutes": 150,
+            "contentSeconds": 9540,
+            "sourceText": "Alex Chen：尼收容所發放 2:39"
+          }
+        ]
       }
     ],
     "sourceText": "請 Alex Chen 翻譯人文講堂(以生命寫歌曲 用音樂說故事 - 蘇世揚暨玫瑰墓樂團) 3 個短版,  長度19分, 預計翻譯15時12分 (1天7時12分),  從9/10（四）15:03起算, deadline 為9/14(一)14:15, 謝謝！"
