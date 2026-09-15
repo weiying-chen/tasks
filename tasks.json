@@ -1512,14 +1512,23 @@
             "type": "posts",
             "startAt": "2026-09-14T01:25:00Z",
             "workMinutes": 50,
-            "sourceText": "7. alex\n6/14福慧美滿代相傳\nhttps://daai.tv/master/life-wisdom/P90230290?p=4"
+            "sourceText": "7. alex\n6/14福慧美滿代相傳\nhttps://daai.tv/master/life-wisdom/P90230290?p=4",
+            "notes": [
+              "Made sure the featured example matched the main theme and the Master's response by using actual Tzu Chi Collegiate Alumni, avoiding a misleading connection between a non-alumna's story and remarks about alumni.",
+              "Used the established terms 'Tzu Chi Collegiate Alumni' or 'a Tzu Chi Collegiate Alumni member' for 慈青學長, 'Tzu Chi collegiate volunteers' for 慈青, and 'Tzu Chi junior volunteers' for 慈少."
+            ]
           },
           {
             "name": "Quote 89",
             "type": "posts",
             "startAt": "2026-09-14T01:58:00Z",
             "workMinutes": 50,
-            "sourceText": "2.\t10/5(一)發 alex\nQuote 89"
+            "sourceText": "2.\t10/5(一)發 alex\nQuote 89",
+            "notes": [
+              "Avoided previewing the quote's message or mentioning 'change,' and instead built toward the later expression of gratitude to teachers.",
+              "Included the full quote at the end of the Chinese copy because the graphic had no Chinese translation, while avoiding unnecessary repetition in English.",
+              "Included the previously published Facebook post link so the reference video or image could be downloaded directly."
+            ]
           },
           {
             "name": "提娃那環保競賽",
@@ -1556,7 +1565,7 @@
           {
             "name": "Helping Youth Give Back (阻力成為社會助力 叛逆青春的蛻變之路 - 成瑋盛 [3])",
             "type": "posts",
-            "startAt": "2026-09-15T03:15:00Z",
+            "startAt": "2026-09-15T02:45:00Z",
             "workMinutes": 30,
             "sourceText": "我做完人文講堂(以生命寫歌曲 用音樂說故事 - 蘇世揚暨玫瑰墓樂團)後，接下來會寫一篇小編文，預計30分鐘：\n\n人文講堂_阻力成為社會助力 叛逆青春的蛻變之路_成瑋盛 [3]"
           }
