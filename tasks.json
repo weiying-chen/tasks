@@ -1366,7 +1366,11 @@
             "type": "posts",
             "startAt": "2026-09-04T03:23:00Z",
             "workMinutes": 30,
-            "sourceText": "They Just Need a Chance (為所有孩子建構公平的成長機會 - 侯雯琪 [3])"
+            "sourceText": "They Just Need a Chance (為所有孩子建構公平的成長機會 - 侯雯琪 [3])",
+            "notes": [
+              "Kept the original story-led opening because it was more engaging.",
+              "Removed the reflective question at the end and closed on the core message with an invitation to hear the story, giving the conclusion more weight for an expert-led program such as Humanities Lectures."
+            ]
           },
           {
             "name": "科技弘法善利生",
@@ -1492,6 +1496,69 @@
             "workMinutes": 150,
             "contentSeconds": 9540,
             "sourceText": "Alex Chen：尼收容所發放 2:39"
+          },
+          {
+            "name": "群力同心護佛鄉",
+            "type": "posts",
+            "startAt": "2026-09-14T00:34:00Z",
+            "workMinutes": 50,
+            "sourceText": "3.\talex\n9/9群力同心護佛鄉\nhttps://www.daai.tv/master/life-wisdom/P90230377?more=true",
+            "notes": [
+              "Focused the post on the hospital's resumption of services and omitted the school's reopening because the surrounding posts already covered the school cleanup and reopening timeline, keeping this installment timely and avoiding repetition."
+            ]
+          },
+          {
+            "name": "福慧美滿代相傳",
+            "type": "posts",
+            "startAt": "2026-09-14T01:25:00Z",
+            "workMinutes": 50,
+            "sourceText": "7. alex\n6/14福慧美滿代相傳\nhttps://daai.tv/master/life-wisdom/P90230290?p=4"
+          },
+          {
+            "name": "Quote 89",
+            "type": "posts",
+            "startAt": "2026-09-14T01:58:00Z",
+            "workMinutes": 50,
+            "sourceText": "2.\t10/5(一)發 alex\nQuote 89"
+          },
+          {
+            "name": "提娃那環保競賽",
+            "type": "news",
+            "startAt": "2026-09-14T02:56:00Z",
+            "workMinutes": 130,
+            "contentSeconds": 8280,
+            "sourceText": "Alex Chen：提娃那環保競賽 2:18 （請寫完小編文再開始做）"
+          },
+          {
+            "name": "計順副市長訪眼",
+            "type": "news",
+            "startAt": "2026-09-14T05:18:00Z",
+            "workMinutes": 42,
+            "contentSeconds": 5340,
+            "sourceText": "Alex Chen：計順副市長訪眼 1:29 （請寫完小編文再開始做）"
+          },
+          {
+            "name": "菲卡普索共善手術",
+            "type": "news",
+            "startAt": "2026-09-14T06:17:00Z",
+            "workMinutes": 110,
+            "contentSeconds": 6960,
+            "sourceText": "Alex Chen：菲卡普索共善手術 1:56 （請寫完小編文再開始做）"
+          },
+          {
+            "name": "瓜發放推好話",
+            "type": "news",
+            "startAt": "2026-09-15T01:24:00Z",
+            "workMinutes": 60,
+            "contentSeconds": 3240,
+            "sourceText": "Alex Chen: 瓜發放推好話 0:54"
+          },
+          {
+            "name": "Helping Youth Give Back (阻力成為社會助力 叛逆青春的蛻變之路 - 成瑋盛 [3])",
+            "type": "posts",
+            "startAt": "2026-09-15T03:15:00Z",
+            "workMinutes": 30,
+            "sourceText": "我做完人文講堂(以生命寫歌曲 用音樂說故事 - 蘇世揚暨玫瑰墓樂團)後，接下來會寫一篇小編文，預計30分鐘：\n\n人文講堂_阻力成為社會助力 叛逆青春的蛻變之路_成瑋盛 [3]"
           }
         ]
       }
