@@ -1573,11 +1573,76 @@
             "type": "posts",
             "startAt": "2026-09-15T02:45:00Z",
             "workMinutes": 30,
-            "sourceText": "我做完人文講堂(以生命寫歌曲 用音樂說故事 - 蘇世揚暨玫瑰墓樂團)後，接下來會寫一篇小編文，預計30分鐘：\n\n人文講堂_阻力成為社會助力 叛逆青春的蛻變之路_成瑋盛 [3]"
+            "sourceText": "我做完人文講堂(以生命寫歌曲 用音樂說故事 - 蘇世揚暨玫瑰墓樂團)後，接下來會寫一篇小編文，預計30分鐘：\n\n人文講堂_阻力成為社會助力 叛逆青春的蛻變之路_成瑋盛 [3]",
+            "notes": [
+              "Avoided focusing on the motorcycle group because saying they caused trouble on motorcycles went beyond the subtitles and narrowed a clip with several examples; instead highlighted how youths who wanted to give back overcame others' distrust and changed their perceptions."
+            ]
           }
         ]
       }
     ],
     "sourceText": "請 Alex Chen 翻譯人文講堂(以生命寫歌曲 用音樂說故事 - 蘇世揚暨玫瑰墓樂團) 3 個短版,  長度19分, 預計翻譯15時12分 (1天7時12分),  從9/10（四）15:03起算, deadline 為9/14(一)14:15, 謝謝！"
+  },
+  {
+    "id": "70",
+    "name": "風月同天(第4集獅子山篇)",
+    "type": "subs",
+    "contentSeconds": 360,
+    "assigner": "Alex Chen",
+    "stages": [
+      {
+        "startAt": "2026-09-16T00:27:00Z",
+        "deadline": "2026-09-16T07:27:00Z",
+        "workMinutes": 360,
+        "extensions": [
+          {
+            "name": "美山火後的力量",
+            "type": "news",
+            "startAt": "2026-09-16T00:24:00Z",
+            "workMinutes": 66,
+            "contentSeconds": 9360,
+            "sourceText": "Alex Chen: 美山火後的力量 2:36"
+          },
+          {
+            "name": "小編文",
+            "type": "posts",
+            "startAt": "2026-09-16T06:46:00Z",
+            "workMinutes": 30,
+            "sourceText": "小編文 30分鐘"
+          }
+        ]
+      }
+    ],
+    "sourceText": "人文講堂(以生命寫歌曲 用音樂說故事 - 蘇世揚暨玫瑰墓樂團) 3 個短版已完成，我要接著翻譯風月同天(第4集獅子山篇)，片長6分鐘，預計做6小時，由9/16（三）8:27起算，deadline為9/16（三）15:27，謝謝。"
+  },
+  {
+    "id": "71",
+    "name": "風月同天(第5集菲律賓1)",
+    "type": "subs",
+    "contentSeconds": 360,
+    "assigner": "Alex Chen",
+    "stages": [
+      {
+        "startAt": "2026-09-17T00:03:00Z",
+        "deadline": "2026-09-17T07:03:00Z",
+        "workMinutes": 360
+      }
+    ],
+    "sourceText": "風月同天(第4集獅子山篇)已完成，我要接著翻譯風月同天(第5集菲律賓1)，片長6分鐘，預計做6小時，由9/17（四）8:03起算，deadline為9/17（四）15:03，謝謝。"
+  },
+  {
+    "id": "72",
+    "name": "風月同天(斯里蘭卡篇)",
+    "type": "subs",
+    "contentSeconds": 360,
+    "assigner": "Alex Chen",
+    "stages": [
+      {
+        "startAt": "2026-09-17T07:03:00Z",
+        "deadline": "2026-09-18T05:03:00Z",
+        "workMinutes": 360
+      }
+    ],
+    "sourceText": "風月同天(第5集菲律賓1)已完成，我要接著翻譯風月同天(斯里蘭卡篇)，片長6分鐘，預計做6小時，由9/17（四）15:03起算，deadline為9/18（五）13:03，謝謝。"
   }
 ]
