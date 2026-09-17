@@ -180,6 +180,16 @@ class TextToJsonTests(unittest.TestCase):
         parsed = text_to_json.parse_source_text(text, [], 2026)
         self.assertEqual(parsed[0]["assigner"], "Alex Chen")
 
+    def test_subs_program_assigner_maps_shared_horizon_to_alex(self):
+        text = (
+            "上一個任務已完成，我要接著翻譯風月同天(第4集獅子山篇)，片長6分鐘，"
+            "預計做6小時，由9/16（三）8:27起算，deadline為9/16（三）15:27，謝謝。"
+        )
+
+        parsed = text_to_json.parse_source_text(text, [], 2026)
+
+        self.assertEqual(parsed[0]["assigner"], "Alex Chen")
+
     def test_subs_program_assigner_preserves_leading_episode_count(self):
         text = (
             "請 Someone 翻譯3集我的阿公阿媽做慈濟, 長度7分, "
@@ -450,6 +460,7 @@ class TextToJsonTests(unittest.TestCase):
             [
                 ("大愛醫生館", "Alex Chen"),
                 ("大愛真健康", "Alex Chen"),
+                ("風月同天", "Alex Chen"),
                 ("我的阿公阿媽做慈濟", "Emily Ding"),
                 ("人文講堂", "Evelyn"),
                 ("心靈講座", "Evelyn"),

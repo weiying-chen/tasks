@@ -1,6 +1,7 @@
 SUBS_PROGRAM_ASSIGNERS = {
     "大愛醫生館": "Alex Chen",
     "大愛真健康": "Alex Chen",
+    "風月同天": "Alex Chen",
     "我的阿公阿媽做慈濟": "Emily Ding",
     "人文講堂": "Evelyn",
     "心靈講座": "Evelyn",
