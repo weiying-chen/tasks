@@ -1665,7 +1665,38 @@
       {
         "startAt": "2026-09-18T05:23:00Z",
         "deadline": "2026-09-21T02:23:00Z",
-        "workMinutes": 360
+        "workMinutes": 360,
+        "extensions": [
+          {
+            "name": "印度阿薩姆發放",
+            "type": "news",
+            "startAt": "2026-09-21T00:35:00Z",
+            "workMinutes": 115,
+            "contentSeconds": 9060,
+            "sourceText": "Alex Chen: 印度阿薩姆發放 2:31"
+          },
+          {
+            "name": "永續慈善愛相連",
+            "type": "posts",
+            "startAt": "2026-09-21T02:40:00Z",
+            "workMinutes": 50,
+            "sourceText": "3.\talex\n9/14 永續慈善愛相連\nhttps://www.daai.tv/master/life-wisdom/P90230382?more=true"
+          },
+          {
+            "name": "無私大愛造福田",
+            "type": "posts",
+            "startAt": "2026-09-21T03:46:00Z",
+            "workMinutes": 50,
+            "sourceText": "4.\talex\n9/15 無私大愛造福田\nhttps://www.daai.tv/master/life-wisdom/P90230383?more=true"
+          },
+          {
+            "name": "Learn Something New Every Day - Helping Apple Trees Survive Drought (日日有新知 - 如何讓蘋果更耐旱)",
+            "type": "posts",
+            "startAt": "2026-09-21T05:38:00Z",
+            "workMinutes": 50,
+            "sourceText": "3.\t10/16(四)發 alex (A、B 選一)\nA)\tLearn Something New Every Day - Helping Apple Trees Survive Drought (日日有新知 - 如何讓蘋果更耐旱)\nhttps://www.youtube.com/watch?v=sciUx7g9ju0"
+          }
+        ]
       }
     ],
     "sourceText": "風月同天(第25集斯里蘭卡篇)已完成，我要接著翻譯風月同天(第46集南馬1)，片長6分鐘，預計做6小時，由9/18（五）13:23起算，deadline為9/21（一）10:23，謝謝。"
