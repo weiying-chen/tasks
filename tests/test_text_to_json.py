@@ -109,6 +109,22 @@ class TextToJsonTests(unittest.TestCase):
         self.assertEqual(len(tasks), 1)
         self.assertEqual(tasks[0]["name"], "墨修女學校")
 
+    def test_parse_news_accepts_missing_duration(self):
+        text = (
+            "早安，新聞分配如下，謝謝大家~\n\n"
+            "9/22\n"
+            "Alex Chen：尼洪災發放\n"
+            "Elijah Salie：雪梨牙醫義診 2:08\n"
+        )
+
+        tasks = text_to_json.parse_news_input(text, 2026, "Alex Chen")
+
+        self.assertEqual(len(tasks), 1)
+        self.assertEqual(tasks[0]["name"], "尼洪災發放")
+        self.assertEqual(get_task_type(tasks[0]), "news")
+        self.assertNotIn("contentSeconds", tasks[0])
+        self.assertNotIn("workMinutes", tasks[0]["stages"][0])
+
     def test_parse_news_accepts_trailing_parenthetical_note(self):
         text = (
             "6/19\n\n"

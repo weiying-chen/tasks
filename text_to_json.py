@@ -156,30 +156,37 @@ def parse_news_input(text: str, year: int, owner_filter: str):
         if date_match:
             continue
 
-        row_match = re.match(r"^([^:：]+)[:：]\s*(.+?)\s*(\d+:\d{2})\s*(?:[（(][^）)]*[）)])?$", line)
+        row_match = re.match(r"^([^:：]+)[:：]\s*(.+?)\s*$", line)
         if not row_match:
             continue
 
         owner = row_match.group(1).strip()
-        name = row_match.group(2).strip()
-        duration = row_match.group(3).strip()
-        if not owner_matches_filter(owner, owner_filter):
+        if normalize_owner_key(owner) != normalize_owner_key(owner_filter):
             continue
 
-        original_minutes = parse_hhmm_to_work_minutes(duration)
-        work_minutes = original_minutes + 20
+        body = row_match.group(2).strip()
+        duration_match = re.match(
+            r"^(.*?)\s*(\d+:\d{2})\s*(?:[（(][^）)]*[）)])?$",
+            body,
+        )
+        name = duration_match.group(1).strip() if duration_match else body
+        if not name:
+            continue
+
+        stage = {
+            "startAt": now_iso,
+        }
         task = {
             "name": name,
             "type": "news",
-            "contentSeconds": original_minutes * 60,
-            "stages": [
-                {
-                    "startAt": now_iso,
-                    "workMinutes": work_minutes,
-                }
-            ],
+            "stages": [stage],
             "sourceText": raw_line,
         }
+        if duration_match:
+            duration = duration_match.group(2).strip()
+            original_minutes = parse_hhmm_to_work_minutes(duration)
+            task["contentSeconds"] = original_minutes * 60
+            stage["workMinutes"] = original_minutes + 20
         tasks.append(task)
 
     return tasks
