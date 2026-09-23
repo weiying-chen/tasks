@@ -1680,21 +1680,34 @@
             "type": "posts",
             "startAt": "2026-09-21T02:40:00Z",
             "workMinutes": 50,
-            "sourceText": "3.\talex\n9/14 永續慈善愛相連\nhttps://www.daai.tv/master/life-wisdom/P90230382?more=true"
+            "sourceText": "3.\talex\n9/14 永續慈善愛相連\nhttps://www.daai.tv/master/life-wisdom/P90230382?more=true",
+            "notes": [
+              "Avoided mentioning dates because the compilation combined footage from September 7, 2026, with the Master's remarks from September 4, 2025.",
+              "Omitted event details and focused directly on the importance of people willingly contributing and inspiring others to continue the effort, an approach that also works when natural sound is unavailable or unsuitable."
+            ]
           },
           {
             "name": "無私大愛造福田",
             "type": "posts",
             "startAt": "2026-09-21T03:46:00Z",
             "workMinutes": 50,
-            "sourceText": "4.\talex\n9/15 無私大愛造福田\nhttps://www.daai.tv/master/life-wisdom/P90230383?more=true"
+            "sourceText": "4.\talex\n9/15 無私大愛造福田\nhttps://www.daai.tv/master/life-wisdom/P90230383?more=true",
+            "notes": [
+              "Used the established English name 'Mariana Ju' for Dominican Republic coordinator 朱慈瑤 instead of romanizing her likely Dharma name as 'Ci-yao.'",
+              "Trimmed the storm-relief details and focused on her personal path into Tzu Chi through her mother-in-law, creating a closer transition to the Master's message about cherishing affinities and benefiting others."
+            ]
           },
           {
             "name": "Learn Something New Every Day - Helping Apple Trees Survive Drought (日日有新知 - 如何讓蘋果更耐旱)",
             "type": "posts",
             "startAt": "2026-09-21T05:38:00Z",
             "workMinutes": 50,
-            "sourceText": "3.\t10/16(四)發 alex (A、B 選一)\nA)\tLearn Something New Every Day - Helping Apple Trees Survive Drought (日日有新知 - 如何讓蘋果更耐旱)\nhttps://www.youtube.com/watch?v=sciUx7g9ju0"
+            "sourceText": "3.\t10/16(四)發 alex (A、B 選一)\nA)\tLearn Something New Every Day - Helping Apple Trees Survive Drought (日日有新知 - 如何讓蘋果更耐旱)\nhttps://www.youtube.com/watch?v=sciUx7g9ju0",
+            "notes": [
+              "Softened the supermarket apple-shortage hook because the video only said apples were becoming harder to grow, avoiding an exaggerated claim that could cause unnecessary concern.",
+              "Referred to a single protein rather than 'some proteins' because only one of the two proteins studied helped improve drought tolerance.",
+              "Described the finding as potentially helping develop drought-tolerant apple varieties in the future instead of implying that drought-resistant trees already exist, balancing accuracy with accessibility."
+            ]
           }
         ]
       }
@@ -1711,9 +1724,59 @@
       {
         "startAt": "2026-09-21T07:48:00Z",
         "deadline": "2026-09-22T05:48:00Z",
-        "workMinutes": 360
+        "workMinutes": 360,
+        "extensions": [
+          {
+            "name": "尼洪災發放",
+            "type": "news",
+            "startAt": "2026-09-22T00:39:00Z",
+            "workMinutes": 141,
+            "contentSeconds": 10740,
+            "sourceText": "Alex Chen：尼洪災發放"
+          }
+        ]
       }
     ],
     "sourceText": "風月同天(第46集南馬1)已完成，我要接著翻譯風月同天(第47集南馬2)，片長6分鐘，預計做6小時，由9/21（一）15:48起算，deadline為9/22（二）13:48，謝謝。"
+  },
+  {
+    "id": "75",
+    "name": "風月同天(第7集智利篇)",
+    "type": "subs",
+    "contentSeconds": 360,
+    "assigner": "Alex Chen",
+    "stages": [
+      {
+        "startAt": "2026-09-22T08:09:00Z",
+        "deadline": "2026-09-23T05:09:00Z",
+        "workMinutes": 300,
+        "extensions": [
+          {
+            "name": "奧莫克為尼",
+            "type": "news",
+            "startAt": "2026-09-23T00:20:00Z",
+            "workMinutes": 40,
+            "contentSeconds": 6240,
+            "sourceText": "Alex Chen: 奧莫克為尼 1:44"
+          }
+        ]
+      }
+    ],
+    "sourceText": "風月同天(第47集南馬2)已完成，我要接著翻譯風月同天(第7集智利篇)，片長6分鐘，預計做5小時，由9/22（二）16:09起算，deadline為9/23（三）13:09，謝謝。"
+  },
+  {
+    "id": "76",
+    "name": "風月同天(第9集厄瓜多篇)",
+    "type": "subs",
+    "contentSeconds": 360,
+    "assigner": "Alex Chen",
+    "stages": [
+      {
+        "startAt": "2026-09-23T05:49:00Z",
+        "deadline": "2026-09-24T01:49:00Z",
+        "workMinutes": 300
+      }
+    ],
+    "sourceText": "風月同天(第7集智利篇)已完成，我要接著翻譯風月同天(第9集厄瓜多篇)，片長6分鐘，預計做5小時，由9/23（三）13:49起算，deadline為9/24（四）9:49，謝謝。"
   }
 ]
