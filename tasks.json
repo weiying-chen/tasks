@@ -1774,7 +1774,25 @@
       {
         "startAt": "2026-09-23T05:49:00Z",
         "deadline": "2026-09-24T01:49:00Z",
-        "workMinutes": 300
+        "workMinutes": 300,
+        "extensions": [
+          {
+            "name": "澳洲做月餅",
+            "type": "news",
+            "startAt": "2026-09-24T00:30:00Z",
+            "workMinutes": 90,
+            "contentSeconds": 7140,
+            "sourceText": "Alex Chen：澳洲做月餅 1:59"
+          },
+          {
+            "name": "中環書軒開幕",
+            "type": "news",
+            "startAt": "2026-09-24T02:05:00Z",
+            "workMinutes": 115,
+            "contentSeconds": 10080,
+            "sourceText": "Alex Chen：中環書軒開幕 2:48"
+          }
+        ]
       }
     ],
     "sourceText": "風月同天(第7集智利篇)已完成，我要接著翻譯風月同天(第9集厄瓜多篇)，片長6分鐘，預計做5小時，由9/23（三）13:49起算，deadline為9/24（四）9:49，謝謝。"
