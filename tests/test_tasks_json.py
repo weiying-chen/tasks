@@ -526,6 +526,71 @@ class TasksJsonTests(unittest.TestCase):
             "Reworked the case manager explanation so the ending emphasizes seamless continuity of care.",
         )
 
+    def test_latest_subtitles_task_uses_actual_finish_time(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+
+        target_task = next(
+            task for task in tasks if task.get("name") == "風月同天(第15集泰北篇)"
+        )
+        stage = target_task["stages"][0]
+        self.assertEqual(stage["workMinutes"], 270)
+        self.assertEqual(stage["deadline"], "2026-09-29T01:44:00Z")
+
+    def test_mozambique_task_uses_previous_completion_time(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+
+        target_task = next(
+            task for task in tasks if task.get("name") == "風月同天(第17集莫三比克1)"
+        )
+        stage = target_task["stages"][0]
+        news = next(
+            extension
+            for extension in stage["extensions"]
+            if extension.get("name") == "菲水患發放"
+        )
+
+        self.assertEqual(target_task["type"], "subs")
+        self.assertEqual(target_task["contentSeconds"], 360)
+        self.assertEqual(target_task["assigner"], "Alex Chen")
+        self.assertEqual(stage["startAt"], "2026-09-29T06:34:00Z")
+        self.assertEqual(stage["deadline"], "2026-09-30T02:04:00Z")
+        self.assertEqual(stage["workMinutes"], 270)
+        self.assertEqual(news["workMinutes"], 79)
+
+    def test_mozambique_two_starts_after_extended_deadline(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+
+        target_task = next(
+            task for task in tasks if task.get("name") == "風月同天(第49集莫三比克2)"
+        )
+        stage = target_task["stages"][0]
+
+        self.assertEqual(target_task["type"], "subs")
+        self.assertEqual(target_task["contentSeconds"], 360)
+        self.assertEqual(target_task["assigner"], "Alex Chen")
+        self.assertEqual(stage["startAt"], "2026-09-30T03:24:00Z")
+        self.assertEqual(stage["deadline"], "2026-09-30T08:54:00Z")
+        self.assertEqual(stage["workMinutes"], 270)
+
+    def test_canada_one_starts_after_mozambique_two(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+
+        target_task = next(
+            task for task in tasks if task.get("name") == "風月同天(第18集加拿大1篇)"
+        )
+        stage = target_task["stages"][0]
+
+        self.assertEqual(target_task["type"], "subs")
+        self.assertEqual(target_task["contentSeconds"], 360)
+        self.assertEqual(target_task["assigner"], "Alex Chen")
+        self.assertEqual(stage["startAt"], "2026-09-30T08:54:00Z")
+        self.assertEqual(stage["deadline"], "2026-10-01T05:24:00Z")
+        self.assertEqual(stage["workMinutes"], 270)
+
 
 if __name__ == "__main__":
     unittest.main()
