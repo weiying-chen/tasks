@@ -1604,7 +1604,7 @@
             "sourceText": "Alex Chen: 美山火後的力量 2:36"
           },
           {
-            "name": "小編文",
+            "name": "人文講堂_以生命寫歌曲，用音樂說故事_蘇世揚暨玫瑰墓樂團 [3]",
             "type": "posts",
             "startAt": "2026-09-16T06:46:00Z",
             "workMinutes": 30,
@@ -1822,14 +1822,21 @@
             "type": "posts",
             "startAt": "2026-09-29T02:00:00Z",
             "workMinutes": 50,
-            "sourceText": "1.\talex\n9/19 誠正信實道業成\nhttps://www.daai.tv/master/life-wisdom/P90230387?more=true"
+            "sourceText": "1.\talex\n9/19 誠正信實道業成\nhttps://www.daai.tv/master/life-wisdom/P90230387?more=true",
+            "notes": [
+              "Kept the original content and structure, tightening awkward or redundant wording and making the phrasing more natural.",
+              "Followed established house style and terminology consistently without changing the angle or adding information."
+            ]
           },
           {
             "name": "向善造福駐祥和",
             "type": "posts",
             "startAt": "2026-09-29T03:08:00Z",
             "workMinutes": 50,
-            "sourceText": "1.\talex\n9/21 向善造福駐祥和\nhttps://www.daai.tv/master/life-wisdom/P90230389?more=true"
+            "sourceText": "1.\talex\n9/21 向善造福駐祥和\nhttps://www.daai.tv/master/life-wisdom/P90230389?more=true",
+            "notes": [
+              "Clarified the cause-and-effect relationships and preserved the specific actions in the Master's message instead of summarizing them too broadly."
+            ]
           }
         ]
       }

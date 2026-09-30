@@ -575,6 +575,59 @@ class TasksJsonTests(unittest.TestCase):
         self.assertEqual(stage["deadline"], "2026-09-30T08:54:00Z")
         self.assertEqual(stage["workMinutes"], 270)
 
+    def test_songwriting_post_uses_specific_clip_name(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+
+        target_task = next(task for task in tasks if task.get("id") == "70")
+        post = next(
+            extension
+            for extension in target_task["stages"][0]["extensions"]
+            if extension.get("type") == "posts"
+        )
+
+        self.assertEqual(
+            post["name"],
+            "人文講堂_以生命寫歌曲，用音樂說故事_蘇世揚暨玫瑰墓樂團 [3]",
+        )
+
+    def test_integrity_post_has_editorial_notes(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+
+        target_task = next(task for task in tasks if task.get("id") == "77")
+        post = next(
+            extension
+            for extension in target_task["stages"][0]["extensions"]
+            if extension.get("name") == "誠正信實道業成"
+        )
+
+        self.assertEqual(
+            post["notes"],
+            [
+                "Kept the original content and structure, tightening awkward or redundant wording and making the phrasing more natural.",
+                "Followed established house style and terminology consistently without changing the angle or adding information.",
+            ],
+        )
+
+    def test_harmonious_society_post_has_editorial_note(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+
+        target_task = next(task for task in tasks if task.get("id") == "77")
+        post = next(
+            extension
+            for extension in target_task["stages"][0]["extensions"]
+            if extension.get("name") == "向善造福駐祥和"
+        )
+
+        self.assertEqual(
+            post["notes"],
+            [
+                "Clarified the cause-and-effect relationships and preserved the specific actions in the Master's message instead of summarizing them too broadly."
+            ],
+        )
+
     def test_canada_one_starts_after_mozambique_two(self):
         tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
         tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
