@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import calendar
 import json
 import os
 import re
@@ -51,15 +52,67 @@ SUBS_SUMMARY_MESSAGE_COPIED_STATUS = "Success: Task assignment message copied to
 CONFIRM_DEADLINE_EXTENSION_STATUS = "Success: Confirm deadline extension checked"
 TASK_INITIATION_MESSAGE_COPIED_STATUS = "Success: Task initiation message copied to clipboard"
 HANDOFF_MESSAGE_COPIED_STATUS = "Success: Task handed off and assignment message copied to clipboard"
+MONTHLY_REVIEW_SUBMITTED_STATUS = "Success: Monthly review marked as submitted"
+REVIEW_REMINDER_DAYS = 5
 STATUS_LABEL_COLORS = {
     "Success": GREEN,
     "Warning": YELLOW,
     "Error": RED,
 }
 
-PERSONAL_ACTIONS = ("t", "h", "e", "n", "v", "q")
+PERSONAL_ACTIONS = ("t", "h", "e", "n", "v", "r", "q")
 COWORKER_ACTIONS = ("t", "a", "s", "d", "q")
-ALL_ACTIONS = ("t", "h", "a", "s", "e", "n", "d", "v", "m", "q")
+ALL_ACTIONS = ("t", "h", "a", "s", "e", "n", "d", "v", "m", "r", "q")
+
+
+def review_state_path() -> Path:
+    configured = os.environ.get("TASKS_REVIEW_STATE")
+    if configured:
+        return Path(configured).expanduser()
+    return Path.home() / ".local" / "state" / "tasks" / "monthly-review.json"
+
+
+def review_month(now_local: datetime) -> str:
+    return now_local.strftime("%Y-%m")
+
+
+def monthly_review_due_date(now_local: datetime) -> datetime:
+    last_day = calendar.monthrange(now_local.year, now_local.month)[1]
+    return now_local.replace(day=last_day, hour=23, minute=59, second=59, microsecond=0)
+
+
+def monthly_review_pending(
+    now_local: datetime, submitted_review_months: set[str]
+) -> bool:
+    due = monthly_review_due_date(now_local)
+    first_reminder_day = due.day - REVIEW_REMINDER_DAYS + 1
+    return (
+        now_local.day >= first_reminder_day
+        and review_month(now_local) not in submitted_review_months
+    )
+
+
+def load_submitted_review_months(path: Path) -> set[str]:
+    if not path.is_file():
+        return set()
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return set()
+    submitted = data.get("submitted") if isinstance(data, dict) else None
+    if not isinstance(submitted, list):
+        return set()
+    return {value for value in submitted if isinstance(value, str) and value}
+
+
+def mark_monthly_review_submitted(path: Path, now_local: datetime) -> None:
+    submitted = load_submitted_review_months(path)
+    submitted.add(review_month(now_local))
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps({"submitted": sorted(submitted)}, indent=2) + "\n",
+        encoding="utf-8",
+    )
 
 
 def fmt_work(minutes: int | None) -> str:
@@ -91,13 +144,19 @@ def allowed_actions_for_mode(mode: str) -> tuple[str, ...]:
     return ALL_ACTIONS
 
 
-def build_actions_line(input_file: str | None = None, selected_task: dict | None = None) -> str:
+def build_actions_line(
+    input_file: str | None = None,
+    selected_task: dict | None = None,
+    review_pending: bool = False,
+) -> str:
     mode = detect_action_mode(input_file)
     allowed = set(allowed_actions_for_mode(mode))
     if build_message_target_options(selected_task, input_file=input_file):
         allowed.add("m")
     if "h" in allowed and not can_handoff_task(selected_task, input_file=input_file):
         allowed.remove("h")
+    if not review_pending:
+        allowed.discard("r")
     labels = {
         "t": color('create ', MAGENTA) + color('t', GREEN) + color('ask', MAGENTA),
         "h": color('h', GREEN) + color('andoff', MAGENTA),
@@ -113,6 +172,7 @@ def build_actions_line(input_file: str | None = None, selected_task: dict | None
         "d": color('confirm ', MAGENTA) + color('d', GREEN) + color('eadline extension', MAGENTA),
         "v": color('toggle ', MAGENTA) + color('v', GREEN) + color('iew notes', MAGENTA),
         "m": color('copy ', MAGENTA) + color('m', GREEN) + color('essage', MAGENTA),
+        "r": color('mark ', MAGENTA) + color('r', GREEN) + color('eview as submitted', MAGENTA),
         "q": color('q', GREEN) + color('uit', MAGENTA),
     }
     order = [key for key in ALL_ACTIONS if key in allowed and not (mode == "personal" and key == "s")]
@@ -796,6 +856,7 @@ def render_task_block(
     show_subtask_notes: bool,
     show_notes: bool,
     show_subtask_assignment_fields: bool,
+    monthly_review_reminder: str | None = None,
 ) -> None:
     created_base = task_base_created_local(task)
     created = next_work_start(created_base) if created_base is not None else None
@@ -822,6 +883,9 @@ def render_task_block(
         if not lines or lines[-1] != '':
             lines.append('')
     else:
+        if monthly_review_reminder:
+            lines.append(color(monthly_review_reminder, YELLOW))
+            lines.append('')
         lines.append(bold('Task'))
         lines.append('')
         lines.append(f'Name: {name}')
@@ -873,6 +937,7 @@ def build_task_view(
     status: str = "",
     show_subtask_notes: bool = False,
     input_file: str | None = None,
+    submitted_review_months: set[str] | None = None,
 ) -> str:
     if now_local is None:
         now_local = datetime.now(TZ_TAIPEI)
@@ -890,8 +955,19 @@ def build_task_view(
             lines.append(color('Selected task is invalid', YELLOW))
         return '\n'.join(lines) + '\n'
 
-    show_notes = detect_action_mode(input_file) != "coworker"
-    show_subtask_assignment_fields = detect_action_mode(input_file) != "coworker"
+    mode = detect_action_mode(input_file)
+    show_notes = mode != "coworker"
+    show_subtask_assignment_fields = mode != "coworker"
+    review_pending = mode == "personal" and monthly_review_pending(
+        now_local, submitted_review_months or set()
+    )
+    review_reminder = None
+    if review_pending:
+        due = monthly_review_due_date(now_local)
+        review_reminder = (
+            f"Monthly review due by {due.strftime('%Y-%m-%d')} "
+            "(not yet submitted)"
+        )
     render_task_block(
         lines,
         selected,
@@ -900,6 +976,7 @@ def build_task_view(
         show_subtask_notes,
         show_notes,
         show_subtask_assignment_fields,
+        review_reminder,
     )
     if status:
         if not lines or lines[-1] != '':
@@ -907,7 +984,11 @@ def build_task_view(
         lines.append(status)
     if not lines or lines[-1] != '':
         lines.append('')
-    lines.append(build_actions_line(input_file, selected_task=selected))
+    lines.append(
+        build_actions_line(
+            input_file, selected_task=selected, review_pending=review_pending
+        )
+    )
     return '\n'.join(lines).rstrip() + '\n'
 
 
@@ -918,6 +999,7 @@ def build_latest_view(
     show_subtask_notes: bool = False,
     input_file: str | None = None,
     program: str | None = None,
+    submitted_review_months: set[str] | None = None,
 ) -> str:
     return build_task_view(
         tasks,
@@ -926,6 +1008,7 @@ def build_latest_view(
         status=status,
         show_subtask_notes=show_subtask_notes,
         input_file=input_file,
+        submitted_review_months=submitted_review_months,
     )
 
 
@@ -963,6 +1046,7 @@ def main():
     args = parser.parse_args()
 
     in_path = resolve_input_path(args.file)
+    monthly_review_state = review_state_path()
 
     show_notes = False
     input_file = str(in_path.resolve())
@@ -978,6 +1062,7 @@ def main():
             status=status,
             show_subtask_notes=show_notes,
             input_file=input_file,
+            submitted_review_months=load_submitted_review_months(monthly_review_state),
         )
 
     if args.once:
@@ -1014,6 +1099,14 @@ def main():
                 if not should_accept_action(ch, last_action, action_at):
                     continue
                 last_action = (ch, action_at)
+                if ch == b"r" and "r" in base_allowed_actions:
+                    now_local = datetime.now(TZ_TAIPEI)
+                    submitted = load_submitted_review_months(monthly_review_state)
+                    if monthly_review_pending(now_local, submitted):
+                        mark_monthly_review_submitted(monthly_review_state, now_local)
+                        status = format_status_text(MONTHLY_REVIEW_SUBMITTED_STATUS)
+                        status_until = time.time() + STATUS_TTL_SECONDS
+                    continue
                 if ch == b"t" and "t" in base_allowed_actions:
                     try:
                         add_proc = subprocess.run(
