@@ -644,6 +644,93 @@ class TasksJsonTests(unittest.TestCase):
         self.assertEqual(stage["deadline"], "2026-10-01T05:24:00Z")
         self.assertEqual(stage["workMinutes"], 270)
 
+    def test_canada_one_has_environmental_class_news_extension(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+
+        target_task = next(
+            task for task in tasks if task.get("name") == "風月同天(第18集加拿大1篇)"
+        )
+        extension = target_task["stages"][0]["extensions"][0]
+
+        self.assertEqual(extension["name"], "尼慈校環教課")
+        self.assertEqual(extension["type"], "news")
+        self.assertEqual(extension["startAt"], "2026-10-01T00:30:00Z")
+        self.assertEqual(extension["workMinutes"], 120)
+        self.assertNotIn("contentSeconds", extension)
+
+    def test_canada_two_starts_after_canada_one_extended_deadline(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+
+        target_task = next(
+            task for task in tasks if task.get("name") == "風月同天(第61集加拿大2)"
+        )
+        stage = target_task["stages"][0]
+
+        self.assertEqual(target_task["type"], "subs")
+        self.assertEqual(target_task["contentSeconds"], 360)
+        self.assertEqual(target_task["assigner"], "Alex Chen")
+        self.assertEqual(stage["startAt"], "2026-10-01T07:24:00Z")
+        self.assertEqual(stage["deadline"], "2026-10-02T02:54:00Z")
+        self.assertEqual(stage["workMinutes"], 270)
+
+    def test_canada_two_philippines_news_uses_actual_finish_time(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+
+        target_task = next(
+            task for task in tasks if task.get("name") == "風月同天(第61集加拿大2)"
+        )
+        earlier_news = next(
+            extension
+            for extension in target_task["stages"][0]["extensions"]
+            if extension.get("name") == "菲校園推素"
+        )
+        latest_news = next(
+            extension
+            for extension in target_task["stages"][0]["extensions"]
+            if extension.get("name") == "巴拉圭發放併"
+        )
+
+        self.assertEqual(earlier_news["startAt"], "2026-10-02T00:38:00Z")
+        self.assertEqual(earlier_news["workMinutes"], 52)
+        self.assertEqual(latest_news["startAt"], "2026-10-02T01:25:00Z")
+        self.assertEqual(latest_news["workMinutes"], 45)
+
+    def test_rose_tomb_lecture_has_editorial_notes(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+
+        target_task = next(task for task in tasks if task.get("id") == "69")
+
+        self.assertEqual(
+            target_task["notes"],
+            [
+                "Included the important detail that the wife wailed when she saw her husband.",
+                "Added a transition to clarify that the hernia surgery had to happen before the transplant could proceed.",
+                "Reworked the ECMO passage for more natural phrasing and a clearer connection to the mother's response.",
+                "Used second-person pronouns in the child's quoted promise because he was speaking directly to his mother.",
+                "Used the first-person pronoun us because the speaker was asking the audience to make a promise to the band.",
+            ],
+        )
+
+    def test_nicaragua_starts_after_canada_two_extended_deadline(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+
+        target_task = next(
+            task for task in tasks if task.get("name") == "風月同天(第19集尼加拉瓜)"
+        )
+        stage = target_task["stages"][0]
+
+        self.assertEqual(target_task["type"], "subs")
+        self.assertEqual(target_task["contentSeconds"], 360)
+        self.assertEqual(target_task["assigner"], "Alex Chen")
+        self.assertEqual(stage["startAt"], "2026-10-02T05:34:00Z")
+        self.assertEqual(stage["deadline"], "2026-10-05T01:04:00Z")
+        self.assertEqual(stage["workMinutes"], 270)
+
 
 if __name__ == "__main__":
     unittest.main()

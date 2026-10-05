@@ -1581,6 +1581,13 @@
         ]
       }
     ],
+    "notes": [
+      "Included the important detail that the wife wailed when she saw her husband.",
+      "Added a transition to clarify that the hernia surgery had to happen before the transplant could proceed.",
+      "Reworked the ECMO passage for more natural phrasing and a clearer connection to the mother's response.",
+      "Used second-person pronouns in the child's quoted promise because he was speaking directly to his mother.",
+      "Used the first-person pronoun us because the speaker was asking the audience to make a promise to the band."
+    ],
     "sourceText": "請 Alex Chen 翻譯人文講堂(以生命寫歌曲 用音樂說故事 - 蘇世揚暨玫瑰墓樂團) 3 個短版,  長度19分, 預計翻譯15時12分 (1天7時12分),  從9/10（四）15:03起算, deadline 為9/14(一)14:15, 謝謝！"
   },
   {
@@ -1893,9 +1900,105 @@
       {
         "startAt": "2026-09-30T08:54:00Z",
         "deadline": "2026-10-01T05:24:00Z",
-        "workMinutes": 270
+        "workMinutes": 270,
+        "extensions": [
+          {
+            "name": "尼慈校環教課",
+            "type": "news",
+            "startAt": "2026-10-01T00:30:00Z",
+            "workMinutes": 120,
+            "sourceText": "Alex Chen：尼慈校環教課"
+          }
+        ]
       }
     ],
     "sourceText": "風月同天(第49集莫三比克2)已完成，我要接著翻譯風月同天(第18集加拿大1篇)，片長6分鐘，預計做4小時30分，由9/30（三）16:54起算，deadline為10/1（四）13:24，謝謝。"
+  },
+  {
+    "id": "81",
+    "name": "風月同天(第61集加拿大2)",
+    "type": "subs",
+    "contentSeconds": 360,
+    "assigner": "Alex Chen",
+    "stages": [
+      {
+        "startAt": "2026-10-01T07:24:00Z",
+        "deadline": "2026-10-02T02:54:00Z",
+        "workMinutes": 270,
+        "extensions": [
+          {
+            "name": "菲校園推素",
+            "type": "news",
+            "startAt": "2026-10-02T00:38:00Z",
+            "workMinutes": 52,
+            "contentSeconds": 5760,
+            "sourceText": "Alex Chen: 菲校園推素 1:36"
+          },
+          {
+            "name": "巴拉圭發放併",
+            "type": "news",
+            "startAt": "2026-10-02T01:25:00Z",
+            "workMinutes": 45,
+            "contentSeconds": 2580,
+            "sourceText": "Alex Chen: 巴拉圭發放併 0:43"
+          }
+        ]
+      }
+    ],
+    "sourceText": "風月同天(第18集加拿大1篇)已完成，我要接著翻譯風月同天(第61集加拿大2)，片長6分鐘，預計做4小時30分，由10/1（四）15:24起算，deadline為10/2（五）10:54，謝謝。"
+  },
+  {
+    "id": "82",
+    "name": "風月同天(第19集尼加拉瓜)",
+    "type": "subs",
+    "contentSeconds": 360,
+    "assigner": "Alex Chen",
+    "stages": [
+      {
+        "startAt": "2026-10-02T05:34:00Z",
+        "deadline": "2026-10-05T01:04:00Z",
+        "workMinutes": 270
+      }
+    ],
+    "sourceText": "風月同天(第61集加拿大2)已完成，我要接著翻譯風月同天(第19集尼加拉瓜)，片長6分鐘，預計做4小時30分，由10/2（五）13:34起算，deadline為10/5（一）9:04，謝謝。"
+  },
+  {
+    "id": "83",
+    "name": "風月同天(第34集泰國2)",
+    "type": "subs",
+    "contentSeconds": 360,
+    "assigner": "Alex Chen",
+    "stages": [
+      {
+        "startAt": "2026-10-05T01:04:00Z",
+        "deadline": "2026-10-05T06:34:00Z",
+        "workMinutes": 270,
+        "extensions": [
+          {
+            "name": "西班牙開放日",
+            "type": "news",
+            "startAt": "2026-10-05T00:23:00Z",
+            "workMinutes": 77,
+            "contentSeconds": 6600,
+            "sourceText": "Alex Chen：西班牙開放日 1:50"
+          },
+          {
+            "name": "靜思智慧愛引航",
+            "type": "posts",
+            "startAt": "2026-10-05T01:40:00Z",
+            "workMinutes": 50,
+            "sourceText": "3.\talex\n9/28靜思智慧愛引航\nhttps://www.daai.tv/master/life-wisdom/P90230396?more=true"
+          },
+          {
+            "name": "愛為志願法弘揚",
+            "type": "posts",
+            "startAt": "2026-10-05T02:22:00Z",
+            "workMinutes": 50,
+            "sourceText": "6. alex\n10/1愛為志願法弘揚\nhttps://www.daai.tv/master/life-wisdom/P90230399?more=true"
+          }
+        ]
+      }
+    ],
+    "sourceText": "風月同天(第19集尼加拉瓜)已完成，我要接著翻譯風月同天(第34集泰國2)，片長6分鐘，預計做4小時30分，由10/5（一）9:04起算，deadline為10/5（一）14:34，謝謝。"
   }
 ]
