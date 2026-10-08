@@ -1,12 +1,54 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 
 WORK_BLOCKS = (
     ((8, 0), (12, 0)),
     ((13, 0), (17, 0)),
 )
+
+# Weekday holidays from the DGPA government-office calendar dataset:
+# https://data.gov.tw/dataset/14718
+TAIWAN_HOLIDAYS = {
+    date(2026, 1, 1),
+    date(2026, 2, 16),
+    date(2026, 2, 17),
+    date(2026, 2, 18),
+    date(2026, 2, 19),
+    date(2026, 2, 20),
+    date(2026, 2, 27),
+    date(2026, 4, 3),
+    date(2026, 4, 6),
+    date(2026, 5, 1),
+    date(2026, 6, 19),
+    date(2026, 9, 25),
+    date(2026, 9, 28),
+    date(2026, 10, 9),
+    date(2026, 10, 26),
+    date(2026, 12, 25),
+    date(2027, 1, 1),
+    date(2027, 2, 4),
+    date(2027, 2, 5),
+    date(2027, 2, 8),
+    date(2027, 2, 9),
+    date(2027, 2, 10),
+    date(2027, 3, 1),
+    date(2027, 4, 5),
+    date(2027, 4, 6),
+    date(2027, 4, 30),
+    date(2027, 6, 9),
+    date(2027, 9, 15),
+    date(2027, 9, 28),
+    date(2027, 10, 11),
+    date(2027, 10, 25),
+    date(2027, 12, 24),
+    date(2027, 12, 31),
+}
+
+# Keep this override available for years whose official calendar designates a
+# Saturday or Sunday as a working day.
+TAIWAN_WEEKEND_WORKDAYS: set[date] = set()
 
 
 def _at_local_time(day: datetime, hm: tuple[int, int]) -> datetime:
@@ -17,11 +59,18 @@ def _is_weekend(day: datetime) -> bool:
     return day.weekday() >= 5
 
 
+def _is_non_workday(day: datetime) -> bool:
+    calendar_date = day.date()
+    if calendar_date in TAIWAN_WEEKEND_WORKDAYS:
+        return False
+    return _is_weekend(day) or calendar_date in TAIWAN_HOLIDAYS
+
+
 def _next_work_start(now: datetime) -> datetime:
     cursor = now
     while True:
         day = cursor.replace(hour=0, minute=0, second=0, microsecond=0)
-        if _is_weekend(day):
+        if _is_non_workday(day):
             cursor = day + timedelta(days=1)
             continue
 
@@ -49,7 +98,7 @@ def add_work_minutes(start: datetime, minutes: int) -> datetime:
 
     while remaining > 0:
         day = cursor.replace(hour=0, minute=0, second=0, microsecond=0)
-        if _is_weekend(day):
+        if _is_non_workday(day):
             cursor = _next_work_start(day + timedelta(days=1))
             continue
 
