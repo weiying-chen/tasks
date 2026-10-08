@@ -731,6 +731,74 @@ class TasksJsonTests(unittest.TestCase):
         self.assertEqual(stage["deadline"], "2026-10-05T01:04:00Z")
         self.assertEqual(stage["workMinutes"], 270)
 
+    def test_haiti_starts_after_thailand_two_extended_deadline(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+
+        target_task = next(
+            task for task in tasks if task.get("name") == "風月同天(第26集海地篇)"
+        )
+        stage = target_task["stages"][0]
+
+        self.assertEqual(target_task["type"], "subs")
+        self.assertEqual(target_task["contentSeconds"], 360)
+        self.assertEqual(target_task["assigner"], "Alex Chen")
+        self.assertEqual(stage["startAt"], "2026-10-06T00:31:00Z")
+        self.assertEqual(stage["deadline"], "2026-10-06T06:01:00Z")
+        self.assertEqual(stage["workMinutes"], 270)
+        latest_news = stage["extensions"][-1]
+        self.assertEqual(latest_news["name"], "迦毘羅衛9月訪視")
+        self.assertEqual(latest_news["startAt"], "2026-10-06T00:34:00Z")
+        self.assertEqual(latest_news["workMinutes"], 86)
+
+    def test_october_first_bodhi_post_has_video_call_note(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+
+        thailand_task = next(
+            task for task in tasks if task.get("name") == "風月同天(第34集泰國2)"
+        )
+        post = next(
+            extension
+            for extension in thailand_task["stages"][0]["extensions"]
+            if extension.get("name") == "愛為志願法弘揚"
+        )
+
+        self.assertEqual(
+            post["notes"],
+            [
+                "Changed 'met' because the principal and teachers of Lumbini Buddhist Tzu Chi School participated via video call rather than meeting in person."
+            ],
+        )
+
+    def test_delivery_driver_entry_starts_after_haiti_extended_deadline(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+
+        target_task = next(
+            task
+            for task in tasks
+            if task.get("name") == "節目中心2026參賽作品(四)-不只是送貨員"
+        )
+        stage = target_task["stages"][0]
+
+        self.assertEqual(target_task["type"], "custom")
+        self.assertEqual(target_task["assigner"], "Alex Chen")
+        self.assertEqual(stage["startAt"], "2026-10-06T07:27:00Z")
+        self.assertEqual(stage["deadline"], "2026-10-08T06:27:00Z")
+        self.assertEqual(stage["workMinutes"], 900)
+        first_news = next(
+            extension
+            for extension in stage["extensions"]
+            if extension.get("name") == "尼努瓦闊看地"
+        )
+        self.assertEqual(first_news["startAt"], "2026-10-07T00:32:00Z")
+        self.assertEqual(first_news["workMinutes"], 118)
+        latest_news = stage["extensions"][-1]
+        self.assertEqual(latest_news["name"], "熊本9月賑災")
+        self.assertEqual(latest_news["startAt"], "2026-10-08T00:35:00Z")
+        self.assertEqual(latest_news["workMinutes"], 115)
+
 
 if __name__ == "__main__":
     unittest.main()

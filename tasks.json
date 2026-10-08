@@ -1994,11 +1994,71 @@
             "type": "posts",
             "startAt": "2026-10-05T02:22:00Z",
             "workMinutes": 50,
-            "sourceText": "6. alex\n10/1愛為志願法弘揚\nhttps://www.daai.tv/master/life-wisdom/P90230399?more=true"
+            "sourceText": "6. alex\n10/1愛為志願法弘揚\nhttps://www.daai.tv/master/life-wisdom/P90230399?more=true",
+            "notes": [
+              "Changed 'met' because the principal and teachers of Lumbini Buddhist Tzu Chi School participated via video call rather than meeting in person."
+            ]
           }
         ]
       }
     ],
     "sourceText": "風月同天(第19集尼加拉瓜)已完成，我要接著翻譯風月同天(第34集泰國2)，片長6分鐘，預計做4小時30分，由10/5（一）9:04起算，deadline為10/5（一）14:34，謝謝。"
+  },
+  {
+    "id": "84",
+    "name": "風月同天(第26集海地篇)",
+    "type": "subs",
+    "contentSeconds": 360,
+    "assigner": "Alex Chen",
+    "stages": [
+      {
+        "startAt": "2026-10-06T00:31:00Z",
+        "deadline": "2026-10-06T06:01:00Z",
+        "workMinutes": 270,
+        "extensions": [
+          {
+            "name": "迦毘羅衛9月訪視",
+            "type": "news",
+            "startAt": "2026-10-06T00:34:00Z",
+            "workMinutes": 86,
+            "contentSeconds": 7920,
+            "sourceText": "Alex Chen：迦毘羅衛9月訪視 2:12"
+          }
+        ]
+      }
+    ],
+    "sourceText": "風月同天(第34集泰國2)已完成，我要接著翻譯風月同天(第26集海地篇)，片長6分鐘，預計做4小時30分，由10/6（二）8:31起算，deadline為10/6（二）14:01，謝謝。"
+  },
+  {
+    "id": "85",
+    "name": "節目中心2026參賽作品(四)-不只是送貨員",
+    "type": "custom",
+    "assigner": "Alex Chen",
+    "stages": [
+      {
+        "startAt": "2026-10-06T07:27:00Z",
+        "deadline": "2026-10-08T06:27:00Z",
+        "workMinutes": 900,
+        "extensions": [
+          {
+            "name": "尼努瓦闊看地",
+            "type": "news",
+            "startAt": "2026-10-07T00:32:00Z",
+            "workMinutes": 118,
+            "contentSeconds": 7500,
+            "sourceText": "Alex Chen：尼努瓦闊看地 2:05"
+          },
+          {
+            "name": "熊本9月賑災",
+            "type": "news",
+            "startAt": "2026-10-08T00:35:00Z",
+            "workMinutes": 115,
+            "contentSeconds": 9420,
+            "sourceText": "Alex Chen: 熊本9月賑災 2:37"
+          }
+        ]
+      }
+    ],
+    "sourceText": "風月同天(第26集海地篇)已完成，我要接著翻譯節目中心2026參賽作品(四)-不只是送貨員，預計做15小時，由10/6（二）15:27起算，deadline為10/8（四）14:27，謝謝。"
   }
 ]
