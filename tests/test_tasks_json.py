@@ -794,10 +794,106 @@ class TasksJsonTests(unittest.TestCase):
         )
         self.assertEqual(first_news["startAt"], "2026-10-07T00:32:00Z")
         self.assertEqual(first_news["workMinutes"], 118)
-        latest_news = stage["extensions"][-1]
-        self.assertEqual(latest_news["name"], "熊本9月賑災")
-        self.assertEqual(latest_news["startAt"], "2026-10-08T00:35:00Z")
-        self.assertEqual(latest_news["workMinutes"], 115)
+        second_news = next(
+            extension
+            for extension in stage["extensions"]
+            if extension.get("name") == "熊本9月賑災"
+        )
+        self.assertEqual(second_news["startAt"], "2026-10-08T00:35:00Z")
+        self.assertEqual(second_news["workMinutes"], 115)
+        latest_news = next(
+            extension
+            for extension in stage["extensions"]
+            if extension.get("name") == "尼第一里造冊"
+        )
+        self.assertEqual(latest_news["name"], "尼第一里造冊")
+        self.assertEqual(latest_news["startAt"], "2026-10-12T00:30:00Z")
+        self.assertEqual(latest_news["workMinutes"], 90)
+        latest_post = next(
+            extension
+            for extension in stage["extensions"]
+            if extension.get("name") == "守護醫療入編年"
+        )
+        self.assertEqual(latest_post["startAt"], "2026-10-12T02:00:00Z")
+        self.assertEqual(latest_post["workMinutes"], 50)
+        self.assertEqual(
+            latest_post["notes"],
+            [
+                "Verified doctors' English names against journal articles when available; otherwise avoided uncertain names by using a generic reference such as 'a doctor.'",
+                "Rephrased the closing away from the Tzu Chi-centered idea of becoming part of Tzu Chi's medical history and toward passing on stories of safeguarding life, while avoiding repetition.",
+            ],
+        )
+        october_seventh_post = next(
+            extension
+            for extension in stage["extensions"]
+            if extension.get("name") == "心開意解常懷恩"
+        )
+        self.assertEqual(
+            october_seventh_post["notes"],
+            [
+                "Used 他 rather than 她 when referring to the Master or Jing Si Abode monastics."
+            ],
+        )
+        afternoon_news = next(
+            extension
+            for extension in stage["extensions"]
+            if extension.get("name") == "美長島義診"
+        )
+        self.assertEqual(afternoon_news["startAt"], "2026-10-12T03:47:00Z")
+        self.assertEqual(afternoon_news["workMinutes"], 73)
+
+    def test_myanmar_starts_after_delivery_driver_extended_deadline(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+
+        target_task = next(
+            task for task in tasks if task.get("name") == "風月同天(第27集緬甸篇)"
+        )
+        stage = target_task["stages"][0]
+
+        self.assertEqual(target_task["type"], "subs")
+        self.assertEqual(target_task["contentSeconds"], 360)
+        self.assertEqual(target_task["assigner"], "Alex Chen")
+        self.assertEqual(stage["startAt"], "2026-10-12T06:43:00Z")
+        self.assertEqual(stage["deadline"], "2026-10-13T02:13:00Z")
+        self.assertEqual(stage["workMinutes"], 270)
+
+    def test_singapore_starts_after_myanmar_extended_deadline(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+
+        target_task = next(
+            task for task in tasks if task.get("name") == "風月同天(第29集新加坡篇)"
+        )
+        stage = target_task["stages"][0]
+
+        self.assertEqual(target_task["type"], "subs")
+        self.assertEqual(target_task["contentSeconds"], 360)
+        self.assertEqual(target_task["assigner"], "Alex Chen")
+        self.assertEqual(stage["startAt"], "2026-10-13T03:13:00Z")
+        self.assertEqual(stage["deadline"], "2026-10-13T08:43:00Z")
+        self.assertEqual(stage["workMinutes"], 270)
+        discussion = stage["extensions"][-1]
+        self.assertEqual(discussion["name"], "翻譯相關說明與討論")
+        self.assertEqual(discussion["type"], "custom")
+        self.assertEqual(discussion["startAt"], "2026-10-13T06:25:00Z")
+        self.assertEqual(discussion["workMinutes"], 30)
+
+    def test_australia_starts_after_singapore_extended_deadline(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+
+        target_task = next(
+            task for task in tasks if task.get("name") == "風月同天(第8集澳洲篇)"
+        )
+        stage = target_task["stages"][0]
+
+        self.assertEqual(target_task["type"], "subs")
+        self.assertEqual(target_task["contentSeconds"], 360)
+        self.assertEqual(target_task["assigner"], "Alex Chen")
+        self.assertEqual(stage["startAt"], "2026-10-14T00:13:00Z")
+        self.assertEqual(stage["deadline"], "2026-10-14T05:43:00Z")
+        self.assertEqual(stage["workMinutes"], 270)
 
 
 if __name__ == "__main__":

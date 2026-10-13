@@ -2055,10 +2055,111 @@
             "workMinutes": 115,
             "contentSeconds": 9420,
             "sourceText": "Alex Chen: 熊本9月賑災 2:37"
+          },
+          {
+            "name": "尼第一里造冊",
+            "type": "news",
+            "startAt": "2026-10-12T00:30:00Z",
+            "workMinutes": 90,
+            "contentSeconds": 8580,
+            "sourceText": "Alex Chen：尼第一里造冊2:23"
+          },
+          {
+            "name": "守護醫療入編年",
+            "type": "posts",
+            "startAt": "2026-10-12T02:00:00Z",
+            "workMinutes": 50,
+            "sourceText": "alex\n10/5 守護醫療入編年\nhttps://www.daai.tv/master/life-wisdom/P90230403?more=true",
+            "notes": [
+              "Verified doctors' English names against journal articles when available; otherwise avoided uncertain names by using a generic reference such as 'a doctor.'",
+              "Rephrased the closing away from the Tzu Chi-centered idea of becoming part of Tzu Chi's medical history and toward passing on stories of safeguarding life, while avoiding repetition."
+            ]
+          },
+          {
+            "name": "心開意解常懷恩",
+            "type": "posts",
+            "startAt": "2026-10-12T03:47:00Z",
+            "workMinutes": 50,
+            "sourceText": "5. alex\n10/7 心開意解常懷恩\nhttps://www.daai.tv/master/life-wisdom/P90230405?more=true",
+            "notes": [
+              "Used 他 rather than 她 when referring to the Master or Jing Si Abode monastics."
+            ]
+          },
+          {
+            "name": "美長島義診",
+            "type": "news",
+            "startAt": "2026-10-12T03:47:00Z",
+            "workMinutes": 73,
+            "contentSeconds": 7440,
+            "sourceText": "Alex Chen：美長島義診 2:04 （請寫完小編文再開始）"
           }
         ]
       }
     ],
     "sourceText": "風月同天(第26集海地篇)已完成，我要接著翻譯節目中心2026參賽作品(四)-不只是送貨員，預計做15小時，由10/6（二）15:27起算，deadline為10/8（四）14:27，謝謝。"
+  },
+  {
+    "id": "86",
+    "name": "風月同天(第27集緬甸篇)",
+    "type": "subs",
+    "contentSeconds": 360,
+    "assigner": "Alex Chen",
+    "stages": [
+      {
+        "startAt": "2026-10-12T06:43:00Z",
+        "deadline": "2026-10-13T02:13:00Z",
+        "workMinutes": 270,
+        "extensions": [
+          {
+            "name": "斯眼鏡發放",
+            "type": "news",
+            "startAt": "2026-10-13T00:29:00Z",
+            "workMinutes": 60,
+            "contentSeconds": 3060,
+            "sourceText": "Alex Chen: 斯眼鏡發放 0:51"
+          }
+        ]
+      }
+    ],
+    "sourceText": "節目中心2026參賽作品(四)-不只是送貨員已完成，我要接著翻譯風月同天(第27集緬甸篇)，片長6分鐘，預計做4小時30分，由10/12（一）14:43起算，deadline為10/13（二）10:13，謝謝。"
+  },
+  {
+    "id": "87",
+    "name": "風月同天(第29集新加坡篇)",
+    "type": "subs",
+    "contentSeconds": 360,
+    "assigner": "Alex Chen",
+    "stages": [
+      {
+        "startAt": "2026-10-13T03:13:00Z",
+        "deadline": "2026-10-13T08:43:00Z",
+        "workMinutes": 270,
+        "extensions": [
+          {
+            "name": "翻譯相關說明與討論",
+            "type": "custom",
+            "startAt": "2026-10-13T06:25:00Z",
+            "workMinutes": 30,
+            "sourceText": "翻譯相關說明與討論"
+          }
+        ]
+      }
+    ],
+    "sourceText": "風月同天(第27集緬甸篇)已完成，我要接著翻譯風月同天(第29集新加坡篇)，片長6分鐘，預計做4小時30分，由10/13（二）11:13起算，deadline為10/13（二）16:43，謝謝。"
+  },
+  {
+    "id": "88",
+    "name": "風月同天(第8集澳洲篇)",
+    "type": "subs",
+    "contentSeconds": 360,
+    "assigner": "Alex Chen",
+    "stages": [
+      {
+        "startAt": "2026-10-14T00:13:00Z",
+        "deadline": "2026-10-14T05:43:00Z",
+        "workMinutes": 270
+      }
+    ],
+    "sourceText": "風月同天(第29集新加坡篇)已完成，我要接著翻譯風月同天(第8集澳洲篇)，片長6分鐘，預計做4小時30分，由10/14（三）8:13起算，deadline為10/14（三）13:43，謝謝。"
   }
 ]
