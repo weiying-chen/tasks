@@ -2161,5 +2161,60 @@
       }
     ],
     "sourceText": "風月同天(第29集新加坡篇)已完成，我要接著翻譯風月同天(第8集澳洲篇)，片長6分鐘，預計做4小時30分，由10/14（三）8:13起算，deadline為10/14（三）13:43，謝謝。"
+  },
+  {
+    "id": "89",
+    "name": "風月同天(第30集荷屬聖馬丁篇)",
+    "type": "subs",
+    "contentSeconds": 360,
+    "assigner": "Alex Chen",
+    "stages": [
+      {
+        "startAt": "2026-10-14T05:43:00Z",
+        "deadline": "2026-10-15T01:13:00Z",
+        "workMinutes": 270,
+        "extensions": [
+          {
+            "name": "菲助腫瘤婦",
+            "type": "news",
+            "startAt": "2026-10-15T00:35:00Z",
+            "workMinutes": 65,
+            "contentSeconds": 6360,
+            "sourceText": "Alex Chen: 菲助腫瘤婦 1:46"
+          }
+        ]
+      }
+    ],
+    "sourceText": "風月同天(第8集澳洲篇)已完成，我要接著翻譯風月同天(第30集荷屬聖馬丁篇)，片長6分鐘，預計做4小時30分，由10/14（三）13:43起算，deadline為10/15（四）9:13，謝謝。"
+  },
+  {
+    "id": "90",
+    "name": "風月同天(第31集墨西哥篇)",
+    "type": "subs",
+    "contentSeconds": 360,
+    "assigner": "Alex Chen",
+    "stages": [
+      {
+        "startAt": "2026-10-15T02:18:00Z",
+        "deadline": "2026-10-15T07:48:00Z",
+        "workMinutes": 270
+      }
+    ],
+    "sourceText": "風月同天(第30集荷屬聖馬丁篇)已完成，我要接著翻譯風月同天(第31集墨西哥篇)，片長6分鐘，預計做4小時30分，由10/15（四）10:18起算，deadline為10/15（四）15:48，謝謝。"
+  },
+  {
+    "id": "91",
+    "name": "風月同天(第32集多明尼加篇)",
+    "type": "subs",
+    "contentSeconds": 360,
+    "assigner": "Alex Chen",
+    "stages": [
+      {
+        "startAt": "2026-10-15T07:48:00Z",
+        "deadline": "2026-10-16T03:18:00Z",
+        "workMinutes": 270
+      }
+    ],
+    "sourceText": "風月同天(第31集墨西哥篇)已完成，我要接著翻譯風月同天(第32集多明尼加篇)，片長6分鐘，預計做4小時30分，由10/15（四）15:48起算，deadline為10/16（五）11:18，謝謝。"
   }
 ]
