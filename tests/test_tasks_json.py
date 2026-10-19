@@ -746,7 +746,11 @@ class TasksJsonTests(unittest.TestCase):
         self.assertEqual(stage["startAt"], "2026-10-06T00:31:00Z")
         self.assertEqual(stage["deadline"], "2026-10-06T06:01:00Z")
         self.assertEqual(stage["workMinutes"], 270)
-        latest_news = stage["extensions"][-1]
+        latest_news = next(
+            extension
+            for extension in stage["extensions"]
+            if extension.get("name") == "迦毘羅衛9月訪視"
+        )
         self.assertEqual(latest_news["name"], "迦毘羅衛9月訪視")
         self.assertEqual(latest_news["startAt"], "2026-10-06T00:34:00Z")
         self.assertEqual(latest_news["workMinutes"], 86)
@@ -912,7 +916,11 @@ class TasksJsonTests(unittest.TestCase):
         self.assertEqual(stage["startAt"], "2026-10-14T05:43:00Z")
         self.assertEqual(stage["deadline"], "2026-10-15T01:13:00Z")
         self.assertEqual(stage["workMinutes"], 270)
-        latest_news = stage["extensions"][-1]
+        latest_news = next(
+            extension
+            for extension in stage["extensions"]
+            if extension.get("name") == "菲助腫瘤婦"
+        )
         self.assertEqual(latest_news["name"], "菲助腫瘤婦")
         self.assertEqual(latest_news["startAt"], "2026-10-15T00:35:00Z")
         self.assertEqual(latest_news["workMinutes"], 65)
@@ -949,6 +957,62 @@ class TasksJsonTests(unittest.TestCase):
         self.assertEqual(target_task["assigner"], "Alex Chen")
         self.assertEqual(stage["startAt"], "2026-10-15T07:48:00Z")
         self.assertEqual(stage["deadline"], "2026-10-16T03:18:00Z")
+        self.assertEqual(stage["workMinutes"], 270)
+
+    def test_hong_kong_uses_provided_start_and_deadline(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+
+        target_task = next(
+            task for task in tasks if task.get("name") == "風月同天(第37集香港篇)"
+        )
+        stage = target_task["stages"][0]
+
+        self.assertEqual(target_task["type"], "subs")
+        self.assertEqual(target_task["contentSeconds"], 360)
+        self.assertEqual(target_task["assigner"], "Alex Chen")
+        self.assertEqual(stage["startAt"], "2026-10-16T06:03:00Z")
+        self.assertEqual(stage["deadline"], "2026-10-19T01:33:00Z")
+        self.assertEqual(stage["workMinutes"], 270)
+        latest_news = next(
+            extension
+            for extension in stage["extensions"]
+            if extension.get("name") == "菲眼醫師獲表揚"
+        )
+        self.assertEqual(latest_news["name"], "菲眼醫師獲表揚")
+        self.assertEqual(latest_news["startAt"], "2026-10-19T00:33:00Z")
+        self.assertEqual(latest_news["workMinutes"], 87)
+        latest_post = next(
+            extension
+            for extension in stage["extensions"]
+            if extension.get("name") == "惜物造福淨心地"
+        )
+        self.assertEqual(latest_post["startAt"], "2026-10-19T02:00:00Z")
+        self.assertEqual(latest_post["workMinutes"], 50)
+        newest_post = next(
+            extension
+            for extension in stage["extensions"]
+            if extension.get("name") == "化度眾生益人間"
+        )
+        self.assertEqual(newest_post["name"], "化度眾生益人間")
+        self.assertEqual(newest_post["type"], "posts")
+        self.assertEqual(newest_post["startAt"], "2026-10-19T02:45:00Z")
+        self.assertEqual(newest_post["workMinutes"], 50)
+
+    def test_vietnam_starts_after_hong_kong_extended_deadline(self):
+        tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
+        tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
+
+        target_task = next(
+            task for task in tasks if task.get("name") == "風月同天(第40集越南篇)"
+        )
+        stage = target_task["stages"][0]
+
+        self.assertEqual(target_task["type"], "subs")
+        self.assertEqual(target_task["contentSeconds"], 360)
+        self.assertEqual(target_task["assigner"], "Alex Chen")
+        self.assertEqual(stage["startAt"], "2026-10-19T07:05:00Z")
+        self.assertEqual(stage["deadline"], "2026-10-20T02:35:00Z")
         self.assertEqual(stage["workMinutes"], 270)
 
 

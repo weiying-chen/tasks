@@ -2216,5 +2216,67 @@
       }
     ],
     "sourceText": "風月同天(第31集墨西哥篇)已完成，我要接著翻譯風月同天(第32集多明尼加篇)，片長6分鐘，預計做4小時30分，由10/15（四）15:48起算，deadline為10/16（五）11:18，謝謝。"
+  },
+  {
+    "id": "92",
+    "name": "風月同天(第37集香港篇)",
+    "type": "subs",
+    "contentSeconds": 360,
+    "assigner": "Alex Chen",
+    "stages": [
+      {
+        "startAt": "2026-10-16T06:03:00Z",
+        "deadline": "2026-10-19T01:33:00Z",
+        "workMinutes": 270,
+        "extensions": [
+          {
+            "name": "菲眼醫師獲表揚",
+            "type": "news",
+            "startAt": "2026-10-19T00:33:00Z",
+            "workMinutes": 87,
+            "contentSeconds": 8160,
+            "sourceText": "Alex Chen：菲眼醫師獲表揚 2:16"
+          },
+          {
+            "name": "惜物造福淨心地",
+            "type": "posts",
+            "startAt": "2026-10-19T02:00:00Z",
+            "workMinutes": 50,
+            "sourceText": "1.\talex\n10/10惜物造福淨心地\nhttps://www.daai.tv/master/life-wisdom/P90230408?more=true"
+          },
+          {
+            "name": "化度眾生益人間",
+            "type": "posts",
+            "startAt": "2026-10-19T02:45:00Z",
+            "workMinutes": 50,
+            "sourceText": "7. alex\n10/16\nhttps://www.daai.tv/master/life-wisdom/P90230414"
+          },
+          {
+            "name": "伊普高中教素食",
+            "type": "news",
+            "startAt": "2026-10-19T03:35:00Z",
+            "workMinutes": 85,
+            "contentSeconds": 7740,
+            "sourceText": "Alex Chen：伊普高中教素食 2:09"
+          }
+        ]
+      }
+    ],
+    "sourceText": "風月同天(第32集多明尼加篇)已完成，我要接著翻譯風月同天(第37集香港篇)，片長6分鐘，預計做4小時30分，由10/16（五）14:03起算，deadline為10/19（一）9:33，謝謝。"
+  },
+  {
+    "id": "93",
+    "name": "風月同天(第40集越南篇)",
+    "type": "subs",
+    "contentSeconds": 360,
+    "assigner": "Alex Chen",
+    "stages": [
+      {
+        "startAt": "2026-10-19T07:05:00Z",
+        "deadline": "2026-10-20T02:35:00Z",
+        "workMinutes": 270
+      }
+    ],
+    "sourceText": "風月同天(第37集香港篇)已完成，我要接著翻譯風月同天(第40集越南篇)，片長6分鐘，預計做4小時30分，由10/19（一）15:05起算，deadline為10/20（二）10:35，謝謝。"
   }
 ]
