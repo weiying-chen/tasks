@@ -2274,9 +2274,34 @@
       {
         "startAt": "2026-10-19T07:05:00Z",
         "deadline": "2026-10-20T02:35:00Z",
-        "workMinutes": 270
+        "workMinutes": 270,
+        "extensions": [
+          {
+            "name": "智利百戶送暖",
+            "type": "news",
+            "startAt": "2026-10-20T00:30:00Z",
+            "workMinutes": 120,
+            "contentSeconds": 7200,
+            "sourceText": "Alex Chen: 智利百戶送暖 2:00"
+          }
+        ]
       }
     ],
     "sourceText": "風月同天(第37集香港篇)已完成，我要接著翻譯風月同天(第40集越南篇)，片長6分鐘，預計做4小時30分，由10/19（一）15:05起算，deadline為10/20（二）10:35，謝謝。"
+  },
+  {
+    "id": "94",
+    "name": "風月同天(第41集葡萄牙篇)",
+    "type": "subs",
+    "contentSeconds": 720,
+    "assigner": "Alex Chen",
+    "stages": [
+      {
+        "startAt": "2026-10-20T05:35:00Z",
+        "deadline": "2026-10-21T01:05:00Z",
+        "workMinutes": 270
+      }
+    ],
+    "sourceText": "風月同天(第40集越南篇)已完成，我要接著翻譯風月同天(第41集葡萄牙篇)，片長12分鐘，預計做4小時30分，由10/20（二）13:35起算，deadline為10/21（三）9:05，謝謝。"
   }
 ]
