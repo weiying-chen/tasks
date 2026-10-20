@@ -2242,14 +2242,20 @@
             "type": "posts",
             "startAt": "2026-10-19T02:00:00Z",
             "workMinutes": 50,
-            "sourceText": "1.\talex\n10/10惜物造福淨心地\nhttps://www.daai.tv/master/life-wisdom/P90230408?more=true"
+            "sourceText": "1.\talex\n10/10惜物造福淨心地\nhttps://www.daai.tv/master/life-wisdom/P90230408?more=true",
+            "notes": [
+              "Simplified the conclusion by trimming abstract, stacked ideas and keeping the takeaway practical and accessible."
+            ]
           },
           {
             "name": "化度眾生益人間",
             "type": "posts",
             "startAt": "2026-10-19T02:45:00Z",
             "workMinutes": 50,
-            "sourceText": "7. alex\n10/16\nhttps://www.daai.tv/master/life-wisdom/P90230414"
+            "sourceText": "7. alex\n10/16\nhttps://www.daai.tv/master/life-wisdom/P90230414",
+            "notes": [
+              "Clarified that “Education is not only about imparting knowledge, but also about being there for students” was Lu Xiwen’s reflection."
+            ]
           },
           {
             "name": "伊普高中教素食",
