@@ -2305,9 +2305,49 @@
       {
         "startAt": "2026-10-20T05:35:00Z",
         "deadline": "2026-10-21T01:05:00Z",
-        "workMinutes": 270
+        "workMinutes": 270,
+        "extensions": [
+          {
+            "name": "約堡蔬食市集",
+            "type": "news",
+            "startAt": "2026-10-21T00:31:00Z",
+            "workMinutes": 99,
+            "contentSeconds": 7200,
+            "sourceText": "Alex Chen：約堡蔬食市集 2:00"
+          }
+        ]
       }
     ],
     "sourceText": "風月同天(第40集越南篇)已完成，我要接著翻譯風月同天(第41集葡萄牙篇)，片長12分鐘，預計做4小時30分，由10/20（二）13:35起算，deadline為10/21（三）9:05，謝謝。"
+  },
+  {
+    "id": "95",
+    "name": "風月同天(第42集瓜地馬拉篇)",
+    "type": "subs",
+    "contentSeconds": 360,
+    "assigner": "Alex Chen",
+    "stages": [
+      {
+        "startAt": "2026-10-21T02:44:00Z",
+        "deadline": "2026-10-21T08:14:00Z",
+        "workMinutes": 270
+      }
+    ],
+    "sourceText": "風月同天(第41集葡萄牙篇)已完成，我要接著翻譯風月同天(第42集瓜地馬拉篇)，片長6分鐘，預計做4小時30分，由10/21（三）10:44起算，deadline為10/21（三）16:14，謝謝。"
+  },
+  {
+    "id": "96",
+    "name": "風月同天(第48集柬埔寨篇)",
+    "type": "subs",
+    "contentSeconds": 360,
+    "assigner": "Alex Chen",
+    "stages": [
+      {
+        "startAt": "2026-10-21T08:14:00Z",
+        "deadline": "2026-10-22T03:44:00Z",
+        "workMinutes": 270
+      }
+    ],
+    "sourceText": "風月同天(第42集瓜地馬拉篇)已完成，我要接著翻譯風月同天(第48集柬埔寨篇)，片長6分鐘，預計做4小時30分，由10/21（三）16:14起算，deadline為10/22（四）11:44，謝謝。"
   }
 ]
