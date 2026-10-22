@@ -2345,7 +2345,17 @@
       {
         "startAt": "2026-10-21T08:14:00Z",
         "deadline": "2026-10-22T03:44:00Z",
-        "workMinutes": 270
+        "workMinutes": 270,
+        "extensions": [
+          {
+            "name": "西雅圖慈濟33年",
+            "type": "news",
+            "startAt": "2026-10-22T00:27:00Z",
+            "workMinutes": 90,
+            "contentSeconds": 5040,
+            "sourceText": "Alex Chen: 西雅圖慈濟33年 1:24"
+          }
+        ]
       }
     ],
     "sourceText": "風月同天(第42集瓜地馬拉篇)已完成，我要接著翻譯風月同天(第48集柬埔寨篇)，片長6分鐘，預計做4小時30分，由10/21（三）16:14起算，deadline為10/22（四）11:44，謝謝。"
