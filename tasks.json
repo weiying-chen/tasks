@@ -2376,10 +2376,71 @@
     "stages": [
       {
         "startAt": "2026-10-22T07:00:00Z",
-        "deadline": "2026-10-23T02:30:00Z",
+        "deadline": "2026-10-27T02:30:00Z",
+        "workMinutes": 270,
+        "extensions": [
+          {
+            "name": "提娃那義診",
+            "type": "news",
+            "startAt": "2026-10-27T00:35:00Z",
+            "workMinutes": 95,
+            "sourceText": "10/27 Alex Chen：提娃那義診（實際作業1小時35分）"
+          },
+          {
+            "name": "美墨青年傳愛",
+            "type": "news",
+            "startAt": "2026-10-27T02:04:00Z",
+            "workMinutes": 146,
+            "contentSeconds": 10320,
+            "sourceText": "Alex Chen: 美墨青年傳愛 2:52（實際作業2小時26分，至13:30完成）"
+          },
+          {
+            "name": "志為人師覺有情",
+            "type": "posts",
+            "startAt": "2026-10-27T05:33:00Z",
+            "workMinutes": 50,
+            "sourceText": "4.\talex\n10/20 志為人師覺有情\nhttps://www.daai.tv/master/life-wisdom/P90230418?more=true"
+          },
+          {
+            "name": "愛心店家啟善念",
+            "type": "posts",
+            "startAt": "2026-10-27T06:23:00Z",
+            "workMinutes": 50,
+            "sourceText": "5. alex\n10/21 愛心店家啟善念\nhttps://www.daai.tv/master/life-wisdom/P90230419?more=true"
+          }
+        ]
+      }
+    ],
+    "sourceText": "風月同天(第48集柬埔寨篇)已完成，我要接著翻譯風月同天(第50集塞爾維亞篇)，片長6分鐘，預計做4小時30分，由10/22（四）15:00起算，因10/23（五）為颱風假、10/26（一）為假日，deadline為10/27（二）10:30，謝謝。"
+  },
+  {
+    "id": "98",
+    "name": "風月同天(第51集德國篇)",
+    "type": "subs",
+    "contentSeconds": 720,
+    "assigner": "Alex Chen",
+    "stages": [
+      {
+        "startAt": "2026-10-28T00:11:00Z",
+        "deadline": "2026-10-28T05:41:00Z",
         "workMinutes": 270
       }
     ],
-    "sourceText": "風月同天(第48集柬埔寨篇)已完成，我要接著翻譯風月同天(第50集塞爾維亞篇)，片長6分鐘，預計做4小時30分，由10/22（四）15:00起算，deadline為10/23（五）10:30，謝謝。"
+    "sourceText": "風月同天(第50集塞爾維亞篇)已完成，我要接著翻譯風月同天(第51集德國篇)，片長12分鐘，預計做4小時30分，由10/28（三）8:11起算，deadline為10/28（三）13:41，謝謝。"
+  },
+  {
+    "id": "99",
+    "name": "風月同天(第52集菲律賓2)",
+    "type": "subs",
+    "contentSeconds": 360,
+    "assigner": "Alex Chen",
+    "stages": [
+      {
+        "startAt": "2026-10-28T05:41:00Z",
+        "deadline": "2026-10-29T01:11:00Z",
+        "workMinutes": 270
+      }
+    ],
+    "sourceText": "風月同天(第51集德國篇)已完成，我要接著翻譯風月同天(第52集菲律賓2)，片長6分鐘，預計做4小時30分，由10/28（三）13:41起算，deadline為10/29（四）9:11，謝謝。"
   }
 ]
