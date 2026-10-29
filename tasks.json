@@ -2438,7 +2438,25 @@
       {
         "startAt": "2026-10-28T05:41:00Z",
         "deadline": "2026-10-29T01:11:00Z",
-        "workMinutes": 270
+        "workMinutes": 270,
+        "extensions": [
+          {
+            "name": "雪隆照顧戶回饋",
+            "type": "news",
+            "startAt": "2026-10-29T00:22:00Z",
+            "workMinutes": 110,
+            "contentSeconds": 6900,
+            "sourceText": "Alex Chen: 雪隆照顧戶回饋 1:55"
+          },
+          {
+            "name": "百歲鋤草阿公",
+            "type": "news",
+            "startAt": "2026-10-29T01:52:00Z",
+            "workMinutes": 188,
+            "contentSeconds": 18060,
+            "sourceText": "Alex Chen: 百歲鋤草阿公 5:01（實際作業3小時8分，至14:00完成）"
+          }
+        ]
       }
     ],
     "sourceText": "風月同天(第51集德國篇)已完成，我要接著翻譯風月同天(第52集菲律賓2)，片長6分鐘，預計做4小時30分，由10/28（三）13:41起算，deadline為10/29（四）9:11，謝謝。"
