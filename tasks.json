@@ -2571,9 +2571,75 @@
       {
         "startAt": "2026-11-03T08:11:00Z",
         "deadline": "2026-11-04T03:41:00Z",
-        "workMinutes": 270
+        "workMinutes": 270,
+        "extensions": [
+          {
+            "name": "美女性回饋社會",
+            "type": "news",
+            "startAt": "2026-11-04T00:32:00Z",
+            "workMinutes": 58,
+            "contentSeconds": 8640,
+            "sourceText": "Alex Chen: 美女性回饋社會 2:24（實際作業58分，至9:30完成）"
+          },
+          {
+            "name": "菲共善義賣",
+            "type": "news",
+            "startAt": "2026-11-04T01:42:00Z",
+            "workMinutes": 48,
+            "contentSeconds": 4920,
+            "sourceText": "Alex Chen: 菲共善義賣 1:22（實際作業48分，至10:30完成）"
+          }
+        ]
       }
     ],
     "sourceText": "風月同天(第53集義大利篇)已完成，我要接著翻譯風月同天(宏都拉斯篇)，片長6分鐘，預計做4小時30分，由11/3（二）16:11起算，deadline為11/4（三）11:41，謝謝。"
+  },
+  {
+    "id": "103",
+    "name": "風月同天(巴西篇)",
+    "type": "subs",
+    "contentSeconds": 360,
+    "assigner": "Alex Chen",
+    "stages": [
+      {
+        "startAt": "2026-11-04T06:27:00Z",
+        "deadline": "2026-11-05T01:57:00Z",
+        "workMinutes": 270,
+        "extensions": [
+          {
+            "name": "尼受證薩金娜",
+            "type": "news",
+            "startAt": "2026-11-05T00:31:00Z",
+            "workMinutes": 139,
+            "contentSeconds": 10440,
+            "sourceText": "Alex Chen: 尼受證薩金娜 2:54（實際作業2小時19分，至10:50完成）"
+          },
+          {
+            "name": "美修繕小站時尚",
+            "type": "news",
+            "startAt": "2026-11-05T02:44:00Z",
+            "workMinutes": 60,
+            "contentSeconds": 13080,
+            "sourceText": "Alex Chen: 美修繕小站時尚 3:38（實際作業1小時）"
+          }
+        ]
+      }
+    ],
+    "sourceText": "風月同天(宏都拉斯篇)已完成，我要接著翻譯風月同天(巴西篇)，片長6分鐘，預計做4小時30分，由11/4（三）14:27起算，deadline為11/5（四）9:57，謝謝。"
+  },
+  {
+    "id": "104",
+    "name": "風月同天(第58集美國美東篇)",
+    "type": "subs",
+    "contentSeconds": 360,
+    "assigner": "Alex Chen",
+    "stages": [
+      {
+        "startAt": "2026-11-05T06:16:00Z",
+        "deadline": "2026-11-06T01:46:00Z",
+        "workMinutes": 270
+      }
+    ],
+    "sourceText": "風月同天(巴西篇)已完成，我要接著翻譯風月同天(第58集美國美東篇)，片長6分鐘，預計做4小時30分，由11/5（四）14:16起算，deadline為11/6（五）9:46，謝謝。"
   }
 ]
