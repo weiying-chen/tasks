@@ -2637,9 +2637,115 @@
       {
         "startAt": "2026-11-05T06:16:00Z",
         "deadline": "2026-11-06T01:46:00Z",
-        "workMinutes": 270
+        "workMinutes": 270,
+        "extensions": [
+          {
+            "name": "努瓦闊發放",
+            "type": "news",
+            "startAt": "2026-11-06T00:00:00Z",
+            "workMinutes": 90,
+            "contentSeconds": 112,
+            "sourceText": "Alex Chen: 努瓦闊發放 1:52"
+          },
+          {
+            "name": "尼受證阿南達",
+            "type": "news",
+            "startAt": "2026-11-06T01:30:00Z",
+            "workMinutes": 114,
+            "contentSeconds": 142,
+            "sourceText": "Alex Chen: 尼受證阿南達 2:22"
+          }
+        ]
       }
     ],
     "sourceText": "風月同天(巴西篇)已完成，我要接著翻譯風月同天(第58集美國美東篇)，片長6分鐘，預計做4小時30分，由11/5（四）14:16起算，deadline為11/6（五）9:46，謝謝。"
+  },
+  {
+    "id": "105",
+    "name": "風月同天(第59集美國美西篇)",
+    "type": "subs",
+    "contentSeconds": 360,
+    "assigner": "Alex Chen",
+    "stages": [
+      {
+        "startAt": "2026-11-09T02:50:00Z",
+        "deadline": "2026-11-09T08:20:00Z",
+        "workMinutes": 270,
+        "extensions": [
+          {
+            "name": "篤志如法向永恆",
+            "type": "posts",
+            "startAt": "2026-11-09T03:14:00Z",
+            "workMinutes": 50,
+            "sourceText": "2.\talex\n11/1篤志如法向永恆\nhttps://www.daai.tv/master/life-wisdom/P90230430?more=true",
+            "notes": [
+              "Focused the story on volunteers’ and Tzu Chi International Medical Association (TIMA) physicians’ care and medical clinics, showing how refugees can receive care abroad, and on the Master’s gratitude for their service. Omitted the later general encouragement to keep the story focused, distinctive, and warm."
+            ]
+          },
+          {
+            "name": "慈悲濟世志一同",
+            "type": "posts",
+            "startAt": "2026-11-09T03:14:00Z",
+            "workMinutes": 50,
+            "sourceText": "6. alex\n11/5慈悲濟世志一同\nhttps://www.daai.tv/master/life-wisdom/P90230434?more=true",
+            "notes": [
+              "Avoid wording that implies the Master held a one-on-one conversation with teacher Lulu; the same concern applies to the earlier Nov 1 Jordan post about Dr. Anjad.",
+              "Use “Tzu Chi members” rather than “Tzu Chi volunteers,” since the Hope School principal and teachers may be school staff without being Tzu Chi volunteers.",
+              "Use “helping others” rather than “a world of peace” to match the examples in the super and natural sound. The Tijuana mission is generally supported by U.S. Tzu Chi members, while local members are Catholic, giving the service a cross-faith dimension."
+            ]
+          },
+          {
+            "name": "尼受證比蒂莎",
+            "type": "news",
+            "startAt": "2026-11-09T05:46:00Z",
+            "workMinutes": 104,
+            "contentSeconds": 9720,
+            "sourceText": "Alex Chen: 尼受證比蒂莎 2:42（實際作業1小時44分，至15:30完成）"
+          },
+          {
+            "name": "墨土石流關懷",
+            "type": "news",
+            "startAt": "2026-11-09T07:26:00Z",
+            "workMinutes": 110,
+            "contentSeconds": 6420,
+            "sourceText": "Alex Chen: 墨土石流關懷 1:47"
+          }
+        ]
+      }
+    ],
+    "sourceText": "風月同天(第58集美國美東篇)已完成，我要接著翻譯風月同天(第59集美國美西篇)，片長6分鐘，預計做4小時30分，由11/9（一）10:50起算，deadline為11/9（一）16:20，謝謝。"
+  },
+  {
+    "id": "106",
+    "name": "風月同天(第60集美國醫療篇)",
+    "type": "subs",
+    "contentSeconds": 360,
+    "assigner": "Alex Chen",
+    "stages": [
+      {
+        "startAt": "2026-11-11T05:34:00Z",
+        "deadline": "2026-11-12T01:04:00Z",
+        "workMinutes": 270,
+        "extensions": [
+          {
+            "name": "約旦29哈山",
+            "type": "news",
+            "startAt": "2026-11-11T05:30:00Z",
+            "workMinutes": 91,
+            "contentSeconds": 114,
+            "sourceText": "Alex Chen: 約旦29哈山 1:54"
+          },
+          {
+            "name": "加薩帳棚拉娜",
+            "type": "news",
+            "startAt": "2026-11-11T06:50:00Z",
+            "workMinutes": 110,
+            "contentSeconds": 7020,
+            "sourceText": "Alex Chen: 加薩帳棚拉娜 1:57"
+          }
+        ]
+      }
+    ],
+    "sourceText": "風月同天(第59集美國美西篇)已完成，我要接著翻譯風月同天(第60集美國醫療篇)，片長6分鐘，預計做4小時30分，由11/11（三）13:34起算，deadline為11/12（四）9:04，謝謝。"
   }
 ]
