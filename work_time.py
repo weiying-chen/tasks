@@ -50,6 +50,9 @@ TAIWAN_HOLIDAYS = {
 # Saturday or Sunday as a working day.
 TAIWAN_WEEKEND_WORKDAYS: set[date] = set()
 
+# Personal leave for the current task schedule.
+TAIWAN_PERSONAL_DAYS_OFF: set[date] = {date(2026, 11, 10)}
+
 
 def _at_local_time(day: datetime, hm: tuple[int, int]) -> datetime:
     return day.replace(hour=hm[0], minute=hm[1], second=0, microsecond=0)
@@ -63,7 +66,11 @@ def _is_non_workday(day: datetime) -> bool:
     calendar_date = day.date()
     if calendar_date in TAIWAN_WEEKEND_WORKDAYS:
         return False
-    return _is_weekend(day) or calendar_date in TAIWAN_HOLIDAYS
+    return (
+        _is_weekend(day)
+        or calendar_date in TAIWAN_HOLIDAYS
+        or calendar_date in TAIWAN_PERSONAL_DAYS_OFF
+    )
 
 
 def _next_work_start(now: datetime) -> datetime:
