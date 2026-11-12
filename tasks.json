@@ -2612,7 +2612,8 @@
             "startAt": "2026-11-05T00:31:00Z",
             "workMinutes": 139,
             "contentSeconds": 10440,
-            "sourceText": "Alex Chen: 尼受證薩金娜 2:54（實際作業2小時19分，至10:50完成）"
+            "sourceText": "Alex Chen: 尼受證薩金娜 2:54（實際作業2小時19分，至10:50完成）",
+            "scheduledDate": "2026-11-06"
           },
           {
             "name": "美修繕小站時尚",
@@ -2620,7 +2621,8 @@
             "startAt": "2026-11-05T02:44:00Z",
             "workMinutes": 60,
             "contentSeconds": 13080,
-            "sourceText": "Alex Chen: 美修繕小站時尚 3:38（實際作業1小時）"
+            "sourceText": "Alex Chen: 美修繕小站時尚 3:38（實際作業1小時）",
+            "scheduledDate": "2026-11-11"
           }
         ]
       }
@@ -2645,7 +2647,8 @@
             "startAt": "2026-11-06T00:00:00Z",
             "workMinutes": 90,
             "contentSeconds": 112,
-            "sourceText": "Alex Chen: 努瓦闊發放 1:52"
+            "sourceText": "Alex Chen: 努瓦闊發放 1:52",
+            "scheduledDate": "2026-11-09"
           },
           {
             "name": "尼受證阿南達",
@@ -2653,7 +2656,8 @@
             "startAt": "2026-11-06T01:30:00Z",
             "workMinutes": 114,
             "contentSeconds": 142,
-            "sourceText": "Alex Chen: 尼受證阿南達 2:22"
+            "sourceText": "Alex Chen: 尼受證阿南達 2:22",
+            "scheduledDate": "2026-11-09"
           }
         ]
       }
@@ -2700,7 +2704,8 @@
             "startAt": "2026-11-09T05:46:00Z",
             "workMinutes": 104,
             "contentSeconds": 9720,
-            "sourceText": "Alex Chen: 尼受證比蒂莎 2:42（實際作業1小時44分，至15:30完成）"
+            "sourceText": "Alex Chen: 尼受證比蒂莎 2:42（實際作業1小時44分，至15:30完成）",
+            "scheduledDate": "2026-11-12"
           },
           {
             "name": "墨土石流關懷",
@@ -2708,7 +2713,8 @@
             "startAt": "2026-11-09T07:26:00Z",
             "workMinutes": 110,
             "contentSeconds": 6420,
-            "sourceText": "Alex Chen: 墨土石流關懷 1:47"
+            "sourceText": "Alex Chen: 墨土石流關懷 1:47",
+            "scheduledDate": "2026-11-12"
           }
         ]
       }
@@ -2731,7 +2737,7 @@
             "name": "約旦29哈山",
             "type": "news",
             "startAt": "2026-11-11T05:30:00Z",
-            "workMinutes": 91,
+            "workMinutes": 110,
             "contentSeconds": 114,
             "sourceText": "Alex Chen: 約旦29哈山 1:54"
           },
@@ -2739,9 +2745,25 @@
             "name": "加薩帳棚拉娜",
             "type": "news",
             "startAt": "2026-11-11T06:50:00Z",
-            "workMinutes": 110,
+            "workMinutes": 100,
             "contentSeconds": 7020,
-            "sourceText": "Alex Chen: 加薩帳棚拉娜 1:57"
+            "sourceText": "Alex Chen: 加薩帳棚拉娜 1:57（實際作業1小時40分，至16:30完成）"
+          },
+          {
+            "name": "尼受證馬健智",
+            "type": "news",
+            "startAt": "2026-11-11T08:30:00Z",
+            "workMinutes": 140,
+            "contentSeconds": 8760,
+            "sourceText": "Alex Chen: 尼受證馬健智 2:26"
+          },
+          {
+            "name": "卡瓜蘇風災發放",
+            "type": "news",
+            "startAt": "2026-11-12T01:53:00Z",
+            "workMinutes": 80,
+            "contentSeconds": 4200,
+            "sourceText": "Alex Chen: 卡瓜蘇風災發放 1:10"
           }
         ]
       }
