@@ -46,11 +46,12 @@ RED = '\x1b[31m'      # terminal red (git-style error emphasis)
 BLUE = '\x1b[34m'     # theme blue
 MAGENTA = '\x1b[35m'  # ANSI magenta (matches repo-sync DIRTY)
 STATUS_TTL_SECONDS = 4.0
-DEADLINE_MESSAGE_COPIED_STATUS = "Success: Deadline extension message copied to clipboard"
-NEXT_TASK_MESSAGE_COPIED_STATUS = "Success: Next task message copied to clipboard"
+SUBS_DEADLINE_EXTENSION_MESSAGE_COPIED_STATUS = "Success: Subs deadline extension message copied to clipboard"
+SUBS_COMPLETION_MESSAGE_COPIED_STATUS = "Success: Subs completion message copied to clipboard"
 SUBS_SUMMARY_MESSAGE_COPIED_STATUS = "Success: Task assignment message copied to clipboard"
 CONFIRM_DEADLINE_EXTENSION_STATUS = "Success: Confirm deadline extension checked"
-TASK_INITIATION_MESSAGE_COPIED_STATUS = "Success: Task initiation message copied to clipboard"
+SUBS_INITIATION_MESSAGE_COPIED_STATUS = "Success: Subs initiation message copied to clipboard"
+NEWS_COMPLETION_MESSAGE_COPIED_STATUS = "Success: News completion message copied to clipboard"
 HANDOFF_MESSAGE_COPIED_STATUS = "Success: Task handed off and assignment message copied to clipboard"
 MONTHLY_REVIEW_SUBMITTED_STATUS = "Success: Monthly review marked as submitted"
 REVIEW_REMINDER_DAYS = 5
@@ -315,20 +316,33 @@ def build_handoff_command(
     ]
 
 
-def build_deadline_message_command(script_dir: str, infile: str, task_id: str) -> list[str]:
+def build_subs_deadline_extension_message_command(script_dir: str, infile: str, task_id: str) -> list[str]:
     return [
         "python3",
         f"{script_dir}/create_message.py",
         "-i",
         infile,
         "--type",
-        "deadline-extension",
+        "subs-deadline-extension",
         "--task-id",
         task_id,
     ]
 
 
-def build_task_completion_message_command(
+def build_news_completion_message_command(script_dir: str, infile: str, task_id: str) -> list[str]:
+    return [
+        "python3",
+        f"{script_dir}/create_message.py",
+        "-i",
+        infile,
+        "--type",
+        "news-completion",
+        "--task-id",
+        task_id,
+    ]
+
+
+def build_subs_completion_message_command(
     script_dir: str,
     infile: str,
     finished_task_id: str,
@@ -341,7 +355,7 @@ def build_task_completion_message_command(
         "-i",
         infile,
         "--type",
-        "task-completion",
+        "subs-completion",
         "--task-id",
         finished_task_id,
         "--next-task-name",
@@ -365,14 +379,14 @@ def build_task_assignment_message_command(script_dir: str, infile: str, task_id:
     ]
 
 
-def build_task_initiation_message_command(script_dir: str, infile: str, task_id: str) -> list[str]:
+def build_subs_initiation_message_command(script_dir: str, infile: str, task_id: str) -> list[str]:
     return [
         "python3",
         f"{script_dir}/create_message.py",
         "-i",
         infile,
         "--type",
-        "task-initiation",
+        "subs-initiation",
         "--task-id",
         task_id,
     ]
@@ -425,7 +439,7 @@ def set_task_start_and_copy_message(
     )
     if start_proc.returncode != 0:
         raise RuntimeError((start_proc.stderr or start_proc.stdout or "Set start time failed").strip())
-    msg_cmd = build_task_initiation_message_command(script_dir, infile, task_id)
+    msg_cmd = build_subs_initiation_message_command(script_dir, infile, task_id)
     msg_proc = subprocess.run(msg_cmd, capture_output=True, text=True)
     if msg_proc.returncode != 0:
         raise RuntimeError((msg_proc.stderr or msg_proc.stdout or "Message generation failed").strip())
@@ -433,7 +447,7 @@ def set_task_start_and_copy_message(
     if not message_text:
         raise RuntimeError("Generated message is empty.")
     copy_to_clipboard(message_text)
-    return TASK_INITIATION_MESSAGE_COPIED_STATUS
+    return SUBS_INITIATION_MESSAGE_COPIED_STATUS
 
 
 def handoff_and_copy_message(
@@ -584,6 +598,21 @@ def has_current_deadline_extension_work(task: dict | None, now_local: datetime |
     return bool(aggregate_extensions(task, only_local_date=current.date()))
 
 
+def has_scheduled_news_extension(task: dict | None) -> bool:
+    if not isinstance(task, dict):
+        return False
+    stages = task.get("stages")
+    active_stage = stages[-1] if isinstance(stages, list) and stages else {}
+    extensions = active_stage.get("extensions") if isinstance(active_stage, dict) else None
+    return any(
+        isinstance(item, dict)
+        and str(item.get("type") or "").strip().lower() == "news"
+        and str(item.get("name") or "").strip()
+        and str(item.get("scheduledDate") or "").strip()
+        for item in (extensions or [])
+    )
+
+
 def build_message_target_options(
     latest_task: dict | None = None,
     input_file: str | None = None,
@@ -593,8 +622,10 @@ def build_message_target_options(
     options: list[tuple[str, str]] = []
     if mode != "coworker":
         if has_current_deadline_extension_work(latest_task, now_local=now_local):
-            options.append(("deadline-extension", "Deadline extension message"))
-        options.append(("task-completion", "Task completion message"))
+            options.append(("subs-deadline-extension", "Subs deadline extension message"))
+        options.append(("subs-completion", "Subs completion message"))
+        if has_scheduled_news_extension(latest_task):
+            options.append(("news-completion", "News completion message"))
     if isinstance(latest_task, dict):
         task_name = str(latest_task.get("name") or "").strip()
         start_at = str(get_task_start_at(latest_task) or "").strip()
@@ -613,7 +644,7 @@ def build_message_target_options(
             mode == "personal" and is_self_owned_task(latest_task)
         )
         if start_at and offers_initiation and task_deadline_local(latest_task) is not None:
-            options.append(("task-initiation", "Task initiation message"))
+            options.append(("subs-initiation", "Subs initiation message"))
     return options
 
 
@@ -1406,8 +1437,8 @@ def main():
                             status_until = 0.0
                             continue
                         picked_kind = msg_options[pick_idx][0]
-                        if picked_kind == "deadline-extension":
-                            msg_cmd = build_deadline_message_command(script_dir, str(in_path.resolve()), latest_id)
+                        if picked_kind == "subs-deadline-extension":
+                            msg_cmd = build_subs_deadline_extension_message_command(script_dir, str(in_path.resolve()), latest_id)
                             msg_proc = subprocess.run(msg_cmd, capture_output=True, text=True)
                             if msg_proc.returncode != 0:
                                 msg = (msg_proc.stderr or msg_proc.stdout or "Message generation failed").strip()
@@ -1427,10 +1458,10 @@ def main():
                             if copy_proc.stdin:
                                 copy_proc.stdin.write(message_text)
                                 copy_proc.stdin.close()
-                            status = format_status_text(DEADLINE_MESSAGE_COPIED_STATUS)
+                            status = format_status_text(SUBS_DEADLINE_EXTENSION_MESSAGE_COPIED_STATUS)
                             status_until = time.time() + STATUS_TTL_SECONDS
-                        elif picked_kind == "task-initiation":
-                            msg_cmd = build_task_initiation_message_command(script_dir, str(in_path.resolve()), latest_id)
+                        elif picked_kind == "subs-initiation":
+                            msg_cmd = build_subs_initiation_message_command(script_dir, str(in_path.resolve()), latest_id)
                             msg_proc = subprocess.run(msg_cmd, capture_output=True, text=True)
                             if msg_proc.returncode != 0:
                                 msg = (msg_proc.stderr or msg_proc.stdout or "Message generation failed").strip()
@@ -1450,7 +1481,30 @@ def main():
                             if copy_proc.stdin:
                                 copy_proc.stdin.write(message_text)
                                 copy_proc.stdin.close()
-                            status = format_status_text(TASK_INITIATION_MESSAGE_COPIED_STATUS)
+                            status = format_status_text(SUBS_INITIATION_MESSAGE_COPIED_STATUS)
+                            status_until = time.time() + STATUS_TTL_SECONDS
+                        elif picked_kind == "news-completion":
+                            msg_cmd = build_news_completion_message_command(script_dir, str(in_path.resolve()), latest_id)
+                            msg_proc = subprocess.run(msg_cmd, capture_output=True, text=True)
+                            if msg_proc.returncode != 0:
+                                msg = (msg_proc.stderr or msg_proc.stdout or "Message generation failed").strip()
+                                status = format_status_text(f"Error: {msg}")
+                                status_until = time.time() + STATUS_TTL_SECONDS
+                                continue
+                            message_text = msg_proc.stdout.strip()
+                            if not message_text:
+                                status = format_status_text("Error: Generated message is empty.")
+                                status_until = time.time() + STATUS_TTL_SECONDS
+                                continue
+                            copy_proc = subprocess.Popen(
+                                ["wl-copy"],
+                                stdin=subprocess.PIPE,
+                                text=True,
+                            )
+                            if copy_proc.stdin:
+                                copy_proc.stdin.write(message_text)
+                                copy_proc.stdin.close()
+                            status = format_status_text(NEWS_COMPLETION_MESSAGE_COPIED_STATUS)
                             status_until = time.time() + STATUS_TTL_SECONDS
                         elif picked_kind == "task-assignment":
                             msg_cmd = build_task_assignment_message_command(script_dir, str(in_path.resolve()), latest_id)
@@ -1487,7 +1541,7 @@ def main():
                                 status = format_status_text("Error: Clipboard is empty.")
                                 status_until = time.time() + STATUS_TTL_SECONDS
                                 continue
-                            msg_cmd = build_task_completion_message_command(
+                            msg_cmd = build_subs_completion_message_command(
                                 script_dir,
                                 str(in_path.resolve()),
                                 latest_id,
@@ -1513,7 +1567,7 @@ def main():
                             if copy_proc.stdin:
                                 copy_proc.stdin.write(message_text)
                                 copy_proc.stdin.close()
-                            status = format_status_text(NEXT_TASK_MESSAGE_COPIED_STATUS)
+                            status = format_status_text(SUBS_COMPLETION_MESSAGE_COPIED_STATUS)
                             status_until = time.time() + STATUS_TTL_SECONDS
                     except Exception as exc:
                         status = format_status_text(f"Error: Message failed: {exc}")

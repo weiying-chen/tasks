@@ -2,7 +2,7 @@
 import argparse
 import json
 import re
-from datetime import datetime, timezone, timedelta
+from datetime import date, datetime, timezone, timedelta
 from pathlib import Path
 
 from task_deadline import require_task_deadline_local, task_deadline_local
@@ -205,7 +205,7 @@ def total_extension_minutes(task: dict, only_local_date=None) -> int:
     return total
 
 
-def format_deadline_extension_message(task: dict, now_local: datetime | None = None) -> str:
+def format_subs_deadline_extension_message(task: dict, now_local: datetime | None = None) -> str:
     if now_local is None:
         now_local = datetime.now(TZ_TAIPEI)
     assignment = str(task.get("name") or "").strip()
@@ -344,7 +344,7 @@ def format_task_assignment_message(task: dict) -> str:
     return message + "謝謝。"
 
 
-def format_task_initiation_message(task: dict) -> str:
+def format_subs_initiation_message(task: dict) -> str:
     task_name = str(task.get("name") or "").strip()
     assignee = task_assignment_assignee(task)
     start_at = str(get_task_start_at(task) or "").strip()
@@ -352,15 +352,15 @@ def format_task_initiation_message(task: dict) -> str:
     content_seconds = get_task_content_seconds(task)
     deadline_local = task_deadline_local(task)
     if not task_name or not assignee:
-        raise ValueError("Missing required fields for task-initiation message.")
+        raise ValueError("Missing required fields for subs-initiation message.")
     if not start_at:
-        raise ValueError("Missing required startAt for task-initiation message.")
+        raise ValueError("Missing required startAt for subs-initiation message.")
     if not isinstance(work_minutes, int) or work_minutes <= 0:
-        raise ValueError("Missing required work minutes for task-initiation message.")
+        raise ValueError("Missing required work minutes for subs-initiation message.")
     if not isinstance(content_seconds, int) or content_seconds < 0:
-        raise ValueError("Missing required content seconds for task-initiation message.")
+        raise ValueError("Missing required content seconds for subs-initiation message.")
     if deadline_local is None:
-        raise ValueError("Missing required deadline for task-initiation message.")
+        raise ValueError("Missing required deadline for subs-initiation message.")
 
     count_text, program_name, episodes = parse_task_assignment_task_name(task_name)
     start_text = format_message_date(to_local(start_at))
@@ -384,12 +384,12 @@ def format_task_initiation_message(task: dict) -> str:
     return message + f"從{start_text}起算，deadline {deadline_text}，謝謝。"
 
 
-def format_next_task_message(finished_task: dict, next_task_name: str, next_assigner: str | None = None) -> str:
+def format_subs_completion_message(finished_task: dict, next_task_name: str, next_assigner: str | None = None) -> str:
     completed_task = str(finished_task.get("name") or "").strip()
     fallback_assigner = str(finished_task.get("assigner") or "").strip()
     assigner = str(next_assigner or "").strip() or resolve_next_task_assigner(next_task_name, fallback_assigner)
     if not completed_task or not next_task_name or not assigner:
-        raise ValueError("Missing required fields for task-completion message.")
+        raise ValueError("Missing required fields for subs-completion message.")
 
     start = final_deadline_local(finished_task)
     return (
@@ -397,6 +397,30 @@ def format_next_task_message(finished_task: dict, next_task_name: str, next_assi
         f"再麻煩{format_mention(assigner)}便時幫忙設deadline，"
         f"從{format_message_date(start)}起算，謝謝。"
     )
+
+
+def format_news_completion_message(task: dict) -> str:
+    stages = task.get("stages")
+    active_stage = stages[-1] if isinstance(stages, list) and stages else {}
+    extensions = active_stage.get("extensions") if isinstance(active_stage, dict) else None
+    latest_news = next(
+        (
+            item for item in reversed(extensions or [])
+            if isinstance(item, dict) and str(item.get("type") or "").strip().lower() == "news"
+        ),
+        None,
+    )
+    if latest_news is None:
+        raise ValueError("Task has no news extension.")
+    name = str(latest_news.get("name") or "").strip()
+    scheduled_date = str(latest_news.get("scheduledDate") or "").strip()
+    if not name or not scheduled_date:
+        raise ValueError("Latest news extension is missing its name or scheduledDate.")
+    try:
+        news_date = date.fromisoformat(scheduled_date)
+    except ValueError as exc:
+        raise ValueError("Latest news extension has an invalid scheduledDate.") from exc
+    return f"您好，{news_date.month}/{news_date.day} {name} 英文配音稿及相關檔案已上傳，感恩~"
 
 
 def create_message(
@@ -407,34 +431,37 @@ def create_message(
     next_assigner: str | None = None,
     now_local: datetime | None = None,
 ) -> str:
-    if msg_type == "deadline-extension":
+    if msg_type == "subs-deadline-extension":
         task = get_target_task(tasks, task_id)
-        return format_deadline_extension_message(task, now_local=now_local)
-    if msg_type == "task-completion":
+        return format_subs_deadline_extension_message(task, now_local=now_local)
+    if msg_type == "subs-completion":
         if not task_id:
-            raise ValueError("--task-id is required for task-completion message.")
+            raise ValueError("--task-id is required for subs-completion message.")
         name = str(next_task_name or "").strip()
         if not name:
-            raise ValueError("--next-task-name is required for task-completion message.")
+            raise ValueError("--next-task-name is required for subs-completion message.")
         finished_task = get_target_task(tasks, task_id)
         assigner = str(next_assigner or "").strip() or None
-        return format_next_task_message(finished_task, name, assigner)
+        return format_subs_completion_message(finished_task, name, assigner)
+    if msg_type == "news-completion":
+        task = get_target_task(tasks, task_id)
+        return format_news_completion_message(task)
     if msg_type == "task-assignment":
         task = get_target_task(tasks, task_id)
         return format_task_assignment_message(task)
-    if msg_type == "task-initiation":
+    if msg_type == "subs-initiation":
         task = get_target_task(tasks, task_id)
-        return format_task_initiation_message(task)
+        return format_subs_initiation_message(task)
     raise ValueError(f"Unsupported message type: {msg_type}")
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-i", "--infile", default="tasks.json", help="input JSON path")
-    parser.add_argument("--type", required=True, help="message type, e.g. deadline-extension")
+    parser.add_argument("--type", required=True, help="message type, e.g. subs-deadline-extension")
     parser.add_argument("--task-id", help="specific task id; default is latest top-level task")
-    parser.add_argument("--next-task-name", help="next task name text for task-completion message")
-    parser.add_argument("--next-assigner", help="assigner to ask for task-completion deadline")
+    parser.add_argument("--next-task-name", help="next task name for subs-completion message")
+    parser.add_argument("--next-assigner", help="assigner for the subs-completion message")
     args = parser.parse_args()
 
     in_path = Path(args.infile)

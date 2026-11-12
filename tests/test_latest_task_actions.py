@@ -25,16 +25,20 @@ class LatestTaskActionsTests(unittest.TestCase):
 
     def test_copy_success_status_messages(self):
         self.assertEqual(
-            view_latest_task.DEADLINE_MESSAGE_COPIED_STATUS,
-            "Success: Deadline extension message copied to clipboard",
+            view_latest_task.SUBS_DEADLINE_EXTENSION_MESSAGE_COPIED_STATUS,
+            "Success: Subs deadline extension message copied to clipboard",
         )
         self.assertEqual(
-            view_latest_task.NEXT_TASK_MESSAGE_COPIED_STATUS,
-            "Success: Next task message copied to clipboard",
+            view_latest_task.SUBS_COMPLETION_MESSAGE_COPIED_STATUS,
+            "Success: Subs completion message copied to clipboard",
         )
         self.assertEqual(
-            view_latest_task.TASK_INITIATION_MESSAGE_COPIED_STATUS,
-            "Success: Task initiation message copied to clipboard",
+            view_latest_task.SUBS_INITIATION_MESSAGE_COPIED_STATUS,
+            "Success: Subs initiation message copied to clipboard",
+        )
+        self.assertEqual(
+            view_latest_task.NEWS_COMPLETION_MESSAGE_COPIED_STATUS,
+            "Success: News completion message copied to clipboard",
         )
 
     def test_format_status_text_uses_label_colors(self):
@@ -264,6 +268,7 @@ class LatestTaskActionsTests(unittest.TestCase):
                         {
                             "name": "守護天使食堂",
                             "type": "news",
+                            "scheduledDate": "2026-07-13",
                             "startAt": "2026-07-13T00:23:46.391254Z",
                             "workMinutes": 110,
                         }
@@ -278,8 +283,9 @@ class LatestTaskActionsTests(unittest.TestCase):
                 now_local=datetime(2026, 7, 13, 9, 0, tzinfo=timezone(timedelta(hours=8))),
             ),
             [
-                ("deadline-extension", "Deadline extension message"),
-                ("task-completion", "Task completion message"),
+                ("subs-deadline-extension", "Subs deadline extension message"),
+                ("subs-completion", "Subs completion message"),
+                ("news-completion", "News completion message"),
             ],
         )
 
@@ -303,7 +309,7 @@ class LatestTaskActionsTests(unittest.TestCase):
                 now_local=datetime(2026, 7, 13, 9, 0, tzinfo=timezone(timedelta(hours=8))),
             ),
             [
-                ("task-completion", "Task completion message"),
+                ("subs-completion", "Subs completion message"),
             ],
         )
 
@@ -319,7 +325,7 @@ class LatestTaskActionsTests(unittest.TestCase):
         self.assertEqual(
             view_latest_task.build_message_target_options(latest, input_file="/tmp/tasks.json"),
             [
-                ("task-completion", "Task completion message"),
+                ("subs-completion", "Subs completion message"),
                 ("task-assignment", "Task assignment message"),
             ],
         )
@@ -341,7 +347,7 @@ class LatestTaskActionsTests(unittest.TestCase):
 
         options = view_latest_task.build_message_target_options(latest, input_file="/tmp/tasks.json")
 
-        self.assertIn(("task-initiation", "Task initiation message"), options)
+        self.assertIn(("subs-initiation", "Subs initiation message"), options)
 
     def test_build_message_target_options_for_coworker_tasks(self):
         latest = {
@@ -363,7 +369,7 @@ class LatestTaskActionsTests(unittest.TestCase):
             view_latest_task.build_message_target_options(latest, input_file="/tmp/tasks_coworkers.json"),
             [
                 ("task-assignment", "Task assignment message"),
-                ("task-initiation", "Task initiation message"),
+                ("subs-initiation", "Subs initiation message"),
             ],
         )
 
@@ -420,8 +426,8 @@ class LatestTaskActionsTests(unittest.TestCase):
             ],
         )
 
-    def test_build_task_initiation_message_command(self):
-        cmd = view_latest_task.build_task_initiation_message_command("/tmp", "/tmp/tasks.json", "9")
+    def test_build_subs_initiation_message_command(self):
+        cmd = view_latest_task.build_subs_initiation_message_command("/tmp", "/tmp/tasks.json", "9")
         self.assertEqual(
             cmd,
             [
@@ -430,7 +436,7 @@ class LatestTaskActionsTests(unittest.TestCase):
                 "-i",
                 "/tmp/tasks.json",
                 "--type",
-                "task-initiation",
+                "subs-initiation",
                 "--task-id",
                 "9",
             ],
@@ -484,7 +490,7 @@ class LatestTaskActionsTests(unittest.TestCase):
             "9",
             "clipboard text",
         )
-        self.assertEqual(status, view_latest_task.TASK_INITIATION_MESSAGE_COPIED_STATUS)
+        self.assertEqual(status, view_latest_task.SUBS_INITIATION_MESSAGE_COPIED_STATUS)
         copy_mock.assert_called_once_with("task initiation message")
 
     def test_stage_accessors_use_active_stage(self):
@@ -504,8 +510,8 @@ class LatestTaskActionsTests(unittest.TestCase):
         self.assertEqual(view_latest_task.get_task_type(task), "translate")
         self.assertEqual(view_latest_task.get_task_work_minutes(task), 960)
 
-    def test_build_deadline_message_command(self):
-        cmd = view_latest_task.build_deadline_message_command("/tmp", "/tmp/tasks.json", "9")
+    def test_build_subs_deadline_extension_message_command(self):
+        cmd = view_latest_task.build_subs_deadline_extension_message_command("/tmp", "/tmp/tasks.json", "9")
         self.assertEqual(
             cmd,
             [
@@ -514,14 +520,14 @@ class LatestTaskActionsTests(unittest.TestCase):
                 "-i",
                 "/tmp/tasks.json",
                 "--type",
-                "deadline-extension",
+                "subs-deadline-extension",
                 "--task-id",
                 "9",
             ],
         )
 
-    def test_build_task_completion_message_command(self):
-        cmd = view_latest_task.build_task_completion_message_command("/tmp", "/tmp/tasks.json", "9", "new task", "Alex")
+    def test_build_news_completion_message_command(self):
+        cmd = view_latest_task.build_news_completion_message_command("/tmp", "/tmp/tasks.json", "9")
         self.assertEqual(
             cmd,
             [
@@ -530,7 +536,23 @@ class LatestTaskActionsTests(unittest.TestCase):
                 "-i",
                 "/tmp/tasks.json",
                 "--type",
-                "task-completion",
+                "news-completion",
+                "--task-id",
+                "9",
+            ],
+        )
+
+    def test_build_subs_completion_message_command(self):
+        cmd = view_latest_task.build_subs_completion_message_command("/tmp", "/tmp/tasks.json", "9", "new task", "Alex")
+        self.assertEqual(
+            cmd,
+            [
+                "python3",
+                "/tmp/create_message.py",
+                "-i",
+                "/tmp/tasks.json",
+                "--type",
+                "subs-completion",
                 "--task-id",
                 "9",
                 "--next-task-name",

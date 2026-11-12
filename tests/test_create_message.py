@@ -5,6 +5,21 @@ import create_message
 
 
 class CreateMessageTests(unittest.TestCase):
+    def test_news_completion_message_uses_latest_scheduled_news_extension(self):
+        tasks = [{
+            "id": "1",
+            "stages": [{"extensions": [
+                {"type": "news", "name": "尼受證馬健智", "scheduledDate": "2026-11-12"},
+                {"type": "posts", "name": "今日貼文", "scheduledDate": "2026-11-13"},
+                {"type": "news", "name": "加薩帳棚拉娜", "scheduledDate": "2026-11-13"},
+            ]}],
+        }]
+
+        self.assertEqual(
+            create_message.create_message(tasks, msg_type="news-completion"),
+            "您好，11/13 加薩帳棚拉娜 英文配音稿及相關檔案已上傳，感恩~",
+        )
+
     def test_format_mention_prefixes_names_once(self):
         self.assertEqual(create_message.format_mention("Evelyn"), "@Evelyn")
         self.assertEqual(create_message.format_mention("@Evelyn"), "@Evelyn")
@@ -66,7 +81,7 @@ class CreateMessageTests(unittest.TestCase):
             },
         ]
 
-        message = create_message.create_message(tasks, msg_type="deadline-extension")
+        message = create_message.create_message(tasks, msg_type="subs-deadline-extension")
         self.assertEqual(
             message,
             "今日做其他事時間是 3時10分\n\n"
@@ -89,7 +104,7 @@ class CreateMessageTests(unittest.TestCase):
             ],
         }
 
-        message = create_message.format_deadline_extension_message(task)
+        message = create_message.format_subs_deadline_extension_message(task)
 
         self.assertNotIn("請@Alex Chen幫我確認", message)
         self.assertTrue(message.endswith("延後至8/6（四）08:31，謝謝。"), message)
@@ -111,7 +126,7 @@ class CreateMessageTests(unittest.TestCase):
         ]
 
         with self.assertRaises(ValueError):
-            create_message.create_message(tasks, msg_type="deadline-extension")
+            create_message.create_message(tasks, msg_type="subs-deadline-extension")
 
     def test_deadline_extension_message_uses_stored_extension_minutes(self):
         tasks = [
@@ -132,7 +147,7 @@ class CreateMessageTests(unittest.TestCase):
             }
         ]
 
-        message = create_message.create_message(tasks, msg_type="deadline-extension")
+        message = create_message.create_message(tasks, msg_type="subs-deadline-extension")
         self.assertIn("今日做其他事時間是 2時", message)
 
     def test_deadline_extension_falls_back_to_name_when_type_missing(self):
@@ -153,7 +168,7 @@ class CreateMessageTests(unittest.TestCase):
                 ],
             }
         ]
-        message = create_message.create_message(tasks, msg_type="deadline-extension")
+        message = create_message.create_message(tasks, msg_type="subs-deadline-extension")
         self.assertIn("舊資料名稱 1時", message)
 
     def test_deadline_extension_includes_only_current_workday_extensions(self):
@@ -186,7 +201,7 @@ class CreateMessageTests(unittest.TestCase):
             }
         ]
         now_local = datetime(2026, 5, 26, 16, 0, tzinfo=timezone(timedelta(hours=8)))
-        message = create_message.create_message(tasks, msg_type="deadline-extension", now_local=now_local)
+        message = create_message.create_message(tasks, msg_type="subs-deadline-extension", now_local=now_local)
         self.assertIn("今日做其他事時間是 50分", message)
         self.assertIn("小編文 50分", message)
         self.assertNotIn("英文新聞+錄音", message)
@@ -221,7 +236,7 @@ class CreateMessageTests(unittest.TestCase):
             }
         ]
         now_local = datetime(2026, 5, 28, 10, 0, tzinfo=timezone(timedelta(hours=8)))
-        message = create_message.create_message(tasks, msg_type="deadline-extension", now_local=now_local)
+        message = create_message.create_message(tasks, msg_type="subs-deadline-extension", now_local=now_local)
         self.assertIn("英文新聞+錄音 1時50分", message)
         self.assertIn("deadline由5/28（四）09:50", message)
         self.assertIn("延後至5/28（四）11:40", message)
@@ -245,7 +260,7 @@ class CreateMessageTests(unittest.TestCase):
 
         message = create_message.create_message(
             tasks,
-            msg_type="task-completion",
+            msg_type="subs-completion",
             task_id="1",
             next_task_name="新的任務",
         )
@@ -266,7 +281,7 @@ class CreateMessageTests(unittest.TestCase):
         ]
         message = create_message.create_message(
             tasks,
-            msg_type="task-completion",
+            msg_type="subs-completion",
             task_id="1",
             next_task_name="新的任務",
             next_assigner="Alex",
@@ -284,7 +299,7 @@ class CreateMessageTests(unittest.TestCase):
         ]
         message = create_message.create_message(
             tasks,
-            msg_type="task-completion",
+            msg_type="subs-completion",
             task_id="1",
             next_task_name="人文講堂（測試）",
         )
@@ -301,7 +316,7 @@ class CreateMessageTests(unittest.TestCase):
         ]
         message = create_message.create_message(
             tasks,
-            msg_type="task-completion",
+            msg_type="subs-completion",
             task_id="1",
             next_task_name="精舍日常（測試）",
         )
@@ -318,7 +333,7 @@ class CreateMessageTests(unittest.TestCase):
         ]
         message = create_message.create_message(
             tasks,
-            msg_type="task-completion",
+            msg_type="subs-completion",
             task_id="1",
             next_task_name="心靈講座(在不確定中走出確定 - 童子賢) 4 個短版",
         )
@@ -335,7 +350,7 @@ class CreateMessageTests(unittest.TestCase):
         ]
         message = create_message.create_message(
             tasks,
-            msg_type="task-completion",
+            msg_type="subs-completion",
             task_id="1",
             next_task_name="慈濟的故事(臺北的第二個家 、感念臺北因緣 、講藥師經結緣 )",
         )
@@ -351,9 +366,9 @@ class CreateMessageTests(unittest.TestCase):
             }
         ]
         with self.assertRaises(ValueError):
-            create_message.create_message(tasks, msg_type="task-completion", next_task_name="新的任務")
+            create_message.create_message(tasks, msg_type="subs-completion", next_task_name="新的任務")
         with self.assertRaises(ValueError):
-            create_message.create_message(tasks, msg_type="task-completion", task_id="1")
+            create_message.create_message(tasks, msg_type="subs-completion", task_id="1")
 
     def test_subs_summary_message_uses_parenthesized_episode_titles(self):
         tasks = [
@@ -563,7 +578,7 @@ class CreateMessageTests(unittest.TestCase):
             }
         ]
 
-        message = create_message.create_message(tasks, msg_type="task-initiation")
+        message = create_message.create_message(tasks, msg_type="subs-initiation")
         self.assertEqual(
             message,
             "請@Shawn翻譯3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈），"
@@ -596,7 +611,7 @@ class CreateMessageTests(unittest.TestCase):
                     }
                 ]
 
-                message = create_message.create_message(tasks, msg_type="task-initiation")
+                message = create_message.create_message(tasks, msg_type="subs-initiation")
 
                 self.assertTrue(message.startswith(expected_prefix), message)
 
@@ -618,7 +633,7 @@ class CreateMessageTests(unittest.TestCase):
             }
         ]
 
-        message = create_message.create_message(tasks, msg_type="task-initiation", task_id="64")
+        message = create_message.create_message(tasks, msg_type="subs-initiation", task_id="64")
 
         self.assertEqual(
             message,
@@ -651,7 +666,7 @@ class CreateMessageTests(unittest.TestCase):
             }
         ]
 
-        message = create_message.create_message(tasks, msg_type="task-initiation")
+        message = create_message.create_message(tasks, msg_type="subs-initiation")
         self.assertEqual(
             message,
             "請@Shawn edit + 定稿3集大愛醫生館（杯弓蛇影 乳房腫瘤 + 鬼門關走一遭~冠心病 + 住輸尿管），"
