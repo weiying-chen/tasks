@@ -86,6 +86,34 @@ class TextToJsonTests(unittest.TestCase):
         self.assertEqual(get_task_work_minutes(tasks[0]), 130)
         self.assertEqual(get_task_type(tasks[0]), "news")
 
+    def test_news_schedule_dates_survive_when_added_as_extensions(self):
+        text = (
+            "11/10\n"
+            "Elijah Salie: 尼受證釋迦心蓮 2:38\n\n"
+            "11/11\n"
+            "張牧軒 Shawn: 尼受證維偉 2:21\n\n"
+            "11/12\n"
+            "Alex Chen: 尼受證比蒂莎 2:42\n"
+            "Alex Chen: 墨土石流關懷 1:47\n"
+        )
+        parsed = text_to_json.parse_news_input(text, 2026, "Alex Chen")
+        self.assertEqual(
+            [(task["name"], task["scheduledDate"]) for task in parsed],
+            [
+                ("尼受證比蒂莎", "2026-11-12"),
+                ("墨土石流關懷", "2026-11-12"),
+            ],
+        )
+
+        parents = [{"id": "1", "name": "Current task", "stages": [{}]}]
+        self.assertTrue(text_to_json.append_extensions_under_parent(parents, "1", parsed))
+        normalized = text_to_json.normalize_tasks_json(parents)
+        extensions = normalized[0]["stages"][0]["extensions"]
+        self.assertEqual(
+            [extension["scheduledDate"] for extension in extensions],
+            ["2026-11-12", "2026-11-12"],
+        )
+
     def test_parse_news_accepts_no_space_before_duration(self):
         text = (
             "6/5\n\n"

@@ -19,6 +19,7 @@ EXTENSION_FIELD_NAMES = (
     "deadline",
     "workMinutes",
     "contentSeconds",
+    "scheduledDate",
     "sourceText",
 )
 

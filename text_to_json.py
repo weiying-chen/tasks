@@ -2,7 +2,7 @@
 import argparse
 import json
 import re
-from datetime import datetime, timezone, timedelta
+from datetime import date, datetime, timezone, timedelta
 from pathlib import Path
 
 from work_time import add_work_minutes, next_work_start
@@ -146,14 +146,23 @@ def parse_hhmm_to_work_minutes(hhmm: str) -> int:
 def parse_news_input(text: str, year: int, owner_filter: str):
     tasks = []
     now_iso = start_iso_now()
+    scheduled_date = None
 
     for raw_line in text.splitlines():
         line = raw_line.strip()
         if not line:
             continue
 
-        date_match = re.match(r"^(\d{1,2})/(\d{1,2})$", line)
+        date_match = re.match(r"^(\d{1,2})/(\d{1,2})(?:\s*[（(][^）)]*[）)])?$", line)
         if date_match:
+            try:
+                scheduled_date = date(
+                    year,
+                    int(date_match.group(1)),
+                    int(date_match.group(2)),
+                ).isoformat()
+            except ValueError:
+                scheduled_date = None
             continue
 
         row_match = re.match(r"^([^:：]+)[:：]\s*(.+?)\s*$", line)
@@ -182,6 +191,8 @@ def parse_news_input(text: str, year: int, owner_filter: str):
             "stages": [stage],
             "sourceText": raw_line,
         }
+        if scheduled_date is not None:
+            task["scheduledDate"] = scheduled_date
         if duration_match:
             duration = duration_match.group(2).strip()
             original_minutes = parse_hhmm_to_work_minutes(duration)
@@ -549,6 +560,9 @@ def extension_from_task(task: dict) -> dict:
     content_seconds = get_task_content_seconds(task)
     if isinstance(content_seconds, int):
         extension["contentSeconds"] = content_seconds
+    scheduled_date = task.get("scheduledDate")
+    if isinstance(scheduled_date, str) and scheduled_date.strip():
+        extension["scheduledDate"] = scheduled_date.strip()
     notes = task.get("notes")
     if isinstance(notes, list):
         normalized_notes = [note for note in notes if isinstance(note, str) and note.strip()]
@@ -643,6 +657,8 @@ def normalize_task_shape(task):
         normalized["createdDate"] = task["createdDate"]
     if isinstance(task.get("deadlineDate"), str):
         normalized["deadlineDate"] = task["deadlineDate"]
+    if isinstance(task.get("scheduledDate"), str) and task["scheduledDate"].strip():
+        normalized["scheduledDate"] = task["scheduledDate"].strip()
     origin = task.get("origin")
     if isinstance(origin, dict):
         origin_file = origin.get("file")
