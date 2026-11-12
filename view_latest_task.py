@@ -624,8 +624,6 @@ def build_message_target_options(
         if has_current_deadline_extension_work(latest_task, now_local=now_local):
             options.append(("subs-deadline-extension", "Subs deadline extension message"))
         options.append(("subs-completion", "Subs completion message"))
-        if has_scheduled_news_extension(latest_task):
-            options.append(("news-completion", "News completion message"))
     if isinstance(latest_task, dict):
         task_name = str(latest_task.get("name") or "").strip()
         start_at = str(get_task_start_at(latest_task) or "").strip()
@@ -645,6 +643,8 @@ def build_message_target_options(
         )
         if start_at and offers_initiation and task_deadline_local(latest_task) is not None:
             options.append(("subs-initiation", "Subs initiation message"))
+    if mode != "coworker" and has_scheduled_news_extension(latest_task):
+        options.append(("news-completion", "News completion message"))
     return options
 
 

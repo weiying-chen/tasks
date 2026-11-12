@@ -349,6 +349,37 @@ class LatestTaskActionsTests(unittest.TestCase):
 
         self.assertIn(("subs-initiation", "Subs initiation message"), options)
 
+    def test_news_completion_option_follows_all_subs_messages(self):
+        latest = {
+            "id": "65",
+            "name": "3集大愛真健康（甲 + 乙 + 丙）",
+            "assigner": "Alex Chen",
+            "contentSeconds": 650,
+            "stages": [{
+                "startAt": "2026-08-27T01:40:00Z",
+                "deadline": "2026-08-28T02:20:00Z",
+                "workMinutes": 520,
+                "extensions": [{
+                    "type": "news",
+                    "name": "新聞項目",
+                    "scheduledDate": "2026-11-13",
+                    "startAt": "2026-11-12T02:00:00Z",
+                    "workMinutes": 60,
+                }],
+            }],
+        }
+
+        self.assertEqual(
+            view_latest_task.build_message_target_options(latest, input_file="/tmp/tasks.json"),
+            [
+                ("subs-deadline-extension", "Subs deadline extension message"),
+                ("subs-completion", "Subs completion message"),
+                ("task-assignment", "Task assignment message"),
+                ("subs-initiation", "Subs initiation message"),
+                ("news-completion", "News completion message"),
+            ],
+        )
+
     def test_build_message_target_options_for_coworker_tasks(self):
         latest = {
             "id": "1",
