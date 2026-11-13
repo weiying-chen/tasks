@@ -148,6 +148,19 @@ def get_target_task(tasks: list[dict], task_id: str | None) -> dict:
     return latest
 
 
+def extension_work_date(item: dict) -> date | None:
+    scheduled_date = str(item.get("scheduledDate") or "").strip()
+    if scheduled_date:
+        try:
+            return date.fromisoformat(scheduled_date)
+        except ValueError:
+            pass
+    start_at = item.get("startAt")
+    if isinstance(start_at, str):
+        return to_local(start_at).date()
+    return None
+
+
 def aggregate_extensions(task: dict, only_local_date=None) -> list[tuple[str, int]]:
     stage_extensions = []
     stages = task.get("stages")
@@ -162,10 +175,9 @@ def aggregate_extensions(task: dict, only_local_date=None) -> list[tuple[str, in
         ordered_labels: list[str] = []
         for item in stage_extensions:
             if only_local_date is not None:
-                extension_created = item.get("startAt")
-                if isinstance(extension_created, str):
-                    if to_local(extension_created).date() != only_local_date:
-                        continue
+                work_date = extension_work_date(item)
+                if work_date is not None and work_date != only_local_date:
+                    continue
             item_type = str(item.get("type") or "").strip().lower()
             label = TYPE_LABELS.get(item_type)
             if not label:
@@ -194,8 +206,8 @@ def total_extension_minutes(task: dict, only_local_date=None) -> int:
                     if not isinstance(item, dict):
                         continue
                     if only_local_date is not None:
-                        extension_created = item.get("startAt")
-                        if isinstance(extension_created, str) and to_local(extension_created).date() != only_local_date:
+                        work_date = extension_work_date(item)
+                        if work_date is not None and work_date != only_local_date:
                             continue
                     minutes = item.get("workMinutes")
                     if isinstance(minutes, int) and minutes > 0:

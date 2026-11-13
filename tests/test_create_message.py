@@ -208,6 +208,34 @@ class CreateMessageTests(unittest.TestCase):
         self.assertIn("deadline由5/15（五）11:16", message)
         self.assertIn("延後至5/15（五）13:06", message)
 
+    def test_extension_scheduled_date_overrides_start_date_for_daily_totals(self):
+        task = {
+            "stages": [{
+                "extensions": [{
+                    "type": "news",
+                    "name": "scheduled news",
+                    "scheduledDate": "2026-11-13",
+                    "startAt": "2026-11-12T02:00:00Z",
+                    "workMinutes": 60,
+                }],
+            }],
+        }
+        scheduled_day = datetime(2026, 11, 13).date()
+        start_day = datetime(2026, 11, 12).date()
+
+        self.assertEqual(
+            create_message.aggregate_extensions(task, only_local_date=scheduled_day),
+            [("英文新聞+錄音", 60)],
+        )
+        self.assertEqual(
+            create_message.total_extension_minutes(task, only_local_date=scheduled_day),
+            60,
+        )
+        self.assertEqual(
+            create_message.aggregate_extensions(task, only_local_date=start_day),
+            [],
+        )
+
     def test_deadline_extension_uses_prior_subtasks_as_baseline(self):
         tasks = [
             {
