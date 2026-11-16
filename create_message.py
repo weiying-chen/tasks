@@ -16,7 +16,7 @@ from task_stages import (
     get_task_work_minutes,
 )
 from text_to_json import resolve_subs_assigner
-from work_time import add_work_minutes
+from work_time import add_work_minutes, shift_deadline_to_workday
 
 TZ_TAIPEI = timezone(timedelta(hours=8))
 WEEKDAY_CN = ["一", "二", "三", "四", "五", "六", "日"]
@@ -149,12 +149,6 @@ def get_target_task(tasks: list[dict], task_id: str | None) -> dict:
 
 
 def extension_work_date(item: dict) -> date | None:
-    scheduled_date = str(item.get("scheduledDate") or "").strip()
-    if scheduled_date:
-        try:
-            return date.fromisoformat(scheduled_date)
-        except ValueError:
-            pass
     start_at = item.get("startAt")
     if isinstance(start_at, str):
         return to_local(start_at).date()
@@ -229,8 +223,9 @@ def format_subs_deadline_extension_message(task: dict, now_local: datetime | Non
     all_extension_minutes = total_extension_minutes(task)
     previous_minutes = max(all_extension_minutes - today_minutes, 0)
     base_deadline = require_task_deadline_local(task)
-    previous = add_work_minutes(base_deadline, previous_minutes) if previous_minutes > 0 else base_deadline
-    next_deadline = add_work_minutes(previous, today_minutes)
+    effective_base_deadline = shift_deadline_to_workday(base_deadline)
+    previous = add_work_minutes(effective_base_deadline, previous_minutes) if previous_minutes > 0 else base_deadline
+    next_deadline = add_work_minutes(shift_deadline_to_workday(previous), today_minutes)
     transition_text = "延後至" if next_deadline >= previous else "提前至"
 
     lines = []
@@ -260,7 +255,8 @@ def deadline_window_local(task: dict, extension_minutes: int | None = None) -> t
         extension_minutes = sum(minutes for _, minutes in aggregate_extensions(task))
     if extension_minutes <= 0:
         return base_deadline, base_deadline
-    return base_deadline, add_work_minutes(base_deadline, extension_minutes)
+    effective_deadline = shift_deadline_to_workday(base_deadline)
+    return base_deadline, add_work_minutes(effective_deadline, extension_minutes)
 
 
 def final_deadline_local(task: dict) -> datetime:

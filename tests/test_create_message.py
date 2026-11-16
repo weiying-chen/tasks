@@ -5,6 +5,24 @@ import create_message
 
 
 class CreateMessageTests(unittest.TestCase):
+    def test_deadline_window_keeps_baseline_and_shifts_extension_for_day_off(self):
+        task = {
+            "deadline": "2026-11-17T02:36:00Z",
+            "stages": [{
+                "deadline": "2026-11-17T02:36:00Z",
+                "extensions": [{
+                    "type": "news",
+                    "name": "新聞",
+                    "startAt": "2026-11-16T01:00:00Z",
+                    "workMinutes": 383,
+                }],
+            }],
+        }
+
+        baseline, extended = create_message.deadline_window_local(task)
+        self.assertEqual(create_message.format_message_date(baseline), "11/17（二）10:36")
+        self.assertEqual(create_message.format_message_date(extended), "11/19（四）08:59")
+
     def test_news_completion_message_uses_latest_scheduled_news_extension(self):
         tasks = [{
             "id": "1",
@@ -208,7 +226,7 @@ class CreateMessageTests(unittest.TestCase):
         self.assertIn("deadline由5/15（五）11:16", message)
         self.assertIn("延後至5/15（五）13:06", message)
 
-    def test_extension_scheduled_date_overrides_start_date_for_daily_totals(self):
+    def test_extension_daily_totals_use_start_date_not_scheduled_date(self):
         task = {
             "stages": [{
                 "extensions": [{
@@ -225,15 +243,19 @@ class CreateMessageTests(unittest.TestCase):
 
         self.assertEqual(
             create_message.aggregate_extensions(task, only_local_date=scheduled_day),
-            [("英文新聞+錄音", 60)],
+            [],
         )
         self.assertEqual(
             create_message.total_extension_minutes(task, only_local_date=scheduled_day),
-            60,
+            0,
         )
         self.assertEqual(
             create_message.aggregate_extensions(task, only_local_date=start_day),
-            [],
+            [("英文新聞+錄音", 60)],
+        )
+        self.assertEqual(
+            create_message.total_extension_minutes(task, only_local_date=start_day),
+            60,
         )
 
     def test_deadline_extension_uses_prior_subtasks_as_baseline(self):
