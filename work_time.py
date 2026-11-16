@@ -51,7 +51,7 @@ TAIWAN_HOLIDAYS = {
 TAIWAN_WEEKEND_WORKDAYS: set[date] = set()
 
 # Personal leave for the current task schedule.
-TAIWAN_PERSONAL_DAYS_OFF: set[date] = {date(2026, 11, 10)}
+TAIWAN_PERSONAL_DAYS_OFF: set[date] = {date(2026, 11, 10), date(2026, 11, 17)}
 
 
 def _at_local_time(day: datetime, hm: tuple[int, int]) -> datetime:
@@ -71,6 +71,14 @@ def _is_non_workday(day: datetime) -> bool:
         or calendar_date in TAIWAN_HOLIDAYS
         or calendar_date in TAIWAN_PERSONAL_DAYS_OFF
     )
+
+
+def shift_deadline_to_workday(deadline: datetime) -> datetime:
+    """Move a deadline off non-working dates while preserving its local time."""
+    shifted = deadline
+    while _is_non_workday(shifted):
+        shifted += timedelta(days=1)
+    return shifted
 
 
 def _next_work_start(now: datetime) -> datetime:

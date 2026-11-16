@@ -370,7 +370,11 @@ class LatestTaskActionsTests(unittest.TestCase):
         }
 
         self.assertEqual(
-            view_latest_task.build_message_target_options(latest, input_file="/tmp/tasks.json"),
+            view_latest_task.build_message_target_options(
+                latest,
+                input_file="/tmp/tasks.json",
+                now_local=datetime(2026, 11, 12, 10, 0, tzinfo=timezone(timedelta(hours=8))),
+            ),
             [
                 ("subs-deadline-extension", "Subs deadline extension message"),
                 ("subs-completion", "Subs completion message"),

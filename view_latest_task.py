@@ -31,7 +31,7 @@ from create_message import (
 )
 from text_to_json import format_known_program_pipe_titles, next_numeric_task_id, normalize_task_shape
 from task_titles import extract_subs_task_name
-from work_time import add_work_minutes, next_work_start
+from work_time import add_work_minutes, next_work_start, shift_deadline_to_workday
 
 TZ_TAIPEI = timezone(timedelta(hours=8))
 WORK_BLOCKS = (
@@ -929,7 +929,7 @@ def render_task_block(
         extended = None
         extension_minutes = extension_total_minutes(task)
         if deadline and extension_minutes > 0:
-            extended = add_work_minutes(deadline, extension_minutes)
+            extended = add_work_minutes(shift_deadline_to_workday(deadline), extension_minutes)
         if extended:
             lines.append(f'Deadline: {to_display(deadline) if deadline else "-"}')
             lines.append(format_deadline_line("Extended deadline", extended, now_local))
