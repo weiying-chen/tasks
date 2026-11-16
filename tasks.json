@@ -2612,8 +2612,8 @@
             "startAt": "2026-11-05T00:31:00Z",
             "workMinutes": 139,
             "contentSeconds": 10440,
-            "sourceText": "Alex Chen: 尼受證薩金娜 2:54（實際作業2小時19分，至10:50完成）",
-            "scheduledDate": "2026-11-06"
+            "scheduledDate": "2026-11-06",
+            "sourceText": "Alex Chen: 尼受證薩金娜 2:54（實際作業2小時19分，至10:50完成）"
           },
           {
             "name": "美修繕小站時尚",
@@ -2621,8 +2621,8 @@
             "startAt": "2026-11-05T02:44:00Z",
             "workMinutes": 60,
             "contentSeconds": 13080,
-            "sourceText": "Alex Chen: 美修繕小站時尚 3:38（實際作業1小時）",
-            "scheduledDate": "2026-11-11"
+            "scheduledDate": "2026-11-11",
+            "sourceText": "Alex Chen: 美修繕小站時尚 3:38（實際作業1小時）"
           }
         ]
       }
@@ -2647,8 +2647,8 @@
             "startAt": "2026-11-06T00:00:00Z",
             "workMinutes": 90,
             "contentSeconds": 112,
-            "sourceText": "Alex Chen: 努瓦闊發放 1:52",
-            "scheduledDate": "2026-11-09"
+            "scheduledDate": "2026-11-09",
+            "sourceText": "Alex Chen: 努瓦闊發放 1:52"
           },
           {
             "name": "尼受證阿南達",
@@ -2656,8 +2656,8 @@
             "startAt": "2026-11-06T01:30:00Z",
             "workMinutes": 114,
             "contentSeconds": 142,
-            "sourceText": "Alex Chen: 尼受證阿南達 2:22",
-            "scheduledDate": "2026-11-09"
+            "scheduledDate": "2026-11-09",
+            "sourceText": "Alex Chen: 尼受證阿南達 2:22"
           }
         ]
       }
@@ -2704,8 +2704,8 @@
             "startAt": "2026-11-09T05:46:00Z",
             "workMinutes": 104,
             "contentSeconds": 9720,
-            "sourceText": "Alex Chen: 尼受證比蒂莎 2:42（實際作業1小時44分，至15:30完成）",
-            "scheduledDate": "2026-11-12"
+            "scheduledDate": "2026-11-12",
+            "sourceText": "Alex Chen: 尼受證比蒂莎 2:42（實際作業1小時44分，至15:30完成）"
           },
           {
             "name": "墨土石流關懷",
@@ -2713,8 +2713,8 @@
             "startAt": "2026-11-09T07:26:00Z",
             "workMinutes": 110,
             "contentSeconds": 6420,
-            "sourceText": "Alex Chen: 墨土石流關懷 1:47",
-            "scheduledDate": "2026-11-12"
+            "scheduledDate": "2026-11-12",
+            "sourceText": "Alex Chen: 墨土石流關懷 1:47"
           }
         ]
       }
@@ -2763,12 +2763,61 @@
             "startAt": "2026-11-12T01:53:00Z",
             "workMinutes": 67,
             "contentSeconds": 4200,
-            "sourceText": "Alex Chen: 卡瓜蘇風災發放 1:10（實際作業1小時7分，至11:00完成）",
-            "scheduledDate": "2026-11-13"
+            "scheduledDate": "2026-11-13",
+            "sourceText": "Alex Chen: 卡瓜蘇風災發放 1:10（實際作業1小時7分，至11:00完成）"
           }
         ]
       }
     ],
     "sourceText": "風月同天(第59集美國美西篇)已完成，我要接著翻譯風月同天(第60集美國醫療篇)，片長6分鐘，預計做4小時30分，由11/11（三）13:34起算，deadline為11/12（四）9:04，謝謝。"
+  },
+  {
+    "id": "107",
+    "name": "人文講堂(轉職人生不害怕 斜槓人生更寬廣 - 郭彥甫) 4 個短版",
+    "type": "subs",
+    "contentSeconds": 1320,
+    "assigner": "Alex Chen",
+    "stages": [
+      {
+        "startAt": "2026-11-13T01:00:00Z",
+        "deadline": "2026-11-17T02:36:00Z",
+        "workMinutes": 1056,
+        "extensions": [
+          {
+            "name": "厚植善根啟未來",
+            "type": "posts",
+            "startAt": "2026-11-16T00:41:00Z",
+            "workMinutes": 50,
+            "sourceText": "1.\talex\n11/7厚植善根啟未來\nhttps://www.daai.tv/master/life-wisdom/P90230436?more=true"
+          },
+          {
+            "name": "首場大巨蛋演繹",
+            "type": "news",
+            "startAt": "2026-11-16T01:15:00Z",
+            "workMinutes": 160,
+            "contentSeconds": 10140,
+            "scheduledDate": "2026-11-16",
+            "sourceText": "Alex Chen: 首場大巨蛋演繹 2:49"
+          },
+          {
+            "name": "柬黃金山希望",
+            "type": "news",
+            "startAt": "2026-11-16T03:27:00Z",
+            "workMinutes": 123,
+            "contentSeconds": 8460,
+            "scheduledDate": "2026-11-17",
+            "sourceText": "Alex Chen: 柬黃金山希望 2:21（實際作業2小時3分，至14:30完成）"
+          },
+          {
+            "name": "兼善利他成菩提",
+            "type": "posts",
+            "startAt": "2026-11-16T06:20:00Z",
+            "workMinutes": 50,
+            "sourceText": "3.\talex\n11/9兼善利他成菩提\nhttps://www.daai.tv/master/life-wisdom/P90230438?more=true"
+          }
+        ]
+      }
+    ],
+    "sourceText": "請 Alex Chen 翻譯人文講堂(轉職人生不害怕 斜槓人生更寬廣 - 郭彥甫) 4 個短版, 長度22分, 預計翻譯17時36分(2天1時36分), 從11/13 (五) 9:00起算，deadline為11/17(二) 10:36，謝謝！"
   }
 ]
