@@ -2776,7 +2776,7 @@
     "name": "人文講堂(轉職人生不害怕 斜槓人生更寬廣 - 郭彥甫) 4 個短版",
     "type": "subs",
     "contentSeconds": 1320,
-    "assigner": "Alex Chen",
+    "assigner": "Evelyn",
     "stages": [
       {
         "startAt": "2026-11-13T01:00:00Z",
@@ -2788,7 +2788,10 @@
             "type": "posts",
             "startAt": "2026-11-16T00:41:00Z",
             "workMinutes": 50,
-            "sourceText": "1.\talex\n11/7厚植善根啟未來\nhttps://www.daai.tv/master/life-wisdom/P90230436?more=true"
+            "sourceText": "1.\talex\n11/7厚植善根啟未來\nhttps://www.daai.tv/master/life-wisdom/P90230436?more=true",
+            "notes": [
+              "Use “Tzu Chi moms and dads” for 懿德慈誠爸媽, following established terminology."
+            ]
           },
           {
             "name": "首場大巨蛋演繹",
@@ -2814,6 +2817,15 @@
             "startAt": "2026-11-16T06:20:00Z",
             "workMinutes": 50,
             "sourceText": "3.\talex\n11/9兼善利他成菩提\nhttps://www.daai.tv/master/life-wisdom/P90230438?more=true"
+          },
+          {
+            "name": "智利素素相伴",
+            "type": "news",
+            "startAt": "2026-11-18T01:10:00Z",
+            "workMinutes": 110,
+            "contentSeconds": 7500,
+            "scheduledDate": "2026-11-19",
+            "sourceText": "Alex Chen: 智利素素相伴 2:05（實際作業1小時50分，至11:00完成）"
           }
         ]
       }
