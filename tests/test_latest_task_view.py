@@ -19,6 +19,7 @@ class LatestTaskViewTests(unittest.TestCase):
             {
                 "id": "2",
                 "name": "New Parent",
+                "assigner": "Evelyn",
                 "notes": ['"上肢" referred to arms rather than upper body.'],
                 "stages": [
                     {
@@ -46,6 +47,7 @@ class LatestTaskViewTests(unittest.TestCase):
         self.assertIn("Task", out)
         self.assertIn("Name: New Parent", out)
         self.assertIn("Stage: translate", out)
+        self.assertIn("Assigner: Evelyn", out)
         self.assertIn("Assignee: Alex", out)
         self.assertIn("Extensions", out)
         self.assertIn("Notes (1)", out)

@@ -896,6 +896,7 @@ def render_task_block(
     task_type = get_task_type(task)
     task_stage = get_task_stage(task)
     assignee = get_task_assignee(task)
+    assigner = task.get("assigner")
 
     name = task.get("name") or "(Untitled)"
 
@@ -904,6 +905,7 @@ def render_task_block(
         lines.append(f'Type: {task_type if isinstance(task_type, str) and task_type.strip() else "-"}')
         if show_subtask_assignment_fields:
             lines.append(f'Stage: {task_stage if isinstance(task_stage, str) and task_stage.strip() else "-"}')
+            lines.append(f'Assigner: {assigner if isinstance(assigner, str) and assigner.strip() else "-"}')
             lines.append(f'Assignee: {assignee if isinstance(assignee, str) and assignee.strip() else "-"}')
         lines.append(f'Work time: {fmt_work(work_minutes)}')
         if task_type != "custom":
@@ -922,6 +924,7 @@ def render_task_block(
         lines.append(f'Name: {name}')
         lines.append(f'Type: {task_type if isinstance(task_type, str) and task_type.strip() else "-"}')
         lines.append(f'Stage: {task_stage if isinstance(task_stage, str) and task_stage.strip() else "-"}')
+        lines.append(f'Assigner: {assigner if isinstance(assigner, str) and assigner.strip() else "-"}')
         lines.append(f'Assignee: {assignee if isinstance(assignee, str) and assignee.strip() else "-"}')
         lines.append(f'Start time: {to_display(created) if created else "-"}')
         lines.append(f'Work time: {fmt_work(work_minutes)}')
