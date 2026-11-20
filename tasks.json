@@ -2831,5 +2831,31 @@
       }
     ],
     "sourceText": "請 Alex Chen 翻譯人文講堂(轉職人生不害怕 斜槓人生更寬廣 - 郭彥甫) 4 個短版, 長度22分, 預計翻譯17時36分(2天1時36分), 從11/13 (五) 9:00起算，deadline為11/17(二) 10:36，謝謝！"
+  },
+  {
+    "id": "108",
+    "name": "人文講堂(心理投資學 - 張家齊) 4個短版",
+    "type": "subs",
+    "contentSeconds": 1320,
+    "assigner": "Evelyn",
+    "stages": [
+      {
+        "startAt": "2026-11-19T02:49:00Z",
+        "deadline": "2026-11-23T05:35:00Z",
+        "workMinutes": 1056,
+        "extensions": [
+          {
+            "name": "尼德賽節陪伴",
+            "type": "news",
+            "startAt": "2026-11-20T00:12:00Z",
+            "workMinutes": 90,
+            "contentSeconds": 5220,
+            "scheduledDate": "2026-11-20",
+            "sourceText": "Alex Chen: 尼德賽節陪伴 1:27"
+          }
+        ]
+      }
+    ],
+    "sourceText": "請 Alex Chen 翻譯人文講堂(心理投資學 - 張家齊) 4個短版, 長度22分, 預計翻譯17時36分 (2天1時36分),  從11/19（四）10:49起算, deadline 為11/23(一)13:35, 謝謝！"
   }
 ]
