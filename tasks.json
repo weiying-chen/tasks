@@ -2894,10 +2894,20 @@
             "name": "COP31慈濟",
             "type": "news",
             "startAt": "2026-11-24T00:23:00Z",
-            "workMinutes": 160,
+            "deadline": "2026-11-24T02:17:06Z",
+            "workMinutes": 114,
             "contentSeconds": 10080,
             "scheduledDate": "2026-11-24",
             "sourceText": "Alex Chen: COP31慈濟 2:48"
+          },
+          {
+            "name": "美總會捐血",
+            "type": "news",
+            "startAt": "2026-11-24T02:19:00Z",
+            "workMinutes": 100,
+            "contentSeconds": 5940,
+            "scheduledDate": "2026-11-26",
+            "sourceText": "Alex Chen: 美總會捐血 1:39"
           }
         ]
       }
