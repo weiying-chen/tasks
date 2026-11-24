@@ -6,6 +6,15 @@ import work_time
 
 
 class WorkTimeTests(unittest.TestCase):
+    def test_work_minutes_between_excludes_lunch_and_personal_days_off(self):
+        lunch_start = datetime(2026, 11, 16, 11, 27)
+        lunch_end = datetime(2026, 11, 16, 14, 30)
+        leave_start = datetime(2026, 11, 17, 9, 0)
+        leave_end = datetime(2026, 11, 18, 10, 0)
+
+        self.assertEqual(work_time.work_minutes_between(lunch_start, lunch_end), 123)
+        self.assertEqual(work_time.work_minutes_between(leave_start, leave_end), 120)
+
     def test_shift_deadline_preserves_time_on_personal_day_off(self):
         deadline = datetime(2026, 11, 17, 10, 36)
         shifted = work_time.shift_deadline_to_workday(deadline)

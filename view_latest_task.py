@@ -31,7 +31,7 @@ from create_message import (
 )
 from text_to_json import format_known_program_pipe_titles, next_numeric_task_id, normalize_task_shape
 from task_titles import extract_subs_task_name
-from work_time import add_work_minutes, next_work_start, shift_deadline_to_workday
+from work_time import add_work_minutes, next_work_start, shift_deadline_to_workday, work_minutes_between
 
 TZ_TAIPEI = timezone(timedelta(hours=8))
 WORK_BLOCKS = (
@@ -60,9 +60,9 @@ STATUS_LABEL_COLORS = {
     "Error": RED,
 }
 
-PERSONAL_ACTIONS = ("t", "e", "n", "v", "r", "q")
+PERSONAL_ACTIONS = ("t", "e", "f", "n", "v", "r", "q")
 COWORKER_ACTIONS = ("t", "a", "s", "d", "q")
-ALL_ACTIONS = ("t", "a", "s", "e", "n", "d", "v", "m", "r", "q")
+ALL_ACTIONS = ("t", "a", "s", "e", "f", "n", "d", "v", "m", "r", "q")
 
 
 def review_state_path() -> Path:
@@ -151,6 +151,8 @@ def build_actions_line(
 ) -> str:
     mode = detect_action_mode(input_file)
     allowed = set(allowed_actions_for_mode(mode))
+    if "f" in allowed and latest_news_extension(selected_task) is None:
+        allowed.discard("f")
     if build_message_target_options(selected_task, input_file=input_file):
         allowed.add("m")
     if not review_pending:
@@ -165,6 +167,7 @@ def build_actions_line(
             else color('add extensions', MAGENTA)
         ),
         "e": color('add ', MAGENTA) + color('e', GREEN) + color('xtensions', MAGENTA),
+        "f": color('set latest news ', MAGENTA) + color('f', GREEN) + color('inish time', MAGENTA),
         "n": color('add ', MAGENTA) + color('n', GREEN) + color('otes', MAGENTA),
         "d": color('confirm ', MAGENTA) + color('d', GREEN) + color('eadline extension', MAGENTA),
         "v": color('toggle ', MAGENTA) + color('v', GREEN) + color('iew notes', MAGENTA),
@@ -632,6 +635,71 @@ def stage_extension_items(task: dict) -> list[dict]:
             if isinstance(extensions, list):
                 return [item for item in extensions if isinstance(item, dict)]
     return []
+
+
+def latest_news_extension(task: dict | None) -> dict | None:
+    if not isinstance(task, dict):
+        return None
+    return next(
+        (
+            item for item in reversed(stage_extension_items(task))
+            if str(item.get("type") or "").strip().lower() == "news"
+        ),
+        None,
+    )
+
+
+def parse_news_finish_datetime(value: str, now_local: datetime | None = None) -> datetime:
+    text = str(value or "").strip()
+    if not text:
+        raise ValueError("Copy a finish time such as 11:00, then press f.")
+    if now_local is None:
+        now_local = datetime.now(TZ_TAIPEI)
+
+    formats = (
+        ("%Y-%m-%d %H:%M", True),
+        ("%Y-%m-%dT%H:%M", True),
+        ("%m/%d %H:%M", False),
+        ("%H:%M", False),
+        ("%H", False),
+        ("%I:%M %p", False),
+        ("%I %p", False),
+    )
+    for format_string, has_year in formats:
+        try:
+            parsed = datetime.strptime(text, format_string)
+        except ValueError:
+            continue
+        if format_string == "%m/%d %H:%M":
+            parsed = parsed.replace(year=now_local.year)
+        elif not has_year:
+            parsed = parsed.replace(year=now_local.year, month=now_local.month, day=now_local.day)
+        return parsed.replace(tzinfo=TZ_TAIPEI)
+    raise ValueError("Use HH:MM, MM/DD HH:MM, or YYYY-MM-DD HH:MM for the finish time.")
+
+
+def set_latest_news_finish_time(
+    task: dict,
+    finish_time_text: str,
+    now_local: datetime | None = None,
+) -> dict:
+    extension = latest_news_extension(task)
+    if extension is None:
+        raise ValueError("Task has no news extension to update.")
+    start_at = str(extension.get("startAt") or "").strip()
+    if not start_at:
+        raise ValueError("Latest news extension is missing its start time.")
+    start_local = to_local(start_at)
+    finish_local = parse_news_finish_datetime(finish_time_text, now_local=now_local)
+    if finish_local < start_local:
+        raise ValueError("Finish time is earlier than the news start time.")
+    work_minutes = work_minutes_between(start_local, finish_local)
+    if work_minutes <= 0:
+        raise ValueError("Finish time produces no working minutes.")
+
+    extension["deadline"] = finish_local.astimezone(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
+    extension["workMinutes"] = work_minutes
+    return extension
 
 
 def visible_extension_items(task: dict, now_local: datetime) -> list[dict]:
@@ -1204,6 +1272,42 @@ def main():
                             status_until = 0.0
                     except Exception as exc:
                         status = format_status_text(f"Error: Add failed: {exc}")
+                        status_until = time.time() + STATUS_TTL_SECONDS
+                if ch == b"f" and "f" in base_allowed_actions:
+                    try:
+                        data = json.loads(in_path.read_text(encoding="utf-8"))
+                        tasks = normalize_tasks(data)
+                        selected_task = get_view_task(tasks, task_id=args.id, program=args.program)
+                        if not isinstance(selected_task, dict):
+                            status = format_status_text("Error: Selected task is invalid.")
+                            status_until = time.time() + STATUS_TTL_SECONDS
+                            continue
+                        if latest_news_extension(selected_task) is None:
+                            status = format_status_text("Error: Selected task has no news extension.")
+                            status_until = time.time() + STATUS_TTL_SECONDS
+                            continue
+                        clipboard_proc = subprocess.run(
+                            ["wl-paste"],
+                            capture_output=True,
+                            text=True,
+                            check=True,
+                        )
+                        extension = set_latest_news_finish_time(selected_task, clipboard_proc.stdout)
+                        normalized_tasks = [normalize_task_shape(task) for task in tasks if isinstance(task, dict)]
+                        in_path.write_text(
+                            json.dumps(normalized_tasks, ensure_ascii=False, indent=2) + "\n",
+                            encoding="utf-8",
+                        )
+                        updated_task = get_view_task(normalize_tasks(normalized_tasks), task_id=args.id, program=args.program)
+                        deadline = final_deadline_local(updated_task) if isinstance(updated_task, dict) else None
+                        deadline_text = format_message_date(deadline) if deadline else "unknown"
+                        status = format_status_text(
+                            f"Success: Updated latest news work time to {fmt_work(extension['workMinutes'])}; "
+                            f"task extended deadline is {deadline_text}."
+                        )
+                        status_until = time.time() + STATUS_TTL_SECONDS
+                    except Exception as exc:
+                        status = format_status_text(f"Error: Set latest news finish time failed: {exc}")
                         status_until = time.time() + STATUS_TTL_SECONDS
                 if ch == b"n" and "n" in base_allowed_actions:
                     try:

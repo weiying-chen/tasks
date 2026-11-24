@@ -184,6 +184,50 @@ class LatestTaskActionsTests(unittest.TestCase):
         self.assertIn("e", view_latest_task.allowed_actions_for_mode("personal"))
         self.assertNotIn("s", view_latest_task.allowed_actions_for_mode("personal"))
 
+    def test_build_actions_line_offers_latest_news_deadline_action(self):
+        selected = {
+            "id": "64",
+            "name": "Task",
+            "type": "subs",
+            "stages": [{"extensions": [{"type": "news", "name": "Latest news"}]}],
+        }
+        line = self.strip_ansi(
+            view_latest_task.build_actions_line(input_file="/tmp/tasks.json", selected_task=selected)
+        )
+        self.assertIn("set latest news finish time", line)
+
+    def test_setting_latest_news_finish_time_updates_deadline_and_work_minutes(self):
+        task = {
+            "id": "64",
+            "name": "Task",
+            "stages": [{"extensions": [
+                {
+                    "type": "news",
+                    "name": "Earlier news",
+                    "startAt": "2026-11-24T01:00:00Z",
+                    "workMinutes": 30,
+                },
+                {"type": "posts", "name": "Post", "workMinutes": 50},
+                {
+                    "type": "news",
+                    "name": "Latest news",
+                    "startAt": "2026-11-24T03:27:00Z",
+                    "workMinutes": 50,
+                },
+            ]}],
+        }
+
+        extension = view_latest_task.set_latest_news_finish_time(
+            task,
+            "14:30",
+            now_local=datetime(2026, 11, 24, 14, 30, tzinfo=timezone(timedelta(hours=8))),
+        )
+
+        self.assertEqual(extension["name"], "Latest news")
+        self.assertEqual(extension["workMinutes"], 123)
+        self.assertEqual(extension["deadline"], "2026-11-24T06:30:00Z")
+        self.assertNotIn("endAt", extension)
+
     def test_build_actions_line_for_started_coworker_task_includes_copy_message(self):
         selected = {
             "id": "1",

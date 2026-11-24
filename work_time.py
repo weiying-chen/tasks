@@ -141,3 +141,24 @@ def add_work_minutes(start: datetime, minutes: int) -> datetime:
             cursor = _next_work_start(day + timedelta(days=1))
 
     return cursor
+
+
+def work_minutes_between(start: datetime, end: datetime) -> int:
+    if end < start:
+        raise ValueError("End time must not be earlier than start time.")
+
+    total_seconds = 0
+    day = start.replace(hour=0, minute=0, second=0, microsecond=0)
+    final_day = end.replace(hour=0, minute=0, second=0, microsecond=0)
+    while day <= final_day:
+        if not _is_non_workday(day):
+            for start_hm, end_hm in WORK_BLOCKS:
+                block_start = _at_local_time(day, start_hm)
+                block_end = _at_local_time(day, end_hm)
+                overlap_start = max(start, block_start)
+                overlap_end = min(end, block_end)
+                if overlap_start < overlap_end:
+                    total_seconds += int((overlap_end - overlap_start).total_seconds())
+        day += timedelta(days=1)
+
+    return total_seconds // 60
