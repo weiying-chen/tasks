@@ -194,7 +194,7 @@ class LatestTaskActionsTests(unittest.TestCase):
         line = self.strip_ansi(
             view_latest_task.build_actions_line(input_file="/tmp/tasks.json", selected_task=selected)
         )
-        self.assertIn("set latest news finish time", line)
+        self.assertIn("set news finish time", line)
 
     def test_setting_latest_news_finish_time_updates_deadline_and_work_minutes(self):
         task = {

@@ -168,7 +168,7 @@ def build_actions_line(
             else color('add extensions', MAGENTA)
         ),
         "e": color('add ', MAGENTA) + color('e', GREEN) + color('xtensions', MAGENTA),
-        "f": color('set latest news ', MAGENTA) + color('f', GREEN) + color('inish time', MAGENTA),
+        "f": color('set news ', MAGENTA) + color('f', GREEN) + color('inish time', MAGENTA),
         "n": color('add ', MAGENTA) + color('n', GREEN) + color('otes', MAGENTA),
         "d": color('confirm ', MAGENTA) + color('d', GREEN) + color('eadline extension', MAGENTA),
         "v": color('toggle ', MAGENTA) + color('v', GREEN) + color('iew notes', MAGENTA),
