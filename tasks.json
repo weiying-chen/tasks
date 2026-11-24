@@ -2852,6 +2852,52 @@
             "contentSeconds": 5220,
             "scheduledDate": "2026-11-20",
             "sourceText": "Alex Chen: 尼德賽節陪伴 1:27"
+          },
+          {
+            "name": "多倫多中文熱",
+            "type": "news",
+            "startAt": "2026-11-23T00:33:00Z",
+            "workMinutes": 97,
+            "contentSeconds": 7860,
+            "scheduledDate": "2026-11-23",
+            "sourceText": "Alex Chen: 多倫多中文熱 2:11（實際作業1小時37分，至10:10完成）"
+          },
+          {
+            "name": "保和牙科義診",
+            "type": "news",
+            "startAt": "2026-11-23T02:15:00Z",
+            "workMinutes": 65,
+            "contentSeconds": 6240,
+            "scheduledDate": "2026-11-24",
+            "sourceText": "Alex Chen: 保和牙科義診 1:44（實際作業1小時5分，至11:20完成）"
+          },
+          {
+            "name": "薪火相傳度人間",
+            "type": "posts",
+            "startAt": "2026-11-23T03:15:00Z",
+            "workMinutes": 50,
+            "sourceText": "3.\talex\n11/17薪火相傳度人間\nhttps://www.daai.tv/master/life-wisdom/P90230446?more=true",
+            "notes": [
+              "Omitted New Taipei City and the figure of 170. Although the live audio mentions the number, I could not confirm whether everyone attended in person or whether some joined online from the U.S.",
+              "Removed “chanting the Buddha’s name” from the Four Practices, Four Actions and “the Bodhisattva Path” from the paragraph ending to keep the wording from sounding overly religious. Used a clearer description of 人間菩提 instead of “Life Wisdom,” which may be unfamiliar to some viewers.",
+              "Clarified in English what the 37 years of dedication refers to."
+            ]
+          },
+          {
+            "name": "承師慧命愛相連",
+            "type": "posts",
+            "startAt": "2026-11-23T03:39:00Z",
+            "workMinutes": 50,
+            "sourceText": "7. alex\n11/21承師慧命愛相連\nhttps://www.daai.tv/master/life-wisdom/P90230450"
+          },
+          {
+            "name": "COP31慈濟",
+            "type": "news",
+            "startAt": "2026-11-24T00:23:00Z",
+            "workMinutes": 160,
+            "contentSeconds": 10080,
+            "scheduledDate": "2026-11-24",
+            "sourceText": "Alex Chen: COP31慈濟 2:48"
           }
         ]
       }
