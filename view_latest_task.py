@@ -151,6 +151,7 @@ def build_actions_line(
 ) -> str:
     mode = detect_action_mode(input_file)
     allowed = set(allowed_actions_for_mode(mode))
+    allowed.difference_update({"n", "v"})
     if "f" in allowed and latest_news_extension(selected_task) is None:
         allowed.discard("f")
     if build_message_target_options(selected_task, input_file=input_file):
