@@ -228,6 +228,24 @@ class LatestTaskActionsTests(unittest.TestCase):
         self.assertEqual(extension["deadline"], "2026-11-24T06:30:00Z")
         self.assertNotIn("endAt", extension)
 
+    def test_setting_latest_news_finish_time_defaults_to_now(self):
+        task = {
+            "id": "64",
+            "name": "Task",
+            "stages": [{"extensions": [{
+                "type": "news",
+                "name": "Latest news",
+                "startAt": "2026-11-24T03:27:00Z",
+                "workMinutes": 50,
+            }]}],
+        }
+        now_local = datetime(2026, 11, 24, 14, 30, tzinfo=timezone(timedelta(hours=8)))
+
+        extension = view_latest_task.set_latest_news_finish_time(task, now_local=now_local)
+
+        self.assertEqual(extension["workMinutes"], 123)
+        self.assertEqual(extension["deadline"], "2026-11-24T06:30:00Z")
+
     def test_build_actions_line_for_started_coworker_task_includes_copy_message(self):
         selected = {
             "id": "1",

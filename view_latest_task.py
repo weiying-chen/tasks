@@ -652,10 +652,10 @@ def latest_news_extension(task: dict | None) -> dict | None:
 
 def parse_news_finish_datetime(value: str, now_local: datetime | None = None) -> datetime:
     text = str(value or "").strip()
-    if not text:
-        raise ValueError("Copy a finish time such as 11:00, then press f.")
     if now_local is None:
         now_local = datetime.now(TZ_TAIPEI)
+    if not text:
+        return now_local.astimezone(TZ_TAIPEI)
 
     formats = (
         ("%Y-%m-%d %H:%M", True),
@@ -681,7 +681,7 @@ def parse_news_finish_datetime(value: str, now_local: datetime | None = None) ->
 
 def set_latest_news_finish_time(
     task: dict,
-    finish_time_text: str,
+    finish_time_text: str | None = None,
     now_local: datetime | None = None,
 ) -> dict:
     extension = latest_news_extension(task)
@@ -1287,13 +1287,10 @@ def main():
                             status = format_status_text("Error: Selected task has no news extension.")
                             status_until = time.time() + STATUS_TTL_SECONDS
                             continue
-                        clipboard_proc = subprocess.run(
-                            ["wl-paste"],
-                            capture_output=True,
-                            text=True,
-                            check=True,
+                        extension = set_latest_news_finish_time(
+                            selected_task,
+                            now_local=datetime.now(TZ_TAIPEI),
                         )
-                        extension = set_latest_news_finish_time(selected_task, clipboard_proc.stdout)
                         normalized_tasks = [normalize_task_shape(task) for task in tasks if isinstance(task, dict)]
                         in_path.write_text(
                             json.dumps(normalized_tasks, ensure_ascii=False, indent=2) + "\n",
