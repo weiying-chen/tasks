@@ -2914,7 +2914,8 @@
             "name": "美總會捐血",
             "type": "news",
             "startAt": "2026-11-24T02:19:00Z",
-            "workMinutes": 100,
+            "deadline": "2026-11-24T03:02:18Z",
+            "workMinutes": 43,
             "contentSeconds": 5940,
             "scheduledDate": "2026-11-26",
             "sourceText": "Alex Chen: 美總會捐血 1:39"
@@ -2923,5 +2924,20 @@
       }
     ],
     "sourceText": "請 Alex Chen 翻譯人文講堂(心理投資學 - 張家齊) 4個短版, 長度22分, 預計翻譯17時36分 (2天1時36分),  從11/19（四）10:49起算, deadline 為11/23(一)13:35, 謝謝！"
+  },
+  {
+    "id": "109",
+    "name": "人文講堂(金錢教育是人生必修課 - 馬哈) 4個短版",
+    "type": "subs",
+    "contentSeconds": 1200,
+    "assigner": "Evelyn",
+    "stages": [
+      {
+        "startAt": "2026-11-24T06:04:00Z",
+        "deadline": "2026-11-26T06:04:00Z",
+        "workMinutes": 960
+      }
+    ],
+    "sourceText": "請 Alex Chen 翻譯人文講堂(金錢教育是人生必修課 - 馬哈) 4個短版, 長度20分, 預計翻譯16時 (2天),  從11/24（二）14:04起算, deadline 為11/26(四)14:04, 謝謝！"
   }
 ]
