@@ -2830,7 +2830,6 @@
         ]
       }
     ],
-    "sourceText": "請 Alex Chen 翻譯人文講堂(轉職人生不害怕 斜槓人生更寬廣 - 郭彥甫) 4 個短版, 長度22分, 預計翻譯17時36分(2天1時36分), 從11/13 (五) 9:00起算，deadline為11/17(二) 10:36，謝謝！",
     "notes": [
       "Avoid repeating “floating” in the next line; the speaker gestures downward, so “If treading water fails, you start kicking” fits the visual and keeps the “stay afloat” wording in the first line.",
       "Describe construction sites generally; avoid “there,” which suggests one specific location.",
@@ -2840,7 +2839,8 @@
       "Consider grouping the running gear into one list on screen: “I grabbed my running shorts, track spikes and singlet, then went running.”",
       "Keep the book-reading lines consistent with the context: he reads to find answers to specific questions, rather than suggesting he only reads after already having an answer.",
       "Smooth the exercise prompt: “You wake up exactly one year from now. What’s the first thing you do?”"
-    ]
+    ],
+    "sourceText": "請 Alex Chen 翻譯人文講堂(轉職人生不害怕 斜槓人生更寬廣 - 郭彥甫) 4 個短版, 長度22分, 預計翻譯17時36分(2天1時36分), 從11/13 (五) 9:00起算，deadline為11/17(二) 10:36，謝謝！"
   },
   {
     "id": "108",
@@ -2941,11 +2941,11 @@
             "name": "北加智慧實驗室",
             "type": "news",
             "startAt": "2026-11-25T01:15:00Z",
-            "deadline": "2026-11-25T03:00:00Z",
             "workMinutes": 55,
             "contentSeconds": 10140,
             "scheduledDate": "2026-11-27",
-            "sourceText": "Alex Chen: 北加智慧實驗室 2:49"
+            "sourceText": "Alex Chen: 北加智慧實驗室 2:49",
+            "deadline": "2026-11-25T03:00:00Z"
           },
           {
             "name": "考績面談",
