@@ -2935,7 +2935,15 @@
       {
         "startAt": "2026-11-24T06:04:00Z",
         "deadline": "2026-11-26T06:04:00Z",
-        "workMinutes": 960
+        "workMinutes": 960,
+        "extensions": [
+          {
+            "name": "考績面談",
+            "type": "custom",
+            "startAt": "2026-11-25T02:08:45Z",
+            "workMinutes": 50
+          }
+        ]
       }
     ],
     "sourceText": "請 Alex Chen 翻譯人文講堂(金錢教育是人生必修課 - 馬哈) 4個短版, 長度20分, 預計翻譯16時 (2天),  從11/24（二）14:04起算, deadline 為11/26(四)14:04, 謝謝！"
