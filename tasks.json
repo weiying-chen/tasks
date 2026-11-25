@@ -2938,6 +2938,16 @@
         "workMinutes": 960,
         "extensions": [
           {
+            "name": "北加智慧實驗室",
+            "type": "news",
+            "startAt": "2026-11-25T01:15:00Z",
+            "deadline": "2026-11-25T03:00:00Z",
+            "workMinutes": 105,
+            "contentSeconds": 10140,
+            "scheduledDate": "2026-11-27",
+            "sourceText": "Alex Chen: 北加智慧實驗室 2:49"
+          },
+          {
             "name": "考績面談",
             "type": "custom",
             "startAt": "2026-11-25T02:08:45Z",
