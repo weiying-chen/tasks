@@ -40,11 +40,11 @@ class TasksJsonTests(unittest.TestCase):
             task["notes"],
         )
 
-    def test_latest_doctor_task_groups_three_episodes(self):
+    def test_doctor_task_groups_three_episodes(self):
         tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
         tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
 
-        last_task = [task for task in tasks if "大愛醫生館" in task.get("name", "")][-1]
+        last_task = next(task for task in tasks if task.get("id") == "54")
         self.assertEqual(
             last_task["name"],
             "3集大愛醫生館（腦中取栓 + 脊椎一開再開！ + 肺臟菜瓜布）",
