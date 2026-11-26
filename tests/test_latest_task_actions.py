@@ -180,9 +180,38 @@ class LatestTaskActionsTests(unittest.TestCase):
             view_latest_task.build_actions_line(input_file="/tmp/tasks.json", selected_task=selected)
         )
         self.assertIn("add extensions", line)
-        self.assertNotIn("handoff", line)
+        self.assertIn("handoff", line)
         self.assertIn("e", view_latest_task.allowed_actions_for_mode("personal"))
         self.assertNotIn("s", view_latest_task.allowed_actions_for_mode("personal"))
+
+    def test_personal_non_subs_task_hides_handoff_action(self):
+        selected = {"id": "65", "name": "Meeting", "type": "custom"}
+        line = self.strip_ansi(
+            view_latest_task.build_actions_line(input_file="/tmp/tasks.json", selected_task=selected)
+        )
+        self.assertNotIn("handoff", line)
+
+    def test_build_handoff_command(self):
+        self.assertEqual(
+            view_latest_task.build_handoff_command(
+                "/tmp",
+                "/tmp/tasks.json",
+                "/tmp/tasks_coworkers.json",
+                "64",
+            ),
+            [
+                "python3",
+                "/tmp/handoff_task.py",
+                "--source",
+                "/tmp/tasks.json",
+                "--target",
+                "/tmp/tasks_coworkers.json",
+                "--task-id",
+                "64",
+                "--print-id",
+                "__CLIPBOARD__",
+            ],
+        )
 
     def test_build_actions_line_offers_latest_news_deadline_action(self):
         selected = {
@@ -541,6 +570,25 @@ class LatestTaskActionsTests(unittest.TestCase):
         )
         self.assertEqual(status, view_latest_task.SUBS_INITIATION_MESSAGE_COPIED_STATUS)
         copy_mock.assert_called_once_with("task initiation message")
+
+    @mock.patch("view_latest_task.copy_to_clipboard")
+    @mock.patch("view_latest_task.subprocess.run")
+    def test_handoff_and_copy_message_returns_handoff_status(self, run_mock, copy_mock):
+        run_mock.side_effect = [
+            mock.Mock(returncode=0, stdout="7\n", stderr=""),
+            mock.Mock(returncode=0, stdout="edit assignment message", stderr=""),
+        ]
+
+        status = view_latest_task.handoff_and_copy_message(
+            "/tmp",
+            "/tmp/tasks.json",
+            "/tmp/tasks_coworkers.json",
+            "64",
+            "Alex Chen 請 Elijah Salie edit+定稿任務，謝謝~",
+        )
+
+        self.assertEqual(status, view_latest_task.HANDOFF_MESSAGE_COPIED_STATUS)
+        copy_mock.assert_called_once_with("edit assignment message")
 
     def test_stage_accessors_use_active_stage(self):
         task = {

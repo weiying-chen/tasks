@@ -52,6 +52,7 @@ SUBS_SUMMARY_MESSAGE_COPIED_STATUS = "Success: Task assignment message copied to
 CONFIRM_DEADLINE_EXTENSION_STATUS = "Success: Confirm deadline extension checked"
 SUBS_INITIATION_MESSAGE_COPIED_STATUS = "Success: Subs initiation message copied to clipboard"
 NEWS_COMPLETION_MESSAGE_COPIED_STATUS = "Success: News completion message copied to clipboard"
+HANDOFF_MESSAGE_COPIED_STATUS = "Success: Task handed off and assignment message copied to clipboard"
 MONTHLY_REVIEW_SUBMITTED_STATUS = "Success: Monthly review marked as submitted"
 REVIEW_REMINDER_DAYS = 5
 STATUS_LABEL_COLORS = {
@@ -60,9 +61,9 @@ STATUS_LABEL_COLORS = {
     "Error": RED,
 }
 
-PERSONAL_ACTIONS = ("t", "e", "f", "n", "v", "r", "q")
+PERSONAL_ACTIONS = ("t", "h", "e", "f", "n", "v", "r", "q")
 COWORKER_ACTIONS = ("t", "a", "s", "d", "q")
-ALL_ACTIONS = ("t", "a", "s", "e", "f", "n", "d", "v", "m", "r", "q")
+ALL_ACTIONS = ("t", "h", "a", "s", "e", "f", "n", "d", "v", "m", "r", "q")
 
 
 def review_state_path() -> Path:
@@ -154,12 +155,15 @@ def build_actions_line(
     allowed.difference_update({"n", "v"})
     if "f" in allowed and latest_news_extension(selected_task) is None:
         allowed.discard("f")
+    if "h" in allowed and not can_handoff_task(selected_task, input_file=input_file):
+        allowed.discard("h")
     if build_message_target_options(selected_task, input_file=input_file):
         allowed.add("m")
     if not review_pending:
         allowed.discard("r")
     labels = {
         "t": color('create ', MAGENTA) + color('t', GREEN) + color('ask', MAGENTA),
+        "h": color('h', GREEN) + color('andoff', MAGENTA),
         "a": color('set ', MAGENTA) + color('a', GREEN) + color('ssignee', MAGENTA),
         "c": color('set start time', MAGENTA) + color(' (c)', GREEN),
         "s": (
@@ -296,6 +300,26 @@ def build_confirm_task_start_command(script_dir: str, infile: str | None = None,
     return cmd
 
 
+def build_handoff_command(
+    script_dir: str,
+    source_file: str,
+    target_file: str,
+    task_id: str,
+) -> list[str]:
+    return [
+        "python3",
+        f"{script_dir}/handoff_task.py",
+        "--source",
+        source_file,
+        "--target",
+        target_file,
+        "--task-id",
+        task_id,
+        "--print-id",
+        "__CLIPBOARD__",
+    ]
+
+
 def build_subs_deadline_extension_message_command(script_dir: str, infile: str, task_id: str) -> list[str]:
     return [
         "python3",
@@ -428,6 +452,37 @@ def set_task_start_and_copy_message(
         raise RuntimeError("Generated message is empty.")
     copy_to_clipboard(message_text)
     return SUBS_INITIATION_MESSAGE_COPIED_STATUS
+
+
+def handoff_and_copy_message(
+    script_dir: str,
+    source_file: str,
+    target_file: str,
+    task_id: str,
+    clipboard_text: str,
+) -> str:
+    cmd = build_handoff_command(script_dir, source_file, target_file, task_id)
+    cmd[-1] = clipboard_text
+    handoff_proc = subprocess.run(
+        cmd,
+        capture_output=True,
+        text=True,
+        cwd=script_dir,
+    )
+    if handoff_proc.returncode != 0:
+        raise RuntimeError((handoff_proc.stderr or handoff_proc.stdout or "Handoff failed").strip())
+    coworker_task_id = handoff_proc.stdout.strip()
+    if not coworker_task_id:
+        raise RuntimeError("Handoff did not return a coworker task id.")
+    msg_cmd = build_task_assignment_message_command(script_dir, target_file, coworker_task_id)
+    msg_proc = subprocess.run(msg_cmd, capture_output=True, text=True)
+    if msg_proc.returncode != 0:
+        raise RuntimeError((msg_proc.stderr or msg_proc.stdout or "Message generation failed").strip())
+    message_text = msg_proc.stdout.strip()
+    if not message_text:
+        raise RuntimeError("Generated message is empty.")
+    copy_to_clipboard(message_text)
+    return HANDOFF_MESSAGE_COPIED_STATUS
 
 
 def build_confirm_deadline_extension_status(task: dict, clipboard_text: str, now_local: datetime | None = None) -> str:
@@ -595,6 +650,13 @@ def build_message_target_options(
     if mode != "coworker" and has_scheduled_news_extension(latest_task):
         options.append(("news-completion", "News completion message"))
     return options
+
+
+def can_handoff_task(task: dict | None, input_file: str | None = None) -> bool:
+    if detect_action_mode(input_file) != "personal" or not isinstance(task, dict):
+        return False
+    task_id = str(task.get("id") or "").strip()
+    return bool(task_id) and get_task_type(task) == "subs" and isinstance(get_task_work_minutes(task), int)
 
 
 def choose_numbered_option(
@@ -1273,6 +1335,40 @@ def main():
                             status_until = 0.0
                     except Exception as exc:
                         status = format_status_text(f"Error: Add failed: {exc}")
+                        status_until = time.time() + STATUS_TTL_SECONDS
+                if ch == b"h" and "h" in base_allowed_actions:
+                    try:
+                        data = json.loads(in_path.read_text(encoding="utf-8"))
+                        tasks = normalize_tasks(data)
+                        selected_task = get_view_task(tasks, task_id=args.id, program=args.program)
+                        if not can_handoff_task(selected_task, input_file=input_file):
+                            status = format_status_text("Error: Selected task cannot be handed off.")
+                            status_until = time.time() + STATUS_TTL_SECONDS
+                            continue
+                        selected_id = str(selected_task.get("id") or "").strip()
+                        clipboard_proc = subprocess.run(
+                            ["wl-paste"],
+                            capture_output=True,
+                            text=True,
+                            check=True,
+                        )
+                        clipboard_text = clipboard_proc.stdout
+                        if not clipboard_text.strip():
+                            status = format_status_text("Error: Clipboard is empty.")
+                            status_until = time.time() + STATUS_TTL_SECONDS
+                            continue
+                        coworker_path = in_path.with_name("tasks_coworkers.json")
+                        copied_status = handoff_and_copy_message(
+                            script_dir,
+                            str(in_path.resolve()),
+                            str(coworker_path.resolve()),
+                            selected_id,
+                            clipboard_text,
+                        )
+                        status = format_status_text(copied_status)
+                        status_until = time.time() + STATUS_TTL_SECONDS
+                    except Exception as exc:
+                        status = format_status_text(f"Error: Handoff failed: {exc}")
                         status_until = time.time() + STATUS_TTL_SECONDS
                 if ch == b"f" and "f" in base_allowed_actions:
                     try:

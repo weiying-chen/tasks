@@ -340,7 +340,9 @@ class LatestTaskViewTests(unittest.TestCase):
                 "workMinutes": 120,
             }
         ]
-        out = self.strip_ansi(view_latest_task.build_latest_view(tasks))
+        out = self.strip_ansi(
+            view_latest_task.build_latest_view(tasks, submitted_review_months={"2026-11"})
+        )
         lines = out.splitlines()
         actions_idx = lines.index(
             "Actions: create task | add extensions | copy message | quit"
