@@ -698,22 +698,7 @@ def apply_extension_work_rule(task: dict) -> None:
             task["workMinutes"] = adjusted_extension_minutes(minutes)
 
 
-def assignment_message_assignee(source_text: str) -> str | None:
-    patterns = (
-        r"^\s*.+?\s*[.。．]?\s*請\s*(?P<assignee>.+?)\s*edit\s*\+\s*定稿",
-        r"^\s*.+?\s*[.。．]?\s*請\s*(?P<assignee>.+?)\s*(?:翻譯|做)",
-        r"^\s*請\s*(?P<assignee>.+?)\s*(?:翻譯|做)",
-    )
-    for pattern in patterns:
-        match = re.search(pattern, source_text, flags=re.I | re.S)
-        if match:
-            assignee = re.sub(r"\s+", " ", match.group("assignee")).strip().lstrip("@")
-            if assignee:
-                return assignee
-    return None
-
-
-def apply_personal_task_assignee(task: dict, source_text: str) -> None:
+def apply_personal_task_assignee(task: dict) -> None:
     stages = task.get("stages")
     if not isinstance(stages, list):
         stages = []
@@ -722,10 +707,7 @@ def apply_personal_task_assignee(task: dict, source_text: str) -> None:
     if stage is None:
         stage = {"name": "translate"}
         stages.append(stage)
-    current_assignee = str(stage.get("assignee") or "").strip()
-    if current_assignee:
-        return
-    stage["assignee"] = assignment_message_assignee(source_text) or "Alex Chen"
+    stage["assignee"] = "Alex Chen"
 
 
 def main():
@@ -804,7 +786,7 @@ def main():
             if isinstance(warning, str) and warning.strip():
                 print(f"{YELLOW}{warning}{RESET}")
             if out_path.name == "tasks.json":
-                apply_personal_task_assignee(item, source_text)
+                apply_personal_task_assignee(item)
         tasks.extend(new_items)
 
     normalized_tasks = [normalize_task_shape(task) for task in tasks if isinstance(task, dict)]

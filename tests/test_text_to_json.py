@@ -7,32 +7,26 @@ from task_stages import get_task_content_seconds, get_task_type, get_task_work_m
 
 
 class TextToJsonTests(unittest.TestCase):
-    def test_personal_task_assignee_uses_name_in_assignment_message(self):
+    def test_personal_task_assignee_is_always_alex(self):
         task = {"stages": [{"name": "translate", "workMinutes": 120}]}
 
-        text_to_json.apply_personal_task_assignee(
-            task,
-            "Alex Chen 請 Elijah Salie 翻譯3集大愛醫生館，謝謝~",
-        )
+        text_to_json.apply_personal_task_assignee(task)
 
-        self.assertEqual(task["stages"][0]["assignee"], "Elijah Salie")
+        self.assertEqual(task["stages"][0]["assignee"], "Alex Chen")
 
     def test_personal_first_person_task_defaults_assignee_to_alex(self):
         task = {"stages": [{"name": "translate", "workMinutes": 266}]}
 
-        text_to_json.apply_personal_task_assignee(
-            task,
-            "我接下來要翻譯3集大愛醫生館，預計做4時26分。",
-        )
+        text_to_json.apply_personal_task_assignee(task)
 
         self.assertEqual(task["stages"][0]["assignee"], "Alex Chen")
 
-    def test_personal_assignee_does_not_overwrite_explicit_stage_assignee(self):
+    def test_personal_task_assignee_overrides_existing_stage_assignee(self):
         task = {"stages": [{"name": "translate", "assignee": "Elijah Salie"}]}
 
-        text_to_json.apply_personal_task_assignee(task, "我接下來要翻譯3集大愛醫生館。")
+        text_to_json.apply_personal_task_assignee(task)
 
-        self.assertEqual(task["stages"][0]["assignee"], "Elijah Salie")
+        self.assertEqual(task["stages"][0]["assignee"], "Alex Chen")
 
     def test_normalize_task_shape_preserves_origin_link(self):
         task = {
