@@ -656,7 +656,17 @@ def can_handoff_task(task: dict | None, input_file: str | None = None) -> bool:
     if detect_action_mode(input_file) != "personal" or not isinstance(task, dict):
         return False
     task_id = str(task.get("id") or "").strip()
-    return bool(task_id) and get_task_type(task) == "subs" and isinstance(get_task_work_minutes(task), int)
+    assignee = str(get_task_assignee(task) or "").strip()
+    task_assigner = str(task.get("assigner") or "").strip()
+    assigned_to_self = assignee.casefold() == "alex chen" or (
+        not assignee and task_assigner.casefold() == "alex chen"
+    )
+    return (
+        bool(task_id)
+        and assigned_to_self
+        and get_task_type(task) == "subs"
+        and isinstance(get_task_work_minutes(task), int)
+    )
 
 
 def choose_numbered_option(

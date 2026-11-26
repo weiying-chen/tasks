@@ -174,7 +174,7 @@ class LatestTaskActionsTests(unittest.TestCase):
             "id": "64",
             "name": "3集大愛真健康（甲 + 乙 + 丙）",
             "type": "subs",
-            "stages": [{"workMinutes": 520}],
+            "stages": [{"assignee": "Alex Chen", "workMinutes": 520}],
         }
         line = self.strip_ansi(
             view_latest_task.build_actions_line(input_file="/tmp/tasks.json", selected_task=selected)
@@ -190,6 +190,32 @@ class LatestTaskActionsTests(unittest.TestCase):
             view_latest_task.build_actions_line(input_file="/tmp/tasks.json", selected_task=selected)
         )
         self.assertNotIn("handoff", line)
+
+    def test_personal_subs_task_hides_handoff_for_other_assignee(self):
+        selected = {
+            "id": "65",
+            "name": "3集大愛醫生館（A + B + C）",
+            "type": "subs",
+            "assigner": "Alex Chen",
+            "stages": [{"assignee": "Elijah Salie", "workMinutes": 300}],
+        }
+        line = self.strip_ansi(
+            view_latest_task.build_actions_line(input_file="/tmp/tasks.json", selected_task=selected)
+        )
+        self.assertNotIn("handoff", line)
+
+    def test_legacy_self_assigned_subs_task_can_handoff_without_stage_assignee(self):
+        selected = {
+            "id": "66",
+            "name": "3集大愛醫生館（A + B + C）",
+            "type": "subs",
+            "assigner": "Alex Chen",
+            "stages": [{"workMinutes": 300}],
+        }
+        line = self.strip_ansi(
+            view_latest_task.build_actions_line(input_file="/tmp/tasks.json", selected_task=selected)
+        )
+        self.assertIn("handoff", line)
 
     def test_build_handoff_command(self):
         self.assertEqual(
