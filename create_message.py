@@ -27,6 +27,9 @@ TYPE_LABELS = {
 NO_DEADLINE_REQUEST_ASSIGNEES = {
     "Elijah Salie",
 }
+NO_WORK_ESTIMATE_ASSIGNEES = {
+    "Elijah Salie",
+}
 SELF_ASSIGNEE = "Alex Chen"
 
 
@@ -80,6 +83,10 @@ def normalize_person_name(name: str) -> str:
 
 def should_include_task_assignment_deadline(assignee: str) -> bool:
     return normalize_person_name(assignee) not in NO_DEADLINE_REQUEST_ASSIGNEES
+
+
+def should_include_task_assignment_work_estimate(assignee: str) -> bool:
+    return normalize_person_name(assignee) not in NO_WORK_ESTIMATE_ASSIGNEES
 
 
 def parse_message_datetime(md: str, hm: str, year: int) -> datetime:
@@ -338,15 +345,17 @@ def format_task_assignment_message(task: dict) -> str:
         f"{message_prefix}{count_text}集{program_name}（{episode_text}），"
         f"片長共{format_content_duration_for_message(content_seconds)}，"
     )
-    if is_translation:
+    include_work_estimate = should_include_task_assignment_work_estimate(assignee)
+    if is_translation and include_work_estimate:
         message += f"預計翻譯{format_duration_for_summary_message(work_minutes)}，"
-    else:
+    elif not is_translation:
         translate_minutes = get_previous_stage_work_minutes(task, "translate")
         if translate_minutes is None and isinstance(work_minutes, int) and work_minutes > 0:
             translate_minutes = work_minutes * 2
         if isinstance(translate_minutes, int) and translate_minutes > 0:
             message += f"翻譯工時{format_duration_for_summary_message(translate_minutes)}，"
-        message += f"預計製作{format_duration_for_summary_message(work_minutes)}，"
+        if include_work_estimate:
+            message += f"預計製作{format_duration_for_summary_message(work_minutes)}，"
     if should_include_task_assignment_deadline(assignee):
         return message + "deadline等手上工作完成後再給，謝謝。"
     return message + "謝謝。"

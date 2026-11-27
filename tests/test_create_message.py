@@ -545,10 +545,10 @@ class CreateMessageTests(unittest.TestCase):
         self.assertEqual(
             message,
             "請@Elijah Salie翻譯 + 定稿3集大愛醫生館（聲帶增胖 + 膽結石肆虐胰臟 + 晦暗不明出血點），"
-            "片長共5分03秒，預計翻譯4時02分，謝謝。",
+            "片長共5分03秒，謝謝。",
         )
 
-    def test_subs_summary_message_omits_deadline_for_elijah(self):
+    def test_subs_summary_message_omits_estimate_and_deadline_for_elijah(self):
         tasks = [
             {
                 "id": "1",
@@ -575,7 +575,7 @@ class CreateMessageTests(unittest.TestCase):
         self.assertEqual(
             message,
             "請@Elijah Salie edit + 定稿3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈），"
-            "片長共6分04秒，翻譯工時6時04分，預計製作3時02分，謝謝。",
+            "片長共6分04秒，翻譯工時6時04分，謝謝。",
         )
 
     def test_subs_summary_message_normalizes_elijah_assignee_prefix(self):
@@ -605,7 +605,7 @@ class CreateMessageTests(unittest.TestCase):
         self.assertEqual(
             message,
             "請@Elijah Salie edit + 定稿3集大愛醫生館（不是潰瘍的十二指腸出血 + 壯年出血在腦內 + 腎癌迷走下腔靜脈），"
-            "片長共6分04秒，翻譯工時6時04分，預計製作3時02分，謝謝。",
+            "片長共6分04秒，翻譯工時6時04分，謝謝。",
         )
 
     def test_subs_initiation_message_uses_translate_wording(self):
