@@ -178,5 +178,29 @@
       }
     ],
     "sourceText": "【大愛醫生館】 膝關節加油 20260625\nhttps://www.youtube.com/watch?v=qXuEe1dXBlc\n06:57-09:02 (2分5秒)\n【大愛醫生館】 頸椎深部的呢喃 20260624\nhttps://www.youtube.com/watch?v=f7DM1lkfU4k\n07:23-09:18 (1分55秒)\n【大愛醫生館】 腫瘤豐頰 20260623\nhttps://www.youtube.com/watch?v=TtD7C19VCQo\n07:44-09:24 (1分40秒)"
+  },
+  {
+    "id": "9",
+    "name": "3集大愛醫生館（擠爆粉瘤 + 牽「頸椎」動全身 + 脾腎俱裂）",
+    "type": "subs",
+    "contentSeconds": 332,
+    "assigner": "Alex Chen",
+    "origin": {
+      "file": "tasks.json",
+      "taskId": "110"
+    },
+    "stages": [
+      {
+        "name": "translate",
+        "assignee": "Alex Chen",
+        "workMinutes": 266
+      },
+      {
+        "name": "edit",
+        "assignee": "Elijah Salie",
+        "workMinutes": 133
+      }
+    ],
+    "sourceText": "已完成人文講堂(金錢教育是人生必修課 - 馬哈) 4個短版，我接下來要翻譯3集大愛醫生館（擠爆粉瘤 + 牽「頸椎」動全身 + 脾腎俱裂），片長共5分32秒，預計做4時26分，從11/26（四）15:49起算，deadline為11/27（五）11:15，謝謝。"
   }
 ]

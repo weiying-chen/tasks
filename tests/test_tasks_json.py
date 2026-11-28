@@ -79,12 +79,11 @@ class TasksJsonTests(unittest.TestCase):
         last_task = [task for task in tasks if "大愛醫生館" in task.get("name", "")][-1]
         self.assertEqual(
             last_task["name"],
-            "3集大愛醫生館（膝關節加油 + 頸椎深部的呢喃 + 腫瘤豐頰）",
+            "3集大愛醫生館（擠爆粉瘤 + 牽「頸椎」動全身 + 脾腎俱裂）",
         )
-        self.assertEqual(last_task["contentSeconds"], 340)
-        self.assertIn("https://www.youtube.com/watch?v=qXuEe1dXBlc", last_task["sourceText"])
-        self.assertIn("https://www.youtube.com/watch?v=f7DM1lkfU4k", last_task["sourceText"])
-        self.assertIn("https://www.youtube.com/watch?v=TtD7C19VCQo", last_task["sourceText"])
+        self.assertEqual(last_task["contentSeconds"], 332)
+        self.assertEqual(last_task["origin"], {"file": "tasks.json", "taskId": "110"})
+        self.assertEqual(last_task["stages"][-1]["assignee"], "Elijah Salie")
 
     def test_latest_true_health_task_has_editorial_notes(self):
         tasks_path = Path(__file__).resolve().parents[1] / "tasks.json"
